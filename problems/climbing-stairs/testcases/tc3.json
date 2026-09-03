@@ -1,0 +1,8 @@
+{
+  "name": "Hidden - single step",
+  "input": "1",
+  "expected_output": "1",
+  "hidden": true,
+  "marks": 30,
+  "order": 3
+}

@@ -1,0 +1,8 @@
+{
+  "name": "Sample 2 - single right child",
+  "input": "3\n1 -1 2",
+  "expected_output": "2",
+  "hidden": false,
+  "marks": 20,
+  "order": 2
+}
