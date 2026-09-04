@@ -6,6 +6,7 @@ import {
 import { useState } from 'react';
 import { useAuth } from '../store/auth';
 import ThemeToggle from './ThemeToggle';
+import ThemeColorPicker from './ThemeColorPicker';
 import { toast } from 'sonner';
 
 const NAV_ITEMS = [
@@ -44,8 +45,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       `}>
         {/* Logo */}
         <div className="h-14 border-b border-border flex items-center px-4 gap-2 shrink-0">
-          <div className="w-7 h-7 rounded-md bg-primary/20 border border-primary/30 flex items-center justify-center">
-            <Code2 size={14} className="text-primary" />
+          <div className="w-7 h-7 rounded-md bg-brand/20 border border-brand/30 flex items-center justify-center">
+            <Code2 size={14} className="text-brand" />
           </div>
           <span className="font-bold text-sm">ZAP</span>
           <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded bg-primary/15 text-primary font-semibold">ADMIN</span>
@@ -73,14 +74,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">
               {user?.name?.split(' ').map(n => n[0]).join('') ?? 'A'}
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="text-xs font-medium truncate">{user?.name}</p>
               <p className="text-[10px] text-muted-foreground truncate">{user?.email}</p>
             </div>
-          </div>
-          <div className="flex items-center gap-1 px-2 py-1">
-            <span className="text-xs text-muted-foreground flex-1">Theme</span>
-            <ThemeToggle size="xs" />
+            <div className="flex items-center gap-0.5 shrink-0">
+              <ThemeColorPicker size="xs" />
+              <ThemeToggle size="xs" />
+            </div>
           </div>
           <button onClick={handleLogout}
             className="sidebar-item w-full text-destructive hover:text-destructive hover:bg-destructive/10">
