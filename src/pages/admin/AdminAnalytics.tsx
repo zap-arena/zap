@@ -126,7 +126,7 @@ export default function AdminAnalytics() {
     }
   };
 
-  const SortHeader = ({ field, label }: { field: SortField; label: string }) => (
+  const renderSortHeader = (field: SortField, label: string) => (
     <button
       onClick={() => toggleSort(field)}
       className="flex items-center gap-1 font-semibold hover:text-primary transition-colors text-left"
@@ -379,12 +379,12 @@ export default function AdminAnalytics() {
                 <table className="w-full data-table">
                   <thead>
                     <tr>
-                      <th className="text-left whitespace-nowrap"><SortHeader field="name" label="Candidate" /></th>
-                      <th className="text-left whitespace-nowrap"><SortHeader field="email" label="Contact" /></th>
+                      <th className="text-left whitespace-nowrap">{renderSortHeader('name', 'Candidate')}</th>
+                      <th className="text-left whitespace-nowrap">{renderSortHeader('email', 'Contact')}</th>
                       <th className="text-center whitespace-nowrap border-l border-r border-border bg-destructive/5 text-destructive">
-                        <SortHeader field="malpracticeScore" label="Malpractice Score" />
+                        {renderSortHeader('malpracticeScore', 'Malpractice Score')}
                       </th>
-                      <th className="text-center whitespace-nowrap"><SortHeader field="totalEvents" label="Total Events" /></th>
+                      <th className="text-center whitespace-nowrap">{renderSortHeader('totalEvents', 'Total Events')}</th>
                       
                       {/* Dynamic Columns */}
                       {dynamicLabels.map(label => (

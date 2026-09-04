@@ -12,7 +12,7 @@ interface AdminStats {
   recentSubmissions: { id: string; userId: string; problemTitle: string; status: Verdict; score: number }[];
 }
 
-const StatCard = ({ icon: Icon, label, value, sub, color = 'text-primary' }: any) => (
+const StatCard = ({ icon: Icon, label, value, sub, color = 'text-primary' }: { icon: React.ElementType; label: string; value: string | number; sub?: string; color?: string }) => (
   <div className="card-glow rounded-xl p-5">
     <div className="flex items-start justify-between mb-3">
       <div className={`w-9 h-9 rounded-lg bg-current/10 flex items-center justify-center ${color}`}>

@@ -224,9 +224,9 @@ function ContestForm({ contest, onSaved, onCancel }: {
   const isEdit = !!contest;
   const [saving, setSaving] = useState(false);
   const defaultStart = toLocalInput(contest?.startTime);
-  const defaultEnd = toLocalInput(
+  const [defaultEnd] = useState(() => toLocalInput(
     contest?.endTime ?? new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString(),
-  );
+  ));
   const [form, setForm] = useState({
     name: contest?.name ?? '',
     slug: contest?.slug ?? '',

@@ -111,7 +111,10 @@ function BulkImportDialog({ open, onClose }: { open: boolean; onClose: () => voi
   };
 
   const toggleSelect = (i: number) => setSelected(s => {
-    const n = new Set(s); n.has(i) ? n.delete(i) : n.add(i); return n;
+    const n = new Set(s);
+    if (n.has(i)) n.delete(i);
+    else n.add(i);
+    return n;
   });
 
   return (
@@ -287,7 +290,7 @@ function TestCaseRow({
   index: number;
   expanded: boolean;
   onToggleExpand: (id: string) => void;
-  onUpdate: (id: string, field: keyof TestCase, val: any) => void;
+  onUpdate: (id: string, field: keyof TestCase, val: string | number | boolean) => void;
   onDelete: (id: string) => void;
 }) {
   return (
@@ -423,7 +426,7 @@ function EditProblemDialog({ problem, open, onClose, onSaved }: { problem: Probl
     setExpandedIds(s => new Set([...s, newTc.id]));
   };
 
-  const updateTestCase = (id: string, field: keyof TestCase, val: any) => {
+  const updateTestCase = (id: string, field: keyof TestCase, val: string | number | boolean) => {
     setTestCases(tcs => tcs.map(tc => tc.id === id ? { ...tc, [field]: val } : tc));
   };
 
