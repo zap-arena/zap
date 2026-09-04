@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Clock, BookOpen, Trophy, CheckCircle, AlertCircle, Loader2, Lock } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import Navbar from '../components/Navbar';
 import { useAuth } from '../store/auth';
 import { api, ApiError } from '../lib/api';
 import type { Contest } from '../types';
@@ -20,6 +21,7 @@ export default function ContestEntryPage() {
   const { slug } = useParams<{ slug: string }>();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [starting, setStarting] = useState(false);
 
   const { data: contest, isLoading } = useQuery({
@@ -68,6 +70,7 @@ export default function ContestEntryPage() {
     setStarting(true);
     try {
       await api.post(`/contests/${contest.id}/start`);
+      await queryClient.invalidateQueries({ queryKey: ['session', contest.id] });
       toast.success(inProgress ? 'Resuming your attempt' : 'Contest started! Good luck!');
       navigate(`/contest/${contest.id}/workspace`);
     } catch (err) {
@@ -83,6 +86,7 @@ export default function ContestEntryPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col" style={{ background: 'var(--gradient-glow), hsl(var(--background))' }}>
+      <Navbar />
       <div className="max-w-3xl mx-auto w-full px-6 py-12 flex-1 animate-fade-in">
         {/* Header */}
         <div className="mb-8">

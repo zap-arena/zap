@@ -15,6 +15,8 @@ import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from '../components/ui/dialog';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '../components/ui/resizable';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
+import { Skeleton } from '../components/ui/skeleton';
 import ContestTimer from '../components/ContestTimer';
 import VerdictBadge from '../components/VerdictBadge';
 import DifficultyBadge from '../components/DifficultyBadge';
@@ -324,7 +326,30 @@ export default function ContestWorkspacePage() {
     }
   };
 
-  if (!contest || !session?.started) return <div className="p-8 text-center text-muted-foreground">Loading workspace…</div>;
+  if (!contest || !session?.started) {
+    return (
+      <div className="h-screen flex flex-col bg-background overflow-hidden">
+        <div className="h-12 border-b border-border bg-card flex items-center px-4 shrink-0">
+          <Skeleton className="h-5 w-32" />
+          <div className="flex-1" />
+          <Skeleton className="h-7 w-24" />
+        </div>
+        <div className="flex-1 flex min-h-0">
+          <div className="w-52 shrink-0 border-r border-border bg-card p-3 space-y-3">
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+          <div className="flex-1 p-6 space-y-4">
+            <Skeleton className="h-8 w-1/3" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-5/6" />
+            <Skeleton className="h-32 w-full mt-8" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
 
   return (
@@ -528,7 +553,7 @@ export default function ContestWorkspacePage() {
               </div>
             </ResizablePanel>
 
-            <ResizableHandle withHandle className="w-1 bg-border hover:bg-primary/30 transition-colors" />
+            <ResizableHandle withHandle className="bg-transparent hover:bg-border/50 transition-colors" />
 
             {/* Editor + Output panel */}
             <ResizablePanel defaultSize={62} minSize={40}>
@@ -591,22 +616,20 @@ export default function ContestWorkspacePage() {
                   </div>
                 </ResizablePanel>
 
-                <ResizableHandle withHandle className="h-1 bg-border hover:bg-primary/30 transition-colors" />
+                <ResizableHandle withHandle className="bg-transparent hover:bg-border/50 transition-colors" />
 
                 {/* Output panel */}
                 <ResizablePanel defaultSize={35} minSize={15}>
-                  <div className="h-full flex flex-col bg-background">
-                    <div className="h-8 border-b border-border bg-card flex items-center px-3 gap-1 shrink-0">
-                      {(['output', 'stdin'] as const).map(tab => (
-                        <button key={tab} onClick={() => setBottomTab(tab)}
-                          className={`px-3 h-6 rounded text-xs font-medium transition-colors ${
-                            bottomTab === tab
-                              ? 'bg-muted text-foreground'
-                              : 'text-muted-foreground hover:text-foreground'
-                          }`}>
-                          {tab === 'output' ? <span className="flex items-center gap-1"><Terminal size={11} />Output</span> : 'Custom Input'}
-                        </button>
-                      ))}
+                  <Tabs value={bottomTab} onValueChange={(v) => setBottomTab(v as 'output' | 'stdin')} className="h-full flex flex-col bg-background">
+                    <div className="h-9 border-b border-border bg-card flex items-center px-3 gap-1 shrink-0">
+                      <TabsList className="h-7 bg-muted">
+                        <TabsTrigger value="output" className="text-[11px] h-5 px-2">
+                          <Terminal size={11} className="mr-1" /> Output
+                        </TabsTrigger>
+                        <TabsTrigger value="stdin" className="text-[11px] h-5 px-2">
+                          Custom Input
+                        </TabsTrigger>
+                      </TabsList>
                       {(running || submitting) && (
                         <div className="ml-auto flex items-center gap-1.5 text-[10px] text-muted-foreground">
                           <Loader2 size={10} className="animate-spin" />
@@ -689,7 +712,7 @@ export default function ContestWorkspacePage() {
                         </div>
                       )}
                     </div>
-                  </div>
+                  </Tabs>
                 </ResizablePanel>
               </ResizablePanelGroup>
             </ResizablePanel>

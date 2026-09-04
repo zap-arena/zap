@@ -1,8 +1,9 @@
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { Toaster } from 'sonner';
+import { Toaster } from './components/ui/sonner';
 import { useAuth } from './store/auth';
 
 import HomePage from './pages/HomePage';
+import ContestsPage from './pages/ContestsPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ContestEntryPage from './pages/ContestEntryPage';
@@ -14,6 +15,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProblems from './pages/admin/AdminProblems';
 import AdminContests from './pages/admin/AdminContests';
 import AdminContestDetail from './pages/admin/AdminContestDetail';
+import AdminAnalytics from './pages/admin/AdminAnalytics';
 import AdminParticipants from './pages/admin/AdminParticipants';
 import AdminSubmissions from './pages/admin/AdminSubmissions';
 import AdminLogs from './pages/admin/AdminLogs';
@@ -35,25 +37,11 @@ function RequireAdmin({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <HashRouter>
-      <Toaster
-        position="top-right"
-        closeButton
-        duration={4000}
-        toastOptions={{
-          // Themed via CSS variables so toasts follow light/dark mode.
-          classNames: {
-            toast: 'bg-card text-foreground border border-border shadow-lg',
-            title: 'text-foreground',
-            description: 'text-muted-foreground',
-            actionButton: 'bg-primary text-primary-foreground',
-            cancelButton: 'bg-muted text-muted-foreground',
-            closeButton: 'bg-card text-foreground border-border hover:bg-muted hover:text-foreground',
-          },
-        }}
-      />
+      <Toaster position="top-right" closeButton duration={4000} />
       <Routes>
         {/* Public */}
         <Route path="/" element={<HomePage />} />
+        <Route path="/contests" element={<ContestsPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/contest/:slug" element={<ContestEntryPage />} />
@@ -78,6 +66,7 @@ export default function App() {
         <Route path="/admin/submissions" element={<RequireAdmin><AdminSubmissions /></RequireAdmin>} />
         <Route path="/admin/logs" element={<RequireAdmin><AdminLogs /></RequireAdmin>} />
         <Route path="/admin/users" element={<RequireAdmin><AdminUsers /></RequireAdmin>} />
+        <Route path="/admin/analytics" element={<RequireAdmin><AdminAnalytics /></RequireAdmin>} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />

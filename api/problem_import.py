@@ -1,3 +1,4 @@
+from typing import Union
 import io
 import json
 import re
@@ -58,7 +59,7 @@ def _safe_entries(zf: zipfile.ZipFile) -> list[zipfile.ZipInfo]:
     return safe
 
 
-def _strip_common_root(entries: list[zipfile.ZipInfo]) -> dict[str, bytes | zipfile.ZipInfo]:
+def _strip_common_root(entries: list[zipfile.ZipInfo]) -> dict[str, Union[bytes, zipfile.ZipInfo]]:
     """Drop a single wrapping folder so both problems.zip layouts work."""
     roots = {e.filename.split("/")[0] for e in entries}
     if len(roots) != 1:

@@ -1,3 +1,4 @@
+from typing import Optional
 import models
 
 
@@ -53,7 +54,7 @@ def serialize_contest(c: models.Contest, include_problems: bool = True) -> dict:
     return out
 
 
-def serialize_submission(s: models.Submission, problem_title: str | None = None, include_code: bool = True) -> dict:
+def serialize_submission(s: models.Submission, problem_title: Optional[str] = None, include_code: bool = True) -> dict:
     out = {
         "id": s.id, "contestId": s.contest_id, "problemId": s.problem_id, "problemTitle": problem_title,
         "userId": s.user_id, "language": s.language, "status": s.status, "passedTests": s.passed_tests,
@@ -66,7 +67,7 @@ def serialize_submission(s: models.Submission, problem_title: str | None = None,
     return out
 
 
-def serialize_participant(p: models.ContestParticipant, user: models.User | None = None) -> dict:
+def serialize_participant(p: models.ContestParticipant, user: Optional[models.User] = None) -> dict:
     return {
         "id": p.id, "contestId": p.contest_id, "userId": p.user_id,
         "userName": user.name if user else None, "userEmail": user.email if user else None,

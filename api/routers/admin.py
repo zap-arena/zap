@@ -1,3 +1,4 @@
+from typing import Optional
 import csv
 import io
 
@@ -43,7 +44,7 @@ def statistics(db: Session = Depends(get_db), _: models.User = Depends(require_a
 @router.get("/submissions")
 def admin_submissions(
     db: Session = Depends(get_db), _: models.User = Depends(require_admin),
-    contestId: str | None = None, userId: str | None = None, problemId: str | None = None, status: str | None = None,
+    contestId: Optional[str] = None, userId: Optional[str] = None, problemId: Optional[str] = None, status: Optional[str] = None,
     limit: int = Query(default=100, le=500),
 ):
     stmt = select(models.Submission).order_by(models.Submission.submitted_at.desc()).limit(limit)
@@ -86,8 +87,12 @@ def admin_logs(db: Session = Depends(get_db), _: models.User = Depends(require_a
 
 
 @router.get("/users")
-def admin_users(db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
-    users = db.scalars(select(models.User).order_by(models.User.created_at.desc())).all()
+def admin_users(contest_id: Optional[str] = None, db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
+    query = select(models.User)
+    if contest_id:
+        query = query.join(models.ContestParticipant, models.User.id == models.ContestParticipant.user_id)\
+                     .where(models.ContestParticipant.contest_id == contest_id)
+    users = db.scalars(query.order_by(models.User.created_at.desc())).all()
     return [{"id": u.id, "name": u.name, "email": u.email, "role": u.role, "createdAt": u.created_at.isoformat()} for u in users]
 
 
@@ -146,3 +151,81 @@ def export_results(contest_id: str, format: str = Query(default="csv"), db: Sess
         iter([buffer.getvalue()]), media_type="text/csv",
         headers={"Content-Disposition": f"attachment; filename=contest-{contest.slug}-results.csv"},
     )
+
+@router.get("/analytics/users")
+def analytics_users(
+    contest_id: Optional[str] = None,
+    user_id: Optional[str] = None,
+    db: Session = Depends(get_db), 
+    _: models.User = Depends(require_admin)
+):
+    query = select(models.ContestActivityLog.user_id, models.ContestActivityLog.event_type, func.count()).where(models.ContestActivityLog.user_id.is_not(None))
+    
+    if contest_id:
+        query = query.where(models.ContestActivityLog.contest_id == contest_id)
+    if user_id:
+        query = query.where(models.ContestActivityLog.user_id == user_id)
+        
+    rows = db.execute(query.group_by(models.ContestActivityLog.user_id, models.ContestActivityLog.event_type)).all()
+    
+    users_data = {}
+    for user_id, event_type, count in rows:
+        if user_id not in users_data:
+            user = db.get(models.User, user_id)
+            if not user:
+                continue
+            users_data[user_id] = {
+                "user": {"id": user.id, "name": user.name, "email": user.email},
+                "metrics": {}
+            }
+        users_data[user_id]["metrics"][event_type] = count
+        
+    return list(users_data.values())
+
+@router.get("/analytics/events")
+def analytics_events(
+    interval: Optional[str] = "hour",
+    contest_id: Optional[str] = None,
+    user_id: Optional[str] = None,
+    db: Session = Depends(get_db),
+    _: models.User = Depends(require_admin)
+):
+    query = select(models.ContestActivityLog)
+    if contest_id:
+        query = query.where(models.ContestActivityLog.contest_id == contest_id)
+    if user_id:
+        query = query.where(models.ContestActivityLog.user_id == user_id)
+        
+    logs = db.scalars(query.order_by(models.ContestActivityLog.created_at)).all()
+    
+    summary = {}
+    timeseries_dict = {}
+    
+    for log in logs:
+        # summary
+        summary[log.event_type] = summary.get(log.event_type, 0) + 1
+        
+        # timeseries
+        dt = log.created_at
+        if dt:
+            if interval == "minute":
+                time_key = dt.replace(second=0, microsecond=0).isoformat()
+            elif interval == "day":
+                time_key = dt.replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
+            else:
+                time_key = dt.replace(minute=0, second=0, microsecond=0).isoformat()
+                
+            if time_key not in timeseries_dict:
+                timeseries_dict[time_key] = {"time": time_key}
+            timeseries_dict[time_key][log.event_type] = timeseries_dict[time_key].get(log.event_type, 0) + 1
+            
+    summary_list = [{"label": k, "total": v} for k, v in summary.items()]
+    summary_list.sort(key=lambda x: x["total"], reverse=True)
+    
+    timeseries_list = sorted(list(timeseries_dict.values()), key=lambda x: x["time"])
+    
+    return {
+        "summary": summary_list,
+        "timeseries": timeseries_list,
+        "labels": list(summary.keys())
+    }

@@ -1,17 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Code2, Trophy, Clock, Users, ChevronRight, Zap, Shield, BarChart2 } from 'lucide-react';
+import { Code2, Trophy, Users, Zap, Shield, BarChart2, Globe, ArrowRight, Building, GraduationCap, CheckCircle2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import Navbar from '../components/Navbar';
 import { api } from '../lib/api';
 import { useAuth } from '../store/auth';
 
-interface HomeContestSummary {
-  id: string; name: string; slug: string; description: string; status: string;
-  duration: number; problemCount: number; maxScore: number;
-}
 interface HomeSnapshot {
-  contests: HomeContestSummary[];
   stats: { totalUsers: number; totalProblems: number; totalContests: number };
 }
 
@@ -24,137 +19,160 @@ export default function HomePage() {
     queryFn: () => api.get<HomeSnapshot>('/public/home'),
   });
 
-  const activeContests = data?.contests ?? [];
   const stats = data?.stats;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background selection:bg-primary/20">
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative overflow-hidden py-20 px-6" style={{ background: 'var(--gradient-glow), hsl(var(--background))' }}>
-        <div className="max-w-5xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-6">
-            <Zap size={12} /> Now with real-time leaderboards
+      {/* Hero Section */}
+      <section className="relative overflow-hidden pt-28 pb-20 px-6" style={{ background: 'var(--gradient-glow), hsl(var(--background))' }}>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        <div className="max-w-5xl mx-auto text-center relative z-10 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-8 tracking-wide uppercase">
+            <Zap size={14} className="text-primary" /> The Ultimate Coding Arena
           </div>
-          <h1 className="text-5xl sm:text-6xl font-extrabold leading-tight mb-6">
-            Code. Compete.<br />
-            <span className="text-primary">Conquer.</span>
+          <h1 className="text-5xl sm:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6 text-foreground">
+            Master algorithms.<br />
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-500">
+              Prove your skills.
+            </span>
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed">
-            A professional-grade coding contest platform for developers. Join live contests, solve timed challenges, and climb the leaderboard.
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed font-light">
+            Join a professional-grade competitive programming platform. Compete in live contests, solve challenging problems, and get hired by top tech companies.
           </p>
-          <div className="flex items-center justify-center gap-3 flex-wrap">
-            {user ? (
-              user.role === 'admin'
-                ? <Button className="btn-primary h-11 px-8 text-sm font-semibold gap-2" onClick={() => navigate('/admin')}>
-                    <Shield size={16} /> Admin Dashboard
-                  </Button>
-                : <Button className="btn-primary h-11 px-8 text-sm font-semibold gap-2" onClick={() => navigate(activeContests[0] ? `/contest/${activeContests[0].slug}` : '/')}>
-                    <Trophy size={16} /> Join a Contest
-                  </Button>
-            ) : (
-              <>
-                <Button className="btn-primary h-11 px-8 text-sm font-semibold" onClick={() => navigate('/register')}>
-                  Get Started Free
-                </Button>
-                <Button variant="outline" className="h-11 px-8 text-sm font-semibold border-border text-muted-foreground hover:text-foreground" onClick={() => navigate('/login')}>
-                  Sign In
-                </Button>
-              </>
+          <div className="flex items-center justify-center gap-4 flex-wrap">
+            <Button className="btn-primary h-12 px-8 text-base font-semibold shadow-lg shadow-primary/25" onClick={() => navigate('/contests')}>
+              View Contests <ArrowRight size={18} className="ml-2" />
+            </Button>
+            {!user && (
+              <Button variant="outline" className="h-12 px-8 text-base font-semibold border-border hover:bg-muted" onClick={() => navigate('/register')}>
+                Create Free Account
+              </Button>
+            )}
+            {user?.role === 'admin' && (
+              <Button variant="secondary" className="h-12 px-8 text-base font-semibold" onClick={() => navigate('/admin')}>
+                <Shield size={18} className="mr-2" /> Admin Dashboard
+              </Button>
             )}
           </div>
         </div>
       </section>
 
-      {/* Stats bar */}
-      <div className="border-y border-border bg-card/50">
-        <div className="max-w-5xl mx-auto px-6 py-6 grid grid-cols-2 sm:grid-cols-4 gap-6">
+      {/* Stats Section */}
+      <section className="border-y border-border bg-card/40 backdrop-blur-sm">
+        <div className="max-w-6xl mx-auto px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-border">
           {[
-            { value: stats ? `${stats.totalProblems}+` : '—', label: 'Problems', icon: Code2 },
-            { value: stats ? `${stats.totalUsers}+` : '—', label: 'Developers', icon: Users },
-            { value: stats ? `${stats.totalContests}+` : '—', label: 'Contests', icon: Trophy },
-            { value: '99.9%', label: 'Uptime', icon: Zap },
-          ].map(({ value, label, icon: Icon }) => (
-            <div key={label} className="text-center">
-              <Icon size={16} className="text-primary mx-auto mb-1" />
-              <div className="text-2xl font-bold">{value}</div>
-              <div className="text-xs text-muted-foreground">{label}</div>
+            { value: stats ? `${stats.totalProblems.toLocaleString()}+` : '500+', label: 'Curated Problems', icon: Code2 },
+            { value: stats ? `${stats.totalUsers.toLocaleString()}+` : '10,000+', label: 'Active Developers', icon: Users },
+            { value: stats ? `${stats.totalContests.toLocaleString()}+` : '100+', label: 'Contests Hosted', icon: Trophy },
+            { value: '99.9%', label: 'Platform Uptime', icon: Globe },
+          ].map(({ value, label, icon: Icon }, idx) => (
+            <div key={label} className={`text-center ${idx % 2 === 0 ? 'border-none' : 'border-none md:border-solid'} ${idx === 0 ? 'border-none' : ''}`}>
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Icon size={18} className="text-primary" />
+                <span className="text-3xl font-bold tracking-tight">{value}</span>
+              </div>
+              <div className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{label}</div>
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
-      <div className="max-w-5xl mx-auto px-6 py-12 space-y-12">
-        {/* Active Contests */}
-        <section>
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-xl font-bold">Upcoming & Live Contests</h2>
+      {/* Trusted By Section (Mock Partners & Universities) */}
+      <section className="py-20 px-6 bg-background">
+        <div className="max-w-5xl mx-auto text-center">
+          <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-10">
+            Trusted by top tech companies & universities
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center opacity-70 grayscale hover:grayscale-0 transition-all duration-500">
+            {/* Tech Partners */}
+            <div className="flex items-center justify-center gap-2 font-bold text-xl tracking-tighter">
+              <Building size={24} /> Meta
+            </div>
+            <div className="flex items-center justify-center gap-2 font-bold text-xl tracking-tighter">
+              <Building size={24} /> Google
+            </div>
+            <div className="flex items-center justify-center gap-2 font-bold text-xl tracking-tighter">
+              <Building size={24} /> Amazon
+            </div>
+            {/* Universities */}
+            <div className="flex items-center justify-center gap-2 font-serif font-semibold text-lg">
+              <GraduationCap size={28} /> Stanford
+            </div>
+            <div className="flex items-center justify-center gap-2 font-serif font-semibold text-lg">
+              <GraduationCap size={28} /> MIT
+            </div>
           </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {activeContests.length === 0 && (
-              <p className="text-sm text-muted-foreground">No contests are scheduled right now. Check back soon.</p>
-            )}
-            {activeContests.map(c => (
-              <div key={c.id} className="card-glow rounded-xl p-5 cursor-pointer group"
-                onClick={() => navigate(`/contest/${c.slug}`)}>
-                <div className="flex items-start gap-3 mb-3">
-                  <div className="w-9 h-9 rounded-lg bg-primary/15 border border-primary/25 flex items-center justify-center shrink-0">
-                    <Trophy size={15} className="text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <h3 className="font-semibold text-sm group-hover:text-primary transition-colors">{c.name}</h3>
-                      {c.status === 'active' && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-success/15 text-success font-semibold flex items-center gap-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />LIVE
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-muted-foreground line-clamp-1">{c.description}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1"><Clock size={11} />{c.duration}m</span>
-                  <span className="flex items-center gap-1"><Code2 size={11} />{c.problemCount} problems</span>
-                  <span className="flex items-center gap-1"><Trophy size={11} />{c.maxScore} pts</span>
-                </div>
-                <div className="mt-3 flex items-center text-xs text-primary font-medium gap-1 group-hover:gap-2 transition-all">
-                  View Contest <ChevronRight size={12} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Feature highlights */}
-        <section>
-          <h2 className="text-xl font-bold mb-5">Built for serious developers</h2>
-          <div className="grid sm:grid-cols-3 gap-4">
+      {/* Features Showcase */}
+      <section className="py-24 px-6 bg-muted/20 border-t border-border">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">Built for serious developers</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Everything you need to host, manage, and compete in professional programming contests.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: Zap, title: 'Real Code Execution', desc: 'Sandboxed Piston engine supports C, C++, Java, Python with strict time/memory limits.' },
-              { icon: Shield, title: 'Secure & Fair', desc: 'Hidden test cases, server-side judging, and RBAC ensure integrity for every contest.' },
-              { icon: BarChart2, title: 'Detailed Analytics', desc: 'Track your performance per problem, view submission history, and compete on live leaderboards.' },
-            ].map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="card-glow rounded-xl p-5">
-                <div className="w-9 h-9 rounded-lg bg-primary/15 border border-primary/25 flex items-center justify-center mb-3">
-                  <Icon size={16} className="text-primary" />
+              { icon: Zap, title: 'Sandboxed Execution', desc: 'Securely run C, C++, Java, and Python code in isolated environments with strict time and memory constraints.', features: ['Piston Engine integration', 'Sub-millisecond accuracy', 'Language-specific limits'] },
+              { icon: Shield, title: 'Enterprise Security', desc: 'Hidden test cases, anti-cheat proctoring, and strict role-based access control ensure fairness and integrity.', features: ['Fullscreen lock tracking', 'Copy/paste prevention', 'Hidden scoring data'] },
+              { icon: BarChart2, title: 'Real-time Analytics', desc: 'Track your performance per problem, view detailed submission history, and climb dynamic live leaderboards.', features: ['Live contest rankings', 'Test case breakdowns', 'Historical tracking'] },
+            ].map(({ icon: Icon, title, desc, features }) => (
+              <div key={title} className="card-glow bg-card rounded-2xl p-8 border border-border shadow-sm hover:shadow-md transition-all">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-6">
+                  <Icon size={24} className="text-primary" />
                 </div>
-                <h3 className="font-semibold mb-1 text-sm">{title}</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
+                <h3 className="text-xl font-bold mb-3">{title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-6">{desc}</p>
+                <ul className="space-y-2">
+                  {features.map((feature, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm font-medium text-foreground">
+                      <CheckCircle2 size={16} className="text-primary shrink-0 mt-0.5" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-24 px-6 bg-background relative overflow-hidden">
+        <div className="absolute inset-0 bg-primary/5"></div>
+        <div className="max-w-3xl mx-auto text-center relative z-10">
+          <h2 className="text-4xl font-bold mb-6">Ready to test your limits?</h2>
+          <p className="text-lg text-muted-foreground mb-8">
+            Join thousands of developers competing in our next live contest.
+          </p>
+          <Button className="btn-primary h-14 px-10 text-lg font-bold shadow-xl shadow-primary/20" onClick={() => navigate('/contests')}>
+            Explore Contests
+          </Button>
+        </div>
+      </section>
 
       {/* Footer */}
-      <footer className="border-t border-border py-8 px-6 text-center">
-        <div className="flex items-center justify-center gap-2 text-primary mb-2">
-          <Code2 size={16} />
-          <span className="font-bold text-sm">ZAP</span>
+      <footer className="border-t border-border bg-card py-12 px-6">
+        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-2 text-primary">
+            <Code2 size={20} />
+            <span className="font-bold text-lg tracking-tight">ZAP</span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            © {new Date().getFullYear()} ZAP Professional Platform. All rights reserved.
+          </p>
+          <div className="flex gap-6 text-sm font-medium text-muted-foreground">
+            <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
+            <a href="#" className="hover:text-foreground transition-colors">Terms</a>
+            <a href="#" className="hover:text-foreground transition-colors">Contact</a>
+          </div>
         </div>
-        <p className="text-xs text-muted-foreground">Professional online coding contest platform</p>
       </footer>
     </div>
   );

@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Code2, Trophy, Users, Send, Activity,
-  LogOut, ChevronRight, Menu, X
+  LogOut, ChevronRight, Menu, X, BarChart3
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../store/auth';
@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { path: '/admin/submissions', label: 'Submissions', icon: Send },
   { path: '/admin/logs', label: 'Exec Logs', icon: Activity },
   { path: '/admin/users', label: 'Users', icon: Users },
+  { path: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

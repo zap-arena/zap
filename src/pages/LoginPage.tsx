@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Code2, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Code2, Eye, EyeOff, Loader2, ArrowLeft } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -36,12 +36,12 @@ export default function LoginPage() {
       <div className="hidden lg:flex flex-col w-1/2 relative overflow-hidden"
         style={{ background: 'radial-gradient(ellipse at 30% 50%, hsl(174 100% 42% / 0.08), transparent 60%), hsl(220 18% 9%)' }}>
         <div className="absolute inset-0" style={{ background: 'var(--gradient-glow)' }} />
-        <div className="relative z-10 flex flex-col h-full p-12">
+        <div className="relative z-10 flex flex-col h-full p-12 text-white">
           <div className="flex items-center gap-3 text-primary">
             <div className="w-10 h-10 rounded-xl bg-primary/15 border border-primary/30 flex items-center justify-center">
               <Code2 size={20} />
             </div>
-            <span className="text-xl font-bold">ZAP</span>
+            <span className="text-xl font-bold text-white">ZAP</span>
           </div>
           <div className="flex-1 flex flex-col justify-center">
             <div className="mb-8">
@@ -50,28 +50,31 @@ export default function LoginPage() {
                 Where code meets<br />
                 <span className="text-primary">competition.</span>
               </h1>
-              <p className="text-muted-foreground text-lg leading-relaxed">
+              <p className="text-white/70 text-lg leading-relaxed">
                 Practice algorithms, compete in contests, and track your progress on a platform built for serious developers.
               </p>
             </div>
             <div className="grid grid-cols-3 gap-4">
               {[['500+', 'Problems'], ['10K+', 'Developers'], ['200+', 'Contests']].map(([val, label]) => (
-                <div key={label} className="card-glow rounded-xl p-4 text-center">
+                <div key={label} className="card-glow rounded-xl p-4 text-center bg-white/5 border border-white/10">
                   <div className="text-2xl font-bold text-primary mb-1">{val}</div>
-                  <div className="text-xs text-muted-foreground">{label}</div>
+                  <div className="text-xs text-white/60">{label}</div>
                 </div>
               ))}
             </div>
           </div>
-          <div className="text-xs text-muted-foreground">
+          <div className="text-xs text-white/50">
             <span className="font-mono text-primary">// </span>
-            Sign in with your CodeArena account to continue
+            Sign in with your ZAP account to continue
           </div>
         </div>
       </div>
 
       {/* Right panel */}
-      <div className="flex-1 flex items-center justify-center p-8">
+      <div className="flex-1 flex items-center justify-center p-8 relative">
+        <Link to="/" className="absolute top-8 right-8 text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-2 transition-colors">
+          <ArrowLeft size={16} /> Home
+        </Link>
         <div className="w-full max-w-md animate-fade-in">
           <div className="mb-8 lg:hidden flex items-center gap-2 text-primary">
             <Code2 size={20} />

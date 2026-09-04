@@ -23,6 +23,15 @@ export default function Navbar() {
         <span className="hidden sm:block">ZAP</span>
       </Link>
 
+      <div className="flex gap-4 items-center pl-4">
+        <Link to="/" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          Home
+        </Link>
+        <Link to="/contests" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          Contests
+        </Link>
+      </div>
+
       <div className="flex-1" />
 
       <ThemeToggle />
@@ -33,7 +42,7 @@ export default function Navbar() {
             <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground">
               <Avatar className="w-6 h-6">
                 <AvatarFallback className="bg-primary/20 text-primary text-xs font-bold">
-                  {user.name.split(' ').map(n => n[0]).join('')}
+                  {user.name.split(' ').map(n => n[0]?.toUpperCase()).join('')}
                 </AvatarFallback>
               </Avatar>
               <span className="hidden sm:block font-medium text-sm">{user.name}</span>

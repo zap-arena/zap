@@ -1,3 +1,4 @@
+from typing import Optional
 import re
 import time
 from datetime import datetime, timezone
@@ -44,7 +45,7 @@ def get_contest_or_404(db: Session, contest_id_or_slug: str) -> models.Contest:
     return contest
 
 
-def get_participant(db: Session, contest_id: str, user_id: str) -> models.ContestParticipant | None:
+def get_participant(db: Session, contest_id: str, user_id: str) -> Optional[models.ContestParticipant]:
     return db.scalar(
         select(models.ContestParticipant).where(
             models.ContestParticipant.contest_id == contest_id,
@@ -408,7 +409,7 @@ def admin_results(contest_id: str, db: Session = Depends(get_db), _: models.User
 
 
 @router.get("/api/admin/contests/{contest_id}/activity")
-def admin_activity(contest_id: str, userId: str | None = None, limit: int = 500,
+def admin_activity(contest_id: str, userId: Optional[str] = None, limit: int = 500,
                    db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
     """Proctoring trail for a contest, newest first."""
     contest = get_contest_or_404(db, contest_id)

@@ -1,3 +1,4 @@
+from typing import Optional
 import asyncio
 import os
 import time
@@ -44,7 +45,7 @@ def result_status(result: dict[str, Any]) -> str:
     return "COMPLETED"
 
 
-def normalize_output(value: str | None) -> str:
+def normalize_output(value: Optional[str]) -> str:
     return (value or "").replace("\r\n", "\n").strip()
 
 

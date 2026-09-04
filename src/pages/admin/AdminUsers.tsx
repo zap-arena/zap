@@ -4,12 +4,26 @@ import { Search, Shield, UserCheck } from 'lucide-react';
 import AdminLayout from '../../components/AdminLayout';
 import { Input } from '../../components/ui/input';
 import { api } from '../../lib/api';
+import type { Contest } from '../../types';
 
 interface AdminUser { id: string; name: string; email: string; role: string; createdAt: string; }
 
 export default function AdminUsers() {
   const [search, setSearch] = useState('');
-  const { data: users = [] } = useQuery({ queryKey: ['admin-users'], queryFn: () => api.get<AdminUser[]>('/admin/users') });
+  const [selectedContest, setSelectedContest] = useState('all');
+
+  const { data: contests = [] } = useQuery({ 
+    queryKey: ['admin-contests'], 
+    queryFn: () => api.get<Contest[]>('/admin/contests') 
+  });
+
+  const { data: users = [] } = useQuery({ 
+    queryKey: ['admin-users', selectedContest], 
+    queryFn: () => {
+      const qs = selectedContest === 'all' ? '' : `?contest_id=${selectedContest}`;
+      return api.get<AdminUser[]>(`/admin/users${qs}`);
+    } 
+  });
   const filtered = users.filter(u =>
     u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase())
   );
@@ -36,10 +50,20 @@ export default function AdminUsers() {
           ))}
         </div>
 
-        <div className="relative max-w-sm">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder="Search users…" value={search} onChange={e => setSearch(e.target.value)}
-            className="pl-9 h-9 bg-muted border-border" />
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="relative w-full sm:max-w-sm">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Input placeholder="Search users…" value={search} onChange={e => setSearch(e.target.value)}
+              className="pl-9 h-9 bg-muted border-border" />
+          </div>
+          <select
+            value={selectedContest}
+            onChange={(e) => setSelectedContest(e.target.value)}
+            className="h-9 w-full sm:w-auto text-sm bg-muted border border-border rounded-md px-3 outline-none focus:border-primary transition-colors"
+          >
+            <option value="all">All Contests</option>
+            {contests.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+          </select>
         </div>
 
         <div className="card-glow rounded-xl overflow-hidden">

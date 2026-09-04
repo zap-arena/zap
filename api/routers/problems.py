@@ -1,3 +1,4 @@
+from typing import Optional
 import re
 import time
 
@@ -28,7 +29,7 @@ def slugify(title: str) -> str:
 @router.get("/api/admin/problems/search")
 def admin_search_problems(
     q: str = "",
-    difficulty: str | None = None,
+    difficulty: Optional[str] = None,
     status: str = "active",
     limit: int = 20,
     db: Session = Depends(get_db),
@@ -136,7 +137,7 @@ def import_problem(payload: schemas.ProblemIn, db: Session = Depends(get_db), ad
     return create_problem(payload, db, admin)
 
 
-def _summary(parsed: dict, extra_errors: list[str] | None = None) -> dict:
+def _summary(parsed: dict, extra_errors: Optional[list[str]] = None) -> dict:
     errors = parsed["errors"] + (extra_errors or [])
     return {
         "slug": parsed["slug"],

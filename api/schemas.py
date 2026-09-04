@@ -1,3 +1,4 @@
+from typing import Optional
 from datetime import datetime
 from typing import Any, Literal
 
@@ -38,11 +39,11 @@ class AuthResponse(BaseModel):
 class ExampleIn(BaseModel):
     input: str = ""
     output: str = ""
-    explanation: str | None = None
+    explanation: Optional[str] = None
 
 
 class TestCaseIn(BaseModel):
-    id: str | None = None
+    id: Optional[str] = None
     name: str = "Test case"
     input: str = ""
     expectedOutput: str = ""
@@ -151,7 +152,7 @@ class ProctorEventIn(BaseModel):
     clientEventId: str = Field(min_length=1, max_length=64)
     type: PROCTOR_EVENTS
     occurredAt: datetime
-    problemId: str | None = None
+    problemId: Optional[str] = None
     metadata: dict = {}
 
 
@@ -181,7 +182,7 @@ class ContestOut(BaseModel):
 # ---------- Submissions / Run ----------
 class RunRequest(BaseModel):
     problemId: str
-    contestId: str | None = None
+    contestId: Optional[str] = None
     language: Language
     code: str = Field(min_length=1, max_length=30000)
     stdin: str = Field(default="", max_length=12000)
@@ -189,7 +190,7 @@ class RunRequest(BaseModel):
 
 class SubmitRequest(BaseModel):
     problemId: str
-    contestId: str | None = None
+    contestId: Optional[str] = None
     language: Language
     code: str = Field(min_length=1, max_length=30000)
 
