@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
 	Plus,
 	Copy,
@@ -12,26 +12,26 @@ import {
 	GripVertical,
 	Loader2,
 	Megaphone,
-} from "lucide-react";
-import AdminLayout from "../../components/AdminLayout";
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { Textarea } from "../../components/ui/textarea";
+} from 'lucide-react';
+import AdminLayout from '../../components/AdminLayout';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
+import { Textarea } from '../../components/ui/textarea';
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "../../components/ui/select";
+} from '../../components/ui/select';
 import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
 	DialogFooter,
-} from "../../components/ui/dialog";
+} from '../../components/ui/dialog';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -41,25 +41,25 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from "../../components/ui/alert-dialog";
-import { Checkbox } from "../../components/ui/checkbox";
-import { api, ApiError } from "../../lib/api";
-import type { Contest } from "../../types";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+} from '../../components/ui/alert-dialog';
+import { Checkbox } from '../../components/ui/checkbox';
+import { api, ApiError } from '../../lib/api';
+import type { Contest } from '../../types';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 const STATUS_STYLES: Record<string, string> = {
-	active: "bg-success/15 text-success",
-	scheduled: "bg-warning/15 text-warning",
-	completed: "bg-muted text-muted-foreground",
-	draft: "bg-secondary text-secondary-foreground",
-	cancelled: "bg-destructive/15 text-destructive",
+	active: 'bg-success/15 text-success',
+	scheduled: 'bg-warning/15 text-warning',
+	completed: 'bg-muted text-muted-foreground',
+	draft: 'bg-secondary text-secondary-foreground',
+	cancelled: 'bg-destructive/15 text-destructive',
 };
 
 const DIFFICULTY_STYLES: Record<string, string> = {
-	Easy: "text-success",
-	Medium: "text-warning",
-	Hard: "text-destructive",
+	Easy: 'text-success',
+	Medium: 'text-warning',
+	Hard: 'text-destructive',
 };
 
 interface ProblemSearchResult {
@@ -81,8 +81,8 @@ function ProblemPicker({
 	attached: { problemId: string }[];
 	onAdd: (p: ProblemSearchResult) => void;
 }) {
-	const [term, setTerm] = useState("");
-	const [debounced, setDebounced] = useState("");
+	const [term, setTerm] = useState('');
+	const [debounced, setDebounced] = useState('');
 
 	useEffect(() => {
 		const id = setTimeout(() => setDebounced(term), 250);
@@ -90,7 +90,7 @@ function ProblemPicker({
 	}, [term]);
 
 	const { data: results = [], isFetching } = useQuery({
-		queryKey: ["problem-search", debounced],
+		queryKey: ['problem-search', debounced],
 		queryFn: () =>
 			api.get<ProblemSearchResult[]>(
 				`/admin/problems/search?limit=20&q=${encodeURIComponent(debounced)}`,
@@ -124,7 +124,7 @@ function ProblemPicker({
 					<p className="px-4 py-6 text-center text-xs text-muted-foreground">
 						{debounced
 							? `No problems match "${debounced}"`
-							: "No problems available"}
+							: 'No problems available'}
 					</p>
 				)}
 				{results.map((p) => {
@@ -151,12 +151,12 @@ function ProblemPicker({
 							</div>
 							<Button
 								size="sm"
-								variant={already ? "ghost" : "outline"}
+								variant={already ? 'ghost' : 'outline'}
 								disabled={already}
 								className="h-7 px-2 text-xs shrink-0"
 								onClick={() => onAdd(p)}
 							>
-								{already ? "Added" : "Add"}
+								{already ? 'Added' : 'Add'}
 							</Button>
 						</div>
 					);
@@ -174,12 +174,12 @@ interface ContestNotification {
 
 /** Compose and broadcast a notice to everyone who joined the contest. */
 function NotificationPanel({ contestId }: { contestId: string }) {
-	const [message, setMessage] = useState("");
+	const [message, setMessage] = useState('');
 	const [sending, setSending] = useState(false);
 	const queryClient = useQueryClient();
 
 	const { data: sent = [] } = useQuery({
-		queryKey: ["contest-notifications", contestId],
+		queryKey: ['contest-notifications', contestId],
 		queryFn: () =>
 			api.get<ContestNotification[]>(
 				`/admin/contests/${contestId}/notifications`,
@@ -188,7 +188,7 @@ function NotificationPanel({ contestId }: { contestId: string }) {
 
 	const send = async () => {
 		if (!message.trim()) {
-			toast.error("Enter a message first");
+			toast.error('Enter a message first');
 			return;
 		}
 		setSending(true);
@@ -198,13 +198,13 @@ function NotificationPanel({ contestId }: { contestId: string }) {
 				{ message: message.trim() },
 			);
 			toast.success(`Notification sent to ${res.recipients} participant(s)`);
-			setMessage("");
+			setMessage('');
 			queryClient.invalidateQueries({
-				queryKey: ["contest-notifications", contestId],
+				queryKey: ['contest-notifications', contestId],
 			});
 		} catch (err) {
 			toast.error(
-				err instanceof ApiError ? err.message : "Failed to send notification",
+				err instanceof ApiError ? err.message : 'Failed to send notification',
 			);
 		} finally {
 			setSending(false);
@@ -215,11 +215,11 @@ function NotificationPanel({ contestId }: { contestId: string }) {
 		try {
 			await api.delete(`/admin/contests/${contestId}/notifications/${id}`);
 			queryClient.invalidateQueries({
-				queryKey: ["contest-notifications", contestId],
+				queryKey: ['contest-notifications', contestId],
 			});
 		} catch (err) {
 			toast.error(
-				err instanceof ApiError ? err.message : "Failed to delete notification",
+				err instanceof ApiError ? err.message : 'Failed to delete notification',
 			);
 		}
 	};
@@ -249,10 +249,10 @@ function NotificationPanel({ contestId }: { contestId: string }) {
 								<p className="text-xs">{n.message}</p>
 								<p className="text-[10px] text-muted-foreground">
 									{new Date(n.createdAt).toLocaleString(undefined, {
-										month: "short",
-										day: "numeric",
-										hour: "numeric",
-										minute: "2-digit",
+										month: 'short',
+										day: 'numeric',
+										hour: 'numeric',
+										minute: '2-digit',
 										hour12: true,
 									})}
 								</p>
@@ -320,15 +320,15 @@ function ContestForm({
 		),
 	);
 	const [form, setForm] = useState({
-		name: contest?.name ?? "",
-		slug: contest?.slug ?? "",
-		description: contest?.description ?? "",
-		instructions: contest?.instructions ?? "",
+		name: contest?.name ?? '',
+		slug: contest?.slug ?? '',
+		description: contest?.description ?? '',
+		instructions: contest?.instructions ?? '',
 		startTime: defaultStart,
 		endTime: defaultEnd,
 		duration: String(contest?.duration ?? 120),
-		scoringMode: contest?.scoringMode ?? "partial",
-		mode: contest?.mode ?? "standard",
+		scoringMode: contest?.scoringMode ?? 'partial',
+		mode: contest?.mode ?? 'standard',
 		leaderboardVisible: contest?.leaderboardVisible ?? true,
 	});
 	const [moderatorIds, setModeratorIds] = useState<string[]>(
@@ -340,15 +340,15 @@ function ContestForm({
 			order: i,
 			maxScore: cp.maxScore,
 			title: cp.title ?? cp.problemId,
-			difficulty: cp.difficulty ?? "Easy",
+			difficulty: cp.difficulty ?? 'Easy',
 		})),
 	);
 
 	const { data: users = [] } = useQuery({
-		queryKey: ["admin-users"],
-		queryFn: () => api.get<AdminUser[]>("/admin/users"),
+		queryKey: ['admin-users'],
+		queryFn: () => api.get<AdminUser[]>('/admin/users'),
 	});
-	const admins = users.filter((u) => u.role === "admin");
+	const admins = users.filter((u) => u.role === 'admin');
 
 	const toggleModerator = (id: string) =>
 		setModeratorIds((list) =>
@@ -399,21 +399,21 @@ function ContestForm({
 
 	const save = async (publish: boolean) => {
 		if (!form.name.trim()) {
-			toast.error("Contest name is required");
+			toast.error('Contest name is required');
 			return;
 		}
 		if (attached.length === 0) {
-			toast.error("Add at least one problem");
+			toast.error('Add at least one problem');
 			return;
 		}
 		const startTime = fromLocalInput(form.startTime);
 		const endTime = fromLocalInput(form.endTime);
 		if (Number.isNaN(startTime.getTime()) || Number.isNaN(endTime.getTime())) {
-			toast.error("Enter a valid start and end date/time");
+			toast.error('Enter a valid start and end date/time');
 			return;
 		}
 		if (endTime <= startTime) {
-			toast.error("End time must be after the start time");
+			toast.error('End time must be after the start time');
 			return;
 		}
 
@@ -442,16 +442,16 @@ function ContestForm({
 				await api.put<Contest>(`/admin/contests/${contest.id}`, body);
 				toast.success(`"${form.name}" updated`);
 			} else {
-				const created = await api.post<Contest>("/admin/contests", body);
+				const created = await api.post<Contest>('/admin/contests', body);
 				if (publish) await api.post(`/admin/contests/${created.id}/publish`);
 				toast.success(
-					`Contest "${form.name}" ${publish ? "created and published" : "saved as draft"}!`,
+					`Contest "${form.name}" ${publish ? 'created and published' : 'saved as draft'}!`,
 				);
 			}
 			onSaved();
 		} catch (err) {
 			toast.error(
-				err instanceof ApiError ? err.message : "Failed to save contest",
+				err instanceof ApiError ? err.message : 'Failed to save contest',
 			);
 		} finally {
 			setSaving(false);
@@ -481,7 +481,7 @@ function ContestForm({
 									...f,
 									slug: e.target.value
 										.toLowerCase()
-										.replace(/[^a-z0-9-]/g, "-"),
+										.replace(/[^a-z0-9-]/g, '-'),
 								}))
 							}
 							className="bg-muted border-border"
@@ -552,7 +552,7 @@ function ContestForm({
 						<Select
 							value={form.scoringMode}
 							onValueChange={(v) =>
-								setForm((f) => ({ ...f, scoringMode: v as "full" | "partial" }))
+								setForm((f) => ({ ...f, scoringMode: v as 'full' | 'partial' }))
 							}
 						>
 							<SelectTrigger className="bg-muted border-border">
@@ -571,7 +571,7 @@ function ContestForm({
 							onValueChange={(v) =>
 								setForm((f) => ({
 									...f,
-									mode: v as "standard" | "progressive",
+									mode: v as 'standard' | 'progressive',
 								}))
 							}
 						>
@@ -761,11 +761,11 @@ function ContestForm({
 export default function AdminContests() {
 	const queryClient = useQueryClient();
 	const { data: contests = [], isLoading } = useQuery({
-		queryKey: ["admin-contests"],
-		queryFn: () => api.get<Contest[]>("/admin/contests"),
+		queryKey: ['admin-contests'],
+		queryFn: () => api.get<Contest[]>('/admin/contests'),
 	});
 
-	const [search, setSearch] = useState("");
+	const [search, setSearch] = useState('');
 	const [showCreate, setShowCreate] = useState(false);
 	const [editing, setEditing] = useState<Contest | null>(null);
 	const [deleting, setDeleting] = useState<Contest | null>(null);
@@ -777,11 +777,11 @@ export default function AdminContests() {
 
 	const copyUrl = (slug: string) => {
 		navigator.clipboard.writeText(`${window.location.origin}/contest/${slug}`);
-		toast.success("Contest URL copied!");
+		toast.success('Contest URL copied!');
 	};
 
 	const refresh = () =>
-		queryClient.invalidateQueries({ queryKey: ["admin-contests"] });
+		queryClient.invalidateQueries({ queryKey: ['admin-contests'] });
 
 	const handlePublish = async (c: Contest) => {
 		try {
@@ -790,7 +790,7 @@ export default function AdminContests() {
 			refresh();
 		} catch (err) {
 			toast.error(
-				err instanceof ApiError ? err.message : "Failed to publish contest",
+				err instanceof ApiError ? err.message : 'Failed to publish contest',
 			);
 		}
 	};
@@ -804,7 +804,7 @@ export default function AdminContests() {
 			refresh();
 		} catch (err) {
 			toast.error(
-				err instanceof ApiError ? err.message : "Failed to delete contest",
+				err instanceof ApiError ? err.message : 'Failed to delete contest',
 			);
 		}
 	};
@@ -876,20 +876,20 @@ export default function AdminContests() {
 										</p>
 										<div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
 											<span>
-												🗓{" "}
+												🗓{' '}
 												{new Date(c.startTime).toLocaleString(undefined, {
-													month: "short",
-													day: "numeric",
-													hour: "numeric",
-													minute: "2-digit",
+													month: 'short',
+													day: 'numeric',
+													hour: 'numeric',
+													minute: '2-digit',
 													hour12: true,
-												})}{" "}
-												→{" "}
+												})}{' '}
+												→{' '}
 												{new Date(c.endTime).toLocaleString(undefined, {
-													month: "short",
-													day: "numeric",
-													hour: "numeric",
-													minute: "2-digit",
+													month: 'short',
+													day: 'numeric',
+													hour: 'numeric',
+													minute: '2-digit',
 													hour12: true,
 												})}
 											</span>
@@ -942,7 +942,7 @@ export default function AdminContests() {
 										>
 											<Trash2 size={13} />
 										</Button>
-										{c.status === "draft" && (
+										{c.status === 'draft' && (
 											<Button
 												size="sm"
 												className="h-7 px-2 text-xs btn-primary"

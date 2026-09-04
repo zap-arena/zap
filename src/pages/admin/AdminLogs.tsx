@@ -1,18 +1,18 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Search } from "lucide-react";
-import AdminLayout from "../../components/AdminLayout";
-import { Input } from "../../components/ui/input";
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Search } from 'lucide-react';
+import AdminLayout from '../../components/AdminLayout';
+import { Input } from '../../components/ui/input';
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "../../components/ui/select";
-import VerdictBadge from "../../components/VerdictBadge";
-import { api } from "../../lib/api";
-import type { Verdict } from "../../types";
+} from '../../components/ui/select';
+import VerdictBadge from '../../components/VerdictBadge';
+import { api } from '../../lib/api';
+import type { Verdict } from '../../types';
 
 interface AdminLogEntry {
 	id: string;
@@ -30,13 +30,13 @@ interface AdminLogEntry {
 }
 
 export default function AdminLogs() {
-	const [search, setSearch] = useState("");
-	const [statusFilter, setStatusFilter] = useState("all");
-	const [langFilter, setLangFilter] = useState("all");
+	const [search, setSearch] = useState('');
+	const [statusFilter, setStatusFilter] = useState('all');
+	const [langFilter, setLangFilter] = useState('all');
 
 	const { data: logs = [], isLoading } = useQuery({
-		queryKey: ["admin-logs"],
-		queryFn: () => api.get<AdminLogEntry[]>("/admin/logs"),
+		queryKey: ['admin-logs'],
+		queryFn: () => api.get<AdminLogEntry[]>('/admin/logs'),
 	});
 
 	if (isLoading) {
@@ -51,11 +51,11 @@ export default function AdminLogs() {
 
 	const filtered = logs.filter(
 		(log) =>
-			((log.userName ?? "").toLowerCase().includes(search.toLowerCase()) ||
-				(log.problemTitle ?? "").toLowerCase().includes(search.toLowerCase()) ||
-				(log.submissionId ?? "").includes(search)) &&
-			(statusFilter === "all" || log.status === statusFilter) &&
-			(langFilter === "all" || log.language === langFilter),
+			((log.userName ?? '').toLowerCase().includes(search.toLowerCase()) ||
+				(log.problemTitle ?? '').toLowerCase().includes(search.toLowerCase()) ||
+				(log.submissionId ?? '').includes(search)) &&
+			(statusFilter === 'all' || log.status === statusFilter) &&
+			(langFilter === 'all' || log.language === langFilter),
 	);
 
 	const avgDuration =
@@ -79,21 +79,21 @@ export default function AdminLogs() {
 				{/* Summary */}
 				<div className="grid grid-cols-4 gap-4">
 					{[
-						{ label: "Total Executions", value: logs.length, color: "" },
+						{ label: 'Total Executions', value: logs.length, color: '' },
 						{
-							label: "Accepted",
-							value: logs.filter((l) => l.status === "ACCEPTED").length,
-							color: "text-success",
+							label: 'Accepted',
+							value: logs.filter((l) => l.status === 'ACCEPTED').length,
+							color: 'text-success',
 						},
 						{
-							label: "Failed",
-							value: logs.filter((l) => l.status !== "ACCEPTED").length,
-							color: "text-destructive",
+							label: 'Failed',
+							value: logs.filter((l) => l.status !== 'ACCEPTED').length,
+							color: 'text-destructive',
 						},
 						{
-							label: "Avg Duration",
+							label: 'Avg Duration',
 							value: `${avgDuration}ms`,
-							color: "text-primary",
+							color: 'text-primary',
 						},
 					].map(({ label, value, color }) => (
 						<div key={label} className="card-glow rounded-xl p-4 text-center">
@@ -125,14 +125,14 @@ export default function AdminLogs() {
 						</SelectTrigger>
 						<SelectContent className="bg-card border-border">
 							{[
-								"all",
-								"ACCEPTED",
-								"WRONG_ANSWER",
-								"RUNTIME_ERROR",
-								"TIME_LIMIT_EXCEEDED",
+								'all',
+								'ACCEPTED',
+								'WRONG_ANSWER',
+								'RUNTIME_ERROR',
+								'TIME_LIMIT_EXCEEDED',
 							].map((v) => (
 								<SelectItem key={v} value={v}>
-									{v === "all" ? "All Statuses" : v.replace(/_/g, " ")}
+									{v === 'all' ? 'All Statuses' : v.replace(/_/g, ' ')}
 								</SelectItem>
 							))}
 						</SelectContent>
@@ -142,9 +142,9 @@ export default function AdminLogs() {
 							<SelectValue placeholder="Language" />
 						</SelectTrigger>
 						<SelectContent className="bg-card border-border">
-							{["all", "cpp", "c", "java", "python"].map((v) => (
+							{['all', 'cpp', 'c', 'java', 'python'].map((v) => (
 								<SelectItem key={v} value={v}>
-									{v === "all" ? "All Langs" : v.toUpperCase()}
+									{v === 'all' ? 'All Langs' : v.toUpperCase()}
 								</SelectItem>
 							))}
 						</SelectContent>
@@ -196,12 +196,12 @@ export default function AdminLogs() {
 										{Math.round(log.executionDuration * 1000)}ms
 									</td>
 									<td className="text-right text-xs text-warning">
-										{log.errorType ?? "—"}
+										{log.errorType ?? '—'}
 									</td>
 									<td className="text-right text-xs text-muted-foreground">
 										{new Date(log.createdAt).toLocaleTimeString(undefined, {
-											hour: "numeric",
-											minute: "2-digit",
+											hour: 'numeric',
+											minute: '2-digit',
 											hour12: true,
 										})}
 									</td>

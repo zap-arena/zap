@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Search, Shield, UserCheck } from "lucide-react";
-import AdminLayout from "../../components/AdminLayout";
-import { Input } from "../../components/ui/input";
-import { api } from "../../lib/api";
-import type { Contest } from "../../types";
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Search, Shield, UserCheck } from 'lucide-react';
+import AdminLayout from '../../components/AdminLayout';
+import { Input } from '../../components/ui/input';
+import { api } from '../../lib/api';
+import type { Contest } from '../../types';
 
 interface AdminUser {
 	id: string;
@@ -15,19 +15,19 @@ interface AdminUser {
 }
 
 export default function AdminUsers() {
-	const [search, setSearch] = useState("");
-	const [selectedContest, setSelectedContest] = useState("all");
+	const [search, setSearch] = useState('');
+	const [selectedContest, setSelectedContest] = useState('all');
 
 	const { data: contests = [] } = useQuery({
-		queryKey: ["admin-contests"],
-		queryFn: () => api.get<Contest[]>("/admin/contests"),
+		queryKey: ['admin-contests'],
+		queryFn: () => api.get<Contest[]>('/admin/contests'),
 	});
 
 	const { data: users = [], isLoading } = useQuery({
-		queryKey: ["admin-users", selectedContest],
+		queryKey: ['admin-users', selectedContest],
 		queryFn: () => {
 			const qs =
-				selectedContest === "all" ? "" : `?contest_id=${selectedContest}`;
+				selectedContest === 'all' ? '' : `?contest_id=${selectedContest}`;
 			return api.get<AdminUser[]>(`/admin/users${qs}`);
 		},
 	});
@@ -60,22 +60,22 @@ export default function AdminUsers() {
 				<div className="grid grid-cols-3 gap-4">
 					{[
 						{
-							label: "Total Users",
-							value: users.filter((u) => u.role === "user").length,
+							label: 'Total Users',
+							value: users.filter((u) => u.role === 'user').length,
 							icon: UserCheck,
-							color: "text-primary",
+							color: 'text-primary',
 						},
 						{
-							label: "Admins",
-							value: users.filter((u) => u.role === "admin").length,
+							label: 'Admins',
+							value: users.filter((u) => u.role === 'admin').length,
 							icon: Shield,
-							color: "text-warning",
+							color: 'text-warning',
 						},
 						{
-							label: "Total Accounts",
+							label: 'Total Accounts',
 							value: users.length,
 							icon: UserCheck,
-							color: "text-success",
+							color: 'text-success',
 						},
 					].map(({ label, value, icon: Icon, color }) => (
 						<div key={label} className="card-glow rounded-xl p-4 text-center">
@@ -129,9 +129,9 @@ export default function AdminUsers() {
 										<div className="flex items-center gap-2.5">
 											<div className="w-8 h-8 rounded-full bg-primary/15 border border-primary/25 flex items-center justify-center text-xs font-bold text-primary shrink-0">
 												{u.name
-													.split(" ")
+													.split(' ')
 													.map((n) => n[0])
-													.join("")}
+													.join('')}
 											</div>
 											<div>
 												<p className="font-medium text-sm">{u.name}</p>
@@ -144,9 +144,9 @@ export default function AdminUsers() {
 									<td className="text-center">
 										<span
 											className={`text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase ${
-												u.role === "admin"
-													? "bg-warning/15 text-warning"
-													: "bg-muted text-muted-foreground"
+												u.role === 'admin'
+													? 'bg-warning/15 text-warning'
+													: 'bg-muted text-muted-foreground'
 											}`}
 										>
 											{u.role}

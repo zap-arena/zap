@@ -1,28 +1,28 @@
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Brain, ChevronDown, ChevronUp } from "lucide-react";
-import AdminLayout from "../../components/AdminLayout";
-import { Button } from "../../components/ui/button";
-import { api } from "../../lib/api";
+import { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { ArrowLeft, Brain, ChevronDown, ChevronUp } from 'lucide-react';
+import AdminLayout from '../../components/AdminLayout';
+import { Button } from '../../components/ui/button';
+import { api } from '../../lib/api';
 import type {
 	Contest,
 	ParticipantAnalytics,
 	BehaviorPattern,
-} from "../../types";
+} from '../../types';
 
 const PATTERN_LABEL: Record<BehaviorPattern, string> = {
-	optimal_from_start: "Optimal from the start",
-	brute_then_optimized: "Brute force, then optimized",
-	shortcut_then_rework: "Shortcut early, reworked later",
-	struggling: "Struggling throughout",
+	optimal_from_start: 'Optimal from the start',
+	brute_then_optimized: 'Brute force, then optimized',
+	shortcut_then_rework: 'Shortcut early, reworked later',
+	struggling: 'Struggling throughout',
 };
 
 const PATTERN_COLOR: Record<BehaviorPattern, string> = {
-	optimal_from_start: "text-success bg-success/10",
-	brute_then_optimized: "text-info bg-info/10",
-	shortcut_then_rework: "text-warning bg-warning/10",
-	struggling: "text-destructive bg-destructive/10",
+	optimal_from_start: 'text-success bg-success/10',
+	brute_then_optimized: 'text-info bg-info/10',
+	shortcut_then_rework: 'text-warning bg-warning/10',
+	struggling: 'text-destructive bg-destructive/10',
 };
 
 export default function ProgressiveAnalyticsPage() {
@@ -31,12 +31,12 @@ export default function ProgressiveAnalyticsPage() {
 	const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
 	const { data: contest } = useQuery({
-		queryKey: ["admin-contest", id],
+		queryKey: ['admin-contest', id],
 		queryFn: () => api.get<Contest>(`/admin/contests/${id}`),
 		enabled: !!id,
 	});
 	const { data: participants = [], isLoading } = useQuery({
-		queryKey: ["admin-progressive-analytics", id],
+		queryKey: ['admin-progressive-analytics', id],
 		queryFn: () =>
 			api.get<ParticipantAnalytics[]>(
 				`/admin/contests/${id}/progressive-analytics`,
@@ -69,7 +69,7 @@ export default function ProgressiveAnalyticsPage() {
 							Analytics
 						</h1>
 						<p className="text-muted-foreground text-sm">
-							{contest?.name ?? "Progressive contest"} — how each student
+							{contest?.name ?? 'Progressive contest'} — how each student
 							approached the chain (admin-only, does not affect scores).
 						</p>
 					</div>
@@ -147,7 +147,7 @@ export default function ProgressiveAnalyticsPage() {
 													<tr key={s.stageId}>
 														<td>Stage {s.stageOrder}</td>
 														<td className="text-center">
-															{s.solved ? "✓" : "—"}
+															{s.solved ? '✓' : '—'}
 														</td>
 														<td className="text-center font-mono">
 															{s.attempts}
@@ -159,14 +159,14 @@ export default function ProgressiveAnalyticsPage() {
 														<td className="text-center font-mono">
 															{s.timeToSolveSeconds != null
 																? `${Math.round(s.timeToSolveSeconds)}s`
-																: "—"}
+																: '—'}
 														</td>
 														<td className="text-center font-mono">
 															{Math.round(s.codeChurn * 100)}%
 														</td>
 														<td className="text-center font-mono">
-															{s.complexity?.label ?? "—"} (
-															{s.expectedComplexity ?? "?"})
+															{s.complexity?.label ?? '—'} (
+															{s.expectedComplexity ?? '?'})
 														</td>
 													</tr>
 												))}

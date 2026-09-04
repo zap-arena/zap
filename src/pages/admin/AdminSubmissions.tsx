@@ -1,25 +1,25 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Search, Eye, Code2 } from "lucide-react";
-import AdminLayout from "../../components/AdminLayout";
-import { Input } from "../../components/ui/input";
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Search, Eye, Code2 } from 'lucide-react';
+import AdminLayout from '../../components/AdminLayout';
+import { Input } from '../../components/ui/input';
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "../../components/ui/select";
-import { Button } from "../../components/ui/button";
+} from '../../components/ui/select';
+import { Button } from '../../components/ui/button';
 import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
-} from "../../components/ui/dialog";
-import VerdictBadge from "../../components/VerdictBadge";
-import { api } from "../../lib/api";
-import type { Submission, Contest } from "../../types";
+} from '../../components/ui/dialog';
+import VerdictBadge from '../../components/VerdictBadge';
+import { api } from '../../lib/api';
+import type { Submission, Contest } from '../../types';
 
 interface AdminSubmission extends Submission {
 	userName?: string;
@@ -27,22 +27,22 @@ interface AdminSubmission extends Submission {
 }
 
 export default function AdminSubmissions() {
-	const [search, setSearch] = useState("");
-	const [statusFilter, setStatusFilter] = useState("all");
-	const [langFilter, setLangFilter] = useState("all");
-	const [contestFilter, setContestFilter] = useState("all");
+	const [search, setSearch] = useState('');
+	const [statusFilter, setStatusFilter] = useState('all');
+	const [langFilter, setLangFilter] = useState('all');
+	const [contestFilter, setContestFilter] = useState('all');
 	const [selected, setSelected] = useState<AdminSubmission | null>(null);
 
 	const { data: contests = [] } = useQuery({
-		queryKey: ["admin-contests"],
-		queryFn: () => api.get<Contest[]>("/admin/contests"),
+		queryKey: ['admin-contests'],
+		queryFn: () => api.get<Contest[]>('/admin/contests'),
 	});
 	const { data: submissions = [], isLoading } = useQuery({
-		queryKey: ["admin-submissions", statusFilter, langFilter, contestFilter],
+		queryKey: ['admin-submissions', statusFilter, langFilter, contestFilter],
 		queryFn: () => {
 			const params = new URLSearchParams();
-			if (statusFilter !== "all") params.set("status", statusFilter);
-			if (contestFilter !== "all") params.set("contestId", contestFilter);
+			if (statusFilter !== 'all') params.set('status', statusFilter);
+			if (contestFilter !== 'all') params.set('contestId', contestFilter);
 			return api.get<AdminSubmission[]>(
 				`/admin/submissions?${params.toString()}`,
 			);
@@ -63,7 +63,7 @@ export default function AdminSubmissions() {
 		(s) =>
 			(s.problemTitle?.toLowerCase().includes(search.toLowerCase()) ||
 				s.userId.toLowerCase().includes(search.toLowerCase())) &&
-			(langFilter === "all" || s.language === langFilter),
+			(langFilter === 'all' || s.language === langFilter),
 	);
 
 	return (
@@ -96,16 +96,16 @@ export default function AdminSubmissions() {
 						</SelectTrigger>
 						<SelectContent className="bg-card border-border">
 							{[
-								"all",
-								"ACCEPTED",
-								"WRONG_ANSWER",
-								"PARTIAL",
-								"RUNTIME_ERROR",
-								"TIME_LIMIT_EXCEEDED",
-								"COMPILATION_ERROR",
+								'all',
+								'ACCEPTED',
+								'WRONG_ANSWER',
+								'PARTIAL',
+								'RUNTIME_ERROR',
+								'TIME_LIMIT_EXCEEDED',
+								'COMPILATION_ERROR',
 							].map((v) => (
 								<SelectItem key={v} value={v}>
-									{v === "all" ? "All Statuses" : v.replace(/_/g, " ")}
+									{v === 'all' ? 'All Statuses' : v.replace(/_/g, ' ')}
 								</SelectItem>
 							))}
 						</SelectContent>
@@ -115,9 +115,9 @@ export default function AdminSubmissions() {
 							<SelectValue placeholder="Language" />
 						</SelectTrigger>
 						<SelectContent className="bg-card border-border">
-							{["all", "cpp", "c", "java", "python"].map((v) => (
+							{['all', 'cpp', 'c', 'java', 'python'].map((v) => (
 								<SelectItem key={v} value={v}>
-									{v === "all" ? "All Langs" : v.toUpperCase()}
+									{v === 'all' ? 'All Langs' : v.toUpperCase()}
 								</SelectItem>
 							))}
 						</SelectContent>

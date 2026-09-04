@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import {
 	Code2,
 	Trophy,
@@ -12,11 +12,11 @@ import {
 	Building,
 	GraduationCap,
 	CheckCircle2,
-} from "lucide-react";
-import { Button } from "../components/ui/button";
-import Navbar from "../components/Navbar";
-import { api } from "../lib/api";
-import { useAuth } from "../store/auth";
+} from 'lucide-react';
+import { Button } from '../components/ui/button';
+import Navbar from '../components/Navbar';
+import { api } from '../lib/api';
+import { useAuth } from '../store/auth';
 
 interface HomeSnapshot {
 	stats: { totalUsers: number; totalProblems: number; totalContests: number };
@@ -27,8 +27,8 @@ export default function HomePage() {
 	const { user } = useAuth();
 
 	const { data } = useQuery({
-		queryKey: ["home-snapshot"],
-		queryFn: () => api.get<HomeSnapshot>("/public/home"),
+		queryKey: ['home-snapshot'],
+		queryFn: () => api.get<HomeSnapshot>('/public/home'),
 	});
 
 	const stats = data?.stats;
@@ -40,7 +40,7 @@ export default function HomePage() {
 			{/* Hero Section */}
 			<section
 				className="relative overflow-hidden pt-28 pb-20 px-6"
-				style={{ background: "var(--gradient-glow), hsl(var(--background))" }}
+				style={{ background: 'var(--gradient-glow), hsl(var(--background))' }}
 			>
 				<div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
 				<div className="max-w-5xl mx-auto text-center relative z-10 animate-fade-in">
@@ -62,7 +62,7 @@ export default function HomePage() {
 					<div className="flex items-center justify-center gap-4 flex-wrap">
 						<Button
 							className="btn-primary h-12 px-8 text-base font-semibold shadow-lg shadow-primary/25"
-							onClick={() => navigate("/contests")}
+							onClick={() => navigate('/contests')}
 						>
 							View Contests <ArrowRight size={18} className="ml-2" />
 						</Button>
@@ -70,16 +70,16 @@ export default function HomePage() {
 							<Button
 								variant="outline"
 								className="h-12 px-8 text-base font-semibold border-border hover:bg-muted"
-								onClick={() => navigate("/register")}
+								onClick={() => navigate('/register')}
 							>
 								Create Free Account
 							</Button>
 						)}
-						{user?.role === "admin" && (
+						{user?.role === 'admin' && (
 							<Button
 								variant="secondary"
 								className="h-12 px-8 text-base font-semibold"
-								onClick={() => navigate("/admin")}
+								onClick={() => navigate('/admin')}
 							>
 								<Shield size={18} className="mr-2" /> Admin Dashboard
 							</Button>
@@ -95,29 +95,29 @@ export default function HomePage() {
 						{
 							value: stats
 								? `${stats.totalProblems.toLocaleString()}+`
-								: "500+",
-							label: "Curated Problems",
+								: '500+',
+							label: 'Curated Problems',
 							icon: Code2,
 						},
 						{
 							value: stats
 								? `${stats.totalUsers.toLocaleString()}+`
-								: "10,000+",
-							label: "Active Developers",
+								: '10,000+',
+							label: 'Active Developers',
 							icon: Users,
 						},
 						{
 							value: stats
 								? `${stats.totalContests.toLocaleString()}+`
-								: "100+",
-							label: "Contests Hosted",
+								: '100+',
+							label: 'Contests Hosted',
 							icon: Trophy,
 						},
-						{ value: "99.9%", label: "Platform Uptime", icon: Globe },
+						{ value: '99.9%', label: 'Platform Uptime', icon: Globe },
 					].map(({ value, label, icon: Icon }, idx) => (
 						<div
 							key={label}
-							className={`text-center ${idx % 2 === 0 ? "border-none" : "border-none md:border-solid"} ${idx === 0 ? "border-none" : ""}`}
+							className={`text-center ${idx % 2 === 0 ? 'border-none' : 'border-none md:border-solid'} ${idx === 0 ? 'border-none' : ''}`}
 						>
 							<div className="flex items-center justify-center gap-2 mb-2">
 								<Icon size={18} className="text-primary" />
@@ -178,32 +178,32 @@ export default function HomePage() {
 						{[
 							{
 								icon: Zap,
-								title: "Sandboxed Execution",
-								desc: "Securely run C, C++, Java, and Python code in isolated environments with strict time and memory constraints.",
+								title: 'Sandboxed Execution',
+								desc: 'Securely run C, C++, Java, and Python code in isolated environments with strict time and memory constraints.',
 								features: [
-									"Piston Engine integration",
-									"Sub-millisecond accuracy",
-									"Language-specific limits",
+									'Piston Engine integration',
+									'Sub-millisecond accuracy',
+									'Language-specific limits',
 								],
 							},
 							{
 								icon: Shield,
-								title: "Enterprise Security",
-								desc: "Hidden test cases, anti-cheat proctoring, and strict role-based access control ensure fairness and integrity.",
+								title: 'Enterprise Security',
+								desc: 'Hidden test cases, anti-cheat proctoring, and strict role-based access control ensure fairness and integrity.',
 								features: [
-									"Fullscreen lock tracking",
-									"Copy/paste prevention",
-									"Hidden scoring data",
+									'Fullscreen lock tracking',
+									'Copy/paste prevention',
+									'Hidden scoring data',
 								],
 							},
 							{
 								icon: BarChart2,
-								title: "Real-time Analytics",
-								desc: "Track your performance per problem, view detailed submission history, and climb dynamic live leaderboards.",
+								title: 'Real-time Analytics',
+								desc: 'Track your performance per problem, view detailed submission history, and climb dynamic live leaderboards.',
 								features: [
-									"Live contest rankings",
-									"Test case breakdowns",
-									"Historical tracking",
+									'Live contest rankings',
+									'Test case breakdowns',
+									'Historical tracking',
 								],
 							},
 						].map(({ icon: Icon, title, desc, features }) => (
@@ -250,7 +250,7 @@ export default function HomePage() {
 					</p>
 					<Button
 						className="btn-primary h-14 px-10 text-lg font-bold shadow-xl shadow-primary/20"
-						onClick={() => navigate("/contests")}
+						onClick={() => navigate('/contests')}
 					>
 						Explore Contests
 					</Button>

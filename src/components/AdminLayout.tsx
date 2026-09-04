@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
 	LayoutDashboard,
 	Code2,
@@ -11,21 +11,21 @@ import {
 	Menu,
 	X,
 	BarChart3,
-} from "lucide-react";
-import { useState } from "react";
-import { useAuth } from "../store/auth";
-import ThemeToggle from "./ThemeToggle";
-import { toast } from "sonner";
+} from 'lucide-react';
+import { useState } from 'react';
+import { useAuth } from '../store/auth';
+import ThemeToggle from './ThemeToggle';
+import { toast } from 'sonner';
 
 const NAV_ITEMS = [
-	{ path: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
-	{ path: "/admin/problems", label: "Problems", icon: Code2 },
-	{ path: "/admin/contests", label: "Contests", icon: Trophy },
-	{ path: "/admin/participants", label: "Participants", icon: Users },
-	{ path: "/admin/submissions", label: "Submissions", icon: Send },
-	{ path: "/admin/logs", label: "Exec Logs", icon: Activity },
-	{ path: "/admin/users", label: "Users", icon: Users },
-	{ path: "/admin/analytics", label: "Analytics", icon: BarChart3 },
+	{ path: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
+	{ path: '/admin/problems', label: 'Problems', icon: Code2 },
+	{ path: '/admin/contests', label: 'Contests', icon: Trophy },
+	{ path: '/admin/participants', label: 'Participants', icon: Users },
+	{ path: '/admin/submissions', label: 'Submissions', icon: Send },
+	{ path: '/admin/logs', label: 'Exec Logs', icon: Activity },
+	{ path: '/admin/users', label: 'Users', icon: Users },
+	{ path: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
 ];
 
 export default function AdminLayout({
@@ -40,8 +40,8 @@ export default function AdminLayout({
 
 	const handleLogout = () => {
 		logout();
-		toast.info("Logged out");
-		navigate("/login");
+		toast.info('Logged out');
+		navigate('/login');
 	};
 
 	const isActive = (path: string, exact?: boolean) =>
@@ -52,7 +52,7 @@ export default function AdminLayout({
 			{/* Sidebar */}
 			<aside
 				className={`
-        ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
+        ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0 fixed lg:relative z-40 inset-y-0 left-0
         w-56 bg-card border-r border-border flex flex-col transition-transform duration-200
       `}
@@ -75,7 +75,7 @@ export default function AdminLayout({
 							key={path}
 							to={path}
 							onClick={() => setMobileOpen(false)}
-							className={`sidebar-item ${isActive(path, exact) ? "active" : ""}`}
+							className={`sidebar-item ${isActive(path, exact) ? 'active' : ''}`}
 						>
 							<Icon size={15} />
 							<span>{label}</span>
@@ -91,9 +91,9 @@ export default function AdminLayout({
 					<div className="flex items-center gap-2 px-2 py-2 mb-1">
 						<div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">
 							{user?.name
-								?.split(" ")
+								?.split(' ')
 								.map((n) => n[0])
-								.join("") ?? "A"}
+								.join('') ?? 'A'}
 						</div>
 						<div className="min-w-0">
 							<p className="text-xs font-medium truncate">{user?.name}</p>

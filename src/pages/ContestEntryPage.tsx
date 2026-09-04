@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
 	Clock,
 	BookOpen,
@@ -9,13 +9,13 @@ import {
 	AlertCircle,
 	Loader2,
 	Lock,
-} from "lucide-react";
-import { Button } from "../components/ui/button";
-import Navbar from "../components/Navbar";
-import { useAuth } from "../store/auth";
-import { api, ApiError } from "../lib/api";
-import type { Contest } from "../types";
-import { toast } from "sonner";
+} from 'lucide-react';
+import { Button } from '../components/ui/button';
+import Navbar from '../components/Navbar';
+import { useAuth } from '../store/auth';
+import { api, ApiError } from '../lib/api';
+import type { Contest } from '../types';
+import { toast } from 'sonner';
 
 interface ContestSession {
 	started: boolean;
@@ -33,14 +33,14 @@ export default function ContestEntryPage() {
 	const [starting, setStarting] = useState(false);
 
 	const { data: contest, isLoading } = useQuery({
-		queryKey: ["contest", slug],
+		queryKey: ['contest', slug],
 		queryFn: () => api.get<Contest>(`/contests/${slug}`),
 		enabled: !!slug,
 		retry: false,
 	});
 
 	const { data: session } = useQuery({
-		queryKey: ["session", contest?.id],
+		queryKey: ['session', contest?.id],
 		queryFn: () => api.get<ContestSession>(`/contests/${contest!.id}/session`),
 		enabled: !!contest?.id && !!user,
 		retry: false,
@@ -71,12 +71,12 @@ export default function ContestEntryPage() {
 	const hours = Math.floor(contest.duration / 60);
 	const mins = contest.duration % 60;
 	const durationStr =
-		hours > 0 ? `${hours}h ${mins > 0 ? `${mins}m` : ""}` : `${mins}m`;
+		hours > 0 ? `${hours}h ${mins > 0 ? `${mins}m` : ''}` : `${mins}m`;
 
 	const finished =
 		session?.started &&
-		(session.status === "completed" || session.status === "auto_completed");
-	const inProgress = session?.started && session.status === "in_progress";
+		(session.status === 'completed' || session.status === 'auto_completed');
+	const inProgress = session?.started && session.status === 'in_progress';
 
 	const handleStart = async () => {
 		if (!user) {
@@ -87,15 +87,15 @@ export default function ContestEntryPage() {
 		try {
 			await api.post(`/contests/${contest.id}/start`);
 			await queryClient.invalidateQueries({
-				queryKey: ["session", contest.id],
+				queryKey: ['session', contest.id],
 			});
 			toast.success(
-				inProgress ? "Resuming your attempt" : "Contest started! Good luck!",
+				inProgress ? 'Resuming your attempt' : 'Contest started! Good luck!',
 			);
 			navigate(`/contest/${contest.id}/workspace`);
 		} catch (err) {
 			toast.error(
-				err instanceof ApiError ? err.message : "Could not start the contest",
+				err instanceof ApiError ? err.message : 'Could not start the contest',
 			);
 		} finally {
 			setStarting(false);
@@ -103,23 +103,23 @@ export default function ContestEntryPage() {
 	};
 
 	const statusColor =
-		contest.status === "active"
-			? "text-success"
-			: contest.status === "completed"
-				? "text-muted-foreground"
-				: "text-warning";
+		contest.status === 'active'
+			? 'text-success'
+			: contest.status === 'completed'
+				? 'text-muted-foreground'
+				: 'text-warning';
 	const statusLabel = {
-		active: "Live",
-		scheduled: "Upcoming",
-		completed: "Ended",
-		draft: "Draft",
-		cancelled: "Cancelled",
+		active: 'Live',
+		scheduled: 'Upcoming',
+		completed: 'Ended',
+		draft: 'Draft',
+		cancelled: 'Cancelled',
 	}[contest.status];
 
 	return (
 		<div
 			className="min-h-screen bg-background flex flex-col"
-			style={{ background: "var(--gradient-glow), hsl(var(--background))" }}
+			style={{ background: 'var(--gradient-glow), hsl(var(--background))' }}
 		>
 			<Navbar />
 			<div className="max-w-3xl mx-auto w-full px-6 py-12 flex-1 animate-fade-in">
@@ -130,7 +130,7 @@ export default function ContestEntryPage() {
 							className={`flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider ${statusColor}`}
 						>
 							<span
-								className={`w-2 h-2 rounded-full ${contest.status === "active" ? "bg-success animate-pulse" : "bg-muted-foreground"}`}
+								className={`w-2 h-2 rounded-full ${contest.status === 'active' ? 'bg-success animate-pulse' : 'bg-muted-foreground'}`}
 							/>
 							{statusLabel}
 						</span>
@@ -144,15 +144,15 @@ export default function ContestEntryPage() {
 				{/* Stats row */}
 				<div className="grid grid-cols-3 gap-4 mb-8">
 					{[
-						{ icon: Clock, label: "Duration", value: durationStr },
+						{ icon: Clock, label: 'Duration', value: durationStr },
 						{
 							icon: BookOpen,
-							label: "Problems",
+							label: 'Problems',
 							value: String(contest.problemCount),
 						},
 						{
 							icon: Trophy,
-							label: "Max Score",
+							label: 'Max Score',
 							value: String(contest.maxScore),
 						},
 					].map(({ icon: Icon, label, value }) => (
@@ -212,16 +212,16 @@ export default function ContestEntryPage() {
 					)}
 					<ul className="space-y-2">
 						{[
-							"The problem set is revealed only after you start the contest.",
-							"You get one attempt: once you finish, the contest cannot be re-entered.",
-							"You can sign out and back in during the contest — your timer keeps running.",
-							"The contest runs in fullscreen and your activity is monitored until you finish.",
-							"You can submit multiple times — only your best submission counts.",
-							"Hidden test cases are used for final evaluation and scoring.",
-							contest.scoringMode === "partial"
-								? "Partial scoring: score is proportional to test cases passed."
-								: "Full scoring: all test cases must pass to earn points.",
-							"Submissions made after the contest end time are not scored.",
+							'The problem set is revealed only after you start the contest.',
+							'You get one attempt: once you finish, the contest cannot be re-entered.',
+							'You can sign out and back in during the contest — your timer keeps running.',
+							'The contest runs in fullscreen and your activity is monitored until you finish.',
+							'You can submit multiple times — only your best submission counts.',
+							'Hidden test cases are used for final evaluation and scoring.',
+							contest.scoringMode === 'partial'
+								? 'Partial scoring: score is proportional to test cases passed.'
+								: 'Full scoring: all test cases must pass to earn points.',
+							'Submissions made after the contest end time are not scored.',
 						].map((inst, i) => (
 							<li
 								key={i}
@@ -241,30 +241,30 @@ export default function ContestEntryPage() {
 				<div className="flex flex-col items-center gap-4">
 					<Button
 						onClick={handleStart}
-						disabled={starting || finished || contest.status === "completed"}
+						disabled={starting || finished || contest.status === 'completed'}
 						className="btn-primary h-12 px-12 text-base font-semibold gap-2"
 					>
 						{starting ? (
 							<>
 								<Loader2 size={18} className="animate-spin" />
-								{inProgress ? "Resuming…" : "Starting Contest…"}
+								{inProgress ? 'Resuming…' : 'Starting Contest…'}
 							</>
 						) : finished ? (
 							<>
 								<Lock size={16} />
 								Attempt Completed
 							</>
-						) : contest.status === "completed" ? (
-							"Contest Ended"
+						) : contest.status === 'completed' ? (
+							'Contest Ended'
 						) : inProgress ? (
-							"▶ Resume Contest"
+							'▶ Resume Contest'
 						) : (
-							"🚀 Start Contest"
+							'🚀 Start Contest'
 						)}
 					</Button>
 					{!user && (
 						<p className="text-sm text-muted-foreground">
-							You'll be asked to <span className="text-primary">sign in</span>{" "}
+							You'll be asked to <span className="text-primary">sign in</span>{' '}
 							before starting.
 						</p>
 					)}

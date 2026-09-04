@@ -1,43 +1,43 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Search, Eye } from "lucide-react";
-import AdminLayout from "../../components/AdminLayout";
-import { Input } from "../../components/ui/input";
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Search, Eye } from 'lucide-react';
+import AdminLayout from '../../components/AdminLayout';
+import { Input } from '../../components/ui/input';
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "../../components/ui/select";
-import { Button } from "../../components/ui/button";
+} from '../../components/ui/select';
+import { Button } from '../../components/ui/button';
 import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
-} from "../../components/ui/dialog";
-import { api } from "../../lib/api";
-import type { Participant, Contest, Submission } from "../../types";
+} from '../../components/ui/dialog';
+import { api } from '../../lib/api';
+import type { Participant, Contest, Submission } from '../../types';
 
 const STATUS_STYLES: Record<string, string> = {
-	in_progress: "bg-info/15 text-info",
-	completed: "bg-success/15 text-success",
-	auto_completed: "bg-success/15 text-success",
-	not_started: "bg-muted text-muted-foreground",
+	in_progress: 'bg-info/15 text-info',
+	completed: 'bg-success/15 text-success',
+	auto_completed: 'bg-success/15 text-success',
+	not_started: 'bg-muted text-muted-foreground',
 };
 
 export default function AdminParticipants() {
-	const [search, setSearch] = useState("");
-	const [contestFilter, setContestFilter] = useState("all");
+	const [search, setSearch] = useState('');
+	const [contestFilter, setContestFilter] = useState('all');
 	const [selected, setSelected] = useState<Participant | null>(null);
 
 	const { data: contests = [] } = useQuery({
-		queryKey: ["admin-contests"],
-		queryFn: () => api.get<Contest[]>("/admin/contests"),
+		queryKey: ['admin-contests'],
+		queryFn: () => api.get<Contest[]>('/admin/contests'),
 	});
 	const { data: participants = [] } = useQuery({
-		queryKey: ["all-participants", contests.map((c) => c.id).join(",")],
+		queryKey: ['all-participants', contests.map((c) => c.id).join(',')],
 		queryFn: async () => {
 			const lists = await Promise.all(
 				contests.map((c) =>
@@ -50,7 +50,7 @@ export default function AdminParticipants() {
 	});
 
 	const { data: detail } = useQuery({
-		queryKey: ["participant-detail", selected?.contestId, selected?.userId],
+		queryKey: ['participant-detail', selected?.contestId, selected?.userId],
 		queryFn: () =>
 			api.get<{ participant: Participant; submissions: Submission[] }>(
 				`/admin/contests/${selected?.contestId}/participants/${selected?.userId}`,
@@ -62,7 +62,7 @@ export default function AdminParticipants() {
 		(p) =>
 			(p.userName.toLowerCase().includes(search.toLowerCase()) ||
 				p.userEmail.toLowerCase().includes(search.toLowerCase())) &&
-			(contestFilter === "all" || p.contestId === contestFilter),
+			(contestFilter === 'all' || p.contestId === contestFilter),
 	);
 
 	const contest = contests.find((c) => c.id === selected?.contestId);
@@ -81,26 +81,26 @@ export default function AdminParticipants() {
 				{/* Summary row */}
 				<div className="grid grid-cols-4 gap-4">
 					{[
-						{ label: "Total", value: participants.length, color: "" },
+						{ label: 'Total', value: participants.length, color: '' },
 						{
-							label: "In Progress",
-							value: participants.filter((p) => p.status === "in_progress")
+							label: 'In Progress',
+							value: participants.filter((p) => p.status === 'in_progress')
 								.length,
-							color: "text-info",
+							color: 'text-info',
 						},
 						{
-							label: "Completed",
+							label: 'Completed',
 							value: participants.filter(
 								(p) =>
-									p.status === "completed" || p.status === "auto_completed",
+									p.status === 'completed' || p.status === 'auto_completed',
 							).length,
-							color: "text-success",
+							color: 'text-success',
 						},
 						{
-							label: "Not Started",
-							value: participants.filter((p) => p.status === "not_started")
+							label: 'Not Started',
+							value: participants.filter((p) => p.status === 'not_started')
 								.length,
-							color: "text-muted-foreground",
+							color: 'text-muted-foreground',
 						},
 					].map(({ label, value, color }) => (
 						<div key={label} className="card-glow rounded-xl p-4 text-center">
@@ -170,14 +170,14 @@ export default function AdminParticipants() {
 										</td>
 										<td className="hidden md:table-cell">
 											<span className="text-xs text-muted-foreground">
-												{c?.name ?? "—"}
+												{c?.name ?? '—'}
 											</span>
 										</td>
 										<td className="text-center">
 											<span
 												className={`text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wide ${STATUS_STYLES[p.status]}`}
 											>
-												{p.status.replace("_", " ")}
+												{p.status.replace('_', ' ')}
 											</span>
 										</td>
 										<td className="text-center font-mono font-bold text-primary">
@@ -216,36 +216,36 @@ export default function AdminParticipants() {
 							<div className="space-y-4 py-2 text-sm">
 								<div className="grid grid-cols-2 gap-3">
 									{[
-										["Name", selected.userName],
-										["Email", selected.userEmail],
-										["Contest", contest?.name ?? "—"],
-										["Status", selected.status.replace("_", " ")],
-										["Score", String(selected.score)],
+										['Name', selected.userName],
+										['Email', selected.userEmail],
+										['Contest', contest?.name ?? '—'],
+										['Status', selected.status.replace('_', ' ')],
+										['Score', String(selected.score)],
 										[
-											"Started",
+											'Started',
 											selected.startedAt
 												? new Date(selected.startedAt).toLocaleTimeString(
 														undefined,
 														{
-															hour: "numeric",
-															minute: "2-digit",
+															hour: 'numeric',
+															minute: '2-digit',
 															hour12: true,
 														},
 													)
-												: "—",
+												: '—',
 										],
 										[
-											"Completed",
+											'Completed',
 											selected.completedAt
 												? new Date(selected.completedAt).toLocaleTimeString(
 														undefined,
 														{
-															hour: "numeric",
-															minute: "2-digit",
+															hour: 'numeric',
+															minute: '2-digit',
 															hour12: true,
 														},
 													)
-												: "—",
+												: '—',
 										],
 									].map(([k, v]) => (
 										<div key={k}>
@@ -281,9 +281,9 @@ export default function AdminParticipants() {
 													</div>
 													<span
 														className={`text-[10px] px-1.5 py-0.5 rounded font-semibold font-mono ${
-															s.status === "ACCEPTED"
-																? "text-success bg-success/15"
-																: "text-destructive bg-destructive/15"
+															s.status === 'ACCEPTED'
+																? 'text-success bg-success/15'
+																: 'text-destructive bg-destructive/15'
 														}`}
 													>
 														{s.score}pts

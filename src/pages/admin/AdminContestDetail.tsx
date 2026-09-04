@@ -1,5 +1,5 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useParams, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import {
 	ArrowLeft,
 	Download,
@@ -9,18 +9,18 @@ import {
 	Clock,
 	ShieldAlert,
 	Brain,
-} from "lucide-react";
-import AdminLayout from "../../components/AdminLayout";
-import { Button } from "../../components/ui/button";
-import VerdictBadge from "../../components/VerdictBadge";
-import { api } from "../../lib/api";
+} from 'lucide-react';
+import AdminLayout from '../../components/AdminLayout';
+import { Button } from '../../components/ui/button';
+import VerdictBadge from '../../components/VerdictBadge';
+import { api } from '../../lib/api';
 import type {
 	Contest,
 	Submission,
 	LeaderboardEntry,
 	ParticipantStatus,
-} from "../../types";
-import { toast } from "sonner";
+} from '../../types';
+import { toast } from 'sonner';
 
 interface AdminParticipant {
 	id: string;
@@ -45,14 +45,14 @@ interface ActivityEvent {
 
 /** Event types that indicate a possible integrity issue, shown first. */
 const FLAGGED_EVENTS = [
-	"FULLSCREEN_EXITED",
-	"TAB_HIDDEN",
-	"PASTE_BLOCKED",
-	"COPY_BLOCKED",
-	"CUT_BLOCKED",
-	"DEVTOOLS_ATTEMPT",
-	"ESCAPE_PRESSED",
-	"CONTEXT_MENU_BLOCKED",
+	'FULLSCREEN_EXITED',
+	'TAB_HIDDEN',
+	'PASTE_BLOCKED',
+	'COPY_BLOCKED',
+	'CUT_BLOCKED',
+	'DEVTOOLS_ATTEMPT',
+	'ESCAPE_PRESSED',
+	'CONTEXT_MENU_BLOCKED',
 ];
 
 export default function AdminContestDetail() {
@@ -60,34 +60,34 @@ export default function AdminContestDetail() {
 	const navigate = useNavigate();
 
 	const { data: contest } = useQuery({
-		queryKey: ["admin-contest", id],
+		queryKey: ['admin-contest', id],
 		queryFn: () => api.get<Contest>(`/admin/contests/${id}`),
 		enabled: !!id,
 	});
 	const { data: participants = [] } = useQuery({
-		queryKey: ["admin-participants", id],
+		queryKey: ['admin-participants', id],
 		queryFn: () =>
 			api.get<AdminParticipant[]>(`/admin/contests/${id}/participants`),
 		enabled: !!id,
 	});
 	const { data: submissions = [] } = useQuery({
-		queryKey: ["admin-contest-submissions", id],
+		queryKey: ['admin-contest-submissions', id],
 		queryFn: () => api.get<Submission[]>(`/admin/submissions?contestId=${id}`),
 		enabled: !!id,
 	});
 	const { data: leaderboard = [] } = useQuery({
-		queryKey: ["admin-contest-leaderboard", id],
+		queryKey: ['admin-contest-leaderboard', id],
 		queryFn: () => api.get<LeaderboardEntry[]>(`/admin/contests/${id}/results`),
 		enabled: !!id,
 	});
 	const { data: activitySummary = [] } = useQuery({
-		queryKey: ["admin-contest-activity-summary", id],
+		queryKey: ['admin-contest-activity-summary', id],
 		queryFn: () =>
 			api.get<ActivitySummary[]>(`/admin/contests/${id}/activity/summary`),
 		enabled: !!id,
 	});
 	const { data: activity = [] } = useQuery({
-		queryKey: ["admin-contest-activity", id],
+		queryKey: ['admin-contest-activity', id],
 		queryFn: () =>
 			api.get<ActivityEvent[]>(`/admin/contests/${id}/activity?limit=100`),
 		enabled: !!id,
@@ -102,7 +102,7 @@ export default function AdminContestDetail() {
 
 	const maxScore = contest.problems.reduce((s, cp) => s + cp.maxScore, 0);
 
-	const handleExport = async (fmt: "csv" | "xlsx") => {
+	const handleExport = async (fmt: 'csv' | 'xlsx') => {
 		try {
 			await api.download(
 				`/admin/contests/${id}/results/export?format=${fmt}`,
@@ -122,7 +122,7 @@ export default function AdminContestDetail() {
 					<Button
 						variant="ghost"
 						size="icon"
-						onClick={() => navigate("/admin/contests")}
+						onClick={() => navigate('/admin/contests')}
 						className="h-8 w-8"
 					>
 						<ArrowLeft size={16} />
@@ -134,7 +134,7 @@ export default function AdminContestDetail() {
 						</p>
 					</div>
 					<div className="flex items-center gap-2">
-						{contest.mode === "progressive" && (
+						{contest.mode === 'progressive' && (
 							<Button
 								variant="outline"
 								size="sm"
@@ -149,7 +149,7 @@ export default function AdminContestDetail() {
 						<Button
 							variant="outline"
 							size="sm"
-							onClick={() => handleExport("csv")}
+							onClick={() => handleExport('csv')}
 							className="gap-1.5"
 						>
 							<Download size={13} /> CSV
@@ -157,7 +157,7 @@ export default function AdminContestDetail() {
 						<Button
 							variant="outline"
 							size="sm"
-							onClick={() => handleExport("xlsx")}
+							onClick={() => handleExport('xlsx')}
 							className="gap-1.5"
 						>
 							<Download size={13} /> XLSX
@@ -168,14 +168,14 @@ export default function AdminContestDetail() {
 				{/* Summary */}
 				<div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
 					{[
-						{ icon: Users, label: "Participants", value: participants.length },
+						{ icon: Users, label: 'Participants', value: participants.length },
 						{
 							icon: BarChart2,
-							label: "Submissions",
+							label: 'Submissions',
 							value: submissions.length,
 						},
-						{ icon: Trophy, label: "Max Score", value: maxScore },
-						{ icon: Clock, label: "Duration", value: `${contest.duration}m` },
+						{ icon: Trophy, label: 'Max Score', value: maxScore },
+						{ icon: Clock, label: 'Duration', value: `${contest.duration}m` },
 					].map(({ icon: Icon, label, value }) => (
 						<div key={label} className="card-glow rounded-xl p-4 text-center">
 							<Icon size={16} className="text-primary mx-auto mb-2" />
@@ -189,24 +189,24 @@ export default function AdminContestDetail() {
 				<div className="grid sm:grid-cols-3 gap-3">
 					{[
 						{
-							label: "Completed",
+							label: 'Completed',
 							count: participants.filter(
 								(p) =>
-									p.status === "completed" || p.status === "auto_completed",
+									p.status === 'completed' || p.status === 'auto_completed',
 							).length,
-							color: "text-success",
+							color: 'text-success',
 						},
 						{
-							label: "In Progress",
-							count: participants.filter((p) => p.status === "in_progress")
+							label: 'In Progress',
+							count: participants.filter((p) => p.status === 'in_progress')
 								.length,
-							color: "text-info",
+							color: 'text-info',
 						},
 						{
-							label: "Not Started",
-							count: participants.filter((p) => p.status === "not_started")
+							label: 'Not Started',
+							count: participants.filter((p) => p.status === 'not_started')
 								.length,
-							color: "text-muted-foreground",
+							color: 'text-muted-foreground',
 						},
 					].map(({ label, count, color }) => (
 						<div
@@ -250,20 +250,20 @@ export default function AdminContestDetail() {
 										<span
 											className={`text-sm font-bold font-mono ${
 												e.rank === 1
-													? "text-warning"
+													? 'text-warning'
 													: e.rank === 2
-														? "text-muted-foreground"
+														? 'text-muted-foreground'
 														: e.rank === 3
-															? "text-amber-600"
-															: ""
+															? 'text-amber-600'
+															: ''
 											}`}
 										>
 											{e.rank === 1
-												? "🥇"
+												? '🥇'
 												: e.rank === 2
-													? "🥈"
+													? '🥈'
 													: e.rank === 3
-														? "🥉"
+														? '🥉'
 														: `#${e.rank}`}
 										</span>
 									</td>
@@ -320,8 +320,8 @@ export default function AdminContestDetail() {
 									</td>
 									<td className="text-right text-xs text-muted-foreground font-mono">
 										{new Date(s.submittedAt).toLocaleTimeString(undefined, {
-											hour: "numeric",
-											minute: "2-digit",
+											hour: 'numeric',
+											minute: '2-digit',
 											hour12: true,
 										})}
 									</td>
@@ -367,7 +367,7 @@ export default function AdminContestDetail() {
 												key={t}
 												className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-destructive/15 text-destructive"
 											>
-												{t.replace(/_/g, " ").toLowerCase()} × {a.events[t]}
+												{t.replace(/_/g, ' ').toLowerCase()} × {a.events[t]}
 											</span>
 										))}
 										{Object.keys(a.events)
@@ -377,7 +377,7 @@ export default function AdminContestDetail() {
 													key={t}
 													className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-muted text-muted-foreground"
 												>
-													{t.replace(/_/g, " ").toLowerCase()} × {a.events[t]}
+													{t.replace(/_/g, ' ').toLowerCase()} × {a.events[t]}
 												</span>
 											))}
 									</div>
@@ -402,16 +402,16 @@ export default function AdminContestDetail() {
 										{e.userName ?? e.userId}
 									</span>
 									<span
-										className={`font-mono ${FLAGGED_EVENTS.includes(e.eventType) ? "text-destructive" : "text-muted-foreground"}`}
+										className={`font-mono ${FLAGGED_EVENTS.includes(e.eventType) ? 'text-destructive' : 'text-muted-foreground'}`}
 									>
-										{e.eventType.replace(/_/g, " ").toLowerCase()}
+										{e.eventType.replace(/_/g, ' ').toLowerCase()}
 									</span>
 									<span className="ml-auto text-muted-foreground font-mono">
 										{new Date(e.occurredAt).toLocaleString(undefined, {
-											month: "short",
-											day: "numeric",
-											hour: "numeric",
-											minute: "2-digit",
+											month: 'short',
+											day: 'numeric',
+											hour: 'numeric',
+											minute: '2-digit',
 											hour12: true,
 										})}
 									</span>

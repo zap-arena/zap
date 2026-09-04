@@ -1,22 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-const STORAGE_KEY = "zap-theme";
+const STORAGE_KEY = 'zap-theme';
 
-type Theme = "dark" | "light";
+type Theme = 'dark' | 'light';
 
 const getInitial = (): Theme => {
-	if (typeof window === "undefined") return "dark";
-	return (localStorage.getItem(STORAGE_KEY) as Theme) || "dark";
+	if (typeof window === 'undefined') return 'dark';
+	return (localStorage.getItem(STORAGE_KEY) as Theme) || 'dark';
 };
 
 const applyTheme = (theme: Theme) => {
 	const root = document.documentElement;
-	if (theme === "dark") {
-		root.classList.add("dark");
-		root.classList.remove("light");
+	if (theme === 'dark') {
+		root.classList.add('dark');
+		root.classList.remove('light');
 	} else {
-		root.classList.remove("dark");
-		root.classList.add("light");
+		root.classList.remove('dark');
+		root.classList.add('light');
 	}
 	localStorage.setItem(STORAGE_KEY, theme);
 };
@@ -31,7 +31,7 @@ const notify = () => listeners.forEach((fn) => fn());
 export const themeStore = {
 	get: () => _theme,
 	toggle: () => {
-		_theme = _theme === "dark" ? "light" : "dark";
+		_theme = _theme === 'dark' ? 'light' : 'dark';
 		applyTheme(_theme);
 		notify();
 	},

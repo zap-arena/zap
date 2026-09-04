@@ -1,16 +1,16 @@
-import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { Trophy, Calendar, CheckCircle, Clock } from "lucide-react";
-import { api } from "../lib/api";
-import Navbar from "../components/Navbar";
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { Trophy, Calendar, CheckCircle, Clock } from 'lucide-react';
+import { api } from '../lib/api';
+import Navbar from '../components/Navbar';
 import {
 	Tabs,
 	TabsList,
 	TabsTrigger,
 	TabsContent,
-} from "../components/ui/tabs";
-import { Skeleton } from "../components/ui/skeleton";
-import { Button } from "../components/ui/button";
+} from '../components/ui/tabs';
+import { Skeleton } from '../components/ui/skeleton';
+import { Button } from '../components/ui/button';
 import {
 	Table,
 	TableBody,
@@ -18,14 +18,14 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "../components/ui/table";
+} from '../components/ui/table';
 
 interface Contest {
 	id: string;
 	name: string;
 	slug: string;
 	description: string;
-	status: "active" | "scheduled" | "completed";
+	status: 'active' | 'scheduled' | 'completed';
 	duration: number;
 	startTime: string;
 }
@@ -34,13 +34,13 @@ export default function ContestsPage() {
 	const navigate = useNavigate();
 
 	const { data: contests, isLoading } = useQuery({
-		queryKey: ["contests"],
-		queryFn: () => api.get<Contest[]>("/contests"),
+		queryKey: ['contests'],
+		queryFn: () => api.get<Contest[]>('/contests'),
 	});
 
-	const live = contests?.filter((c) => c.status === "active") || [];
-	const upcoming = contests?.filter((c) => c.status === "scheduled") || [];
-	const past = contests?.filter((c) => c.status === "completed") || [];
+	const live = contests?.filter((c) => c.status === 'active') || [];
+	const upcoming = contests?.filter((c) => c.status === 'scheduled') || [];
+	const past = contests?.filter((c) => c.status === 'completed') || [];
 
 	const renderTable = (
 		list: Contest[],
@@ -90,16 +90,16 @@ export default function ContestsPage() {
 										<div className="flex items-center gap-3">
 											<div
 												className={`w-8 h-8 rounded-md flex items-center justify-center shrink-0 ${
-													c.status === "active"
-														? "bg-success/15 border border-success/30"
-														: c.status === "scheduled"
-															? "bg-info/15 border border-info/30"
-															: "bg-muted border border-border"
+													c.status === 'active'
+														? 'bg-success/15 border border-success/30'
+														: c.status === 'scheduled'
+															? 'bg-info/15 border border-info/30'
+															: 'bg-muted border border-border'
 												}`}
 											>
-												{c.status === "active" ? (
+												{c.status === 'active' ? (
 													<span className="w-2 h-2 rounded-full bg-success animate-pulse" />
-												) : c.status === "scheduled" ? (
+												) : c.status === 'scheduled' ? (
 													<Calendar size={14} className="text-info" />
 												) : (
 													<CheckCircle
@@ -121,24 +121,24 @@ export default function ContestsPage() {
 									<TableCell className="text-xs text-muted-foreground font-medium">
 										{c.startTime
 											? new Date(c.startTime).toLocaleString(undefined, {
-													month: "short",
-													day: "numeric",
-													hour: "2-digit",
-													minute: "2-digit",
+													month: 'short',
+													day: 'numeric',
+													hour: '2-digit',
+													minute: '2-digit',
 													hour12: true,
 												})
-											: "TBA"}
+											: 'TBA'}
 									</TableCell>
 									<TableCell className="text-xs text-muted-foreground font-medium">
 										{endTime
 											? endTime.toLocaleString(undefined, {
-													month: "short",
-													day: "numeric",
-													hour: "2-digit",
-													minute: "2-digit",
+													month: 'short',
+													day: 'numeric',
+													hour: '2-digit',
+													minute: '2-digit',
 													hour12: true,
 												})
-											: "TBA"}
+											: 'TBA'}
 									</TableCell>
 									<TableCell className="text-xs text-muted-foreground font-medium">
 										<div className="flex items-center gap-1.5">
@@ -147,15 +147,15 @@ export default function ContestsPage() {
 									</TableCell>
 									<TableCell className="text-right">
 										<Button
-											variant={c.status === "active" ? "default" : "secondary"}
+											variant={c.status === 'active' ? 'default' : 'secondary'}
 											size="sm"
 											className="h-8 font-semibold"
 										>
-											{c.status === "active"
-												? "Enter"
-												: c.status === "completed"
-													? "Practice"
-													: "Details"}
+											{c.status === 'active'
+												? 'Enter'
+												: c.status === 'completed'
+													? 'Practice'
+													: 'Details'}
 										</Button>
 									</TableCell>
 								</TableRow>
@@ -183,7 +183,7 @@ export default function ContestsPage() {
 				<Tabs
 					defaultValue="live"
 					className="w-full animate-fade-in"
-					style={{ animationDelay: "100ms" }}
+					style={{ animationDelay: '100ms' }}
 				>
 					<TabsList className="mb-8 h-10 border border-border bg-muted/50 p-1">
 						<TabsTrigger
@@ -256,8 +256,8 @@ export default function ContestsPage() {
 								{renderTable(
 									live,
 									Trophy,
-									"No live contests",
-									"Check the Upcoming tab for scheduled contests.",
+									'No live contests',
+									'Check the Upcoming tab for scheduled contests.',
 								)}
 							</TabsContent>
 
@@ -265,8 +265,8 @@ export default function ContestsPage() {
 								{renderTable(
 									upcoming,
 									Calendar,
-									"No upcoming contests",
-									"We are preparing new challenges. Stay tuned!",
+									'No upcoming contests',
+									'We are preparing new challenges. Stay tuned!',
 								)}
 							</TabsContent>
 
@@ -274,8 +274,8 @@ export default function ContestsPage() {
 								{renderTable(
 									past,
 									CheckCircle,
-									"No past contests",
-									"Past contests will appear here for practice.",
+									'No past contests',
+									'Past contests will appear here for practice.',
 								)}
 							</TabsContent>
 						</>

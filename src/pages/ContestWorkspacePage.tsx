@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import Editor from "@monaco-editor/react";
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import Editor from '@monaco-editor/react';
 import {
 	Play,
 	Send,
@@ -19,15 +19,15 @@ import {
 	Maximize,
 	Minimize,
 	ShieldAlert,
-} from "lucide-react";
-import { Button } from "../components/ui/button";
+} from 'lucide-react';
+import { Button } from '../components/ui/button';
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "../components/ui/select";
+} from '../components/ui/select';
 import {
 	Dialog,
 	DialogContent,
@@ -35,21 +35,21 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "../components/ui/dialog";
+} from '../components/ui/dialog';
 import {
 	ResizablePanelGroup,
 	ResizablePanel,
 	ResizableHandle,
-} from "../components/ui/resizable";
-import { Tabs, TabsList, TabsTrigger } from "../components/ui/tabs";
-import { Skeleton } from "../components/ui/skeleton";
-import ContestTimer from "../components/ContestTimer";
-import VerdictBadge from "../components/VerdictBadge";
-import DifficultyBadge from "../components/DifficultyBadge";
-import ThemeToggle from "../components/ThemeToggle";
-import { useProctoring } from "../hooks/useProctoring";
-import { api, ApiError } from "../lib/api";
-import { MONACO_THEMES, EDITOR_THEME_OPTIONS } from "../lib/monaco-themes";
+} from '../components/ui/resizable';
+import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { Skeleton } from '../components/ui/skeleton';
+import ContestTimer from '../components/ContestTimer';
+import VerdictBadge from '../components/VerdictBadge';
+import DifficultyBadge from '../components/DifficultyBadge';
+import ThemeToggle from '../components/ThemeToggle';
+import { useProctoring } from '../hooks/useProctoring';
+import { api, ApiError } from '../lib/api';
+import { MONACO_THEMES, EDITOR_THEME_OPTIONS } from '../lib/monaco-themes';
 import type {
 	Language,
 	Verdict,
@@ -57,8 +57,8 @@ import type {
 	Contest,
 	Submission,
 	LeaderboardEntry,
-} from "../types";
-import { toast } from "sonner";
+} from '../types';
+import { toast } from 'sonner';
 
 interface ContestNotice {
 	id: string;
@@ -67,16 +67,16 @@ interface ContestNotice {
 }
 
 const LANGUAGES: { value: Language; label: string; monacoLang: string }[] = [
-	{ value: "cpp", label: "C++", monacoLang: "cpp" },
-	{ value: "c", label: "C", monacoLang: "c" },
-	{ value: "java", label: "Java", monacoLang: "java" },
-	{ value: "python", label: "Python", monacoLang: "python" },
+	{ value: 'cpp', label: 'C++', monacoLang: 'cpp' },
+	{ value: 'c', label: 'C', monacoLang: 'c' },
+	{ value: 'java', label: 'Java', monacoLang: 'java' },
+	{ value: 'python', label: 'Python', monacoLang: 'python' },
 ];
 
 interface TestResult {
 	id: string;
 	label: string;
-	status: "passed" | "failed" | "running";
+	status: 'passed' | 'failed' | 'running';
 	executionTime?: number;
 	errorMessage?: string | null;
 }
@@ -100,12 +100,12 @@ function CodeEditor({
 	onChange: (v: string) => void;
 	language: Language;
 	onBlockedAction?: (
-		type: "COPY_BLOCKED" | "CUT_BLOCKED" | "PASTE_BLOCKED",
+		type: 'COPY_BLOCKED' | 'CUT_BLOCKED' | 'PASTE_BLOCKED',
 	) => void;
 	editorTheme: string;
 }) {
 	const monacoLang =
-		LANGUAGES.find((l) => l.value === language)?.monacoLang ?? "plaintext";
+		LANGUAGES.find((l) => l.value === language)?.monacoLang ?? 'plaintext';
 
 	return (
 		<div className="relative h-full flex flex-col bg-muted/30 dark:bg-[#0d1117] rounded-none overflow-hidden">
@@ -115,7 +115,7 @@ function CodeEditor({
 					language={monacoLang}
 					value={value}
 					theme={editorTheme}
-					onChange={(v) => onChange(v ?? "")}
+					onChange={(v) => onChange(v ?? '')}
 					onMount={(editor, monaco) => {
 						// Load custom themes
 						Object.entries(MONACO_THEMES).forEach(([themeName, themeData]) => {
@@ -123,31 +123,31 @@ function CodeEditor({
 						});
 						// Monaco handles clipboard internally, so the document listeners never fire here.
 						const block =
-							(type: "COPY_BLOCKED" | "CUT_BLOCKED" | "PASTE_BLOCKED") => () =>
+							(type: 'COPY_BLOCKED' | 'CUT_BLOCKED' | 'PASTE_BLOCKED') => () =>
 								onBlockedAction?.(type);
 						editor.addCommand(
 							monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyC,
-							block("COPY_BLOCKED"),
+							block('COPY_BLOCKED'),
 						);
 						editor.addCommand(
 							monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyX,
-							block("CUT_BLOCKED"),
+							block('CUT_BLOCKED'),
 						);
 						editor.addCommand(
 							monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyV,
-							block("PASTE_BLOCKED"),
+							block('PASTE_BLOCKED'),
 						);
 						editor.addCommand(
 							monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyV,
-							block("PASTE_BLOCKED"),
+							block('PASTE_BLOCKED'),
 						);
 						editor.addCommand(
 							monaco.KeyMod.CtrlCmd | monaco.KeyCode.Insert,
-							block("COPY_BLOCKED"),
+							block('COPY_BLOCKED'),
 						);
 						editor.addCommand(
 							monaco.KeyMod.Shift | monaco.KeyCode.Insert,
-							block("PASTE_BLOCKED"),
+							block('PASTE_BLOCKED'),
 						);
 					}}
 					options={{
@@ -166,7 +166,7 @@ function CodeEditor({
 					{language.toUpperCase()}
 				</span>
 				<span className="text-[11px] text-muted-foreground font-mono">
-					{value.split("\n").length} lines
+					{value.split('\n').length} lines
 				</span>
 				<span className="text-[11px] text-muted-foreground font-mono">
 					UTF-8
@@ -182,13 +182,13 @@ export default function ContestWorkspacePage() {
 	const queryClient = useQueryClient();
 
 	const { data: contest } = useQuery({
-		queryKey: ["contest", contestId],
+		queryKey: ['contest', contestId],
 		queryFn: () => api.get<Contest>(`/contests/${contestId}`),
 		enabled: !!contestId,
 	});
 
 	const { data: session, isLoading: sessionLoading } = useQuery({
-		queryKey: ["session", contestId],
+		queryKey: ['session', contestId],
 		queryFn: () =>
 			api.get<{ started: boolean; expiresAt?: string; status?: string }>(
 				`/contests/${contestId}/session`,
@@ -197,13 +197,13 @@ export default function ContestWorkspacePage() {
 	});
 
 	const { data: problems = [] } = useQuery({
-		queryKey: ["contest-problems", contestId],
+		queryKey: ['contest-problems', contestId],
 		queryFn: () => api.get<Problem[]>(`/contests/${contestId}/problems`),
 		enabled: !!contestId && !!session?.started,
 	});
 
 	const { data: mySubmissions = [] } = useQuery({
-		queryKey: ["my-submissions", contestId],
+		queryKey: ['my-submissions', contestId],
 		queryFn: () =>
 			api.get<Submission[]>(`/contests/${contestId}/my-submissions`),
 		enabled: !!contestId && !!session?.started,
@@ -211,7 +211,7 @@ export default function ContestWorkspacePage() {
 	});
 
 	const { data: leaderboardEntries = [] } = useQuery({
-		queryKey: ["leaderboard", contestId],
+		queryKey: ['leaderboard', contestId],
 		queryFn: () =>
 			api.get<LeaderboardEntry[]>(`/contests/${contestId}/leaderboard`),
 		enabled: !!contestId && !!session?.started,
@@ -221,37 +221,37 @@ export default function ContestWorkspacePage() {
 	const [selectedProblem, setSelectedProblem] = useState<Problem | undefined>(
 		undefined,
 	);
-	const [language, setLanguage] = useState<Language>("cpp");
+	const [language, setLanguage] = useState<Language>('cpp');
 	const [editorTheme, setEditorTheme] = useState(
-		() => localStorage.getItem("zap-editor-theme") || "vs-dark",
+		() => localStorage.getItem('zap-editor-theme') || 'vs-dark',
 	);
-	const [code, setCode] = useState("");
+	const [code, setCode] = useState('');
 	const codeStore = useRef<Record<string, Record<string, string>>>({});
 	const [activeTab, setActiveTab] = useState<
-		"problem" | "submissions" | "leaderboard"
-	>("problem");
-	const [bottomTab, setBottomTab] = useState<"output" | "stdin">("output");
+		'problem' | 'submissions' | 'leaderboard'
+	>('problem');
+	const [bottomTab, setBottomTab] = useState<'output' | 'stdin'>('output');
 	const [running, setRunning] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
 	const [runOutput, setRunOutput] = useState<RunOutput | null>(null);
 	const [showFinishDialog, setShowFinishDialog] = useState(false);
-	const [stdin, setStdin] = useState("");
+	const [stdin, setStdin] = useState('');
 
 	useEffect(() => {
 		if (!selectedProblem && problems.length > 0) {
 			const first = problems[0];
 			setSelectedProblem(first);
-			const preferredLang = first.languages[0] ?? "cpp";
+			const preferredLang = first.languages[0] ?? 'cpp';
 			setLanguage(preferredLang);
 
 			const stored = codeStore.current[first.id]?.[preferredLang];
-			setCode(stored ?? first.boilerplates[preferredLang] ?? "");
+			setCode(stored ?? first.boilerplates[preferredLang] ?? '');
 		}
 	}, [problems, selectedProblem]);
 
 	useEffect(() => {
 		if (session && !session.started && !sessionLoading) {
-			toast.error("Start the contest before entering the workspace");
+			toast.error('Start the contest before entering the workspace');
 			navigate(`/contest/${contestId}`);
 		}
 	}, [session, sessionLoading, contestId, navigate]);
@@ -274,12 +274,12 @@ export default function ContestWorkspacePage() {
 	// Solved problems tracking (derived from the best submission per problem)
 	const solvedProblems = new Set(
 		mySubmissions
-			.filter((s) => s.status === "ACCEPTED")
+			.filter((s) => s.status === 'ACCEPTED')
 			.map((s) => s.problemId),
 	);
 
 	// Proctoring: lockdown + event tracking, active for the whole attempt.
-	const attemptActive = !!session?.started && session.status === "in_progress";
+	const attemptActive = !!session?.started && session.status === 'in_progress';
 	const selectedProblemRef = useRef<Problem | undefined>(undefined);
 	selectedProblemRef.current = selectedProblem;
 	const currentProblemId = useCallback(
@@ -295,7 +295,7 @@ export default function ContestWorkspacePage() {
 	} = useProctoring(contestId, attemptActive, currentProblemId);
 
 	const { data: notifications = [] } = useQuery({
-		queryKey: ["contest-notifications", contestId],
+		queryKey: ['contest-notifications', contestId],
 		queryFn: () =>
 			api.get<ContestNotice[]>(`/contests/${contestId}/notifications`),
 		enabled: !!contestId && !!session?.started,
@@ -332,24 +332,24 @@ export default function ContestWorkspacePage() {
 
 	// Autosave debounce
 	const autosaveTimer = useRef<number | undefined>(undefined);
-	const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "unsaved">(
-		"saved",
+	const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'unsaved'>(
+		'saved',
 	);
 
 	useEffect(() => {
 		if (!selectedProblem || !contestId) return;
-		setSaveStatus("unsaved");
+		setSaveStatus('unsaved');
 		clearTimeout(autosaveTimer.current);
 		autosaveTimer.current = window.setTimeout(async () => {
-			setSaveStatus("saving");
+			setSaveStatus('saving');
 			try {
 				await api.put(
 					`/contests/${contestId}/problems/${selectedProblem.id}/draft`,
 					{ language, sourceCode: code },
 				);
-				setSaveStatus("saved");
+				setSaveStatus('saved');
 			} catch {
-				setSaveStatus("unsaved");
+				setSaveStatus('unsaved');
 			}
 		}, 1500);
 		return () => clearTimeout(autosaveTimer.current);
@@ -366,7 +366,7 @@ export default function ContestWorkspacePage() {
 		setLanguage(lang);
 		if (selectedProblem) {
 			const stored = codeStore.current[selectedProblem.id]?.[lang];
-			setCode(stored ?? selectedProblem?.boilerplates[lang] ?? "");
+			setCode(stored ?? selectedProblem?.boilerplates[lang] ?? '');
 		}
 		setRunOutput(null);
 	};
@@ -375,7 +375,7 @@ export default function ContestWorkspacePage() {
 		if (selectedProblem) saveToStore(selectedProblem.id, language, code);
 		setSelectedProblem(problem);
 		setRunOutput(null);
-		setActiveTab("problem");
+		setActiveTab('problem');
 		if (!contestId) return;
 		try {
 			const draft = await api.get<{
@@ -393,21 +393,21 @@ export default function ContestWorkspacePage() {
 		}
 		const preferredLang = problem.languages.includes(language)
 			? language
-			: (problem.languages[0] ?? "cpp");
+			: (problem.languages[0] ?? 'cpp');
 		setLanguage(preferredLang);
 		const stored = codeStore.current[problem.id]?.[preferredLang];
-		setCode(stored ?? problem.boilerplates[preferredLang] ?? "");
+		setCode(stored ?? problem.boilerplates[preferredLang] ?? '');
 	};
 
 	const handleRun = async () => {
 		if (!selectedProblem) return;
 		setRunning(true);
 		setRunOutput(null);
-		setBottomTab("output");
+		setBottomTab('output');
 		try {
 			// Use sample test case input if stdin is empty
 			const runInput =
-				stdin.trim() || selectedProblem.examples?.[0]?.input || "";
+				stdin.trim() || selectedProblem.examples?.[0]?.input || '';
 
 			const result = await api.post<{
 				status: string;
@@ -415,7 +415,7 @@ export default function ContestWorkspacePage() {
 				stderr: string;
 				compileOutput: string;
 				error?: string;
-			}>("/code/run", {
+			}>('/code/run', {
 				problemId: selectedProblem.id,
 				contestId,
 				stageId: activeStage?.id,
@@ -425,13 +425,13 @@ export default function ContestWorkspacePage() {
 			});
 			setRunOutput({
 				stdout: result.stdout,
-				stderr: result.stderr || result.error || "",
+				stderr: result.stderr || result.error || '',
 				compileOutput: result.compileOutput,
 				status: result.status,
 				testResults: [],
 			});
 		} catch (err) {
-			toast.error(err instanceof ApiError ? err.message : "Failed to run code");
+			toast.error(err instanceof ApiError ? err.message : 'Failed to run code');
 		} finally {
 			setRunning(false);
 		}
@@ -441,7 +441,7 @@ export default function ContestWorkspacePage() {
 		if (!selectedProblem || !contestId) return;
 		setSubmitting(true);
 		setRunOutput(null);
-		setBottomTab("output");
+		setBottomTab('output');
 		try {
 			const result = await api.post<{
 				status: Verdict;
@@ -457,7 +457,7 @@ export default function ContestWorkspacePage() {
 					executionTime: number;
 					errorMessage?: string | null;
 				}[];
-			}>("/submissions", {
+			}>('/submissions', {
 				problemId: selectedProblem.id,
 				contestId,
 				stageId: activeStage?.id,
@@ -465,18 +465,18 @@ export default function ContestWorkspacePage() {
 				code,
 			});
 
-			if (result.status === "ACCEPTED") {
+			if (result.status === 'ACCEPTED') {
 				if (activeStage) {
 					const isLastStage =
 						activeStage.stageOrder ===
 						(selectedProblem.totalStages ?? activeStage.stageOrder);
 					toast.success(
 						isLastStage
-							? "🏆 Chain complete! All stages solved."
-							: "✅ Stage cleared — next challenge unlocked!",
+							? '🏆 Chain complete! All stages solved.'
+							: '✅ Stage cleared — next challenge unlocked!',
 					);
 				} else {
-					toast.success("✅ Accepted! All test cases passed!");
+					toast.success('✅ Accepted! All test cases passed!');
 				}
 			} else {
 				toast.info(
@@ -485,30 +485,30 @@ export default function ContestWorkspacePage() {
 			}
 
 			setRunOutput({
-				stdout: "",
-				stderr: "",
-				compileOutput: result.compileOutput || "",
+				stdout: '',
+				stderr: '',
+				compileOutput: result.compileOutput || '',
 				status: result.status,
 				testResults: result.testResults.map((tr, i) => ({
 					id: String(i),
 					label: tr.name,
-					status: tr.passed ? "passed" : "failed",
+					status: tr.passed ? 'passed' : 'failed',
 					executionTime: Math.round(tr.executionTime * 1000),
 					errorMessage: tr.errorMessage,
 				})),
 			});
 
 			queryClient.invalidateQueries({
-				queryKey: ["my-submissions", contestId],
+				queryKey: ['my-submissions', contestId],
 			});
-			queryClient.invalidateQueries({ queryKey: ["leaderboard", contestId] });
-			queryClient.invalidateQueries({ queryKey: ["session", contestId] });
+			queryClient.invalidateQueries({ queryKey: ['leaderboard', contestId] });
+			queryClient.invalidateQueries({ queryKey: ['session', contestId] });
 			queryClient.invalidateQueries({
-				queryKey: ["contest-problems", contestId],
+				queryKey: ['contest-problems', contestId],
 			});
 		} catch (err) {
 			toast.error(
-				err instanceof ApiError ? err.message : "Failed to submit solution",
+				err instanceof ApiError ? err.message : 'Failed to submit solution',
 			);
 		} finally {
 			setSubmitting(false);
@@ -527,11 +527,11 @@ export default function ContestWorkspacePage() {
 					/* ignore */
 				}
 			}
-			queryClient.invalidateQueries({ queryKey: ["session", contestId] });
+			queryClient.invalidateQueries({ queryKey: ['session', contestId] });
 			navigate(`/contest/${contestId}/result`);
 		} catch (err) {
 			toast.error(
-				err instanceof ApiError ? err.message : "Could not finish the contest",
+				err instanceof ApiError ? err.message : 'Could not finish the contest',
 			);
 		}
 	};
@@ -574,25 +574,25 @@ export default function ContestWorkspacePage() {
 				<div className="flex-1" />
 				<div className="flex items-center gap-2">
 					<span className="text-xs text-muted-foreground hidden md:block">
-						{saveStatus === "saved"
-							? "✓ Saved"
-							: saveStatus === "saving"
-								? "Saving…"
-								: "● Unsaved"}
+						{saveStatus === 'saved'
+							? '✓ Saved'
+							: saveStatus === 'saving'
+								? 'Saving…'
+								: '● Unsaved'}
 					</span>
 					<ThemeToggle size="xs" />
 					<Button
 						size="sm"
 						variant="ghost"
 						onClick={toggleFullscreen}
-						title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+						title={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
 						className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
 					>
 						{isFullscreen ? <Minimize size={13} /> : <Maximize size={13} />}
 					</Button>
 					<ContestTimer
 						expiresAt={expiresAt}
-						onExpire={() => toast.error("Time is up! Contest auto-completed.")}
+						onExpire={() => toast.error('Time is up! Contest auto-completed.')}
 					/>
 					<Button
 						size="sm"
@@ -611,7 +611,7 @@ export default function ContestWorkspacePage() {
 				<div className="w-52 shrink-0 border-r border-border bg-card flex flex-col">
 					<div className="p-3 border-b border-border">
 						<div className="flex gap-1">
-							{(["problem", "submissions", "leaderboard"] as const).map(
+							{(['problem', 'submissions', 'leaderboard'] as const).map(
 								(tab) => {
 									const icons = {
 										problem: List,
@@ -626,8 +626,8 @@ export default function ContestWorkspacePage() {
 											title={tab.charAt(0).toUpperCase() + tab.slice(1)}
 											className={`flex-1 h-7 rounded flex items-center justify-center transition-colors ${
 												activeTab === tab
-													? "bg-primary/15 text-primary"
-													: "text-muted-foreground hover:text-foreground hover:bg-muted"
+													? 'bg-primary/15 text-primary'
+													: 'text-muted-foreground hover:text-foreground hover:bg-muted'
 											}`}
 										>
 											<Icon size={13} />
@@ -639,7 +639,7 @@ export default function ContestWorkspacePage() {
 					</div>
 
 					<div className="flex-1 overflow-y-auto p-2 space-y-1">
-						{activeTab === "problem" &&
+						{activeTab === 'problem' &&
 							problems.map((p, i) => {
 								const solved = p.isProgressive
 									? (p.currentStageOrder ?? 1) > (p.totalStages ?? 1)
@@ -651,8 +651,8 @@ export default function ContestWorkspacePage() {
 										onClick={() => handleProblemSelect(p)}
 										className={`w-full text-left px-3 py-2.5 rounded-lg transition-colors ${
 											isSelected
-												? "bg-primary/10 border border-primary/20"
-												: "hover:bg-muted border border-transparent"
+												? 'bg-primary/10 border border-primary/20'
+												: 'hover:bg-muted border border-transparent'
 										}`}
 									>
 										<div className="flex items-center gap-2 mb-0.5">
@@ -663,11 +663,11 @@ export default function ContestWorkspacePage() {
 												/>
 											) : (
 												<div
-													className={`w-3 h-3 rounded-full border shrink-0 ${isSelected ? "border-primary" : "border-border"}`}
+													className={`w-3 h-3 rounded-full border shrink-0 ${isSelected ? 'border-primary' : 'border-border'}`}
 												/>
 											)}
 											<span
-												className={`text-xs font-semibold truncate ${isSelected ? "text-primary" : solved ? "text-success" : "text-foreground"}`}
+												className={`text-xs font-semibold truncate ${isSelected ? 'text-primary' : solved ? 'text-success' : 'text-foreground'}`}
 											>
 												{i + 1}. {p.title}
 											</span>
@@ -675,18 +675,18 @@ export default function ContestWorkspacePage() {
 										<div className="flex items-center justify-between pl-5">
 											<span
 												className={`text-[10px] font-mono ${
-													p.difficulty === "Easy"
-														? "text-success"
-														: p.difficulty === "Medium"
-															? "text-warning"
-															: "text-destructive"
+													p.difficulty === 'Easy'
+														? 'text-success'
+														: p.difficulty === 'Medium'
+															? 'text-warning'
+															: 'text-destructive'
 												}`}
 											>
 												{p.difficulty}
 											</span>
 											{p.isProgressive ? (
 												<span className="text-[10px] text-primary font-mono">
-													Stage{" "}
+													Stage{' '}
 													{Math.min(
 														p.currentStageOrder ?? 1,
 														p.totalStages ?? 1,
@@ -707,10 +707,10 @@ export default function ContestWorkspacePage() {
 														title={s.title}
 														className={`w-1.5 h-1.5 rounded-full ${
 															s.locked
-																? "bg-border"
+																? 'bg-border'
 																: s.stageOrder < (p.currentStageOrder ?? 1)
-																	? "bg-success"
-																	: "bg-primary"
+																	? 'bg-success'
+																	: 'bg-primary'
 														}`}
 													/>
 												))}
@@ -720,7 +720,7 @@ export default function ContestWorkspacePage() {
 								);
 							})}
 
-						{activeTab === "submissions" && (
+						{activeTab === 'submissions' && (
 							<div className="space-y-2 pt-1">
 								{mySubmissions.length === 0 && (
 									<p className="text-xs text-muted-foreground text-center py-8">
@@ -749,7 +749,7 @@ export default function ContestWorkspacePage() {
 							</div>
 						)}
 
-						{activeTab === "leaderboard" && (
+						{activeTab === 'leaderboard' && (
 							<div className="space-y-1 pt-1">
 								{leaderboardEntries.map((e) => (
 									<div
@@ -760,12 +760,12 @@ export default function ContestWorkspacePage() {
 											<span
 												className={`text-xs font-bold w-5 text-center font-mono ${
 													e.rank === 1
-														? "text-warning"
+														? 'text-warning'
 														: e.rank === 2
-															? "text-muted-foreground"
+															? 'text-muted-foreground'
 															: e.rank === 3
-																? "text-amber-600"
-																: "text-muted-foreground"
+																? 'text-amber-600'
+																: 'text-muted-foreground'
 												}`}
 											>
 												{e.rank}
@@ -802,7 +802,7 @@ export default function ContestWorkspacePage() {
 												{selectedProblem.title}
 												{activeStage && (
 													<span className="text-primary">
-														{" "}
+														{' '}
 														— {activeStage.title}
 													</span>
 												)}
@@ -812,9 +812,9 @@ export default function ContestWorkspacePage() {
 													difficulty={selectedProblem.difficulty}
 												/>
 												<span className="text-xs text-muted-foreground font-mono">
-													⏱{" "}
+													⏱{' '}
 													{activeStage?.timeLimit ?? selectedProblem.timeLimit}s
-													· 💾{" "}
+													· 💾{' '}
 													{activeStage?.memoryLimit ??
 														selectedProblem.memoryLimit}
 													MB
@@ -835,7 +835,7 @@ export default function ContestWorkspacePage() {
 											</div>
 											{selectedProblem.isProgressive && (
 												<p className="text-[11px] text-muted-foreground mt-2">
-													Stage {activeStage?.stageOrder ?? 1} of{" "}
+													Stage {activeStage?.stageOrder ?? 1} of{' '}
 													{selectedProblem.totalStages} — solve and submit to
 													unlock the next enhancement.
 												</p>
@@ -844,7 +844,7 @@ export default function ContestWorkspacePage() {
 										<div className="flex-1 overflow-y-auto px-5 py-4 space-y-5 text-sm text-foreground">
 											<div>
 												<h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
-													{activeStage ? "Stage Description" : "Description"}
+													{activeStage ? 'Stage Description' : 'Description'}
 												</h3>
 												<p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
 													{activeStage?.statement ||
@@ -988,7 +988,7 @@ export default function ContestWorkspacePage() {
 												value={editorTheme}
 												onValueChange={(v) => {
 													setEditorTheme(v);
-													localStorage.setItem("zap-editor-theme", v);
+													localStorage.setItem('zap-editor-theme', v);
 												}}
 											>
 												<SelectTrigger className="h-6 w-32 text-xs bg-muted border-border focus:border-primary/50">
@@ -1013,9 +1013,9 @@ export default function ContestWorkspacePage() {
 													variant="ghost"
 													onClick={() => {
 														setCode(
-															selectedProblem?.boilerplates[language] ?? "",
+															selectedProblem?.boilerplates[language] ?? '',
 														);
-														toast.info("Reset to boilerplate");
+														toast.info('Reset to boilerplate');
 													}}
 													disabled={running || submitting}
 													title="Reset to boilerplate"
@@ -1077,7 +1077,7 @@ export default function ContestWorkspacePage() {
 								<ResizablePanel defaultSize={35} minSize={15}>
 									<Tabs
 										value={bottomTab}
-										onValueChange={(v) => setBottomTab(v as "output" | "stdin")}
+										onValueChange={(v) => setBottomTab(v as 'output' | 'stdin')}
 										className="h-full flex flex-col bg-background"
 									>
 										<div className="h-9 border-b border-border bg-card flex items-center px-3 gap-1 shrink-0">
@@ -1098,13 +1098,13 @@ export default function ContestWorkspacePage() {
 											{(running || submitting) && (
 												<div className="ml-auto flex items-center gap-1.5 text-[10px] text-muted-foreground">
 													<Loader2 size={10} className="animate-spin" />
-													{running ? "Running…" : "Judging…"}
+													{running ? 'Running…' : 'Judging…'}
 												</div>
 											)}
 										</div>
 
 										<div className="flex-1 overflow-y-auto p-3">
-											{bottomTab === "stdin" && (
+											{bottomTab === 'stdin' && (
 												<textarea
 													value={stdin}
 													onChange={(e) => setStdin(e.target.value)}
@@ -1113,7 +1113,7 @@ export default function ContestWorkspacePage() {
 												/>
 											)}
 
-											{bottomTab === "output" &&
+											{bottomTab === 'output' &&
 												!runOutput &&
 												!running &&
 												!submitting && (
@@ -1125,16 +1125,16 @@ export default function ContestWorkspacePage() {
 													</div>
 												)}
 
-											{bottomTab === "output" && runOutput && (
+											{bottomTab === 'output' && runOutput && (
 												<div className="space-y-3">
 													{/* Test results grid (submissions only) */}
 													{runOutput.testResults.length > 0 && (
 														<div>
 															<div className="text-[10px] text-muted-foreground font-mono mb-2 uppercase tracking-wider">
-																Test Cases —{" "}
+																Test Cases —{' '}
 																{
 																	runOutput.testResults.filter(
-																		(r) => r.status === "passed",
+																		(r) => r.status === 'passed',
 																	).length
 																}
 																/{runOutput.testResults.length} Passed
@@ -1145,12 +1145,12 @@ export default function ContestWorkspacePage() {
 																		key={r.id}
 																		title={r.errorMessage ?? r.label}
 																		className={`flex items-center gap-1 px-2 py-1 rounded text-[11px] font-mono ${
-																			r.status === "passed"
-																				? "verdict-accepted"
-																				: "verdict-wrong"
+																			r.status === 'passed'
+																				? 'verdict-accepted'
+																				: 'verdict-wrong'
 																		}`}
 																	>
-																		{r.status === "passed" ? (
+																		{r.status === 'passed' ? (
 																			<CheckCircle size={10} />
 																		) : (
 																			<XCircle size={10} />
@@ -1258,7 +1258,7 @@ export default function ContestWorkspacePage() {
 				>
 					<DialogHeader>
 						<DialogTitle className="flex items-center gap-2">
-							<ShieldAlert size={18} className="text-warning" />{" "}
+							<ShieldAlert size={18} className="text-warning" />{' '}
 							{blocked?.title}
 						</DialogTitle>
 						<DialogDescription className="text-muted-foreground">

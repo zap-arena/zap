@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query';
 import {
 	BarChart3,
 	Activity,
@@ -8,20 +8,20 @@ import {
 	AlertTriangle,
 	Download,
 	FileText,
-} from "lucide-react";
-import { useState, useMemo } from "react";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-import AdminLayout from "../../components/AdminLayout";
-import { api } from "../../lib/api";
-import { Input } from "../../components/ui/input";
+} from 'lucide-react';
+import { useState, useMemo } from 'react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import AdminLayout from '../../components/AdminLayout';
+import { api } from '../../lib/api';
+import { Input } from '../../components/ui/input';
 import {
 	Tabs,
 	TabsContent,
 	TabsList,
 	TabsTrigger,
-} from "../../components/ui/tabs";
-import { Button } from "../../components/ui/button";
+} from '../../components/ui/tabs';
+import { Button } from '../../components/ui/button';
 import {
 	LineChart,
 	Line,
@@ -31,8 +31,8 @@ import {
 	Tooltip as RechartsTooltip,
 	ResponsiveContainer,
 	Legend,
-} from "recharts";
-import type { Contest } from "../../types";
+} from 'recharts';
+import type { Contest } from '../../types';
 
 interface UserAnalytics {
 	user: { id: string; name: string; email: string };
@@ -51,45 +51,45 @@ interface AdminUser {
 	email: string;
 }
 
-type SortField = "name" | "email" | "totalEvents" | "malpracticeScore";
+type SortField = 'name' | 'email' | 'totalEvents' | 'malpracticeScore';
 
 const CHART_COLORS = [
-	"hsl(var(--primary))",
-	"hsl(var(--success))",
-	"hsl(var(--warning))",
-	"hsl(var(--info))",
-	"hsl(var(--destructive))",
-	"#8b5cf6",
-	"#f97316",
-	"#14b8a6",
+	'hsl(var(--primary))',
+	'hsl(var(--success))',
+	'hsl(var(--warning))',
+	'hsl(var(--info))',
+	'hsl(var(--destructive))',
+	'#8b5cf6',
+	'#f97316',
+	'#14b8a6',
 ];
 
-const MALPRACTICE_LABELS = ["TAB_SWITCHED", "FULLSCREEN_EXITED", "COPY_PASTED"];
+const MALPRACTICE_LABELS = ['TAB_SWITCHED', 'FULLSCREEN_EXITED', 'COPY_PASTED'];
 
 export default function AdminAnalytics() {
-	const [interval, setInterval] = useState<"minute" | "hour" | "day">("hour");
-	const [selectedContest, setSelectedContest] = useState<string>("all");
-	const [selectedUser, setSelectedUser] = useState<string>("all");
+	const [interval, setInterval] = useState<'minute' | 'hour' | 'day'>('hour');
+	const [selectedContest, setSelectedContest] = useState<string>('all');
+	const [selectedUser, setSelectedUser] = useState<string>('all');
 
 	// Fetch filters data
 	const { data: contests = [] } = useQuery({
-		queryKey: ["admin-contests"],
-		queryFn: () => api.get<Contest[]>("/admin/contests"),
+		queryKey: ['admin-contests'],
+		queryFn: () => api.get<Contest[]>('/admin/contests'),
 	});
 
 	const { data: allUsers = [] } = useQuery({
-		queryKey: ["admin-users"],
-		queryFn: () => api.get<AdminUser[]>("/admin/users"),
+		queryKey: ['admin-users'],
+		queryFn: () => api.get<AdminUser[]>('/admin/users'),
 	});
 
 	// Fetch analytics data
 	const { data: usersData = [], isLoading: loadingUsers } = useQuery({
-		queryKey: ["admin-analytics-users", selectedContest, selectedUser],
+		queryKey: ['admin-analytics-users', selectedContest, selectedUser],
 		queryFn: () => {
 			const params = new URLSearchParams();
-			if (selectedContest !== "all")
-				params.append("contest_id", selectedContest);
-			if (selectedUser !== "all") params.append("user_id", selectedUser);
+			if (selectedContest !== 'all')
+				params.append('contest_id', selectedContest);
+			if (selectedUser !== 'all') params.append('user_id', selectedUser);
 			return api.get<UserAnalytics[]>(
 				`/admin/analytics/users?${params.toString()}`,
 			);
@@ -98,25 +98,25 @@ export default function AdminAnalytics() {
 
 	const { data: eventsData, isLoading: loadingEvents } = useQuery({
 		queryKey: [
-			"admin-analytics-events",
+			'admin-analytics-events',
 			interval,
 			selectedContest,
 			selectedUser,
 		],
 		queryFn: () => {
 			const params = new URLSearchParams({ interval });
-			if (selectedContest !== "all")
-				params.append("contest_id", selectedContest);
-			if (selectedUser !== "all") params.append("user_id", selectedUser);
+			if (selectedContest !== 'all')
+				params.append('contest_id', selectedContest);
+			if (selectedUser !== 'all') params.append('user_id', selectedUser);
 			return api.get<EventAnalytics>(
 				`/admin/analytics/events?${params.toString()}`,
 			);
 		},
 	});
 
-	const [search, setSearch] = useState("");
-	const [sortField, setSortField] = useState<SortField>("malpracticeScore");
-	const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+	const [search, setSearch] = useState('');
+	const [sortField, setSortField] = useState<SortField>('malpracticeScore');
+	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
 	const filteredAndSorted = useMemo(() => {
 		let result = [...usersData];
@@ -135,13 +135,13 @@ export default function AdminAnalytics() {
 			let valA: string | number;
 			let valB: string | number;
 
-			if (sortField === "name") {
-				valA = a.user.name || "";
-				valB = b.user.name || "";
-			} else if (sortField === "email") {
-				valA = a.user.email || "";
-				valB = b.user.email || "";
-			} else if (sortField === "malpracticeScore") {
+			if (sortField === 'name') {
+				valA = a.user.name || '';
+				valB = b.user.name || '';
+			} else if (sortField === 'email') {
+				valA = a.user.email || '';
+				valB = b.user.email || '';
+			} else if (sortField === 'malpracticeScore') {
 				valA = MALPRACTICE_LABELS.reduce(
 					(sum, label) => sum + (a.metrics[label] || 0),
 					0,
@@ -155,8 +155,8 @@ export default function AdminAnalytics() {
 				valB = Object.values(b.metrics).reduce((sum, c) => sum + c, 0);
 			}
 
-			if (valA < valB) return sortOrder === "asc" ? -1 : 1;
-			if (valA > valB) return sortOrder === "asc" ? 1 : -1;
+			if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+			if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
 			return 0;
 		});
 
@@ -165,10 +165,10 @@ export default function AdminAnalytics() {
 
 	const toggleSort = (field: SortField) => {
 		if (sortField === field) {
-			setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
 		} else {
 			setSortField(field);
-			setSortOrder("desc");
+			setSortOrder('desc');
 		}
 	};
 
@@ -182,8 +182,8 @@ export default function AdminAnalytics() {
 				size={12}
 				className={
 					sortField === field
-						? "text-primary"
-						: "text-muted-foreground opacity-50"
+						? 'text-primary'
+						: 'text-muted-foreground opacity-50'
 				}
 			/>
 		</button>
@@ -194,10 +194,10 @@ export default function AdminAnalytics() {
 	// Export functions
 	const exportCSV = () => {
 		const headers = [
-			"Candidate Name",
-			"Candidate Email",
-			"Malpractice Score",
-			"Total Events",
+			'Candidate Name',
+			'Candidate Email',
+			'Malpractice Score',
+			'Total Events',
 			...dynamicLabels,
 		];
 
@@ -220,39 +220,39 @@ export default function AdminAnalytics() {
 			];
 
 			// Escape commas and quotes for CSV
-			return rowData.map((val) => `"${val.replace(/"/g, '""')}"`).join(",");
+			return rowData.map((val) => `"${val.replace(/"/g, '""')}"`).join(',');
 		});
 
-		const csvContent = [headers.join(","), ...rows].join("\n");
-		const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+		const csvContent = [headers.join(','), ...rows].join('\n');
+		const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
 		const url = URL.createObjectURL(blob);
-		const link = document.createElement("a");
+		const link = document.createElement('a');
 		link.href = url;
-		link.setAttribute("download", "analytics_export.csv");
+		link.setAttribute('download', 'analytics_export.csv');
 		document.body.appendChild(link);
 		link.click();
 		document.body.removeChild(link);
 	};
 
 	const exportPDF = () => {
-		const doc = new jsPDF("landscape");
+		const doc = new jsPDF('landscape');
 
 		doc.setFontSize(16);
-		doc.text("Analytics Dashboard Export", 14, 15);
+		doc.text('Analytics Dashboard Export', 14, 15);
 
 		doc.setFontSize(10);
 		doc.text(
-			`Generated on: ${new Date().toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true })}`,
+			`Generated on: ${new Date().toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}`,
 			14,
 			22,
 		);
 
-		let filterText = "";
-		if (selectedContest !== "all") {
+		let filterText = '';
+		if (selectedContest !== 'all') {
 			const c = contests.find((c) => c.id === selectedContest);
 			filterText += `Contest: ${c?.name || selectedContest}   `;
 		}
-		if (selectedUser !== "all") {
+		if (selectedUser !== 'all') {
 			const u = allUsers.find((u) => u.id === selectedUser);
 			filterText += `Candidate: ${u?.name || selectedUser}`;
 		}
@@ -261,7 +261,7 @@ export default function AdminAnalytics() {
 		}
 
 		const headers = [
-			["Name", "Email", "Malpractice", "Total", ...dynamicLabels],
+			['Name', 'Email', 'Malpractice', 'Total', ...dynamicLabels],
 		];
 
 		const data = filteredAndSorted.map((row) => {
@@ -287,12 +287,12 @@ export default function AdminAnalytics() {
 			head: headers,
 			body: data,
 			startY: filterText ? 32 : 28,
-			theme: "grid",
+			theme: 'grid',
 			styles: { fontSize: 8 },
 			headStyles: { fillColor: [41, 128, 185] },
 		});
 
-		doc.save("analytics_export.pdf");
+		doc.save('analytics_export.pdf');
 	};
 
 	return (
@@ -415,10 +415,10 @@ export default function AdminAnalytics() {
 												fontSize={12}
 												tickFormatter={(val) => {
 													const d = new Date(val);
-													if (interval === "minute" || interval === "hour")
+													if (interval === 'minute' || interval === 'hour')
 														return d.toLocaleTimeString([], {
-															hour: "2-digit",
-															minute: "2-digit",
+															hour: '2-digit',
+															minute: '2-digit',
 															hour12: true,
 														});
 													return d.toLocaleDateString();
@@ -430,21 +430,21 @@ export default function AdminAnalytics() {
 											/>
 											<RechartsTooltip
 												contentStyle={{
-													backgroundColor: "hsl(var(--card))",
-													borderColor: "hsl(var(--border))",
-													color: "hsl(var(--foreground))",
+													backgroundColor: 'hsl(var(--card))',
+													borderColor: 'hsl(var(--border))',
+													color: 'hsl(var(--foreground))',
 												}}
 												labelFormatter={(val) =>
 													new Date(val).toLocaleString(undefined, {
-														month: "short",
-														day: "numeric",
-														hour: "numeric",
-														minute: "2-digit",
+														month: 'short',
+														day: 'numeric',
+														hour: 'numeric',
+														minute: '2-digit',
 														hour12: true,
 													})
 												}
 											/>
-											<Legend wrapperStyle={{ fontSize: "12px" }} />
+											<Legend wrapperStyle={{ fontSize: '12px' }} />
 											{dynamicLabels.map((label, index) => (
 												<Line
 													key={label}
@@ -509,10 +509,10 @@ export default function AdminAnalytics() {
 										Candidate Event Matrix
 									</h3>
 									<span className="text-xs text-muted-foreground px-2 py-0.5 rounded-full bg-muted ml-2">
-										{filteredAndSorted.length}{" "}
+										{filteredAndSorted.length}{' '}
 										{filteredAndSorted.length === 1
-											? "candidate"
-											: "candidates"}
+											? 'candidate'
+											: 'candidates'}
 									</span>
 								</div>
 
@@ -535,19 +535,19 @@ export default function AdminAnalytics() {
 									<thead>
 										<tr>
 											<th className="text-left whitespace-nowrap">
-												{renderSortHeader("name", "Candidate")}
+												{renderSortHeader('name', 'Candidate')}
 											</th>
 											<th className="text-left whitespace-nowrap">
-												{renderSortHeader("email", "Contact")}
+												{renderSortHeader('email', 'Contact')}
 											</th>
 											<th className="text-center whitespace-nowrap border-l border-r border-border bg-destructive/5 text-destructive">
 												{renderSortHeader(
-													"malpracticeScore",
-													"Malpractice Score",
+													'malpracticeScore',
+													'Malpractice Score',
 												)}
 											</th>
 											<th className="text-center whitespace-nowrap">
-												{renderSortHeader("totalEvents", "Total Events")}
+												{renderSortHeader('totalEvents', 'Total Events')}
 											</th>
 
 											{/* Dynamic Columns */}
@@ -578,8 +578,8 @@ export default function AdminAnalytics() {
 													className="text-center py-8 text-muted-foreground text-sm"
 												>
 													{search
-														? "No candidates matched your search criteria."
-														: "No candidate tracking data available yet."}
+														? 'No candidates matched your search criteria.'
+														: 'No candidate tracking data available yet.'}
 												</td>
 											</tr>
 										) : (
@@ -635,7 +635,7 @@ export default function AdminAnalytics() {
 															return (
 																<td
 																	key={label}
-																	className={`text-center font-mono text-sm ${count > 0 ? (isMalpractice ? "text-destructive font-bold" : "text-foreground") : "text-muted-foreground/30"}`}
+																	className={`text-center font-mono text-sm ${count > 0 ? (isMalpractice ? 'text-destructive font-bold' : 'text-foreground') : 'text-muted-foreground/30'}`}
 																>
 																	{count}
 																</td>

@@ -1,16 +1,16 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Code2, Eye, EyeOff, Loader2, ArrowLeft } from "lucide-react";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
-import { useAuth } from "../store/auth";
-import { toast } from "sonner";
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Code2, Eye, EyeOff, Loader2, ArrowLeft } from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { useAuth } from '../store/auth';
+import { toast } from 'sonner';
 
 export default function RegisterPage() {
 	const { register } = useAuth();
 	const navigate = useNavigate();
-	const [form, setForm] = useState({ name: "", email: "", password: "" });
+	const [form, setForm] = useState({ name: '', email: '', password: '' });
 	const [showPw, setShowPw] = useState(false);
 	const [loading, setLoading] = useState(false);
 
@@ -20,34 +20,34 @@ export default function RegisterPage() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (form.password.length < 8) {
-			toast.error("Password must be at least 8 characters");
+			toast.error('Password must be at least 8 characters');
 			return;
 		}
 		setLoading(true);
 		const res = await register(form.name, form.email, form.password);
 		setLoading(false);
 		if (res.ok) {
-			toast.success("Account created! Welcome to ZAP.");
-			navigate("/");
-		} else toast.error(res.error || "Registration failed");
+			toast.success('Account created! Welcome to ZAP.');
+			navigate('/');
+		} else toast.error(res.error || 'Registration failed');
 	};
 
 	return (
 		<div
 			className="min-h-screen flex bg-background"
-			style={{ background: "var(--gradient-dark)" }}
+			style={{ background: 'var(--gradient-dark)' }}
 		>
 			{/* Left panel */}
 			<div
 				className="hidden lg:flex flex-col w-1/2 relative overflow-hidden"
 				style={{
 					background:
-						"radial-gradient(ellipse at 30% 50%, hsl(174 100% 42% / 0.08), transparent 60%), hsl(220 18% 9%)",
+						'radial-gradient(ellipse at 30% 50%, hsl(174 100% 42% / 0.08), transparent 60%), hsl(220 18% 9%)',
 				}}
 			>
 				<div
 					className="absolute inset-0"
-					style={{ background: "var(--gradient-glow)" }}
+					style={{ background: 'var(--gradient-glow)' }}
 				/>
 				<div className="relative z-10 flex flex-col h-full p-12 text-white">
 					<div className="flex items-center gap-3 text-primary">
@@ -71,9 +71,9 @@ export default function RegisterPage() {
 						</div>
 						<div className="grid grid-cols-3 gap-4">
 							{[
-								["500+", "Problems"],
-								["10K+", "Developers"],
-								["200+", "Contests"],
+								['500+', 'Problems'],
+								['10K+', 'Developers'],
+								['200+', 'Contests'],
 							].map(([val, label]) => (
 								<div
 									key={label}
@@ -119,7 +119,7 @@ export default function RegisterPage() {
 								id="name"
 								placeholder="John Doe"
 								value={form.name}
-								onChange={set("name")}
+								onChange={set('name')}
 								className="bg-muted border-border focus:border-primary/50 h-11"
 								required
 							/>
@@ -131,7 +131,7 @@ export default function RegisterPage() {
 								type="email"
 								placeholder="you@example.com"
 								value={form.email}
-								onChange={set("email")}
+								onChange={set('email')}
 								className="bg-muted border-border focus:border-primary/50 h-11"
 								required
 							/>
@@ -141,10 +141,10 @@ export default function RegisterPage() {
 							<div className="relative">
 								<Input
 									id="password"
-									type={showPw ? "text" : "password"}
+									type={showPw ? 'text' : 'password'}
 									placeholder="Min. 8 characters"
 									value={form.password}
-									onChange={set("password")}
+									onChange={set('password')}
 									className="bg-muted border-border focus:border-primary/50 h-11 pr-10"
 									required
 								/>
@@ -168,13 +168,13 @@ export default function RegisterPage() {
 									Creating account…
 								</>
 							) : (
-								"Create Account"
+								'Create Account'
 							)}
 						</Button>
 					</form>
 
 					<p className="text-center text-sm text-muted-foreground mt-6">
-						Already have an account?{" "}
+						Already have an account?{' '}
 						<Link
 							to="/login"
 							className="text-primary hover:underline font-medium"

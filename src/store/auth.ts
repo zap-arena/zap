@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import type { User } from "../types";
-import { api, ApiError, getToken, setToken } from "../lib/api";
+import { useState, useEffect } from 'react';
+import type { User } from '../types';
+import { api, ApiError, getToken, setToken } from '../lib/api';
 
 let _user: User | null = null;
 let _initialized = false;
@@ -14,7 +14,7 @@ async function loadCurrentUser() {
 		return;
 	}
 	try {
-		_user = await api.get<User>("/auth/me");
+		_user = await api.get<User>('/auth/me');
 	} catch {
 		setToken(null);
 		_user = null;
@@ -43,7 +43,7 @@ export const authStore = {
 		password: string,
 	): Promise<{ ok: boolean; error?: string }> => {
 		try {
-			const res = await api.post<{ token: string; user: User }>("/auth/login", {
+			const res = await api.post<{ token: string; user: User }>('/auth/login', {
 				email,
 				password,
 			});
@@ -54,7 +54,7 @@ export const authStore = {
 		} catch (err) {
 			return {
 				ok: false,
-				error: err instanceof ApiError ? err.message : "Login failed",
+				error: err instanceof ApiError ? err.message : 'Login failed',
 			};
 		}
 	},
@@ -65,7 +65,7 @@ export const authStore = {
 	): Promise<{ ok: boolean; error?: string }> => {
 		try {
 			const res = await api.post<{ token: string; user: User }>(
-				"/auth/register",
+				'/auth/register',
 				{ name, email, password },
 			);
 			setToken(res.token);
@@ -75,13 +75,13 @@ export const authStore = {
 		} catch (err) {
 			return {
 				ok: false,
-				error: err instanceof ApiError ? err.message : "Registration failed",
+				error: err instanceof ApiError ? err.message : 'Registration failed',
 			};
 		}
 	},
 	logout: async () => {
 		try {
-			await api.post("/auth/logout");
+			await api.post('/auth/logout');
 		} catch {
 			/* ignore */
 		}
