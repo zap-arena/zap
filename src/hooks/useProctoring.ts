@@ -19,7 +19,7 @@ const BLOCK_MESSAGES: Partial<Record<ProctorEventType, BlockedAction>> = {
  * Locks down the contest workspace: blocks copy/paste/context menu/devtools
  * shortcuts, keeps the page fullscreen, and reports every attempt in batches.
  */
-export function useProctoring(contestId: string | undefined, active: boolean, problemId: () => string | undefined) {
+export function useProctoring(contestId: string | undefined, active: boolean, problemId: () => string | undefined, allowClipboard = false) {
   const trackerRef = useRef<ProctorTracker | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(() => !!document.fullscreenElement);
   const [blocked, setBlocked] = useState<BlockedAction | null>(null);
@@ -45,9 +45,9 @@ export function useProctoring(contestId: string | undefined, active: boolean, pr
         report('ESCAPE_PRESSED');
         return;
       }
-      if (ctrl && key === 'c') { e.preventDefault(); report('COPY_BLOCKED', { source: 'keyboard' }); return; }
-      if (ctrl && key === 'x') { e.preventDefault(); report('CUT_BLOCKED', { source: 'keyboard' }); return; }
-      if (ctrl && key === 'v') { e.preventDefault(); report('PASTE_BLOCKED', { source: 'keyboard' }); return; }
+      if (ctrl && key === 'c') { if (!allowClipboard) { e.preventDefault(); report('COPY_BLOCKED', { source: 'keyboard' }); } return; }
+      if (ctrl && key === 'x') { if (!allowClipboard) { e.preventDefault(); report('CUT_BLOCKED', { source: 'keyboard' }); } return; }
+      if (ctrl && key === 'v') { if (!allowClipboard) { e.preventDefault(); report('PASTE_BLOCKED', { source: 'keyboard' }); } return; }
 
       const devtools =
         e.key === 'F12' ||
@@ -87,10 +87,12 @@ export function useProctoring(contestId: string | undefined, active: boolean, pr
 
     // Capture phase so the editor cannot swallow these first.
     document.addEventListener('keydown', onKeyDown, true);
-    document.addEventListener('copy', onCopy, true);
-    document.addEventListener('cut', onCut, true);
-    document.addEventListener('paste', onPaste, true);
-    document.addEventListener('contextmenu', onContextMenu, true);
+    if (!allowClipboard) {
+      document.addEventListener('copy', onCopy, true);
+      document.addEventListener('cut', onCut, true);
+      document.addEventListener('paste', onPaste, true);
+      document.addEventListener('contextmenu', onContextMenu, true);
+    }
     document.addEventListener('visibilitychange', onVisibility);
     document.addEventListener('fullscreenchange', onFullscreenChange);
     window.addEventListener('blur', onBlur);
@@ -109,7 +111,7 @@ export function useProctoring(contestId: string | undefined, active: boolean, pr
       tracker.dispose();
       trackerRef.current = null;
     };
-  }, [contestId, active, problemId, report]);
+  }, [contestId, active, problemId, report, allowClipboard]);
 
   /** Must be called from a user gesture — browsers reject programmatic fullscreen otherwise. */
   const requestFullscreen = useCallback(async () => {

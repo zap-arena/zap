@@ -22,6 +22,7 @@ import VerdictBadge from '../components/VerdictBadge';
 import DifficultyBadge from '../components/DifficultyBadge';
 import ThemeToggle from '../components/ThemeToggle';
 import { useProctoring } from '../hooks/useProctoring';
+import { useAuth } from '../store/auth';
 import { api, ApiError } from '../lib/api';
 import { MONACO_THEMES, EDITOR_THEME_OPTIONS } from '../lib/monaco-themes';
 import type { Language, Verdict, Problem, Contest, Submission, LeaderboardEntry } from '../types';
@@ -57,11 +58,12 @@ interface RunOutput {
 }
 
 function CodeEditor({
-  value, onChange, language, onBlockedAction, editorTheme
+  value, onChange, language, onBlockedAction, editorTheme, allowClipboard
 }: {
   value: string; onChange: (v: string) => void; language: Language;
   onBlockedAction?: (type: 'COPY_BLOCKED' | 'CUT_BLOCKED' | 'PASTE_BLOCKED') => void;
   editorTheme: string;
+  allowClipboard?: boolean;
 }) {
   const monacoLang = LANGUAGES.find(l => l.value === language)?.monacoLang ?? 'plaintext';
 
@@ -80,13 +82,16 @@ function CodeEditor({
               monaco.editor.defineTheme(themeName, themeData as any);
             });
             // Monaco handles clipboard internally, so the document listeners never fire here.
-            const block = (type: 'COPY_BLOCKED' | 'CUT_BLOCKED' | 'PASTE_BLOCKED') => () => onBlockedAction?.(type);
-            editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyC, block('COPY_BLOCKED'));
-            editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyX, block('CUT_BLOCKED'));
-            editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyV, block('PASTE_BLOCKED'));
-            editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyV, block('PASTE_BLOCKED'));
-            editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Insert, block('COPY_BLOCKED'));
-            editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.Insert, block('PASTE_BLOCKED'));
+            // Admins keep native clipboard shortcuts; everyone else is blocked.
+            if (!allowClipboard) {
+              const block = (type: 'COPY_BLOCKED' | 'CUT_BLOCKED' | 'PASTE_BLOCKED') => () => onBlockedAction?.(type);
+              editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyC, block('COPY_BLOCKED'));
+              editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyX, block('CUT_BLOCKED'));
+              editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyV, block('PASTE_BLOCKED'));
+              editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyV, block('PASTE_BLOCKED'));
+              editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Insert, block('COPY_BLOCKED'));
+              editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.Insert, block('PASTE_BLOCKED'));
+            }
           }}
           options={{
             fontSize: 13,
@@ -95,7 +100,7 @@ function CodeEditor({
             scrollBeyondLastLine: false,
             tabSize: 2,
             automaticLayout: true,
-            contextmenu: false,
+            contextmenu: !!allowClipboard,
           }}
         />
       </div>
@@ -183,12 +188,15 @@ export default function ContestWorkspacePage() {
   );
 
   // Proctoring: lockdown + event tracking, active for the whole attempt.
+  // Admins are exempt from the clipboard lockdown so they can test problems.
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
   const attemptActive = !!session?.started && session.status === 'in_progress';
   const selectedProblemRef = useRef<Problem | undefined>(undefined);
   selectedProblemRef.current = selectedProblem;
   const currentProblemId = useCallback(() => selectedProblemRef.current?.id, []);
   const { isFullscreen, requestFullscreen, blocked, dismissBlocked, report: reportBlocked } =
-    useProctoring(contestId, attemptActive, currentProblemId);
+    useProctoring(contestId, attemptActive, currentProblemId, isAdmin);
 
   const { data: notifications = [] } = useQuery({
     queryKey: ['contest-notifications', contestId],
@@ -577,7 +585,7 @@ export default function ContestWorkspacePage() {
               </div>
             </ResizablePanel>
 
-            <ResizableHandle withHandle className="bg-transparent hover:bg-border/50 transition-colors" />
+            <ResizableHandle withHandle className="bg-border hover:bg-primary/50 transition-colors" />
 
             {/* Editor + Output panel */}
             <ResizablePanel defaultSize={62} minSize={40}>
@@ -655,6 +663,7 @@ export default function ContestWorkspacePage() {
                         language={language}
                         editorTheme={editorTheme}
                         onBlockedAction={reportBlocked}
+                        allowClipboard={isAdmin}
                         onChange={(v) => {
                           setCode(v);
                           if (selectedProblem) saveToStore(selectedProblem.id, language, v);
@@ -664,7 +673,7 @@ export default function ContestWorkspacePage() {
                   </div>
                 </ResizablePanel>
 
-                <ResizableHandle withHandle className="bg-transparent hover:bg-border/50 transition-colors" />
+                <ResizableHandle withHandle className="bg-border hover:bg-primary/50 transition-colors" />
 
                 {/* Output panel */}
                 <ResizablePanel defaultSize={35} minSize={15}>
