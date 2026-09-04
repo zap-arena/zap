@@ -1,0 +1,8 @@
+{
+  "name": "Hidden 2 - no repeats at all",
+  "input": "7\n1 2 3 4 5 6 7",
+  "expected_output": "0",
+  "hidden": true,
+  "marks": 37,
+  "order": 4
+}

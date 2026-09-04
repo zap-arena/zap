@@ -1,0 +1,8 @@
+{
+  "name": "Hidden - mixed symbols and digits",
+  "input": "aA1!aA1!bB2@",
+  "expected_output": "8",
+  "hidden": true,
+  "marks": 30,
+  "order": 4
+}

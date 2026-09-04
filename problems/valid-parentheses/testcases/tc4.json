@@ -1,0 +1,8 @@
+{
+  "name": "Hidden - unclosed tail",
+  "input": "{[()]}(((",
+  "expected_output": "false",
+  "hidden": true,
+  "marks": 30,
+  "order": 4
+}

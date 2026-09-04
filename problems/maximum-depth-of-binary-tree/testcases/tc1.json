@@ -1,0 +1,8 @@
+{
+  "name": "Sample 1 - balanced right subtree",
+  "input": "7\n3 9 20 -1 -1 15 7",
+  "expected_output": "3",
+  "hidden": false,
+  "marks": 20,
+  "order": 1
+}

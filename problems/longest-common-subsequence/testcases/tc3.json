@@ -1,0 +1,8 @@
+{
+  "name": "Hidden - identical strings",
+  "input": "abcdefghij\nabcdefghij",
+  "expected_output": "10",
+  "hidden": true,
+  "marks": 30,
+  "order": 3
+}

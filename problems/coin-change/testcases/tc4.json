@@ -1,0 +1,8 @@
+{
+  "name": "Hidden - greedy fails",
+  "input": "3\n1 6 9\n12",
+  "expected_output": "2",
+  "hidden": true,
+  "marks": 30,
+  "order": 4
+}

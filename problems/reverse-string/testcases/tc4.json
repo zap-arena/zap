@@ -1,0 +1,8 @@
+{
+  "name": "Hidden - palindrome with digits",
+  "input": "ab12321ba",
+  "expected_output": "ab12321ba",
+  "hidden": true,
+  "marks": 30,
+  "order": 4
+}

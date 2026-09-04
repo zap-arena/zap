@@ -1,0 +1,26 @@
+{
+  "title": "Merge Sorted Array",
+  "slug": "merge-sorted-array",
+  "difficulty": "Easy",
+  "inputFormat": "Line 1: integer m.\nLine 2: m space-separated integers, sorted ascending (may be empty).\nLine 3: integer n.\nLine 4: n space-separated integers, sorted ascending (may be empty).",
+  "outputFormat": "m + n space-separated integers: the merged array in ascending order.",
+  "constraints": "0 <= m, n <= 10^5\n1 <= m + n\n-10^9 <= values <= 10^9\nBoth input arrays are already sorted ascending.",
+  "examples": [
+    {
+      "input": "3\n1 2 3\n3\n2 5 6",
+      "output": "1 2 2 3 5 6",
+      "explanation": "The two sorted arrays interleave into one sorted array of length 6."
+    },
+    {
+      "input": "1\n1\n0\n",
+      "output": "1",
+      "explanation": "The second array is empty, so the result is the first array."
+    }
+  ],
+  "tags": ["array", "two-pointers", "sorting"],
+  "languages": ["c", "cpp", "java", "python"],
+  "timeLimit": 2,
+  "memoryLimit": 256,
+  "maxScore": 100,
+  "status": "active"
+}
