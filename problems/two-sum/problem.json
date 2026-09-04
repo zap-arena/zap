@@ -1,26 +1,26 @@
 {
-	"title": "Two Sum",
-	"slug": "two-sum",
-	"difficulty": "Easy",
-	"inputFormat": "Line 1: integer n, the number of elements.\nLine 2: n space-separated integers, the array nums.\nLine 3: integer target.",
-	"outputFormat": "Two space-separated indices i and j (i < j) such that nums[i] + nums[j] == target.",
-	"constraints": "2 <= n <= 10^4\n-10^9 <= nums[i] <= 10^9\n-10^9 <= target <= 10^9\nExactly one valid answer exists.",
-	"examples": [
-		{
-			"input": "4\n2 7 11 15\n9",
-			"output": "0 1",
-			"explanation": "nums[0] + nums[1] == 2 + 7 == 9."
-		},
-		{
-			"input": "3\n3 2 4\n6",
-			"output": "1 2",
-			"explanation": "nums[1] + nums[2] == 2 + 4 == 6."
-		}
-	],
-	"tags": ["array", "hash-map"],
-	"languages": ["c", "cpp", "java", "python"],
-	"timeLimit": 2,
-	"memoryLimit": 256,
-	"maxScore": 100,
-	"status": "active"
+  "title": "Two Sum",
+  "slug": "two-sum",
+  "difficulty": "Easy",
+  "inputFormat": "Line 1: integer n, the number of elements.\nLine 2: n space-separated integers, the array nums.\nLine 3: integer target.",
+  "outputFormat": "Two space-separated indices i and j (i < j) such that nums[i] + nums[j] == target.",
+  "constraints": "2 <= n <= 10^4\n-10^9 <= nums[i] <= 10^9\n-10^9 <= target <= 10^9\nExactly one valid answer exists.",
+  "examples": [
+    {
+      "input": "4\n2 7 11 15\n9",
+      "output": "0 1",
+      "explanation": "nums[0] + nums[1] == 2 + 7 == 9."
+    },
+    {
+      "input": "3\n3 2 4\n6",
+      "output": "1 2",
+      "explanation": "nums[1] + nums[2] == 2 + 4 == 6."
+    }
+  ],
+  "tags": ["array", "hash-map"],
+  "languages": ["c", "cpp", "java", "python"],
+  "timeLimit": 2,
+  "memoryLimit": 256,
+  "maxScore": 100,
+  "status": "active"
 }

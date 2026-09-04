@@ -1,8 +1,8 @@
 {
-	"name": "Sample 2 - deep basin",
-	"input": "6\n4 2 0 3 2 5",
-	"expected_output": "9",
-	"hidden": false,
-	"marks": 20,
-	"order": 2
+  "name": "Sample 2 - deep basin",
+  "input": "6\n4 2 0 3 2 5",
+  "expected_output": "9",
+  "hidden": false,
+  "marks": 20,
+  "order": 2
 }

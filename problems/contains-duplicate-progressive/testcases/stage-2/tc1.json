@@ -1,8 +1,8 @@
 {
-	"name": "Sample 1 - duplicate index",
-	"input": "5\n1 2 3 2 5",
-	"expected_output": "3",
-	"hidden": false,
-	"marks": 25,
-	"order": 1
+  "name": "Sample 1 - duplicate index",
+  "input": "5\n1 2 3 2 5",
+  "expected_output": "3",
+  "hidden": false,
+  "marks": 25,
+  "order": 1
 }

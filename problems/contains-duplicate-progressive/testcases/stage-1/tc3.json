@@ -1,8 +1,8 @@
 {
-	"name": "Hidden 1 - no duplicate larger",
-	"input": "4\n10 20 30 40",
-	"expected_output": "0",
-	"hidden": true,
-	"marks": 25,
-	"order": 3
+  "name": "Hidden 1 - no duplicate larger",
+  "input": "4\n10 20 30 40",
+  "expected_output": "0",
+  "hidden": true,
+  "marks": 25,
+  "order": 3
 }

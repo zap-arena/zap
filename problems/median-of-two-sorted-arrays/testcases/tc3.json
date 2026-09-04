@@ -1,8 +1,8 @@
 {
-	"name": "Hidden - one array empty",
-	"input": "0\n\n5\n-4 -1 0 6 9",
-	"expected_output": "0.00000",
-	"hidden": true,
-	"marks": 30,
-	"order": 3
+  "name": "Hidden - one array empty",
+  "input": "0\n\n5\n-4 -1 0 6 9",
+  "expected_output": "0.00000",
+  "hidden": true,
+  "marks": 30,
+  "order": 3
 }

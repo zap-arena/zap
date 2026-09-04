@@ -1,8 +1,8 @@
 {
-	"name": "Sample 2 - three steps",
-	"input": "3",
-	"expected_output": "3",
-	"hidden": false,
-	"marks": 20,
-	"order": 2
+  "name": "Sample 2 - three steps",
+  "input": "3",
+  "expected_output": "3",
+  "hidden": false,
+  "marks": 20,
+  "order": 2
 }

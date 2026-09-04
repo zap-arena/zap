@@ -1,26 +1,26 @@
 {
-	"title": "Longest Substring Without Repeating Characters",
-	"slug": "longest-substring-without-repeating-characters",
-	"difficulty": "Medium",
-	"inputFormat": "Line 1: the string s (may be empty).",
-	"outputFormat": "A single integer: the length of the longest substring without repeating characters.",
-	"constraints": "0 <= |s| <= 5 * 10^4\ns consists of printable ASCII characters without spaces.",
-	"examples": [
-		{
-			"input": "abcabcbb",
-			"output": "3",
-			"explanation": "The longest such substring is \"abc\", of length 3."
-		},
-		{
-			"input": "bbbbb",
-			"output": "1",
-			"explanation": "The longest such substring is \"b\"."
-		}
-	],
-	"tags": ["string", "sliding-window", "hash-map"],
-	"languages": ["c", "cpp", "java", "python"],
-	"timeLimit": 2,
-	"memoryLimit": 256,
-	"maxScore": 100,
-	"status": "active"
+  "title": "Longest Substring Without Repeating Characters",
+  "slug": "longest-substring-without-repeating-characters",
+  "difficulty": "Medium",
+  "inputFormat": "Line 1: the string s (may be empty).",
+  "outputFormat": "A single integer: the length of the longest substring without repeating characters.",
+  "constraints": "0 <= |s| <= 5 * 10^4\ns consists of printable ASCII characters without spaces.",
+  "examples": [
+    {
+      "input": "abcabcbb",
+      "output": "3",
+      "explanation": "The longest such substring is \"abc\", of length 3."
+    },
+    {
+      "input": "bbbbb",
+      "output": "1",
+      "explanation": "The longest such substring is \"b\"."
+    }
+  ],
+  "tags": ["string", "sliding-window", "hash-map"],
+  "languages": ["c", "cpp", "java", "python"],
+  "timeLimit": 2,
+  "memoryLimit": 256,
+  "maxScore": 100,
+  "status": "active"
 }

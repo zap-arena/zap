@@ -1,8 +1,8 @@
 {
-	"name": "Sample 1 - target present",
-	"input": "6\n-1 0 3 5 9 12\n9",
-	"expected_output": "4",
-	"hidden": false,
-	"marks": 20,
-	"order": 1
+  "name": "Sample 1 - target present",
+  "input": "6\n-1 0 3 5 9 12\n9",
+  "expected_output": "4",
+  "hidden": false,
+  "marks": 20,
+  "order": 1
 }

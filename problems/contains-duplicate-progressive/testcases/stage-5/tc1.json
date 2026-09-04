@@ -1,8 +1,8 @@
 {
-	"name": "Sample 1 - two duplicates",
-	"input": "5\n3 1 3 2 1",
-	"expected_output": "1 3",
-	"hidden": false,
-	"marks": 37,
-	"order": 1
+  "name": "Sample 1 - two duplicates",
+  "input": "5\n3 1 3 2 1",
+  "expected_output": "1 3",
+  "hidden": false,
+  "marks": 37,
+  "order": 1
 }

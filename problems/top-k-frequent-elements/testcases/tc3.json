@@ -1,8 +1,8 @@
 {
-	"name": "Hidden - all frequencies tied",
-	"input": "5\n5 4 3 2 1\n3",
-	"expected_output": "1 2 3",
-	"hidden": true,
-	"marks": 30,
-	"order": 3
+  "name": "Hidden - all frequencies tied",
+  "input": "5\n5 4 3 2 1\n3",
+  "expected_output": "1 2 3",
+  "hidden": true,
+  "marks": 30,
+  "order": 3
 }

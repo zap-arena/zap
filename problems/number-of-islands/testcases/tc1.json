@@ -1,8 +1,8 @@
 {
-	"name": "Sample 1 - one large island",
-	"input": "4 5\n11110\n11010\n11000\n00000",
-	"expected_output": "1",
-	"hidden": false,
-	"marks": 20,
-	"order": 1
+  "name": "Sample 1 - one large island",
+  "input": "4 5\n11110\n11010\n11000\n00000",
+  "expected_output": "1",
+  "hidden": false,
+  "marks": 20,
+  "order": 1
 }

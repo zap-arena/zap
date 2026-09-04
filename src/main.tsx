@@ -5,13 +5,13 @@ import './index.css';
 import App from './App.tsx';
 
 const queryClient = new QueryClient({
-	defaultOptions: { queries: { staleTime: 15_000, retry: 1 } },
+  defaultOptions: { queries: { staleTime: 15_000, retry: 1 } },
 });
 
 createRoot(document.getElementById('root')!).render(
-	<StrictMode>
-		<QueryClientProvider client={queryClient}>
-			<App />
-		</QueryClientProvider>
-	</StrictMode>,
+  <StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+  </StrictMode>,
 );

@@ -1,8 +1,8 @@
 {
-	"name": "Sample 1 - punctuation and case",
-	"input": "A man, a plan, a canal: Panama",
-	"expected_output": "true",
-	"hidden": false,
-	"marks": 20,
-	"order": 1
+  "name": "Sample 1 - punctuation and case",
+  "input": "A man, a plan, a canal: Panama",
+  "expected_output": "true",
+  "hidden": false,
+  "marks": 20,
+  "order": 1
 }

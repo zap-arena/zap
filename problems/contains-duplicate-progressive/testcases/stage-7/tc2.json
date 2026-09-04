@@ -1,8 +1,8 @@
 {
-	"name": "Sample 2 - all unique",
-	"input": "4\n1 2 3 4",
-	"expected_output": "4",
-	"hidden": false,
-	"marks": 50,
-	"order": 2
+  "name": "Sample 2 - all unique",
+  "input": "4\n1 2 3 4",
+  "expected_output": "4",
+  "hidden": false,
+  "marks": 50,
+  "order": 2
 }

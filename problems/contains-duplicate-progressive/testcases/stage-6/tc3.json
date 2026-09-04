@@ -1,8 +1,8 @@
 {
-	"name": "Hidden 1 - repeat exactly at distance 3",
-	"input": "5\n9 1 2 3 9",
-	"expected_output": "0",
-	"hidden": true,
-	"marks": 37,
-	"order": 3
+  "name": "Hidden 1 - repeat exactly at distance 3",
+  "input": "5\n9 1 2 3 9",
+  "expected_output": "0",
+  "hidden": true,
+  "marks": 37,
+  "order": 3
 }

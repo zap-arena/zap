@@ -1,8 +1,8 @@
 {
-	"name": "Hidden - duplicate values",
-	"input": "2\n3 3\n6",
-	"expected_output": "0 1",
-	"hidden": true,
-	"marks": 30,
-	"order": 3
+  "name": "Hidden - duplicate values",
+  "input": "2\n3 3\n6",
+  "expected_output": "0 1",
+  "hidden": true,
+  "marks": 30,
+  "order": 3
 }

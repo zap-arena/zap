@@ -1,8 +1,8 @@
 {
-	"name": "Sample 2 - mixed case",
-	"input": "CodeArena",
-	"expected_output": "anerAedoC",
-	"hidden": false,
-	"marks": 20,
-	"order": 2
+  "name": "Sample 2 - mixed case",
+  "input": "CodeArena",
+  "expected_output": "anerAedoC",
+  "hidden": false,
+  "marks": 20,
+  "order": 2
 }

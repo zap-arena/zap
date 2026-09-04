@@ -1,8 +1,8 @@
 {
-	"name": "Sample 2 - empty second array",
-	"input": "1\n1\n0\n",
-	"expected_output": "1",
-	"hidden": false,
-	"marks": 20,
-	"order": 2
+  "name": "Sample 2 - empty second array",
+  "input": "1\n1\n0\n",
+  "expected_output": "1",
+  "hidden": false,
+  "marks": 20,
+  "order": 2
 }

@@ -1,8 +1,8 @@
 {
-	"name": "Sample 2 - none",
-	"input": "3\n1 2 3",
-	"expected_output": "",
-	"hidden": false,
-	"marks": 37,
-	"order": 2
+  "name": "Sample 2 - none",
+  "input": "3\n1 2 3",
+  "expected_output": "",
+  "hidden": false,
+  "marks": 37,
+  "order": 2
 }

@@ -1,8 +1,8 @@
 {
-	"name": "Hidden 2 - repeats at both ends",
-	"input": "6\n1 2 1 3 4 2",
-	"expected_output": "4",
-	"hidden": true,
-	"marks": 50,
-	"order": 4
+  "name": "Hidden 2 - repeats at both ends",
+  "input": "6\n1 2 1 3 4 2",
+  "expected_output": "4",
+  "hidden": true,
+  "marks": 50,
+  "order": 4
 }

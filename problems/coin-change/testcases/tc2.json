@@ -1,8 +1,8 @@
 {
-	"name": "Sample 2 - impossible amount",
-	"input": "1\n2\n3",
-	"expected_output": "-1",
-	"hidden": false,
-	"marks": 20,
-	"order": 2
+  "name": "Sample 2 - impossible amount",
+  "input": "1\n2\n3",
+  "expected_output": "-1",
+  "hidden": false,
+  "marks": 20,
+  "order": 2
 }

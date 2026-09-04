@@ -1,8 +1,8 @@
 {
-	"name": "Hidden - negatives with k equal to distinct count",
-	"input": "9\n-1 -1 2 2 2 -5 -5 -5 7\n4",
-	"expected_output": "-5 2 -1 7",
-	"hidden": true,
-	"marks": 30,
-	"order": 4
+  "name": "Hidden - negatives with k equal to distinct count",
+  "input": "9\n-1 -1 2 2 2 -5 -5 -5 7\n4",
+  "expected_output": "-5 2 -1 7",
+  "hidden": true,
+  "marks": 30,
+  "order": 4
 }

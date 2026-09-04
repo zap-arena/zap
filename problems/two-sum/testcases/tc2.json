@@ -1,8 +1,8 @@
 {
-	"name": "Sample 2 - answer not at start",
-	"input": "3\n3 2 4\n6",
-	"expected_output": "1 2",
-	"hidden": false,
-	"marks": 20,
-	"order": 2
+  "name": "Sample 2 - answer not at start",
+  "input": "3\n3 2 4\n6",
+  "expected_output": "1 2",
+  "hidden": false,
+  "marks": 20,
+  "order": 2
 }

@@ -1,80 +1,80 @@
 {
-	"title": "Contains Duplicate (Code War Chain)",
-	"slug": "contains-duplicate-progressive",
-	"difficulty": "Medium",
-	"isProgressive": true,
-	"inputFormat": "Line 1: integer n, the number of elements.\nLine 2: n space-separated integers, the array nums.",
-	"outputFormat": "A single integer, as described by the current stage.",
-	"constraints": "1 <= n <= 20000\n-10^9 <= nums[i] <= 10^9",
-	"examples": [
-		{
-			"input": "5\n1 2 3 2 5",
-			"output": "1",
-			"explanation": "2 appears twice, so a duplicate exists."
-		}
-	],
-	"tags": ["array", "hash-set", "code-war"],
-	"languages": ["c", "cpp", "java", "python"],
-	"timeLimit": 3,
-	"memoryLimit": 256,
-	"maxScore": 100,
-	"status": "active",
-	"stages": [
-		{
-			"stageOrder": 1,
-			"title": "Stage 1 - Contains Duplicate",
-			"statement": "Given an array of `n` integers, print `1` if any value appears at least twice in the array, otherwise print `0`.\n\nThis is the warm-up stage of the chain — a plain existence check.",
-			"expectedComplexity": "O(n)",
-			"maxScore": 100,
-			"testcasesDir": "stage-1"
-		},
-		{
-			"stageOrder": 2,
-			"title": "Stage 2 - Find the Duplicate Index",
-			"statement": "Enhancement of Stage 1: instead of just saying whether a duplicate exists, print the **0-based index** of the first element that duplicates a value seen earlier in the array. If no duplicate exists, print `-1`.\n\nYour solution must run in **O(n)** time using a hash set/map — an O(n^2) brute-force comparison of every pair will time out once `n` grows large.",
-			"expectedComplexity": "O(n)",
-			"maxScore": 150,
-			"testcasesDir": "stage-2"
-		},
-		{
-			"stageOrder": 3,
-			"title": "Stage 3 - Count Distinct Duplicated Values",
-			"statement": "Enhancement of Stage 2: print how many **distinct values** appear two or more times in the array (not the total count of repeated elements — count each duplicated value once).\n\nStill solvable in **O(n)** with a frequency map.",
-			"expectedComplexity": "O(n)",
-			"maxScore": 150,
-			"testcasesDir": "stage-3"
-		},
-		{
-			"stageOrder": 4,
-			"title": "Stage 4 - Most Frequent Value",
-			"statement": "Enhancement of Stage 3: print the value that occurs **most often** in the array. If several values tie for the highest frequency, print the **smallest** such value.\n\nStill **O(n)**: one pass to build a frequency map, one pass to find the best value.",
-			"expectedComplexity": "O(n)",
-			"maxScore": 150,
-			"testcasesDir": "stage-4"
-		},
-		{
-			"stageOrder": 5,
-			"title": "Stage 5 - List All Duplicate Values",
-			"statement": "Enhancement of Stage 4: print **every distinct value** that appears two or more times, sorted in ascending order, space-separated on one line. If there are none, print an empty line.\n\nBuilding the frequency map is still O(n), but sorting the result pushes the expected complexity to **O(n log n)**.",
-			"expectedComplexity": "O(n log n)",
-			"maxScore": 150,
-			"testcasesDir": "stage-5"
-		},
-		{
-			"stageOrder": 6,
-			"title": "Stage 6 - Duplicate Within a Window of 3",
-			"statement": "Enhancement of Stage 1: print `1` if there exist two **equal** values whose indices are at most **3 apart** (`|i - j| <= 3`), otherwise print `0`.\n\nA sliding window of the last 3 values (a small hash set you add to / evict from as you scan) keeps this at **O(n)** — checking every pair within range for every index is O(n) per index and O(n^2) overall.",
-			"expectedComplexity": "O(n)",
-			"maxScore": 150,
-			"testcasesDir": "stage-6"
-		},
-		{
-			"stageOrder": 7,
-			"title": "Stage 7 - Longest Subarray Without Duplicates",
-			"statement": "Final enhancement: print the length of the **longest contiguous subarray** that contains no duplicate values.\n\nThis is the hardest stage of the chain. A brute-force check of every subarray is O(n^2)/O(n^3). The optimal solution uses a **sliding window** with a hash map of last-seen indices to stay at **O(n)**.",
-			"expectedComplexity": "O(n)",
-			"maxScore": 200,
-			"testcasesDir": "stage-7"
-		}
-	]
+  "title": "Contains Duplicate (Code War Chain)",
+  "slug": "contains-duplicate-progressive",
+  "difficulty": "Medium",
+  "isProgressive": true,
+  "inputFormat": "Line 1: integer n, the number of elements.\nLine 2: n space-separated integers, the array nums.",
+  "outputFormat": "A single integer, as described by the current stage.",
+  "constraints": "1 <= n <= 20000\n-10^9 <= nums[i] <= 10^9",
+  "examples": [
+    {
+      "input": "5\n1 2 3 2 5",
+      "output": "1",
+      "explanation": "2 appears twice, so a duplicate exists."
+    }
+  ],
+  "tags": ["array", "hash-set", "code-war"],
+  "languages": ["c", "cpp", "java", "python"],
+  "timeLimit": 3,
+  "memoryLimit": 256,
+  "maxScore": 100,
+  "status": "active",
+  "stages": [
+    {
+      "stageOrder": 1,
+      "title": "Stage 1 - Contains Duplicate",
+      "statement": "Given an array of `n` integers, print `1` if any value appears at least twice in the array, otherwise print `0`.\n\nThis is the warm-up stage of the chain — a plain existence check.",
+      "expectedComplexity": "O(n)",
+      "maxScore": 100,
+      "testcasesDir": "stage-1"
+    },
+    {
+      "stageOrder": 2,
+      "title": "Stage 2 - Find the Duplicate Index",
+      "statement": "Enhancement of Stage 1: instead of just saying whether a duplicate exists, print the **0-based index** of the first element that duplicates a value seen earlier in the array. If no duplicate exists, print `-1`.\n\nYour solution must run in **O(n)** time using a hash set/map — an O(n^2) brute-force comparison of every pair will time out once `n` grows large.",
+      "expectedComplexity": "O(n)",
+      "maxScore": 150,
+      "testcasesDir": "stage-2"
+    },
+    {
+      "stageOrder": 3,
+      "title": "Stage 3 - Count Distinct Duplicated Values",
+      "statement": "Enhancement of Stage 2: print how many **distinct values** appear two or more times in the array (not the total count of repeated elements — count each duplicated value once).\n\nStill solvable in **O(n)** with a frequency map.",
+      "expectedComplexity": "O(n)",
+      "maxScore": 150,
+      "testcasesDir": "stage-3"
+    },
+    {
+      "stageOrder": 4,
+      "title": "Stage 4 - Most Frequent Value",
+      "statement": "Enhancement of Stage 3: print the value that occurs **most often** in the array. If several values tie for the highest frequency, print the **smallest** such value.\n\nStill **O(n)**: one pass to build a frequency map, one pass to find the best value.",
+      "expectedComplexity": "O(n)",
+      "maxScore": 150,
+      "testcasesDir": "stage-4"
+    },
+    {
+      "stageOrder": 5,
+      "title": "Stage 5 - List All Duplicate Values",
+      "statement": "Enhancement of Stage 4: print **every distinct value** that appears two or more times, sorted in ascending order, space-separated on one line. If there are none, print an empty line.\n\nBuilding the frequency map is still O(n), but sorting the result pushes the expected complexity to **O(n log n)**.",
+      "expectedComplexity": "O(n log n)",
+      "maxScore": 150,
+      "testcasesDir": "stage-5"
+    },
+    {
+      "stageOrder": 6,
+      "title": "Stage 6 - Duplicate Within a Window of 3",
+      "statement": "Enhancement of Stage 1: print `1` if there exist two **equal** values whose indices are at most **3 apart** (`|i - j| <= 3`), otherwise print `0`.\n\nA sliding window of the last 3 values (a small hash set you add to / evict from as you scan) keeps this at **O(n)** — checking every pair within range for every index is O(n) per index and O(n^2) overall.",
+      "expectedComplexity": "O(n)",
+      "maxScore": 150,
+      "testcasesDir": "stage-6"
+    },
+    {
+      "stageOrder": 7,
+      "title": "Stage 7 - Longest Subarray Without Duplicates",
+      "statement": "Final enhancement: print the length of the **longest contiguous subarray** that contains no duplicate values.\n\nThis is the hardest stage of the chain. A brute-force check of every subarray is O(n^2)/O(n^3). The optimal solution uses a **sliding window** with a hash map of last-seen indices to stay at **O(n)**.",
+      "expectedComplexity": "O(n)",
+      "maxScore": 200,
+      "testcasesDir": "stage-7"
+    }
+  ]
 }

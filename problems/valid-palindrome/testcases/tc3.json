@@ -1,8 +1,8 @@
 {
-	"name": "Hidden - only punctuation",
-	"input": ".,",
-	"expected_output": "true",
-	"hidden": true,
-	"marks": 30,
-	"order": 3
+  "name": "Hidden - only punctuation",
+  "input": ".,",
+  "expected_output": "true",
+  "hidden": true,
+  "marks": 30,
+  "order": 3
 }

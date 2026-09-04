@@ -1,8 +1,8 @@
 {
-	"name": "Sample 1 - basic pair",
-	"input": "4\n2 7 11 15\n9",
-	"expected_output": "0 1",
-	"hidden": false,
-	"marks": 20,
-	"order": 1
+  "name": "Sample 1 - basic pair",
+  "input": "4\n2 7 11 15\n9",
+  "expected_output": "0 1",
+  "hidden": false,
+  "marks": 20,
+  "order": 1
 }

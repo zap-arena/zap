@@ -1,8 +1,8 @@
 {
-	"name": "Sample 1 - n = 5",
-	"input": "5",
-	"expected_output": "1\n2\nFizz\n4\nBuzz",
-	"hidden": false,
-	"marks": 20,
-	"order": 1
+  "name": "Sample 1 - n = 5",
+  "input": "5",
+  "expected_output": "1\n2\nFizz\n4\nBuzz",
+  "hidden": false,
+  "marks": 20,
+  "order": 1
 }

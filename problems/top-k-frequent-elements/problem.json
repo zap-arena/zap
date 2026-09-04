@@ -1,26 +1,26 @@
 {
-	"title": "Top K Frequent Elements",
-	"slug": "top-k-frequent-elements",
-	"difficulty": "Medium",
-	"inputFormat": "Line 1: integer n, the number of elements.\nLine 2: n space-separated integers, the array nums.\nLine 3: integer k.",
-	"outputFormat": "k space-separated integers: the k most frequent values, ordered by descending frequency and, on ties, by ascending value.",
-	"constraints": "1 <= n <= 10^5\n-10^4 <= nums[i] <= 10^4\n1 <= k <= number of distinct values in nums",
-	"examples": [
-		{
-			"input": "6\n1 1 1 2 2 3\n2",
-			"output": "1 2",
-			"explanation": "1 appears three times and 2 appears twice."
-		},
-		{
-			"input": "1\n1\n1",
-			"output": "1",
-			"explanation": "Only one distinct value exists."
-		}
-	],
-	"tags": ["heap", "hash-map", "sorting", "bucket-sort"],
-	"languages": ["c", "cpp", "java", "python"],
-	"timeLimit": 2,
-	"memoryLimit": 256,
-	"maxScore": 100,
-	"status": "active"
+  "title": "Top K Frequent Elements",
+  "slug": "top-k-frequent-elements",
+  "difficulty": "Medium",
+  "inputFormat": "Line 1: integer n, the number of elements.\nLine 2: n space-separated integers, the array nums.\nLine 3: integer k.",
+  "outputFormat": "k space-separated integers: the k most frequent values, ordered by descending frequency and, on ties, by ascending value.",
+  "constraints": "1 <= n <= 10^5\n-10^4 <= nums[i] <= 10^4\n1 <= k <= number of distinct values in nums",
+  "examples": [
+    {
+      "input": "6\n1 1 1 2 2 3\n2",
+      "output": "1 2",
+      "explanation": "1 appears three times and 2 appears twice."
+    },
+    {
+      "input": "1\n1\n1",
+      "output": "1",
+      "explanation": "Only one distinct value exists."
+    }
+  ],
+  "tags": ["heap", "hash-map", "sorting", "bucket-sort"],
+  "languages": ["c", "cpp", "java", "python"],
+  "timeLimit": 2,
+  "memoryLimit": 256,
+  "maxScore": 100,
+  "status": "active"
 }

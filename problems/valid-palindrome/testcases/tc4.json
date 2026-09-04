@@ -1,8 +1,8 @@
 {
-	"name": "Hidden - digits and letters",
-	"input": "0P a1 1a P0",
-	"expected_output": "true",
-	"hidden": true,
-	"marks": 30,
-	"order": 4
+  "name": "Hidden - digits and letters",
+  "input": "0P a1 1a P0",
+  "expected_output": "true",
+  "hidden": true,
+  "marks": 30,
+  "order": 4
 }
