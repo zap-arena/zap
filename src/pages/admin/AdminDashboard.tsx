@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Users, Code2, Trophy, Send, Activity, TrendingUp } from 'lucide-react';
+import { Users, Code2, Trophy, Send, TrendingUp } from 'lucide-react';
 import AdminLayout from '../../components/AdminLayout';
 import VerdictBadge from '../../components/VerdictBadge';
 import { api } from '../../lib/api';
@@ -10,11 +10,6 @@ interface AdminStats {
   totalSubmissions: number; acceptedSubmissions: number; failedSubmissions: number;
   recentContests: { id: string; name: string; status: string }[];
   recentSubmissions: { id: string; userId: string; problemTitle: string; status: Verdict; score: number }[];
-}
-
-interface AdminLogEntry {
-  id: string; submissionId: string | null; userName: string | null; problemTitle: string | null;
-  language: string | null; status: Verdict; executionDuration: number;
 }
 
 const StatCard = ({ icon: Icon, label, value, sub, color = 'text-primary' }: any) => (
