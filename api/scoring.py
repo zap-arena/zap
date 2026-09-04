@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 import models
 from piston_service import execute, normalize_output
@@ -22,7 +22,7 @@ async def run_public(problem: models.Problem, language: str, code: str, stdin: s
 
 
 async def judge_submission(
-    problem: models.Problem, language: str, code: str, stage: models.ProblemStage | None = None
+    problem: models.Problem, language: str, code: str, stage: Optional[models.ProblemStage] = None
 ) -> dict[str, Any]:
     """Run every test case (public + hidden) and compute a server-side score. Never reveals hidden IO.
 

@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
@@ -37,7 +38,7 @@ def _get_chain_progress(db: Session, contest_id: str, user_id: str, problem_id: 
     return progress
 
 
-def _resolve_stage(db: Session, problem: models.Problem, contest, stage_id: str | None) -> models.ProblemStage | None:
+def _resolve_stage(db: Session, problem: models.Problem, contest, stage_id: Optional[str]) -> Optional[models.ProblemStage]:
     """For progressive contests, resolve and gate access to the requested stage."""
     if not (contest and contest.mode == "progressive" and problem.is_progressive):
         return None
