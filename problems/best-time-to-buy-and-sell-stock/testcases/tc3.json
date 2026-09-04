@@ -1,8 +1,0 @@
-{
-  "name": "Hidden - single day",
-  "input": "1\n42",
-  "expected_output": "0",
-  "hidden": true,
-  "marks": 30,
-  "order": 3
-}

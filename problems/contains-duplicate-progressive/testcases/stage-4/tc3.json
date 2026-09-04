@@ -1,8 +1,0 @@
-{
-  "name": "Hidden 1 - all unique, tie of 1s",
-  "input": "4\n10 -2 7 3",
-  "expected_output": "-2",
-  "hidden": true,
-  "marks": 37,
-  "order": 3
-}

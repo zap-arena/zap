@@ -1,8 +1,0 @@
-{
-  "name": "Hidden - single character",
-  "input": "a",
-  "expected_output": "a",
-  "hidden": true,
-  "marks": 30,
-  "order": 3
-}

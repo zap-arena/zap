@@ -1,8 +1,0 @@
-{
-  "name": "Hidden - checkerboard",
-  "input": "5 5\n10101\n01010\n10101\n01010\n10101",
-  "expected_output": "13",
-  "hidden": true,
-  "marks": 30,
-  "order": 4
-}

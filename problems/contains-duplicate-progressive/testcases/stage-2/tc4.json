@@ -1,8 +1,0 @@
-{
-  "name": "Hidden 2 - single element",
-  "input": "1\n1",
-  "expected_output": "-1",
-  "hidden": true,
-  "marks": 25,
-  "order": 4
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Sample 1 - mixed signs",
-  "input": "9\n-2 1 -3 4 -1 2 1 -5 4",
-  "expected_output": "6",
-  "hidden": false,
-  "marks": 20,
-  "order": 1
-}

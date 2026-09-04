@@ -1,8 +1,0 @@
-{
-  "name": "Hidden 1 - negatives and positives",
-  "input": "5\n-5 -5 0 0 3",
-  "expected_output": "-5 0",
-  "hidden": true,
-  "marks": 37,
-  "order": 3
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Sample 1 - clear winners",
-  "input": "6\n1 1 1 2 2 3\n2",
-  "expected_output": "1 2",
-  "hidden": false,
-  "marks": 20,
-  "order": 1
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Hidden 1 - duplicate mid array",
-  "input": "4\n7 8 7 9",
-  "expected_output": "2",
-  "hidden": true,
-  "marks": 25,
-  "order": 3
-}
