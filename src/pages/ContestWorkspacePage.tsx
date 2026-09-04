@@ -21,9 +21,11 @@ import ContestTimer from '../components/ContestTimer';
 import VerdictBadge from '../components/VerdictBadge';
 import DifficultyBadge from '../components/DifficultyBadge';
 import ThemeToggle from '../components/ThemeToggle';
+import ThemeColorPicker from '../components/ThemeColorPicker';
 import { useProctoring } from '../hooks/useProctoring';
 import { api, ApiError } from '../lib/api';
 import { MONACO_THEMES, EDITOR_THEME_OPTIONS } from '../lib/monaco-themes';
+import { useAccent, accentHex } from '../store/theme';
 import type { Language, Verdict, Problem, Contest, Submission, LeaderboardEntry } from '../types';
 import { toast } from 'sonner';
 
@@ -56,6 +58,40 @@ interface RunOutput {
   testResults: TestResult[];
 }
 
+const BUILTIN_BASE: Record<string, 'vs' | 'vs-dark' | 'hc-black'> = {
+  'vs-dark': 'vs-dark',
+  'light': 'vs',
+  'hc-black': 'hc-black',
+};
+
+// Overlay the app accent colour onto whichever syntax theme is active.
+function decorateEditorTheme(monaco: any, themeName: string, accentColor: string) {
+  const overrides: Record<string, string> = {
+    'editorCursor.foreground': accentColor,
+    'editor.selectionBackground': accentColor + '55',
+    'editor.inactiveSelectionBackground': accentColor + '33',
+    'editor.selectionHighlightBackground': accentColor + '26',
+    'editorLineNumber.activeForeground': accentColor,
+    'editorIndentGuide.activeBackground': accentColor + '99',
+    'editorBracketMatch.border': accentColor,
+    'focusBorder': accentColor,
+  };
+  const custom = MONACO_THEMES[themeName];
+  if (custom) {
+    monaco.editor.defineTheme(themeName, { ...custom, colors: { ...(custom.colors ?? {}), ...overrides } });
+    monaco.editor.setTheme(themeName);
+  } else {
+    const variant = `${themeName}-accent`;
+    monaco.editor.defineTheme(variant, {
+      base: BUILTIN_BASE[themeName] ?? 'vs-dark',
+      inherit: true,
+      rules: [],
+      colors: overrides,
+    });
+    monaco.editor.setTheme(variant);
+  }
+}
+
 function CodeEditor({
   value, onChange, language, onBlockedAction, editorTheme
 }: {
@@ -64,6 +100,12 @@ function CodeEditor({
   editorTheme: string;
 }) {
   const monacoLang = LANGUAGES.find(l => l.value === language)?.monacoLang ?? 'plaintext';
+  const { accent } = useAccent();
+  const monacoRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (monacoRef.current) decorateEditorTheme(monacoRef.current, editorTheme, accentHex(accent));
+  }, [editorTheme, accent]);
 
   return (
     <div className="relative h-full flex flex-col bg-muted/30 dark:bg-[#0d1117] rounded-none overflow-hidden">
@@ -75,10 +117,12 @@ function CodeEditor({
           theme={editorTheme}
           onChange={(v) => onChange(v ?? '')}
           onMount={(editor, monaco) => {
+            monacoRef.current = monaco;
             // Load custom themes
             Object.entries(MONACO_THEMES).forEach(([themeName, themeData]) => {
               monaco.editor.defineTheme(themeName, themeData as any);
             });
+            decorateEditorTheme(monaco, editorTheme, accentHex(accent));
             // Monaco handles clipboard internally, so the document listeners never fire here.
             const block = (type: 'COPY_BLOCKED' | 'CUT_BLOCKED' | 'PASTE_BLOCKED') => () => onBlockedAction?.(type);
             editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyC, block('COPY_BLOCKED'));
@@ -391,6 +435,7 @@ export default function ContestWorkspacePage() {
           <span className="text-xs text-muted-foreground hidden md:block">
             {saveStatus === 'saved' ? '✓ Saved' : saveStatus === 'saving' ? 'Saving…' : '● Unsaved'}
           </span>
+          <ThemeColorPicker size="xs" />
           <ThemeToggle size="xs" />
           <Button
             size="sm"

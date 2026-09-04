@@ -35,3 +35,4 @@ render/
 # Local environment configuration (contains secrets)
 .env
 api/.env
+__pycache__/

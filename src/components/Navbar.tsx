@@ -7,6 +7,7 @@ import {
 } from './ui/dropdown-menu';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import ThemeToggle from './ThemeToggle';
+import ThemeColorPicker from './ThemeColorPicker';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -16,9 +17,9 @@ export default function Navbar() {
 
   return (
     <nav className="h-14 border-b border-border bg-card/80 backdrop-blur-sm flex items-center px-4 gap-4 sticky top-0 z-50">
-      <Link to="/" className="flex items-center gap-2 text-primary font-bold text-lg shrink-0">
-        <div className="w-7 h-7 rounded-md bg-primary/20 border border-primary/30 flex items-center justify-center">
-          <Code2 size={14} className="text-primary" />
+      <Link to="/" className="flex items-center gap-2 text-brand font-bold text-lg shrink-0">
+        <div className="w-7 h-7 rounded-md bg-brand/20 border border-brand/30 flex items-center justify-center">
+          <Code2 size={14} className="text-brand" />
         </div>
         <span className="hidden sm:block">ZAP</span>
       </Link>
@@ -34,6 +35,7 @@ export default function Navbar() {
 
       <div className="flex-1" />
 
+      <ThemeColorPicker />
       <ThemeToggle />
 
       {user ? (
