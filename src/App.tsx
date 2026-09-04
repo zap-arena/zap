@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from './components/ui/sonner';
 import { useAuth } from './store/auth';
 
@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import ContestsPage from './pages/ContestsPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ContestEntryPage from './pages/ContestEntryPage';
 import ContestWorkspacePage from './pages/ContestWorkspacePage';
 import ContestResultPage from './pages/ContestResultPage';
@@ -22,13 +23,15 @@ import AdminLogs from './pages/admin/AdminLogs';
 import AdminUsers from './pages/admin/AdminUsers';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
+  const { user, isInitialized } = useAuth();
+  if (!isInitialized) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>;
   if (!user) return <Navigate to="/login" replace />;
   return <>{children}</>;
 }
 
 function RequireAdmin({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
+  const { user, isInitialized } = useAuth();
+  if (!isInitialized) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>;
   if (!user) return <Navigate to="/login" replace />;
   if (user.role !== 'admin') return <Navigate to="/" replace />;
   return <>{children}</>;
@@ -36,7 +39,7 @@ function RequireAdmin({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <Toaster position="top-right" closeButton duration={4000} />
       <Routes>
         {/* Public */}
@@ -44,6 +47,7 @@ export default function App() {
         <Route path="/contests" element={<ContestsPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/contest/:slug" element={<ContestEntryPage />} />
 
         {/* Authenticated user */}
@@ -71,6 +75,6 @@ export default function App() {
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   );
 }

@@ -20,7 +20,7 @@ export default function AdminSubmissions() {
   const [selected, setSelected] = useState<AdminSubmission | null>(null);
 
   const { data: contests = [] } = useQuery({ queryKey: ['admin-contests'], queryFn: () => api.get<Contest[]>('/admin/contests') });
-  const { data: submissions = [] } = useQuery({
+  const { data: submissions = [], isLoading } = useQuery({
     queryKey: ['admin-submissions', statusFilter, langFilter, contestFilter],
     queryFn: () => {
       const params = new URLSearchParams();
@@ -29,6 +29,16 @@ export default function AdminSubmissions() {
       return api.get<AdminSubmission[]>(`/admin/submissions?${params.toString()}`);
     },
   });
+
+  if (isLoading) {
+    return (
+      <AdminLayout>
+        <div className="p-6 max-w-7xl mx-auto flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   const filtered = submissions.filter(s =>
     (s.problemTitle?.toLowerCase().includes(search.toLowerCase()) || s.userId.toLowerCase().includes(search.toLowerCase())) &&

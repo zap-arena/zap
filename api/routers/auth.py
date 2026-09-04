@@ -1,3 +1,4 @@
+import uuid
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -38,7 +39,26 @@ def login(payload: schemas.LoginRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     token = create_access_token(user.id, user.role)
+    
+    # Log the login event
+    db.add(models.ContestActivityLog(
+        user_id=user.id,
+        event_type="LOGIN",
+        client_event_id=str(uuid.uuid4())
+    ))
+    db.commit()
+
     return {"token": token, "user": user}
+
+@router.post("/logout")
+def logout(user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    db.add(models.ContestActivityLog(
+        user_id=user.id,
+        event_type="LOGOUT",
+        client_event_id=str(uuid.uuid4())
+    ))
+    db.commit()
+    return {"ok": True}
 
 
 @router.get("/me", response_model=schemas.UserOut)

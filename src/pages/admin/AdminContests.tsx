@@ -175,7 +175,7 @@ function NotificationPanel({ contestId }: { contestId: string }) {
             <div key={n.id} className="flex items-start gap-2 px-3 py-2">
               <div className="flex-1 min-w-0">
                 <p className="text-xs">{n.message}</p>
-                <p className="text-[10px] text-muted-foreground">{new Date(n.createdAt).toLocaleString()}</p>
+                <p className="text-[10px] text-muted-foreground">{new Date(n.createdAt).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}</p>
               </div>
               <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-destructive"
                 onClick={() => remove(n.id)} title="Delete">
@@ -229,6 +229,7 @@ function ContestForm({ contest, onSaved, onCancel }: {
   );
   const [form, setForm] = useState({
     name: contest?.name ?? '',
+    slug: contest?.slug ?? '',
     description: contest?.description ?? '',
     instructions: contest?.instructions ?? '',
     startTime: defaultStart,
@@ -299,6 +300,7 @@ function ContestForm({ contest, onSaved, onCancel }: {
         duration: Number(form.duration) || 60,
         scoringMode: form.scoringMode, leaderboardVisible: form.leaderboardVisible,
         startTime: startTime.toISOString(), endTime: endTime.toISOString(),
+        slug: form.slug.trim() || undefined,
         problems: attached.map((a, i) => ({ problemId: a.problemId, order: i, maxScore: a.maxScore })),
         moderatorIds,
       };
@@ -327,6 +329,11 @@ function ContestForm({ contest, onSaved, onCancel }: {
             <Label>Contest Title</Label>
             <Input placeholder="Python Challenge 2026" value={form.name}
               onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className="bg-muted border-border" />
+          </div>
+          <div className="col-span-2 space-y-2">
+            <Label>Custom URL Slug (Optional)</Label>
+            <Input placeholder="python-challenge-2026" value={form.slug}
+              onChange={e => setForm(f => ({ ...f, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') }))} className="bg-muted border-border" />
           </div>
           <div className="col-span-2 space-y-2">
             <Label>Description</Label>
@@ -466,7 +473,10 @@ function ContestForm({ contest, onSaved, onCancel }: {
 
 export default function AdminContests() {
   const queryClient = useQueryClient();
-  const { data: contests = [] } = useQuery({ queryKey: ['admin-contests'], queryFn: () => api.get<Contest[]>('/admin/contests') });
+  const { data: contests = [], isLoading } = useQuery({ queryKey: ['admin-contests'], queryFn: () => api.get<Contest[]>('/admin/contests') });
+
+
+
   const [search, setSearch] = useState('');
   const [showCreate, setShowCreate] = useState(false);
   const [editing, setEditing] = useState<Contest | null>(null);
@@ -503,6 +513,16 @@ export default function AdminContests() {
       toast.error(err instanceof ApiError ? err.message : 'Failed to delete contest');
     }
   };
+
+  if (isLoading) {
+    return (
+      <AdminLayout>
+        <div className="p-6 max-w-7xl mx-auto flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>
@@ -543,7 +563,7 @@ export default function AdminContests() {
                     </div>
                     <p className="text-xs text-muted-foreground mb-3 line-clamp-1">{c.description}</p>
                     <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
-                      <span>🗓 {new Date(c.startTime).toLocaleString()} → {new Date(c.endTime).toLocaleString()}</span>
+                      <span>🗓 {new Date(c.startTime).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })} → {new Date(c.endTime).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}</span>
                       <span>⏱ {c.duration}m</span>
                       <span>📝 {c.problems.length} problems</span>
                       <span>🏆 {maxScore} pts</span>

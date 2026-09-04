@@ -48,11 +48,22 @@ export const authStore = {
       return { ok: false, error: err instanceof ApiError ? err.message : 'Registration failed' };
     }
   },
-  logout: () => { setToken(null); _user = null; notify(); },
+  logout: async () => { 
+    try { await api.post('/auth/logout'); } catch { /* ignore */ }
+    setToken(null); 
+    _user = null; 
+    notify(); 
+  },
 };
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(authStore.getUser());
-  useEffect(() => authStore.subscribe(() => setUser(authStore.getUser())), []);
-  return { user, login: authStore.login, register: authStore.register, logout: authStore.logout };
+  const [isInitialized, setIsInitialized] = useState<boolean>(authStore.isInitialized());
+  
+  useEffect(() => authStore.subscribe(() => {
+    setUser(authStore.getUser());
+    setIsInitialized(authStore.isInitialized());
+  }), []);
+  
+  return { user, isInitialized, login: authStore.login, register: authStore.register, logout: authStore.logout };
 };

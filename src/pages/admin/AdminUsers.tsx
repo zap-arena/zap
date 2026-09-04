@@ -17,13 +17,23 @@ export default function AdminUsers() {
     queryFn: () => api.get<Contest[]>('/admin/contests') 
   });
 
-  const { data: users = [] } = useQuery({ 
+  const { data: users = [], isLoading } = useQuery({ 
     queryKey: ['admin-users', selectedContest], 
     queryFn: () => {
       const qs = selectedContest === 'all' ? '' : `?contest_id=${selectedContest}`;
       return api.get<AdminUser[]>(`/admin/users${qs}`);
     } 
   });
+
+  if (isLoading) {
+    return (
+      <AdminLayout>
+        <div className="p-6 max-w-7xl mx-auto flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      </AdminLayout>
+    );
+  }
   const filtered = users.filter(u =>
     u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase())
   );

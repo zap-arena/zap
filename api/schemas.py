@@ -111,8 +111,11 @@ class ContestProblemIn(BaseModel):
     maxScore: int = 100
 
 
+from typing import Optional, Literal
+
 class ContestIn(BaseModel):
     name: str = Field(min_length=1, max_length=200)
+    slug: Optional[str] = None
     description: str = ""
     instructions: str = ""
     startTime: datetime

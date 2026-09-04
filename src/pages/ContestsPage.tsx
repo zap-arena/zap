@@ -87,12 +87,12 @@ export default function ContestsPage() {
                 </TableCell>
                 <TableCell className="text-xs text-muted-foreground font-medium">
                   {c.startTime ? new Date(c.startTime).toLocaleString(undefined, {
-                    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
                   }) : 'TBA'}
                 </TableCell>
                 <TableCell className="text-xs text-muted-foreground font-medium">
                   {endTime ? endTime.toLocaleString(undefined, {
-                    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
                   }) : 'TBA'}
                 </TableCell>
                 <TableCell className="text-xs text-muted-foreground font-medium">

@@ -176,7 +176,7 @@ export default function AdminAnalytics() {
     doc.text('Analytics Dashboard Export', 14, 15);
     
     doc.setFontSize(10);
-    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 22);
+    doc.text(`Generated on: ${new Date().toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}`, 14, 22);
     
     let filterText = '';
     if (selectedContest !== 'all') {
@@ -303,14 +303,14 @@ export default function AdminAnalytics() {
                         fontSize={12}
                         tickFormatter={(val) => {
                           const d = new Date(val);
-                          if (interval === 'minute' || interval === 'hour') return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                          if (interval === 'minute' || interval === 'hour') return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
                           return d.toLocaleDateString();
                         }}
                       />
                       <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
                       <RechartsTooltip 
                         contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' }}
-                        labelFormatter={(val) => new Date(val).toLocaleString()}
+                        labelFormatter={(val) => new Date(val).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
                       />
                       <Legend wrapperStyle={{ fontSize: '12px' }} />
                       {dynamicLabels.map((label, index) => (

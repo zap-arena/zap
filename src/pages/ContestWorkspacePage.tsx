@@ -23,6 +23,7 @@ import DifficultyBadge from '../components/DifficultyBadge';
 import ThemeToggle from '../components/ThemeToggle';
 import { useProctoring } from '../hooks/useProctoring';
 import { api, ApiError } from '../lib/api';
+import { MONACO_THEMES, EDITOR_THEME_OPTIONS } from '../lib/monaco-themes';
 import type { Language, Verdict, Problem, Contest, Submission, LeaderboardEntry } from '../types';
 import { toast } from 'sonner';
 
@@ -56,12 +57,12 @@ interface RunOutput {
 }
 
 function CodeEditor({
-  value, onChange, language, onBlockedAction,
+  value, onChange, language, onBlockedAction, editorTheme
 }: {
   value: string; onChange: (v: string) => void; language: Language;
   onBlockedAction?: (type: 'COPY_BLOCKED' | 'CUT_BLOCKED' | 'PASTE_BLOCKED') => void;
+  editorTheme: string;
 }) {
-  const isDark = document.documentElement.classList.contains('dark');
   const monacoLang = LANGUAGES.find(l => l.value === language)?.monacoLang ?? 'plaintext';
 
   return (
@@ -71,9 +72,13 @@ function CodeEditor({
           height="100%"
           language={monacoLang}
           value={value}
-          theme={isDark ? 'vs-dark' : 'light'}
+          theme={editorTheme}
           onChange={(v) => onChange(v ?? '')}
           onMount={(editor, monaco) => {
+            // Load custom themes
+            Object.entries(MONACO_THEMES).forEach(([themeName, themeData]) => {
+              monaco.editor.defineTheme(themeName, themeData as any);
+            });
             // Monaco handles clipboard internally, so the document listeners never fire here.
             const block = (type: 'COPY_BLOCKED' | 'CUT_BLOCKED' | 'PASTE_BLOCKED') => () => onBlockedAction?.(type);
             editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyC, block('COPY_BLOCKED'));
@@ -142,7 +147,9 @@ export default function ContestWorkspacePage() {
 
   const [selectedProblem, setSelectedProblem] = useState<Problem | undefined>(undefined);
   const [language, setLanguage] = useState<Language>('cpp');
+  const [editorTheme, setEditorTheme] = useState(() => localStorage.getItem('zap-editor-theme') || 'vs-dark');
   const [code, setCode] = useState('');
+  const codeStore = useRef<Record<string, Record<string, string>>>({});
   const [activeTab, setActiveTab] = useState<'problem' | 'submissions' | 'leaderboard'>('problem');
   const [bottomTab, setBottomTab] = useState<'output' | 'stdin'>('output');
   const [running, setRunning] = useState(false);
@@ -157,7 +164,9 @@ export default function ContestWorkspacePage() {
       setSelectedProblem(first);
       const preferredLang = first.languages[0] ?? 'cpp';
       setLanguage(preferredLang);
-      setCode(first.boilerplates[preferredLang] ?? '');
+      
+      const stored = codeStore.current[first.id]?.[preferredLang];
+      setCode(stored ?? first.boilerplates[preferredLang] ?? '');
     }
   }, [problems, selectedProblem]);
 
@@ -228,13 +237,23 @@ export default function ContestWorkspacePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
 
+  const saveToStore = (pid: string, lang: Language, source: string) => {
+    if (!codeStore.current[pid]) codeStore.current[pid] = {};
+    codeStore.current[pid][lang] = source;
+  };
+
   const handleLanguageChange = (lang: Language) => {
+    if (selectedProblem) saveToStore(selectedProblem.id, language, code);
     setLanguage(lang);
-    setCode(selectedProblem?.boilerplates[lang] ?? '');
+    if (selectedProblem) {
+      const stored = codeStore.current[selectedProblem.id]?.[lang];
+      setCode(stored ?? selectedProblem?.boilerplates[lang] ?? '');
+    }
     setRunOutput(null);
   };
 
   const handleProblemSelect = async (problem: Problem) => {
+    if (selectedProblem) saveToStore(selectedProblem.id, language, code);
     setSelectedProblem(problem);
     setRunOutput(null);
     setActiveTab('problem');
@@ -244,6 +263,7 @@ export default function ContestWorkspacePage() {
         `/contests/${contestId}/problems/${problem.id}/draft`
       );
       if (draft) {
+        saveToStore(problem.id, draft.language, draft.sourceCode);
         setLanguage(draft.language);
         setCode(draft.sourceCode);
         return;
@@ -253,7 +273,8 @@ export default function ContestWorkspacePage() {
     }
     const preferredLang = problem.languages.includes(language) ? language : problem.languages[0] ?? 'cpp';
     setLanguage(preferredLang);
-    setCode(problem.boilerplates[preferredLang] ?? '');
+    const stored = codeStore.current[problem.id]?.[preferredLang];
+    setCode(stored ?? problem.boilerplates[preferredLang] ?? '');
   };
 
   const handleRun = async () => {
@@ -262,9 +283,12 @@ export default function ContestWorkspacePage() {
     setRunOutput(null);
     setBottomTab('output');
     try {
+      // Use sample test case input if stdin is empty
+      const runInput = stdin.trim() || (selectedProblem.examples?.[0]?.input || '');
+      
       const result = await api.post<{
         status: string; stdout: string; stderr: string; compileOutput: string; error?: string;
-      }>('/code/run', { problemId: selectedProblem.id, contestId, language, code, stdin });
+      }>('/code/run', { problemId: selectedProblem.id, contestId, language, code, stdin: runInput });
       setRunOutput({
         stdout: result.stdout, stderr: result.stderr || result.error || '',
         compileOutput: result.compileOutput, status: result.status, testResults: [],
@@ -576,6 +600,22 @@ export default function ContestWorkspacePage() {
                           ))}
                         </SelectContent>
                       </Select>
+                      <Select value={editorTheme} onValueChange={(v) => {
+                        setEditorTheme(v);
+                        localStorage.setItem('zap-editor-theme', v);
+                      }}>
+                        <SelectTrigger className="h-6 w-32 text-xs bg-muted border-border focus:border-primary/50">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card border-border">
+                          {EDITOR_THEME_OPTIONS.map(t => (
+                            <SelectItem key={t.value} value={t.value}
+                              className="text-xs cursor-pointer">
+                              {t.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <div className="flex-1" />
                       <div className="flex items-center gap-2">
                         <Button
@@ -610,8 +650,16 @@ export default function ContestWorkspacePage() {
                       </div>
                     </div>
                     <div className="flex-1 min-h-0">
-                      <CodeEditor value={code} onChange={setCode} language={language}
-                        onBlockedAction={type => reportBlocked(type)} />
+                      <CodeEditor 
+                        value={code} 
+                        language={language}
+                        editorTheme={editorTheme}
+                        onBlockedAction={reportBlocked}
+                        onChange={(v) => {
+                          setCode(v);
+                          if (selectedProblem) saveToStore(selectedProblem.id, language, v);
+                        }}
+                      />
                     </div>
                   </div>
                 </ResizablePanel>

@@ -30,6 +30,7 @@ export default function AdminParticipants() {
     },
     enabled: contests.length > 0,
   });
+
   const { data: detail } = useQuery({
     queryKey: ['participant-detail', selected?.contestId, selected?.userId],
     queryFn: () => api.get<{ participant: Participant; submissions: Submission[] }>(
@@ -151,8 +152,8 @@ export default function AdminParticipants() {
                     ['Contest', contest?.name ?? '—'],
                     ['Status', selected.status.replace('_', ' ')],
                     ['Score', String(selected.score)],
-                    ['Started', selected.startedAt ? new Date(selected.startedAt).toLocaleTimeString() : '—'],
-                    ['Completed', selected.completedAt ? new Date(selected.completedAt).toLocaleTimeString() : '—'],
+                    ['Started', selected.startedAt ? new Date(selected.startedAt).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: true }) : '—'],
+                    ['Completed', selected.completedAt ? new Date(selected.completedAt).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: true }) : '—'],
                   ].map(([k, v]) => (
                     <div key={k}>
                       <p className="text-xs text-muted-foreground">{k}</p>

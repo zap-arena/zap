@@ -19,7 +19,17 @@ export default function AdminLogs() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [langFilter, setLangFilter] = useState('all');
 
-  const { data: logs = [] } = useQuery({ queryKey: ['admin-logs'], queryFn: () => api.get<AdminLogEntry[]>('/admin/logs') });
+  const { data: logs = [], isLoading } = useQuery({ queryKey: ['admin-logs'], queryFn: () => api.get<AdminLogEntry[]>('/admin/logs') });
+
+  if (isLoading) {
+    return (
+      <AdminLayout>
+        <div className="p-6 max-w-7xl mx-auto flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   const filtered = logs.filter(log =>
     ((log.userName ?? '').toLowerCase().includes(search.toLowerCase()) ||
@@ -112,7 +122,7 @@ export default function AdminLogs() {
                   </td>
                   <td className="text-right text-xs text-primary">{Math.round(log.executionDuration * 1000)}ms</td>
                   <td className="text-right text-xs text-warning">{log.errorType ?? '—'}</td>
-                  <td className="text-right text-xs text-muted-foreground">{new Date(log.createdAt).toLocaleTimeString()}</td>
+                  <td className="text-right text-xs text-muted-foreground">{new Date(log.createdAt).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: true })}</td>
                 </tr>
               ))}
             </tbody>

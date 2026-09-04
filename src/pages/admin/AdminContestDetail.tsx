@@ -174,7 +174,7 @@ export default function AdminContestDetail() {
                   <td className="text-center text-xs font-mono uppercase">{s.language}</td>
                   <td className="text-center"><VerdictBadge status={s.status} /></td>
                   <td className="text-center font-mono font-bold text-primary">{s.score}</td>
-                  <td className="text-right text-xs text-muted-foreground font-mono">{new Date(s.submittedAt).toLocaleTimeString()}</td>
+                  <td className="text-right text-xs text-muted-foreground font-mono">{new Date(s.submittedAt).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: true })}</td>
                 </tr>
               ))}
             </tbody>
@@ -237,7 +237,7 @@ export default function AdminContestDetail() {
                     {e.eventType.replace(/_/g, ' ').toLowerCase()}
                   </span>
                   <span className="ml-auto text-muted-foreground font-mono">
-                    {new Date(e.occurredAt).toLocaleString()}
+                    {new Date(e.occurredAt).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
                   </span>
                 </div>
               ))}

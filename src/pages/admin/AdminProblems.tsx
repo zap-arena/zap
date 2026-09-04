@@ -672,6 +672,9 @@ export default function AdminProblems() {
   const queryClient = useQueryClient();
   const { data: problems = [] } = useQuery({ queryKey: ['admin-problems'], queryFn: () => api.get<Problem[]>('/admin/problems') });
   const { data: contests = [] } = useQuery({ queryKey: ['admin-contests'], queryFn: () => api.get<Contest[]>('/admin/contests') });
+
+
+
   const [search, setSearch] = useState('');
   const [filterDiff, setFilterDiff] = useState<string>('all');
   const [filterContest, setFilterContest] = useState<string>('all');

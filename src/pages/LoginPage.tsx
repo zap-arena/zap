@@ -93,9 +93,12 @@ export default function LoginPage() {
                 required
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium">Password</Label>
-              <div className="relative">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between pl-1">
+                      <label className="text-sm font-medium text-muted-foreground">Password</label>
+                      <Link to="/forgot-password" className="text-xs text-primary hover:underline">Forgot password?</Link>
+                    </div>
+                    <div className="relative">
                 <Input
                   id="password" type={showPw ? 'text' : 'password'} placeholder="••••••••"
                   value={password} onChange={e => setPassword(e.target.value)}

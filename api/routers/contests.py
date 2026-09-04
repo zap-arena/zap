@@ -319,6 +319,11 @@ def _apply_contest_fields(contest: models.Contest, payload: schemas.ContestIn, d
             raise HTTPException(status_code=400, detail="Moderators must be existing admin users")
 
     contest.name = payload.name.strip()
+    if payload.slug:
+        contest.slug = payload.slug.strip()
+    elif not contest.slug:
+        contest.slug = slugify(payload.name)
+    
     contest.description = payload.description
     contest.instructions = payload.instructions
     contest.start_time = payload.startTime
@@ -341,7 +346,7 @@ def _apply_contest_fields(contest: models.Contest, payload: schemas.ContestIn, d
 
 @router.post("/api/admin/contests", status_code=201)
 def create_contest(payload: schemas.ContestIn, db: Session = Depends(get_db), admin: models.User = Depends(require_admin)):
-    contest = models.Contest(slug=slugify(payload.name), created_by=admin.id, status="draft")
+    contest = models.Contest(slug=payload.slug.strip() if payload.slug else slugify(payload.name), created_by=admin.id, status="draft")
     _apply_contest_fields(contest, payload, db)
     db.commit()
     db.refresh(contest)

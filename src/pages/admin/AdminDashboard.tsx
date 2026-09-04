@@ -27,7 +27,17 @@ const StatCard = ({ icon: Icon, label, value, sub, color = 'text-primary' }: any
 );
 
 export default function AdminDashboard() {
-  const { data: stats } = useQuery({ queryKey: ['admin-stats'], queryFn: () => api.get<AdminStats>('/admin/statistics') });
+  const { data: stats, isLoading } = useQuery({ queryKey: ['admin-stats'], queryFn: () => api.get<AdminStats>('/admin/statistics') });
+
+  if (isLoading) {
+    return (
+      <AdminLayout>
+        <div className="p-6 max-w-7xl mx-auto flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>
