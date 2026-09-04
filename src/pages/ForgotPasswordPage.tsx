@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Zap, ArrowLeft, Mail, CheckCircle2 } from 'lucide-react';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Zap, ArrowLeft, Mail, CheckCircle2 } from "lucide-react";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { toast } from "sonner";
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -19,7 +19,7 @@ export default function ForgotPasswordPage() {
     setTimeout(() => {
       setLoading(false);
       setSubmitted(true);
-      toast.success('Reset link sent!');
+      toast.success("Reset link sent!");
     }, 1000);
   };
 
@@ -104,7 +104,7 @@ export default function ForgotPasswordPage() {
                     className="w-full font-semibold h-11 mt-2"
                     disabled={loading}
                   >
-                    {loading ? 'Sending...' : 'Send Reset Link'}
+                    {loading ? "Sending..." : "Send Reset Link"}
                   </Button>
                 </form>
 

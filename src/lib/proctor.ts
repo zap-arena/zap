@@ -1,18 +1,18 @@
-import { api } from './api';
+import { api } from "./api";
 
 export type ProctorEventType =
-  | 'ESCAPE_PRESSED'
-  | 'FULLSCREEN_EXITED'
-  | 'FULLSCREEN_ENTERED'
-  | 'TAB_HIDDEN'
-  | 'TAB_VISIBLE'
-  | 'WINDOW_BLUR'
-  | 'WINDOW_FOCUS'
-  | 'COPY_BLOCKED'
-  | 'PASTE_BLOCKED'
-  | 'CUT_BLOCKED'
-  | 'CONTEXT_MENU_BLOCKED'
-  | 'DEVTOOLS_ATTEMPT';
+  | "ESCAPE_PRESSED"
+  | "FULLSCREEN_EXITED"
+  | "FULLSCREEN_ENTERED"
+  | "TAB_HIDDEN"
+  | "TAB_VISIBLE"
+  | "WINDOW_BLUR"
+  | "WINDOW_FOCUS"
+  | "COPY_BLOCKED"
+  | "PASTE_BLOCKED"
+  | "CUT_BLOCKED"
+  | "CONTEXT_MENU_BLOCKED"
+  | "DEVTOOLS_ATTEMPT";
 
 interface QueuedEvent {
   clientEventId: string;

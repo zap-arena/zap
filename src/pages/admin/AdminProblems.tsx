@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState, useRef } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Plus,
   Search,
@@ -16,26 +16,26 @@ import {
   Lock,
   ChevronDown,
   ChevronUp,
-} from 'lucide-react';
-import AdminLayout from '../../components/AdminLayout';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
-import { Label } from '../../components/ui/label';
-import { Textarea } from '../../components/ui/textarea';
+} from "lucide-react";
+import AdminLayout from "../../components/AdminLayout";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { Textarea } from "../../components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../components/ui/select';
+} from "../../components/ui/select";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '../../components/ui/dialog';
+} from "../../components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -45,34 +45,34 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '../../components/ui/alert-dialog';
+} from "../../components/ui/alert-dialog";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from '../../components/ui/tabs';
-import { Checkbox } from '../../components/ui/checkbox';
-import { Switch } from '../../components/ui/switch';
-import DifficultyBadge from '../../components/DifficultyBadge';
-import { api, ApiError } from '../../lib/api';
+} from "../../components/ui/tabs";
+import { Checkbox } from "../../components/ui/checkbox";
+import { Switch } from "../../components/ui/switch";
+import DifficultyBadge from "../../components/DifficultyBadge";
+import { api, ApiError } from "../../lib/api";
 import type {
   Problem,
   Contest,
   Difficulty,
   Language,
   TestCase,
-} from '../../types';
-import { toast } from 'sonner';
+} from "../../types";
+import { toast } from "sonner";
 
 // ── ZIP Import ────────────────────────────────────────────────────────────────
 type ZipParseState =
-  | 'idle'
-  | 'parsing'
-  | 'preview'
-  | 'importing'
-  | 'done'
-  | 'error';
+  | "idle"
+  | "parsing"
+  | "preview"
+  | "importing"
+  | "done"
+  | "error";
 
 interface ParsedProblem {
   slug: string;
@@ -101,25 +101,25 @@ function BulkImportDialog({
   open: boolean;
   onClose: () => void;
 }) {
-  const [state, setState] = useState<ZipParseState>('idle');
-  const [fileName, setFileName] = useState('');
+  const [state, setState] = useState<ZipParseState>("idle");
+  const [fileName, setFileName] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [parsed, setParsed] = useState<ParsedProblem[]>([]);
   const [selected, setSelected] = useState<Set<number>>(new Set());
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
 
   const parseZip = async (f: File) => {
     setFileName(f.name);
     setFile(f);
-    setState('parsing');
+    setState("parsing");
     const form = new FormData();
-    form.append('file', f);
-    form.append('dry_run', 'true');
+    form.append("file", f);
+    form.append("dry_run", "true");
     try {
       const res = await api.upload<ImportResponse>(
-        '/admin/problems/import-zip',
+        "/admin/problems/import-zip",
         form,
       );
       setParsed(res.problems);
@@ -128,20 +128,20 @@ function BulkImportDialog({
           res.problems.map((p, i) => (p.valid ? i : -1)).filter((i) => i >= 0),
         ),
       );
-      setState('preview');
+      setState("preview");
     } catch (err) {
       setErrorMessage(
-        err instanceof ApiError ? err.message : 'Could not read the ZIP file',
+        err instanceof ApiError ? err.message : "Could not read the ZIP file",
       );
-      setState('error');
+      setState("error");
     }
   };
 
   const handleFileDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const f = e.dataTransfer.files[0];
-    if (f?.name.endsWith('.zip')) parseZip(f);
-    else toast.error('Please upload a .zip file');
+    if (f?.name.endsWith(".zip")) parseZip(f);
+    else toast.error("Please upload a .zip file");
   };
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -151,32 +151,32 @@ function BulkImportDialog({
 
   const handleImport = async () => {
     if (!file) return;
-    setState('importing');
+    setState("importing");
     const form = new FormData();
-    form.append('file', file);
-    form.append('dry_run', 'false');
-    form.append('slugs', [...selected].map((i) => parsed[i].slug).join(','));
+    form.append("file", file);
+    form.append("dry_run", "false");
+    form.append("slugs", [...selected].map((i) => parsed[i].slug).join(","));
     try {
       const res = await api.upload<ImportResponse>(
-        '/admin/problems/import-zip',
+        "/admin/problems/import-zip",
         form,
       );
-      queryClient.invalidateQueries({ queryKey: ['admin-problems'] });
-      setState('done');
+      queryClient.invalidateQueries({ queryKey: ["admin-problems"] });
+      setState("done");
       toast.success(`${res.imported} problem(s) imported successfully!`);
     } catch (err) {
-      setErrorMessage(err instanceof ApiError ? err.message : 'Import failed');
-      setState('error');
+      setErrorMessage(err instanceof ApiError ? err.message : "Import failed");
+      setState("error");
     }
   };
 
   const reset = () => {
-    setState('idle');
-    setFileName('');
+    setState("idle");
+    setFileName("");
     setFile(null);
     setParsed([]);
     setSelected(new Set());
-    setErrorMessage('');
+    setErrorMessage("");
     onClose();
   };
 
@@ -199,7 +199,7 @@ function BulkImportDialog({
         </DialogHeader>
 
         {/* IDLE — drop zone */}
-        {state === 'idle' && (
+        {state === "idle" && (
           <div className="space-y-4 py-2">
             <div
               onDragOver={(e) => e.preventDefault()}
@@ -254,7 +254,7 @@ function BulkImportDialog({
         )}
 
         {/* PARSING */}
-        {state === 'parsing' && (
+        {state === "parsing" && (
           <div className="py-16 text-center space-y-4">
             <Loader2 size={36} className="text-primary animate-spin mx-auto" />
             <p className="font-medium">
@@ -268,17 +268,17 @@ function BulkImportDialog({
         )}
 
         {/* PREVIEW */}
-        {state === 'preview' && (
+        {state === "preview" && (
           <div className="space-y-4 py-2">
             <div className="flex items-center justify-between">
               <p className="text-sm font-medium">
-                Found{' '}
-                <span className="text-primary font-bold">{parsed.length}</span>{' '}
-                problems —{' '}
+                Found{" "}
+                <span className="text-primary font-bold">{parsed.length}</span>{" "}
+                problems —{" "}
                 <span className="text-success">
                   {parsed.filter((p) => p.valid).length} valid
                 </span>
-                ,{' '}
+                ,{" "}
                 <span className="text-destructive">
                   {parsed.filter((p) => !p.valid).length} invalid
                 </span>
@@ -305,10 +305,10 @@ function BulkImportDialog({
                   key={i}
                   className={`rounded-xl border p-3 transition-colors ${
                     !p.valid
-                      ? 'border-destructive/30 bg-destructive/5 opacity-70'
+                      ? "border-destructive/30 bg-destructive/5 opacity-70"
                       : selected.has(i)
-                        ? 'border-primary/40 bg-primary/5'
-                        : 'border-border bg-card'
+                        ? "border-primary/40 bg-primary/5"
+                        : "border-border bg-card"
                   }`}
                 >
                   <div className="flex items-start gap-3">
@@ -329,11 +329,11 @@ function BulkImportDialog({
                         <span className="font-medium text-sm">{p.title}</span>
                         <span
                           className={`text-[10px] font-semibold font-mono ${
-                            p.difficulty === 'Easy'
-                              ? 'text-success'
-                              : p.difficulty === 'Medium'
-                                ? 'text-warning'
-                                : 'text-destructive'
+                            p.difficulty === "Easy"
+                              ? "text-success"
+                              : p.difficulty === "Medium"
+                                ? "text-warning"
+                                : "text-destructive"
                           }`}
                         >
                           {p.difficulty}
@@ -346,7 +346,7 @@ function BulkImportDialog({
                           <span>🧪 {p.testCasesCount} tests</span>
                           <span>📝 {p.boilerplatesCount} boilerplates</span>
                           <span className="font-mono">
-                            {p.languages.join(', ')}
+                            {p.languages.join(", ")}
                           </span>
                         </div>
                       ) : (
@@ -384,7 +384,7 @@ function BulkImportDialog({
                 {[...selected].reduce(
                   (sum, i) => sum + parsed[i].testCasesCount,
                   0,
-                )}{' '}
+                )}{" "}
                 test cases
               </span>
             </div>
@@ -392,7 +392,7 @@ function BulkImportDialog({
         )}
 
         {/* IMPORTING */}
-        {state === 'importing' && (
+        {state === "importing" && (
           <div className="py-16 text-center space-y-4">
             <Loader2 size={36} className="text-primary animate-spin mx-auto" />
             <p className="font-medium">Importing {selected.size} problem(s)…</p>
@@ -403,7 +403,7 @@ function BulkImportDialog({
         )}
 
         {/* DONE */}
-        {state === 'done' && (
+        {state === "done" && (
           <div className="py-16 text-center space-y-4">
             <CheckCircle size={44} className="text-success mx-auto" />
             <p className="text-xl font-bold">
@@ -416,7 +416,7 @@ function BulkImportDialog({
         )}
 
         {/* ERROR */}
-        {state === 'error' && (
+        {state === "error" && (
           <div className="py-16 text-center space-y-4">
             <XCircle size={44} className="text-destructive mx-auto" />
             <p className="text-xl font-bold">Import failed</p>
@@ -426,18 +426,18 @@ function BulkImportDialog({
 
         <DialogFooter>
           <Button variant="outline" onClick={reset}>
-            {state === 'done' ? 'Close' : 'Cancel'}
+            {state === "done" ? "Close" : "Cancel"}
           </Button>
-          {state === 'preview' && (
+          {state === "preview" && (
             <Button
               className="btn-primary"
               onClick={handleImport}
               disabled={selected.size === 0}
             >
-              Import {selected.size} Problem{selected.size !== 1 ? 's' : ''}
+              Import {selected.size} Problem{selected.size !== 1 ? "s" : ""}
             </Button>
           )}
-          {state === 'done' && (
+          {state === "done" && (
             <Button className="btn-primary" onClick={reset}>
               Done
             </Button>
@@ -470,7 +470,7 @@ function TestCaseRow({
 }) {
   return (
     <div
-      className={`rounded-xl border transition-colors ${tc.hidden ? 'border-warning/25 bg-warning/5' : 'border-border bg-card'}`}
+      className={`rounded-xl border transition-colors ${tc.hidden ? "border-warning/25 bg-warning/5" : "border-border bg-card"}`}
     >
       {/* Header row */}
       <div className="flex items-center gap-3 px-3 py-2.5">
@@ -486,11 +486,11 @@ function TestCaseRow({
         <span
           className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
             tc.hidden
-              ? 'bg-warning/15 text-warning'
-              : 'bg-success/15 text-success'
+              ? "bg-warning/15 text-warning"
+              : "bg-success/15 text-success"
           }`}
         >
-          {tc.hidden ? '🔒 Hidden' : '👁 Sample'}
+          {tc.hidden ? "🔒 Hidden" : "👁 Sample"}
         </span>
         {/* Marks badge */}
         <div className="flex items-center gap-1 bg-muted border border-border rounded-lg px-2 py-0.5">
@@ -502,7 +502,7 @@ function TestCaseRow({
               type="number"
               min={0}
               value={tc.marks}
-              onChange={(e) => onUpdate(tc.id, 'marks', Number(e.target.value))}
+              onChange={(e) => onUpdate(tc.id, "marks", Number(e.target.value))}
               className="w-10 bg-transparent text-xs font-mono font-bold text-primary outline-none text-center"
               title="Marks for this test case"
             />
@@ -516,13 +516,13 @@ function TestCaseRow({
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5">
             <span className="text-[11px] text-muted-foreground">
-              {tc.hidden ? 'Hidden' : 'Public'}
+              {tc.hidden ? "Hidden" : "Public"}
             </span>
             <Switch
               checked={tc.hidden}
               onCheckedChange={(v) => {
-                onUpdate(tc.id, 'hidden', v);
-                if (!v) onUpdate(tc.id, 'marks', 0);
+                onUpdate(tc.id, "hidden", v);
+                if (!v) onUpdate(tc.id, "marks", 0);
               }}
               className="scale-75"
             />
@@ -545,7 +545,7 @@ function TestCaseRow({
             <Label className="text-xs text-muted-foreground">Input</Label>
             <Textarea
               value={tc.input}
-              onChange={(e) => onUpdate(tc.id, 'input', e.target.value)}
+              onChange={(e) => onUpdate(tc.id, "input", e.target.value)}
               className="bg-muted border-border resize-none font-mono text-xs"
               rows={4}
               placeholder="Test case input…"
@@ -558,7 +558,7 @@ function TestCaseRow({
             <Textarea
               value={tc.expectedOutput}
               onChange={(e) =>
-                onUpdate(tc.id, 'expectedOutput', e.target.value)
+                onUpdate(tc.id, "expectedOutput", e.target.value)
               }
               className="bg-muted border-border resize-none font-mono text-xs"
               rows={4}
@@ -590,7 +590,7 @@ function EditProblemDialog({
     inputFormat: problem.inputFormat,
     outputFormat: problem.outputFormat,
     constraints: problem.constraints,
-    tags: problem.tags.join(', '),
+    tags: problem.tags.join(", "),
     timeLimit: String(problem.timeLimit),
     memoryLimit: String(problem.memoryLimit),
     maxScore: String(problem.maxScore),
@@ -607,7 +607,7 @@ function EditProblemDialog({
   });
 
   const [activeBoilerLang, setActiveBoilerLang] = useState<Language>(
-    problem.languages[0] || 'cpp',
+    problem.languages[0] || "cpp",
   );
   const [saving, setSaving] = useState(false);
 
@@ -638,8 +638,8 @@ function EditProblemDialog({
   const addTestCase = () => {
     const newTc: TestCase & { _new?: boolean } = {
       id: `tc_new_${Date.now()}`,
-      input: '',
-      expectedOutput: '',
+      input: "",
+      expectedOutput: "",
       hidden: false,
       marks: 0,
       _new: true,
@@ -660,16 +660,16 @@ function EditProblemDialog({
 
   const deleteTestCase = (id: string) => {
     setTestCases((tcs) => tcs.filter((tc) => tc.id !== id));
-    toast.info('Test case removed');
+    toast.info("Test case removed");
   };
 
   const handleSave = async () => {
     if (!details.title.trim()) {
-      toast.error('Title is required');
+      toast.error("Title is required");
       return;
     }
     if (testCases.length === 0) {
-      toast.error('At least one test case required');
+      toast.error("At least one test case required");
       return;
     }
     setSaving(true);
@@ -683,7 +683,7 @@ function EditProblemDialog({
         constraints: details.constraints,
         examples: problem.examples,
         tags: details.tags
-          .split(',')
+          .split(",")
           .map((t) => t.trim())
           .filter(Boolean),
         languages: details.languages,
@@ -705,7 +705,7 @@ function EditProblemDialog({
       onClose();
     } catch (err) {
       toast.error(
-        err instanceof ApiError ? err.message : 'Failed to save problem',
+        err instanceof ApiError ? err.message : "Failed to save problem",
       );
     } finally {
       setSaving(false);
@@ -749,7 +749,7 @@ function EditProblemDialog({
                 <Label>Title</Label>
                 <Input
                   value={details.title}
-                  onChange={updateDetail('title')}
+                  onChange={updateDetail("title")}
                   className="bg-muted border-border"
                 />
               </div>
@@ -775,7 +775,7 @@ function EditProblemDialog({
                 <Label>Tags (comma-separated)</Label>
                 <Input
                   value={details.tags}
-                  onChange={updateDetail('tags')}
+                  onChange={updateDetail("tags")}
                   placeholder="array, dp"
                   className="bg-muted border-border"
                 />
@@ -785,7 +785,7 @@ function EditProblemDialog({
                 <Input
                   type="number"
                   value={details.timeLimit}
-                  onChange={updateDetail('timeLimit')}
+                  onChange={updateDetail("timeLimit")}
                   className="bg-muted border-border"
                 />
               </div>
@@ -794,7 +794,7 @@ function EditProblemDialog({
                 <Input
                   type="number"
                   value={details.memoryLimit}
-                  onChange={updateDetail('memoryLimit')}
+                  onChange={updateDetail("memoryLimit")}
                   className="bg-muted border-border"
                 />
               </div>
@@ -803,14 +803,14 @@ function EditProblemDialog({
                 <Input
                   type="number"
                   value={details.maxScore}
-                  onChange={updateDetail('maxScore')}
+                  onChange={updateDetail("maxScore")}
                   className="bg-muted border-border"
                 />
               </div>
               <div className="space-y-2">
                 <Label>Supported Languages</Label>
                 <div className="flex gap-2 flex-wrap pt-1">
-                  {(['c', 'cpp', 'java', 'python'] as Language[]).map(
+                  {(["c", "cpp", "java", "python"] as Language[]).map(
                     (lang) => (
                       <label
                         key={lang}
@@ -833,7 +833,7 @@ function EditProblemDialog({
                 <Label>Description</Label>
                 <Textarea
                   value={details.description}
-                  onChange={updateDetail('description')}
+                  onChange={updateDetail("description")}
                   className="bg-muted border-border resize-none"
                   rows={4}
                 />
@@ -842,7 +842,7 @@ function EditProblemDialog({
                 <Label>Input Format</Label>
                 <Textarea
                   value={details.inputFormat}
-                  onChange={updateDetail('inputFormat')}
+                  onChange={updateDetail("inputFormat")}
                   className="bg-muted border-border resize-none"
                   rows={3}
                 />
@@ -851,7 +851,7 @@ function EditProblemDialog({
                 <Label>Output Format</Label>
                 <Textarea
                   value={details.outputFormat}
-                  onChange={updateDetail('outputFormat')}
+                  onChange={updateDetail("outputFormat")}
                   className="bg-muted border-border resize-none"
                   rows={3}
                 />
@@ -860,7 +860,7 @@ function EditProblemDialog({
                 <Label>Constraints</Label>
                 <Textarea
                   value={details.constraints}
-                  onChange={updateDetail('constraints')}
+                  onChange={updateDetail("constraints")}
                   className="bg-muted border-border resize-none font-mono text-xs"
                   rows={3}
                 />
@@ -975,8 +975,8 @@ function EditProblemDialog({
                   onClick={() => setActiveBoilerLang(lang)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold uppercase transition-colors ${
                     activeBoilerLang === lang
-                      ? 'bg-primary/15 border border-primary/30 text-primary'
-                      : 'bg-muted border border-border text-muted-foreground hover:text-foreground'
+                      ? "bg-primary/15 border border-primary/30 text-primary"
+                      : "bg-muted border border-border text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {lang}
@@ -997,17 +997,17 @@ function EditProblemDialog({
                   <div className="h-6 bg-muted border-b border-border flex items-center px-3">
                     <span className="text-[10px] font-mono text-muted-foreground">
                       {activeBoilerLang}.
-                      {activeBoilerLang === 'python'
-                        ? 'py'
-                        : activeBoilerLang === 'java'
-                          ? 'java'
-                          : activeBoilerLang === 'cpp'
-                            ? 'cpp'
-                            : 'c'}
+                      {activeBoilerLang === "python"
+                        ? "py"
+                        : activeBoilerLang === "java"
+                          ? "java"
+                          : activeBoilerLang === "cpp"
+                            ? "cpp"
+                            : "c"}
                     </span>
                   </div>
                   <textarea
-                    value={boilerplates[activeBoilerLang] || ''}
+                    value={boilerplates[activeBoilerLang] || ""}
                     onChange={(e) =>
                       setBoilerplates((b) => ({
                         ...b,
@@ -1021,7 +1021,7 @@ function EditProblemDialog({
                 </div>
                 <button
                   onClick={() =>
-                    setBoilerplates((b) => ({ ...b, [activeBoilerLang]: '' }))
+                    setBoilerplates((b) => ({ ...b, [activeBoilerLang]: "" }))
                   }
                   className="text-xs text-muted-foreground hover:text-primary transition-colors"
                 >
@@ -1044,7 +1044,7 @@ function EditProblemDialog({
             {saving ? (
               <Loader2 size={14} className="animate-spin" />
             ) : (
-              'Save Changes'
+              "Save Changes"
             )}
           </Button>
         </DialogFooter>
@@ -1057,33 +1057,33 @@ function EditProblemDialog({
 export default function AdminProblems() {
   const queryClient = useQueryClient();
   const { data: problems = [] } = useQuery({
-    queryKey: ['admin-problems'],
-    queryFn: () => api.get<Problem[]>('/admin/problems'),
+    queryKey: ["admin-problems"],
+    queryFn: () => api.get<Problem[]>("/admin/problems"),
   });
   const { data: contests = [] } = useQuery({
-    queryKey: ['admin-contests'],
-    queryFn: () => api.get<Contest[]>('/admin/contests'),
+    queryKey: ["admin-contests"],
+    queryFn: () => api.get<Contest[]>("/admin/contests"),
   });
 
-  const [search, setSearch] = useState('');
-  const [filterDiff, setFilterDiff] = useState<string>('all');
-  const [filterContest, setFilterContest] = useState<string>('all');
+  const [search, setSearch] = useState("");
+  const [filterDiff, setFilterDiff] = useState<string>("all");
+  const [filterContest, setFilterContest] = useState<string>("all");
   const [showCreate, setShowCreate] = useState(false);
   const [showImport, setShowImport] = useState(false);
   const [editingProblem, setEditingProblem] = useState<Problem | null>(null);
   const [deletingProblem, setDeletingProblem] = useState<Problem | null>(null);
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState({
-    title: '',
-    difficulty: 'Easy' as Difficulty,
-    description: '',
-    timeLimit: '2',
-    memoryLimit: '256',
-    tags: '',
+    title: "",
+    difficulty: "Easy" as Difficulty,
+    description: "",
+    timeLimit: "2",
+    memoryLimit: "256",
+    tags: "",
   });
 
   const invalidateProblems = () =>
-    queryClient.invalidateQueries({ queryKey: ['admin-problems'] });
+    queryClient.invalidateQueries({ queryKey: ["admin-problems"] });
 
   // Contest filter: which contests use each problem
   const problemInContest = (problemId: string, contestId: string) =>
@@ -1095,49 +1095,49 @@ export default function AdminProblems() {
     const matchSearch =
       p.title.toLowerCase().includes(search.toLowerCase()) ||
       p.tags.some((t) => t.includes(search.toLowerCase()));
-    const matchDiff = filterDiff === 'all' || p.difficulty === filterDiff;
+    const matchDiff = filterDiff === "all" || p.difficulty === filterDiff;
     const matchContest =
-      filterContest === 'all' || problemInContest(p.id, filterContest);
+      filterContest === "all" || problemInContest(p.id, filterContest);
     return matchSearch && matchDiff && matchContest;
   });
 
   const handleCreate = async () => {
     if (!form.title.trim()) {
-      toast.error('Title is required');
+      toast.error("Title is required");
       return;
     }
     setCreating(true);
     try {
-      await api.post('/admin/problems', {
+      await api.post("/admin/problems", {
         title: form.title,
         difficulty: form.difficulty,
         description: form.description,
         tags: form.tags
-          .split(',')
+          .split(",")
           .map((t) => t.trim())
           .filter(Boolean),
-        languages: ['cpp', 'python'],
+        languages: ["cpp", "python"],
         boilerplates: {},
         testCases: [],
         timeLimit: Number(form.timeLimit),
         memoryLimit: Number(form.memoryLimit),
         maxScore: 100,
-        status: 'active',
+        status: "active",
       });
       toast.success(`Problem "${form.title}" created!`);
       setShowCreate(false);
       setForm({
-        title: '',
-        difficulty: 'Easy',
-        description: '',
-        timeLimit: '2',
-        memoryLimit: '256',
-        tags: '',
+        title: "",
+        difficulty: "Easy",
+        description: "",
+        timeLimit: "2",
+        memoryLimit: "256",
+        tags: "",
       });
       invalidateProblems();
     } catch (err) {
       toast.error(
-        err instanceof ApiError ? err.message : 'Failed to create problem',
+        err instanceof ApiError ? err.message : "Failed to create problem",
       );
     } finally {
       setCreating(false);
@@ -1153,7 +1153,7 @@ export default function AdminProblems() {
       invalidateProblems();
     } catch (err) {
       toast.error(
-        err instanceof ApiError ? err.message : 'Failed to remove problem',
+        err instanceof ApiError ? err.message : "Failed to remove problem",
       );
     }
   };
@@ -1290,7 +1290,7 @@ export default function AdminProblems() {
                               className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium truncate max-w-24"
                               title={cn}
                             >
-                              {cn.split(' ').slice(0, 2).join(' ')}
+                              {cn.split(" ").slice(0, 2).join(" ")}
                             </span>
                           ))}
                         </div>
@@ -1304,9 +1304,9 @@ export default function AdminProblems() {
                     <td className="text-center">
                       <span
                         className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                          p.status === 'active'
-                            ? 'bg-success/15 text-success'
-                            : 'bg-muted text-muted-foreground'
+                          p.status === "active"
+                            ? "bg-success/15 text-success"
+                            : "bg-muted text-muted-foreground"
                         }`}
                       >
                         {p.status}
@@ -1442,7 +1442,7 @@ export default function AdminProblems() {
                 {creating ? (
                   <Loader2 size={14} className="animate-spin" />
                 ) : (
-                  'Create Problem'
+                  "Create Problem"
                 )}
               </Button>
             </DialogFooter>

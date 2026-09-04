@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Clock } from 'lucide-react';
+import { useState, useEffect, useCallback } from "react";
+import { Clock } from "lucide-react";
 
 interface ContestTimerProps {
   expiresAt: string;
@@ -34,15 +34,15 @@ export default function ContestTimer({
   const h = Math.floor(remaining / 3600);
   const m = Math.floor((remaining % 3600) / 60);
   const s = remaining % 60;
-  const fmt = (n: number) => String(n).padStart(2, '0');
+  const fmt = (n: number) => String(n).padStart(2, "0");
   const isUrgent = remaining < 300 && remaining > 0;
 
   return (
     <div
       className={`flex items-center gap-2 font-mono text-sm font-bold px-3 py-1.5 rounded-lg border ${
         isUrgent
-          ? 'text-destructive border-destructive/30 bg-destructive/10 animate-timer-pulse'
-          : 'text-foreground border-border bg-muted'
+          ? "text-destructive border-destructive/30 bg-destructive/10 animate-timer-pulse"
+          : "text-foreground border-border bg-muted"
       }`}
     >
       <Clock size={14} />

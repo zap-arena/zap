@@ -1,16 +1,16 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { Code2, LogOut, User, LayoutDashboard } from 'lucide-react';
-import { Button } from './ui/button';
-import { useAuth } from '../store/auth';
+import { Link, useNavigate } from "react-router-dom";
+import { Code2, LogOut, User, LayoutDashboard } from "lucide-react";
+import { Button } from "./ui/button";
+import { useAuth } from "../store/auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu';
-import { Avatar, AvatarFallback } from './ui/avatar';
-import ThemeToggle from './ThemeToggle';
+} from "./ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "./ui/avatar";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -18,7 +18,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
@@ -63,9 +63,9 @@ export default function Navbar() {
               <Avatar className="w-6 h-6">
                 <AvatarFallback className="bg-primary/20 text-primary text-xs font-bold">
                   {user.name
-                    .split(' ')
+                    .split(" ")
                     .map((n) => n[0]?.toUpperCase())
-                    .join('')}
+                    .join("")}
                 </AvatarFallback>
               </Avatar>
               <span className="hidden sm:block font-medium text-sm">
@@ -77,16 +77,16 @@ export default function Navbar() {
             align="end"
             className="w-48 bg-card border-border"
           >
-            {user.role === 'admin' && (
+            {user.role === "admin" && (
               <DropdownMenuItem
-                onClick={() => navigate('/admin')}
+                onClick={() => navigate("/admin")}
                 className="gap-2 cursor-pointer"
               >
                 <LayoutDashboard size={14} /> Admin Dashboard
               </DropdownMenuItem>
             )}
             <DropdownMenuItem
-              onClick={() => navigate('/profile')}
+              onClick={() => navigate("/profile")}
               className="gap-2 cursor-pointer"
             >
               <User size={14} /> Profile
@@ -102,13 +102,13 @@ export default function Navbar() {
         </DropdownMenu>
       ) : (
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>
+          <Button variant="ghost" size="sm" onClick={() => navigate("/login")}>
             Login
           </Button>
           <Button
             size="sm"
             className="btn-primary"
-            onClick={() => navigate('/register')}
+            onClick={() => navigate("/register")}
           >
             Sign Up
           </Button>

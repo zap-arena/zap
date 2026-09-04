@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { ProctorTracker, type ProctorEventType } from '../lib/proctor';
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ProctorTracker, type ProctorEventType } from "../lib/proctor";
 
 export interface BlockedAction {
   title: string;
@@ -8,33 +8,33 @@ export interface BlockedAction {
 
 const BLOCK_MESSAGES: Partial<Record<ProctorEventType, BlockedAction>> = {
   COPY_BLOCKED: {
-    title: 'Copying is disabled',
+    title: "Copying is disabled",
     message:
-      'Copying content is not allowed during the contest. This action has been recorded.',
+      "Copying content is not allowed during the contest. This action has been recorded.",
   },
   CUT_BLOCKED: {
-    title: 'Cutting is disabled',
+    title: "Cutting is disabled",
     message:
-      'Cutting content is not allowed during the contest. This action has been recorded.',
+      "Cutting content is not allowed during the contest. This action has been recorded.",
   },
   PASTE_BLOCKED: {
-    title: 'Pasting is disabled',
+    title: "Pasting is disabled",
     message:
-      'Pasting content is not allowed during the contest. Type your solution in the editor.',
+      "Pasting content is not allowed during the contest. Type your solution in the editor.",
   },
   ESCAPE_PRESSED: {
-    title: 'Escape is disabled',
+    title: "Escape is disabled",
     message:
-      'The Escape key is disabled during the contest. Use the Finish button to end your attempt.',
+      "The Escape key is disabled during the contest. Use the Finish button to end your attempt.",
   },
   CONTEXT_MENU_BLOCKED: {
-    title: 'Right-click is disabled',
-    message: 'The context menu is not available during the contest.',
+    title: "Right-click is disabled",
+    message: "The context menu is not available during the contest.",
   },
   DEVTOOLS_ATTEMPT: {
-    title: 'Developer tools are disabled',
+    title: "Developer tools are disabled",
     message:
-      'Opening developer tools is not allowed during the contest. This attempt has been recorded.',
+      "Opening developer tools is not allowed during the contest. This attempt has been recorded.",
   },
 };
 
@@ -72,86 +72,86 @@ export function useProctoring(
       const ctrl = e.ctrlKey || e.metaKey;
       const key = e.key.toLowerCase();
 
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         e.preventDefault();
-        report('ESCAPE_PRESSED');
+        report("ESCAPE_PRESSED");
         return;
       }
-      if (ctrl && key === 'c') {
+      if (ctrl && key === "c") {
         e.preventDefault();
-        report('COPY_BLOCKED', { source: 'keyboard' });
+        report("COPY_BLOCKED", { source: "keyboard" });
         return;
       }
-      if (ctrl && key === 'x') {
+      if (ctrl && key === "x") {
         e.preventDefault();
-        report('CUT_BLOCKED', { source: 'keyboard' });
+        report("CUT_BLOCKED", { source: "keyboard" });
         return;
       }
-      if (ctrl && key === 'v') {
+      if (ctrl && key === "v") {
         e.preventDefault();
-        report('PASTE_BLOCKED', { source: 'keyboard' });
+        report("PASTE_BLOCKED", { source: "keyboard" });
         return;
       }
 
       const devtools =
-        e.key === 'F12' ||
-        (ctrl && e.shiftKey && ['i', 'j', 'c'].includes(key)) ||
-        (ctrl && key === 'u');
+        e.key === "F12" ||
+        (ctrl && e.shiftKey && ["i", "j", "c"].includes(key)) ||
+        (ctrl && key === "u");
       if (devtools) {
         e.preventDefault();
-        report('DEVTOOLS_ATTEMPT', { key: e.key });
+        report("DEVTOOLS_ATTEMPT", { key: e.key });
       }
     };
 
     const onClipboard = (type: ProctorEventType) => (e: Event) => {
       e.preventDefault();
-      report(type, { source: 'clipboard-event' });
+      report(type, { source: "clipboard-event" });
     };
-    const onCopy = onClipboard('COPY_BLOCKED');
-    const onCut = onClipboard('CUT_BLOCKED');
-    const onPaste = onClipboard('PASTE_BLOCKED');
+    const onCopy = onClipboard("COPY_BLOCKED");
+    const onCut = onClipboard("CUT_BLOCKED");
+    const onPaste = onClipboard("PASTE_BLOCKED");
 
     const onContextMenu = (e: MouseEvent) => {
       e.preventDefault();
-      report('CONTEXT_MENU_BLOCKED');
+      report("CONTEXT_MENU_BLOCKED");
     };
 
     const onVisibility = () => {
       // Silent tracking: no modal, since the candidate is not on this tab anyway.
-      trackerRef.current?.track(document.hidden ? 'TAB_HIDDEN' : 'TAB_VISIBLE');
+      trackerRef.current?.track(document.hidden ? "TAB_HIDDEN" : "TAB_VISIBLE");
     };
-    const onBlur = () => trackerRef.current?.track('WINDOW_BLUR');
-    const onFocus = () => trackerRef.current?.track('WINDOW_FOCUS');
+    const onBlur = () => trackerRef.current?.track("WINDOW_BLUR");
+    const onFocus = () => trackerRef.current?.track("WINDOW_FOCUS");
 
     const onFullscreenChange = () => {
       const now = !!document.fullscreenElement;
       setIsFullscreen(now);
       trackerRef.current?.track(
-        now ? 'FULLSCREEN_ENTERED' : 'FULLSCREEN_EXITED',
+        now ? "FULLSCREEN_ENTERED" : "FULLSCREEN_EXITED",
       );
     };
 
     // Capture phase so the editor cannot swallow these first.
-    document.addEventListener('keydown', onKeyDown, true);
-    document.addEventListener('copy', onCopy, true);
-    document.addEventListener('cut', onCut, true);
-    document.addEventListener('paste', onPaste, true);
-    document.addEventListener('contextmenu', onContextMenu, true);
-    document.addEventListener('visibilitychange', onVisibility);
-    document.addEventListener('fullscreenchange', onFullscreenChange);
-    window.addEventListener('blur', onBlur);
-    window.addEventListener('focus', onFocus);
+    document.addEventListener("keydown", onKeyDown, true);
+    document.addEventListener("copy", onCopy, true);
+    document.addEventListener("cut", onCut, true);
+    document.addEventListener("paste", onPaste, true);
+    document.addEventListener("contextmenu", onContextMenu, true);
+    document.addEventListener("visibilitychange", onVisibility);
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    window.addEventListener("blur", onBlur);
+    window.addEventListener("focus", onFocus);
 
     return () => {
-      document.removeEventListener('keydown', onKeyDown, true);
-      document.removeEventListener('copy', onCopy, true);
-      document.removeEventListener('cut', onCut, true);
-      document.removeEventListener('paste', onPaste, true);
-      document.removeEventListener('contextmenu', onContextMenu, true);
-      document.removeEventListener('visibilitychange', onVisibility);
-      document.removeEventListener('fullscreenchange', onFullscreenChange);
-      window.removeEventListener('blur', onBlur);
-      window.removeEventListener('focus', onFocus);
+      document.removeEventListener("keydown", onKeyDown, true);
+      document.removeEventListener("copy", onCopy, true);
+      document.removeEventListener("cut", onCut, true);
+      document.removeEventListener("paste", onPaste, true);
+      document.removeEventListener("contextmenu", onContextMenu, true);
+      document.removeEventListener("visibilitychange", onVisibility);
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
+      window.removeEventListener("blur", onBlur);
+      window.removeEventListener("focus", onFocus);
       tracker.dispose();
       trackerRef.current = null;
     };

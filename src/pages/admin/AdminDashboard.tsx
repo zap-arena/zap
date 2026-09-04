@@ -1,9 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
-import { Users, Code2, Trophy, Send, TrendingUp } from 'lucide-react';
-import AdminLayout from '../../components/AdminLayout';
-import VerdictBadge from '../../components/VerdictBadge';
-import { api } from '../../lib/api';
-import type { Verdict } from '../../types';
+import { useQuery } from "@tanstack/react-query";
+import { Users, Code2, Trophy, Send, TrendingUp } from "lucide-react";
+import AdminLayout from "../../components/AdminLayout";
+import VerdictBadge from "../../components/VerdictBadge";
+import { api } from "../../lib/api";
+import type { Verdict } from "../../types";
 
 interface AdminStats {
   totalUsers: number;
@@ -28,7 +28,7 @@ const StatCard = ({
   label,
   value,
   sub,
-  color = 'text-primary',
+  color = "text-primary",
 }: {
   icon: React.ElementType;
   label: string;
@@ -53,8 +53,8 @@ const StatCard = ({
 
 export default function AdminDashboard() {
   const { data: stats, isLoading } = useQuery({
-    queryKey: ['admin-stats'],
-    queryFn: () => api.get<AdminStats>('/admin/statistics'),
+    queryKey: ["admin-stats"],
+    queryFn: () => api.get<AdminStats>("/admin/statistics"),
   });
 
   if (isLoading) {
@@ -82,26 +82,26 @@ export default function AdminDashboard() {
           <StatCard
             icon={Users}
             label="Total Users"
-            value={stats?.totalUsers ?? '—'}
+            value={stats?.totalUsers ?? "—"}
             color="text-info"
           />
           <StatCard
             icon={Code2}
             label="Problems"
-            value={stats?.totalProblems ?? '—'}
+            value={stats?.totalProblems ?? "—"}
             color="text-primary"
           />
           <StatCard
             icon={Trophy}
             label="Contests"
-            value={stats?.totalContests ?? '—'}
+            value={stats?.totalContests ?? "—"}
             sub={stats ? `${stats.activeContests} live` : undefined}
             color="text-warning"
           />
           <StatCard
             icon={Send}
             label="Submissions"
-            value={stats?.totalSubmissions ?? '—'}
+            value={stats?.totalSubmissions ?? "—"}
             sub={stats ? `${stats.acceptedSubmissions} accepted` : undefined}
             color="text-success"
           />

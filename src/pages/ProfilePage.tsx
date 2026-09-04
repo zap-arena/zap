@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import {
   Trophy,
   Target,
@@ -8,23 +8,23 @@ import {
   Calendar,
   Medal,
   Loader2,
-} from 'lucide-react';
-import Navbar from '../components/Navbar';
-import { Button } from '../components/ui/button';
-import { api } from '../lib/api';
+} from "lucide-react";
+import Navbar from "../components/Navbar";
+import { Button } from "../components/ui/button";
+import { api } from "../lib/api";
 
 const STATUS_STYLES: Record<string, string> = {
-  active: 'bg-success/15 text-success',
-  scheduled: 'bg-warning/15 text-warning',
-  completed: 'bg-muted text-muted-foreground',
-  draft: 'bg-secondary text-secondary-foreground',
-  cancelled: 'bg-destructive/15 text-destructive',
+  active: "bg-success/15 text-success",
+  scheduled: "bg-warning/15 text-warning",
+  completed: "bg-muted text-muted-foreground",
+  draft: "bg-secondary text-secondary-foreground",
+  cancelled: "bg-destructive/15 text-destructive",
 };
 
 const DIFFICULTY_STYLES: Record<string, string> = {
-  Easy: 'text-success',
-  Medium: 'text-warning',
-  Hard: 'text-destructive',
+  Easy: "text-success",
+  Medium: "text-warning",
+  Hard: "text-destructive",
 };
 
 interface ProfileProblem {
@@ -96,8 +96,8 @@ function StatCard({
 export default function ProfilePage() {
   const navigate = useNavigate();
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['my-profile'],
-    queryFn: () => api.get<ProfileResponse>('/me/profile'),
+    queryKey: ["my-profile"],
+    queryFn: () => api.get<ProfileResponse>("/me/profile"),
   });
 
   if (isLoading) {
@@ -136,9 +136,9 @@ export default function ProfilePage() {
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center text-primary text-xl font-bold">
             {user.name
-              .split(' ')
+              .split(" ")
               .map((n) => n[0])
-              .join('')
+              .join("")
               .slice(0, 2)}
           </div>
           <div>
@@ -173,7 +173,7 @@ export default function ProfilePage() {
               <>
                 {stats.totalSubmissions}
                 <span className="text-sm text-muted-foreground font-normal">
-                  {' '}
+                  {" "}
                   · {accuracy}% accepted
                 </span>
               </>
@@ -192,7 +192,7 @@ export default function ProfilePage() {
               <Button
                 size="sm"
                 className="btn-primary"
-                onClick={() => navigate('/')}
+                onClick={() => navigate("/")}
               >
                 Browse contests
               </Button>
@@ -258,26 +258,26 @@ export default function ProfilePage() {
                           size={13}
                           className={
                             p.solved
-                              ? 'text-success shrink-0'
-                              : 'text-muted-foreground/30 shrink-0'
+                              ? "text-success shrink-0"
+                              : "text-muted-foreground/30 shrink-0"
                           }
                         />
                         <span
                           className={
-                            p.solved ? 'font-medium' : 'text-muted-foreground'
+                            p.solved ? "font-medium" : "text-muted-foreground"
                           }
                         >
                           {p.title}
                         </span>
                         <span
-                          className={`text-[10px] font-mono font-semibold ${DIFFICULTY_STYLES[p.difficulty ?? 'Easy']}`}
+                          className={`text-[10px] font-mono font-semibold ${DIFFICULTY_STYLES[p.difficulty ?? "Easy"]}`}
                         >
                           {p.difficulty}
                         </span>
                         <span className="ml-auto font-mono text-muted-foreground">
                           {p.attempted
                             ? `${p.score}/${p.maxScore}`
-                            : 'not attempted'}
+                            : "not attempted"}
                         </span>
                       </div>
                     ))}

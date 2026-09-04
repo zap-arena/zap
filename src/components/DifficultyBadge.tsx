@@ -1,4 +1,4 @@
-import type { Difficulty } from '../types';
+import type { Difficulty } from "../types";
 
 export default function DifficultyBadge({
   difficulty,
@@ -6,11 +6,11 @@ export default function DifficultyBadge({
   difficulty: Difficulty;
 }) {
   const cls =
-    difficulty === 'Easy'
-      ? 'diff-easy'
-      : difficulty === 'Medium'
-        ? 'diff-medium'
-        : 'diff-hard';
+    difficulty === "Easy"
+      ? "diff-easy"
+      : difficulty === "Medium"
+        ? "diff-medium"
+        : "diff-hard";
   return (
     <span className={`text-xs font-semibold font-mono ${cls}`}>
       {difficulty}
