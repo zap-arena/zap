@@ -1,0 +1,8 @@
+{
+  "name": "Hidden 2 - single repeated value",
+  "input": "3\n9 9 9",
+  "expected_output": "9",
+  "hidden": true,
+  "marks": 37,
+  "order": 4
+}

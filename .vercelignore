@@ -1,0 +1,30 @@
+# Local Python virtualenvs (~140 MB, rebuilt by Vercel from api/requirements.txt)
+.venv
+api/.venv
+api/venv
+
+# Local dev Postgres cluster + data (~220 MB)
+.postgres
+
+# Secrets - backend env vars belong in Vercel Project Settings
+.env
+.env.*
+!.env.example
+api/.env
+
+# Single-file bundle artifact produced by bundle-artifact.sh, not used by Vercel
+render
+
+# Build output and deps that Vercel regenerates
+node_modules
+dist
+
+# Problem bank is imported through the admin UI, not read from disk at runtime
+problems
+
+# Misc
+.git
+.vscode
+*.log
+__pycache__
+**/__pycache__

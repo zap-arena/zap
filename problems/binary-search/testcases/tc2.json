@@ -1,0 +1,8 @@
+{
+  "name": "Sample 2 - target absent",
+  "input": "6\n-1 0 3 5 9 12\n2",
+  "expected_output": "-1",
+  "hidden": false,
+  "marks": 20,
+  "order": 2
+}

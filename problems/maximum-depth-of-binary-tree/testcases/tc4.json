@@ -1,0 +1,8 @@
+{
+  "name": "Hidden - left-skewed chain",
+  "input": "15\n1 2 -1 4 -1 -1 -1 8 -1 -1 -1 -1 -1 -1 -1",
+  "expected_output": "4",
+  "hidden": true,
+  "marks": 30,
+  "order": 4
+}

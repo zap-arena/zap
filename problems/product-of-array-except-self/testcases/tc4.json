@@ -1,0 +1,8 @@
+{
+  "name": "Hidden - negatives and minimum size",
+  "input": "2\n-7 3",
+  "expected_output": "3 -7",
+  "hidden": true,
+  "marks": 30,
+  "order": 4
+}

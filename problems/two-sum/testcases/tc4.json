@@ -1,0 +1,8 @@
+{
+  "name": "Hidden - negative numbers",
+  "input": "5\n-3 4 3 90 -1\n0",
+  "expected_output": "0 2",
+  "hidden": true,
+  "marks": 30,
+  "order": 4
+}

@@ -1,0 +1,8 @@
+{
+  "name": "Hidden - low late, peak early",
+  "input": "8\n3 8 2 9 1 7 4 10",
+  "expected_output": "9",
+  "hidden": true,
+  "marks": 30,
+  "order": 4
+}

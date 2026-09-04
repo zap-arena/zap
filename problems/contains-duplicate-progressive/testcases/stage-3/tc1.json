@@ -1,0 +1,8 @@
+{
+  "name": "Sample 1 - two values repeat",
+  "input": "6\n1 2 2 3 3 4",
+  "expected_output": "2",
+  "hidden": false,
+  "marks": 37,
+  "order": 1
+}
