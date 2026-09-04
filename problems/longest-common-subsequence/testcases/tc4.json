@@ -1,8 +1,8 @@
 {
-  "name": "Hidden - interleaved repeats",
-  "input": "bsbininm\njmjkbkjkv",
-  "expected_output": "1",
-  "hidden": true,
-  "marks": 30,
-  "order": 4
+	"name": "Hidden - interleaved repeats",
+	"input": "bsbininm\njmjkbkjkv",
+	"expected_output": "1",
+	"hidden": true,
+	"marks": 30,
+	"order": 4
 }

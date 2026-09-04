@@ -1,8 +1,8 @@
 {
-  "name": "Hidden - two zeros",
-  "input": "4\n0 4 0 5",
-  "expected_output": "0 0 0 0",
-  "hidden": true,
-  "marks": 30,
-  "order": 3
+	"name": "Hidden - two zeros",
+	"input": "4\n0 4 0 5",
+	"expected_output": "0 0 0 0",
+	"hidden": true,
+	"marks": 30,
+	"order": 3
 }

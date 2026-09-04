@@ -1,34 +1,26 @@
 {
-  "title": "Binary Search",
-  "slug": "binary-search",
-  "difficulty": "Easy",
-  "inputFormat": "Line 1: integer n, the number of elements.\nLine 2: n space-separated integers sorted in ascending order.\nLine 3: integer target.",
-  "outputFormat": "The index of target in nums, or -1 if it is not present.",
-  "constraints": "1 <= n <= 10^5\n-10^9 <= nums[i], target <= 10^9\nnums is sorted in strictly ascending order.",
-  "examples": [
-    {
-      "input": "6\n-1 0 3 5 9 12\n9",
-      "output": "4",
-      "explanation": "nums[4] == 9."
-    },
-    {
-      "input": "6\n-1 0 3 5 9 12\n2",
-      "output": "-1",
-      "explanation": "2 does not appear in nums."
-    }
-  ],
-  "tags": [
-    "array",
-    "binary-search"
-  ],
-  "languages": [
-    "c",
-    "cpp",
-    "java",
-    "python"
-  ],
-  "timeLimit": 2,
-  "memoryLimit": 256,
-  "maxScore": 100,
-  "status": "active"
+	"title": "Binary Search",
+	"slug": "binary-search",
+	"difficulty": "Easy",
+	"inputFormat": "Line 1: integer n, the number of elements.\nLine 2: n space-separated integers sorted in ascending order.\nLine 3: integer target.",
+	"outputFormat": "The index of target in nums, or -1 if it is not present.",
+	"constraints": "1 <= n <= 10^5\n-10^9 <= nums[i], target <= 10^9\nnums is sorted in strictly ascending order.",
+	"examples": [
+		{
+			"input": "6\n-1 0 3 5 9 12\n9",
+			"output": "4",
+			"explanation": "nums[4] == 9."
+		},
+		{
+			"input": "6\n-1 0 3 5 9 12\n2",
+			"output": "-1",
+			"explanation": "2 does not appear in nums."
+		}
+	],
+	"tags": ["array", "binary-search"],
+	"languages": ["c", "cpp", "java", "python"],
+	"timeLimit": 2,
+	"memoryLimit": 256,
+	"maxScore": 100,
+	"status": "active"
 }

@@ -1,8 +1,8 @@
 {
-  "name": "Sample 2 - single element",
-  "input": "1\n1\n1",
-  "expected_output": "1",
-  "hidden": false,
-  "marks": 20,
-  "order": 2
+	"name": "Sample 2 - single element",
+	"input": "1\n1\n1",
+	"expected_output": "1",
+	"hidden": false,
+	"marks": 20,
+	"order": 2
 }

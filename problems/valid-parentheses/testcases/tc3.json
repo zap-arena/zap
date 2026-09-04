@@ -1,8 +1,8 @@
 {
-  "name": "Hidden - deep nesting",
-  "input": "((((([[{{}}]])))))",
-  "expected_output": "true",
-  "hidden": true,
-  "marks": 30,
-  "order": 3
+	"name": "Hidden - deep nesting",
+	"input": "((((([[{{}}]])))))",
+	"expected_output": "true",
+	"hidden": true,
+	"marks": 30,
+	"order": 3
 }

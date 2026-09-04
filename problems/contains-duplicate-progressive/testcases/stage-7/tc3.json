@@ -1,0 +1,8 @@
+{
+	"name": "Hidden 1 - all same value",
+	"input": "4\n7 7 7 7",
+	"expected_output": "1",
+	"hidden": true,
+	"marks": 50,
+	"order": 3
+}

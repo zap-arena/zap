@@ -1,8 +1,8 @@
 {
-  "name": "Hidden - all water",
-  "input": "3 3\n000\n000\n000",
-  "expected_output": "0",
-  "hidden": true,
-  "marks": 30,
-  "order": 3
+	"name": "Hidden - all water",
+	"input": "3 3\n000\n000\n000",
+	"expected_output": "0",
+	"hidden": true,
+	"marks": 30,
+	"order": 3
 }

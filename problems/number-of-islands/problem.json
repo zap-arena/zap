@@ -1,37 +1,26 @@
 {
-  "title": "Number of Islands",
-  "slug": "number-of-islands",
-  "difficulty": "Medium",
-  "inputFormat": "Line 1: two integers rows and cols.\nNext rows lines: a string of cols characters, each '0' (water) or '1' (land).",
-  "outputFormat": "A single integer: the number of islands.",
-  "constraints": "1 <= rows, cols <= 300\nEach grid character is '0' or '1'.",
-  "examples": [
-    {
-      "input": "4 5\n11110\n11010\n11000\n00000",
-      "output": "1",
-      "explanation": "All the land cells are connected into one island."
-    },
-    {
-      "input": "4 5\n11000\n11000\n00100\n00011",
-      "output": "3",
-      "explanation": "The top-left block, the single cell, and the bottom-right pair."
-    }
-  ],
-  "tags": [
-    "graph",
-    "dfs",
-    "bfs",
-    "matrix",
-    "union-find"
-  ],
-  "languages": [
-    "c",
-    "cpp",
-    "java",
-    "python"
-  ],
-  "timeLimit": 2,
-  "memoryLimit": 256,
-  "maxScore": 100,
-  "status": "active"
+	"title": "Number of Islands",
+	"slug": "number-of-islands",
+	"difficulty": "Medium",
+	"inputFormat": "Line 1: two integers rows and cols.\nNext rows lines: a string of cols characters, each '0' (water) or '1' (land).",
+	"outputFormat": "A single integer: the number of islands.",
+	"constraints": "1 <= rows, cols <= 300\nEach grid character is '0' or '1'.",
+	"examples": [
+		{
+			"input": "4 5\n11110\n11010\n11000\n00000",
+			"output": "1",
+			"explanation": "All the land cells are connected into one island."
+		},
+		{
+			"input": "4 5\n11000\n11000\n00100\n00011",
+			"output": "3",
+			"explanation": "The top-left block, the single cell, and the bottom-right pair."
+		}
+	],
+	"tags": ["graph", "dfs", "bfs", "matrix", "union-find"],
+	"languages": ["c", "cpp", "java", "python"],
+	"timeLimit": 2,
+	"memoryLimit": 256,
+	"maxScore": 100,
+	"status": "active"
 }

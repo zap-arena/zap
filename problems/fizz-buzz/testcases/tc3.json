@@ -1,8 +1,8 @@
 {
-  "name": "Hidden - n = 15 covers FizzBuzz",
-  "input": "15",
-  "expected_output": "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz",
-  "hidden": true,
-  "marks": 30,
-  "order": 3
+	"name": "Hidden - n = 15 covers FizzBuzz",
+	"input": "15",
+	"expected_output": "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz",
+	"hidden": true,
+	"marks": 30,
+	"order": 3
 }

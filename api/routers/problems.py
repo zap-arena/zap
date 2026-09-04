@@ -199,6 +199,7 @@ async def import_problems_zip(
                 memory_limit=parsed["memoryLimit"],
                 max_score=parsed["maxScore"],
                 status=parsed["status"],
+                is_progressive=parsed["isProgressive"],
                 created_by=admin.id,
             )
             db.add(problem)
@@ -207,8 +208,23 @@ async def import_problems_zip(
                 db.add(models.TestCase(
                     problem_id=problem.id, name=tc["name"], input=tc["input"],
                     expected_output=tc["expectedOutput"], hidden=tc["hidden"],
-                    marks=tc["marks"], order=order,
+                    marks=tc["marks"], order=order, perf_tier=tc.get("perfTier"),
                 ))
+            for stage_data in parsed["stages"]:
+                stage = models.ProblemStage(
+                    problem_id=problem.id, stage_order=stage_data["stageOrder"], title=stage_data["title"],
+                    statement=stage_data["statement"], expected_complexity=stage_data["expectedComplexity"],
+                    time_limit=stage_data["timeLimit"], memory_limit=stage_data["memoryLimit"],
+                    max_score=stage_data["maxScore"],
+                )
+                db.add(stage)
+                db.flush()
+                for order, tc in enumerate(stage_data["testCases"]):
+                    db.add(models.TestCase(
+                        problem_id=problem.id, stage_id=stage.id, name=tc["name"], input=tc["input"],
+                        expected_output=tc["expectedOutput"], hidden=tc["hidden"],
+                        marks=tc["marks"], order=order, perf_tier=tc.get("perfTier"),
+                    ))
             imported += 1
             summary["imported"] = True
 

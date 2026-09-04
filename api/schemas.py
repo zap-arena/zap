@@ -49,10 +49,36 @@ class TestCaseIn(BaseModel):
     expectedOutput: str = ""
     hidden: bool = False
     marks: int = 0
+    perfTier: Optional[Literal["small", "medium", "large"]] = None
 
 
 class TestCaseOut(TestCaseIn):
     id: str
+
+
+class ProblemStageIn(BaseModel):
+    id: Optional[str] = None
+    stageOrder: int = 1
+    title: str = ""
+    statement: str = ""
+    expectedComplexity: Optional[str] = None
+    timeLimit: Optional[int] = Field(default=None, ge=1, le=15)
+    memoryLimit: Optional[int] = Field(default=None, ge=16, le=1024)
+    maxScore: int = Field(default=100, ge=0, le=10000)
+    testCases: list[TestCaseIn] = []
+
+
+class ProblemStageOut(BaseModel):
+    id: str
+    stageOrder: int
+    title: str
+    statement: str
+    expectedComplexity: Optional[str]
+    timeLimit: Optional[int]
+    memoryLimit: Optional[int]
+    maxScore: int
+    testCases: list[dict]
+    locked: bool = False
 
 
 class ProblemIn(BaseModel):
@@ -71,6 +97,8 @@ class ProblemIn(BaseModel):
     memoryLimit: int = Field(default=256, ge=16, le=1024)
     maxScore: int = Field(default=100, ge=0, le=10000)
     status: Literal["active", "archived"] = "active"
+    isProgressive: bool = False
+    stages: list[ProblemStageIn] = []
 
 
 class ProblemOut(BaseModel):
@@ -92,6 +120,10 @@ class ProblemOut(BaseModel):
     maxScore: int
     status: str
     createdAt: str
+    isProgressive: bool = False
+    stages: list[dict] = []
+    currentStageOrder: Optional[int] = None
+    totalStages: Optional[int] = None
 
 
 class ProblemSummaryOut(BaseModel):
@@ -122,6 +154,7 @@ class ContestIn(BaseModel):
     endTime: datetime
     duration: int = Field(default=60, ge=5, le=1440)
     scoringMode: Literal["full", "partial"] = "partial"
+    mode: Literal["standard", "progressive"] = "standard"
     leaderboardVisible: bool = True
     problems: list[ContestProblemIn] = []
     moderatorIds: list[str] = []
@@ -177,6 +210,7 @@ class ContestOut(BaseModel):
     duration: int
     status: str
     scoringMode: str
+    mode: str = "standard"
     leaderboardVisible: bool
     problems: list[dict]
     createdAt: str
@@ -186,6 +220,7 @@ class ContestOut(BaseModel):
 class RunRequest(BaseModel):
     problemId: str
     contestId: Optional[str] = None
+    stageId: Optional[str] = None
     language: Language
     code: str = Field(min_length=1, max_length=30000)
     stdin: str = Field(default="", max_length=12000)
@@ -194,6 +229,7 @@ class RunRequest(BaseModel):
 class SubmitRequest(BaseModel):
     problemId: str
     contestId: Optional[str] = None
+    stageId: Optional[str] = None
     language: Language
     code: str = Field(min_length=1, max_length=30000)
 

@@ -54,6 +54,16 @@ def get_participant(db: Session, contest_id: str, user_id: str) -> Optional[mode
     )
 
 
+def get_chain_progress(db: Session, contest_id: str, user_id: str, problem_id: str) -> Optional[models.ContestChainProgress]:
+    return db.scalar(
+        select(models.ContestChainProgress).where(
+            models.ContestChainProgress.contest_id == contest_id,
+            models.ContestChainProgress.user_id == user_id,
+            models.ContestChainProgress.problem_id == problem_id,
+        )
+    )
+
+
 # ---------- Public / participant ----------
 @router.get("/api/contests")
 def list_public_contests(db: Session = Depends(get_db)):
@@ -113,6 +123,10 @@ def start_contest(contest_id: str, db: Session = Depends(get_db), user: models.U
         )
         db.add(participant)
         db.add(models.ContestActivityLog(contest_id=contest.id, user_id=user.id, event_type="CONTEST_STARTED"))
+        if contest.mode == "progressive":
+            for cp in contest.problems:
+                if cp.problem and cp.problem.is_progressive:
+                    db.add(models.ContestChainProgress(contest_id=contest.id, user_id=user.id, problem_id=cp.problem_id))
         db.commit()
         db.refresh(participant)
     else:
@@ -166,10 +180,16 @@ def _require_started(db: Session, contest_id: str, user_id: str) -> models.Conte
 def contest_problems(contest_id: str, db: Session = Depends(get_db), user: models.User = Depends(get_current_user)):
     contest = get_contest_or_404(db, contest_id)
     _require_started(db, contest.id, user.id)
-    return [
-        serialize_problem(cp.problem, include_hidden=False) | {"maxScore": cp.max_score, "order": cp.order}
-        for cp in sorted(contest.problems, key=lambda x: x.order)
-    ]
+    result = []
+    for cp in sorted(contest.problems, key=lambda x: x.order):
+        chain_progress = None
+        if contest.mode == "progressive" and cp.problem and cp.problem.is_progressive:
+            chain_progress = get_chain_progress(db, contest.id, user.id, cp.problem_id)
+        result.append(
+            serialize_problem(cp.problem, include_hidden=False, chain_progress=chain_progress)
+            | {"maxScore": cp.max_score, "order": cp.order}
+        )
+    return result
 
 
 @router.put("/api/contests/{contest_id}/problems/{problem_id}/draft")
@@ -330,6 +350,7 @@ def _apply_contest_fields(contest: models.Contest, payload: schemas.ContestIn, d
     contest.end_time = payload.endTime
     contest.duration = payload.duration
     contest.scoring_mode = payload.scoringMode
+    contest.mode = payload.mode
     contest.leaderboard_visible = payload.leaderboardVisible
 
     db.add(contest)

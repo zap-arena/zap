@@ -1,8 +1,8 @@
 {
-  "name": "Sample 1 - repeating pattern",
-  "input": "abcabcbb",
-  "expected_output": "3",
-  "hidden": false,
-  "marks": 20,
-  "order": 1
+	"name": "Sample 1 - repeating pattern",
+	"input": "abcabcbb",
+	"expected_output": "3",
+	"hidden": false,
+	"marks": 20,
+	"order": 1
 }

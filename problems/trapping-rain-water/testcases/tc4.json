@@ -1,8 +1,8 @@
 {
-  "name": "Hidden - single deep well",
-  "input": "7\n5 0 0 0 0 0 5",
-  "expected_output": "25",
-  "hidden": true,
-  "marks": 30,
-  "order": 4
+	"name": "Hidden - single deep well",
+	"input": "7\n5 0 0 0 0 0 5",
+	"expected_output": "25",
+	"hidden": true,
+	"marks": 30,
+	"order": 4
 }

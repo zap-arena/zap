@@ -1,35 +1,26 @@
 {
-  "title": "Reverse Linked List",
-  "slug": "reverse-linked-list",
-  "difficulty": "Easy",
-  "inputFormat": "Line 1: integer n, the number of nodes.\nLine 2: n space-separated integers, the node values from head to tail (empty line when n == 0).",
-  "outputFormat": "The values of the reversed list from head to tail, space-separated. Print an empty line when the list is empty.",
-  "constraints": "0 <= n <= 5000\n-5000 <= value <= 5000",
-  "examples": [
-    {
-      "input": "5\n1 2 3 4 5",
-      "output": "5 4 3 2 1",
-      "explanation": "The list 1->2->3->4->5 becomes 5->4->3->2->1."
-    },
-    {
-      "input": "2\n1 2",
-      "output": "2 1",
-      "explanation": "The two nodes swap places."
-    }
-  ],
-  "tags": [
-    "linked-list",
-    "recursion",
-    "two-pointers"
-  ],
-  "languages": [
-    "c",
-    "cpp",
-    "java",
-    "python"
-  ],
-  "timeLimit": 2,
-  "memoryLimit": 256,
-  "maxScore": 100,
-  "status": "active"
+	"title": "Reverse Linked List",
+	"slug": "reverse-linked-list",
+	"difficulty": "Easy",
+	"inputFormat": "Line 1: integer n, the number of nodes.\nLine 2: n space-separated integers, the node values from head to tail (empty line when n == 0).",
+	"outputFormat": "The values of the reversed list from head to tail, space-separated. Print an empty line when the list is empty.",
+	"constraints": "0 <= n <= 5000\n-5000 <= value <= 5000",
+	"examples": [
+		{
+			"input": "5\n1 2 3 4 5",
+			"output": "5 4 3 2 1",
+			"explanation": "The list 1->2->3->4->5 becomes 5->4->3->2->1."
+		},
+		{
+			"input": "2\n1 2",
+			"output": "2 1",
+			"explanation": "The two nodes swap places."
+		}
+	],
+	"tags": ["linked-list", "recursion", "two-pointers"],
+	"languages": ["c", "cpp", "java", "python"],
+	"timeLimit": 2,
+	"memoryLimit": 256,
+	"maxScore": 100,
+	"status": "active"
 }

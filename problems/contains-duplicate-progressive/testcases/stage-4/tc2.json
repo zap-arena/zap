@@ -1,0 +1,8 @@
+{
+	"name": "Sample 2 - tie broken by smallest value",
+	"input": "5\n5 5 2 2 9",
+	"expected_output": "2",
+	"hidden": false,
+	"marks": 37,
+	"order": 2
+}

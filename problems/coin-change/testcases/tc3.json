@@ -1,8 +1,8 @@
 {
-  "name": "Hidden - zero amount",
-  "input": "2\n1 7\n0",
-  "expected_output": "0",
-  "hidden": true,
-  "marks": 30,
-  "order": 3
+	"name": "Hidden - zero amount",
+	"input": "2\n1 7\n0",
+	"expected_output": "0",
+	"hidden": true,
+	"marks": 30,
+	"order": 3
 }

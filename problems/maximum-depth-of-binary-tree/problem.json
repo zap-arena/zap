@@ -1,37 +1,26 @@
 {
-  "title": "Maximum Depth of Binary Tree",
-  "slug": "maximum-depth-of-binary-tree",
-  "difficulty": "Easy",
-  "inputFormat": "Line 1: integer n, the length of the tree array.\nLine 2: n space-separated integers in level order, where -1 marks a missing node. The children of index i are at indices 2*i+1 and 2*i+2.",
-  "outputFormat": "A single integer: the maximum depth (number of nodes on the longest root-to-leaf path).",
-  "constraints": "1 <= n <= 2047\nEach value is -1 (no node) or between 0 and 10^4.\nA node's children are only present when the node itself is present.",
-  "examples": [
-    {
-      "input": "7\n3 9 20 -1 -1 15 7",
-      "output": "3",
-      "explanation": "The longest path is 3 -> 20 -> 15 (or 3 -> 20 -> 7), which has 3 nodes."
-    },
-    {
-      "input": "3\n1 -1 2",
-      "output": "2",
-      "explanation": "The path 1 -> 2 has 2 nodes."
-    }
-  ],
-  "tags": [
-    "tree",
-    "binary-tree",
-    "dfs",
-    "bfs",
-    "recursion"
-  ],
-  "languages": [
-    "c",
-    "cpp",
-    "java",
-    "python"
-  ],
-  "timeLimit": 2,
-  "memoryLimit": 256,
-  "maxScore": 100,
-  "status": "active"
+	"title": "Maximum Depth of Binary Tree",
+	"slug": "maximum-depth-of-binary-tree",
+	"difficulty": "Easy",
+	"inputFormat": "Line 1: integer n, the length of the tree array.\nLine 2: n space-separated integers in level order, where -1 marks a missing node. The children of index i are at indices 2*i+1 and 2*i+2.",
+	"outputFormat": "A single integer: the maximum depth (number of nodes on the longest root-to-leaf path).",
+	"constraints": "1 <= n <= 2047\nEach value is -1 (no node) or between 0 and 10^4.\nA node's children are only present when the node itself is present.",
+	"examples": [
+		{
+			"input": "7\n3 9 20 -1 -1 15 7",
+			"output": "3",
+			"explanation": "The longest path is 3 -> 20 -> 15 (or 3 -> 20 -> 7), which has 3 nodes."
+		},
+		{
+			"input": "3\n1 -1 2",
+			"output": "2",
+			"explanation": "The path 1 -> 2 has 2 nodes."
+		}
+	],
+	"tags": ["tree", "binary-tree", "dfs", "bfs", "recursion"],
+	"languages": ["c", "cpp", "java", "python"],
+	"timeLimit": 2,
+	"memoryLimit": 256,
+	"maxScore": 100,
+	"status": "active"
 }

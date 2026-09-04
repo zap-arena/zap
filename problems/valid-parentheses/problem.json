@@ -1,34 +1,26 @@
 {
-  "title": "Valid Parentheses",
-  "slug": "valid-parentheses",
-  "difficulty": "Easy",
-  "inputFormat": "Line 1: the string s, containing only the characters '(', ')', '{', '}', '[' and ']'.",
-  "outputFormat": "Print `true` if s is a valid bracket sequence, otherwise `false`.",
-  "constraints": "1 <= |s| <= 10^4\ns consists only of the characters '()[]{}'.",
-  "examples": [
-    {
-      "input": "()[]{}",
-      "output": "true",
-      "explanation": "Every bracket is closed by the same type in the correct order."
-    },
-    {
-      "input": "([)]",
-      "output": "false",
-      "explanation": "'(' is closed by ']', so the ordering is invalid."
-    }
-  ],
-  "tags": [
-    "stack",
-    "string"
-  ],
-  "languages": [
-    "c",
-    "cpp",
-    "java",
-    "python"
-  ],
-  "timeLimit": 2,
-  "memoryLimit": 256,
-  "maxScore": 100,
-  "status": "active"
+	"title": "Valid Parentheses",
+	"slug": "valid-parentheses",
+	"difficulty": "Easy",
+	"inputFormat": "Line 1: the string s, containing only the characters '(', ')', '{', '}', '[' and ']'.",
+	"outputFormat": "Print `true` if s is a valid bracket sequence, otherwise `false`.",
+	"constraints": "1 <= |s| <= 10^4\ns consists only of the characters '()[]{}'.",
+	"examples": [
+		{
+			"input": "()[]{}",
+			"output": "true",
+			"explanation": "Every bracket is closed by the same type in the correct order."
+		},
+		{
+			"input": "([)]",
+			"output": "false",
+			"explanation": "'(' is closed by ']', so the ordering is invalid."
+		}
+	],
+	"tags": ["stack", "string"],
+	"languages": ["c", "cpp", "java", "python"],
+	"timeLimit": 2,
+	"memoryLimit": 256,
+	"maxScore": 100,
+	"status": "active"
 }

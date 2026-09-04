@@ -12,6 +12,7 @@ from database import get_db
 from deps import require_admin
 from routers.contests import compute_status, get_contest_or_404, leaderboard
 from serializers import serialize_submission
+import analytics_engine
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
@@ -229,3 +230,102 @@ def analytics_events(
         "timeseries": timeseries_list,
         "labels": list(summary.keys())
     }
+
+
+# ---------- Progressive ("Code War") chain behavior analytics ----------
+async def _analyze_participant_chain(
+    db: Session, contest_id: str, user_id: str, problem: models.Problem
+) -> dict:
+    metrics = analytics_engine.compute_stage_metrics(db, contest_id, user_id, problem.id)
+    stages_by_id = {s.id: s for s in problem.stages}
+
+    complexities: dict[str, dict] = {}
+    for m in metrics:
+        stage = stages_by_id.get(m.stage_id)
+        accepted = db.scalar(select(models.Submission).where(
+            models.Submission.contest_id == contest_id, models.Submission.user_id == user_id,
+            models.Submission.stage_id == m.stage_id, models.Submission.status == "ACCEPTED",
+        ).order_by(models.Submission.submitted_at))
+        if stage and accepted:
+            complexities[m.stage_id] = await analytics_engine.estimate_complexity(stage, accepted.language, accepted.source_code)
+    analytics_engine.attach_complexity(metrics, complexities)
+
+    expected = {s.id: s.expected_complexity for s in problem.stages}
+    pattern = analytics_engine.classify_pattern(metrics, expected)
+
+    return {
+        "problemId": problem.id, "problemTitle": problem.title, "pattern": pattern,
+        "stages": [
+            {
+                "stageId": m.stage_id, "stageOrder": m.stage_order, "solved": m.solved,
+                "attempts": m.attempts, "runs": m.runs, "errorsSeen": sorted(m.errors_seen),
+                "errorsResolved": m.errors_resolved, "timeToSolveSeconds": m.time_to_solve_seconds,
+                "codeChurn": round(m.code_churn, 3), "crossStageRewrite": round(m.cross_stage_rewrite, 3) if m.cross_stage_rewrite is not None else None,
+                "complexity": m.complexity, "expectedComplexity": expected.get(m.stage_id),
+            }
+            for m in metrics
+        ],
+        "_metrics": metrics,
+    }
+
+
+@router.get("/contests/{contest_id}/progressive-analytics")
+async def progressive_analytics(contest_id: str, db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
+    contest = get_contest_or_404(db, contest_id)
+    if contest.mode != "progressive":
+        raise HTTPException(status_code=400, detail="This contest is not in progressive mode")
+
+    chain_problems = [cp.problem for cp in contest.problems if cp.problem and cp.problem.is_progressive]
+    participants = db.scalars(select(models.ContestParticipant).where(
+        models.ContestParticipant.contest_id == contest.id,
+    )).all()
+
+    per_participant: list[dict] = []
+    cohort_by_problem: dict[str, list[list]] = {p.id: [] for p in chain_problems}
+    for participant in participants:
+        user = db.get(models.User, participant.user_id)
+        chains = []
+        for problem in chain_problems:
+            analysis = await _analyze_participant_chain(db, contest.id, participant.user_id, problem)
+            cohort_by_problem[problem.id].append(analysis["_metrics"])
+            chains.append(analysis)
+        per_participant.append({
+            "userId": participant.user_id, "userName": user.name if user else "Unknown", "chains": chains,
+        })
+
+    for entry in per_participant:
+        for chain in entry["chains"]:
+            cohort = cohort_by_problem[chain["problemId"]]
+            chain["behaviorScore"] = analytics_engine.compute_behavior_score(chain.pop("_metrics"), cohort)
+
+    return per_participant
+
+
+@router.get("/contests/{contest_id}/progressive-analytics/{user_id}")
+async def progressive_analytics_detail(
+    contest_id: str, user_id: str, db: Session = Depends(get_db), _: models.User = Depends(require_admin)
+):
+    contest = get_contest_or_404(db, contest_id)
+    if contest.mode != "progressive":
+        raise HTTPException(status_code=400, detail="This contest is not in progressive mode")
+
+    chain_problems = [cp.problem for cp in contest.problems if cp.problem and cp.problem.is_progressive]
+    chains = []
+    for problem in chain_problems:
+        analysis = await _analyze_participant_chain(db, contest.id, user_id, problem)
+        metrics = analysis.pop("_metrics")
+        analysis["behaviorScore"] = analytics_engine.compute_behavior_score(metrics, [metrics])
+        # Drill-down: attach each stage's submitted code snapshots for review.
+        for stage_view in analysis["stages"]:
+            subs = db.scalars(select(models.Submission).where(
+                models.Submission.contest_id == contest.id, models.Submission.user_id == user_id,
+                models.Submission.stage_id == stage_view["stageId"],
+            ).order_by(models.Submission.submitted_at)).all()
+            stage_view["submissions"] = [
+                {"id": s.id, "status": s.status, "submittedAt": s.submitted_at.isoformat(), "language": s.language}
+                for s in subs
+            ]
+        chains.append(analysis)
+
+    user = db.get(models.User, user_id)
+    return {"userId": user_id, "userName": user.name if user else "Unknown", "chains": chains}

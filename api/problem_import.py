@@ -82,6 +82,44 @@ def _parse_test_case(raw: dict, index: int) -> dict:
         "hidden": bool(_pick(raw, "hidden", default=False)),
         "marks": int(_pick(raw, "marks", "score", default=0) or 0),
         "order": int(_pick(raw, "order", default=index) or index),
+        "perfTier": (_pick(raw, "perf_tier", "perfTier", default=None) or None),
+    }
+
+
+def _parse_test_cases_at(zf: zipfile.ZipFile, files: dict, prefix: str, errors: list[str]) -> list[dict]:
+    test_cases: list[dict] = []
+    names = sorted(
+        (n for n in files if n.startswith(prefix) and n.lower().endswith(".json") and "/" not in n[len(prefix):]),
+        key=_natural_key,
+    )
+    for index, name in enumerate(names, start=1):
+        try:
+            raw = json.loads(_read_text(zf, files[name]))
+            if not isinstance(raw, dict):
+                raise ValueError("must contain a JSON object")
+            test_cases.append(_parse_test_case(raw, index))
+        except ValueError as exc:
+            errors.append(f"{name.split('/')[-1]} is invalid: {exc}")
+    test_cases.sort(key=lambda tc: tc["order"])
+    return test_cases
+
+
+def _parse_stage(meta: dict, index: int, zf: zipfile.ZipFile, folder: str, files: dict, errors: list[str]) -> dict:
+    stage_order = int(_pick(meta, "stageOrder", "stage_order", default=index) or index)
+    testcases_dir = str(_pick(meta, "testcasesDir", "testcases_dir", default=f"stage-{stage_order}"))
+    prefix = f"{folder}/testcases/{testcases_dir}/"
+    test_cases = _parse_test_cases_at(zf, files, prefix, errors)
+    if not test_cases:
+        errors.append(f"Stage {stage_order} has no test cases under testcases/{testcases_dir}/")
+    return {
+        "stageOrder": stage_order,
+        "title": str(_pick(meta, "title", default=f"Stage {stage_order}")),
+        "statement": str(_pick(meta, "statement", default="")),
+        "expectedComplexity": _pick(meta, "expectedComplexity", "expected_complexity", default=None),
+        "timeLimit": _pick(meta, "timeLimit", "time_limit", default=None),
+        "memoryLimit": _pick(meta, "memoryLimit", "memory_limit", default=None),
+        "maxScore": int(_pick(meta, "maxScore", "max_score", default=100) or 100),
+        "testCases": test_cases,
     }
 
 
@@ -127,23 +165,34 @@ def _parse_problem(zf: zipfile.ZipFile, folder: str, files: dict[str, zipfile.Zi
     if not languages:
         languages = sorted(boilerplates.keys()) or ["cpp", "python"]
 
+    is_progressive = bool(_pick(meta, "isProgressive", "is_progressive", default=False))
+    raw_stages = _pick(meta, "stages", default=[]) or []
+    stages = [
+        _parse_stage(s, i, zf, folder, files, errors)
+        for i, s in enumerate(raw_stages, start=1) if isinstance(s, dict)
+    ]
+    stages.sort(key=lambda s: s["stageOrder"])
+    if is_progressive and not stages:
+        errors.append("isProgressive is true but no stages were defined")
+
     test_cases: list[dict] = []
-    tc_prefix = f"{folder}/testcases/"
-    tc_names = sorted(
-        (n for n in files if n.startswith(tc_prefix) and n.lower().endswith(".json") and "/" not in n[len(tc_prefix):]),
-        key=_natural_key,
-    )
-    for index, name in enumerate(tc_names, start=1):
-        try:
-            raw = json.loads(_read_text(zf, files[name]))
-            if not isinstance(raw, dict):
-                raise ValueError("must contain a JSON object")
-            test_cases.append(_parse_test_case(raw, index))
-        except ValueError as exc:
-            errors.append(f"{name.split('/')[-1]} is invalid: {exc}")
-    test_cases.sort(key=lambda tc: tc["order"])
-    if not test_cases:
-        errors.append("No test cases found")
+    if not is_progressive:
+        tc_prefix = f"{folder}/testcases/"
+        tc_names = sorted(
+            (n for n in files if n.startswith(tc_prefix) and n.lower().endswith(".json") and "/" not in n[len(tc_prefix):]),
+            key=_natural_key,
+        )
+        for index, name in enumerate(tc_names, start=1):
+            try:
+                raw = json.loads(_read_text(zf, files[name]))
+                if not isinstance(raw, dict):
+                    raise ValueError("must contain a JSON object")
+                test_cases.append(_parse_test_case(raw, index))
+            except ValueError as exc:
+                errors.append(f"{name.split('/')[-1]} is invalid: {exc}")
+        test_cases.sort(key=lambda tc: tc["order"])
+        if not test_cases:
+            errors.append("No test cases found")
 
     time_limit = int(_pick(meta, "timeLimit", "time_limit", default=2) or 2)
     memory_limit = int(_pick(meta, "memoryLimit", "memory_limit", default=256) or 256)
@@ -175,7 +224,9 @@ def _parse_problem(zf: zipfile.ZipFile, folder: str, files: dict[str, zipfile.Zi
         "memoryLimit": memory_limit,
         "maxScore": max_score,
         "status": "archived" if _pick(meta, "status", default="active") == "archived" else "active",
-        "testCasesCount": len(test_cases),
+        "isProgressive": is_progressive,
+        "stages": stages,
+        "testCasesCount": len(test_cases) if not is_progressive else sum(len(s["testCases"]) for s in stages),
         "boilerplatesCount": len(boilerplates),
         "valid": not errors,
         "errors": errors,

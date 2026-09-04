@@ -1,35 +1,26 @@
 {
-  "title": "Best Time to Buy and Sell Stock",
-  "slug": "best-time-to-buy-and-sell-stock",
-  "difficulty": "Easy",
-  "inputFormat": "Line 1: integer n, the number of days.\nLine 2: n space-separated integers, prices[i] is the price on day i.",
-  "outputFormat": "A single integer: the maximum profit achievable, or 0 if no profitable trade exists.",
-  "constraints": "1 <= n <= 10^5\n0 <= prices[i] <= 10^4",
-  "examples": [
-    {
-      "input": "6\n7 1 5 3 6 4",
-      "output": "5",
-      "explanation": "Buy on day 1 at price 1 and sell on day 4 at price 6 for a profit of 5."
-    },
-    {
-      "input": "5\n7 6 4 3 1",
-      "output": "0",
-      "explanation": "Prices only fall, so no transaction is made and the profit is 0."
-    }
-  ],
-  "tags": [
-    "array",
-    "greedy",
-    "dynamic-programming"
-  ],
-  "languages": [
-    "c",
-    "cpp",
-    "java",
-    "python"
-  ],
-  "timeLimit": 2,
-  "memoryLimit": 256,
-  "maxScore": 100,
-  "status": "active"
+	"title": "Best Time to Buy and Sell Stock",
+	"slug": "best-time-to-buy-and-sell-stock",
+	"difficulty": "Easy",
+	"inputFormat": "Line 1: integer n, the number of days.\nLine 2: n space-separated integers, prices[i] is the price on day i.",
+	"outputFormat": "A single integer: the maximum profit achievable, or 0 if no profitable trade exists.",
+	"constraints": "1 <= n <= 10^5\n0 <= prices[i] <= 10^4",
+	"examples": [
+		{
+			"input": "6\n7 1 5 3 6 4",
+			"output": "5",
+			"explanation": "Buy on day 1 at price 1 and sell on day 4 at price 6 for a profit of 5."
+		},
+		{
+			"input": "5\n7 6 4 3 1",
+			"output": "0",
+			"explanation": "Prices only fall, so no transaction is made and the profit is 0."
+		}
+	],
+	"tags": ["array", "greedy", "dynamic-programming"],
+	"languages": ["c", "cpp", "java", "python"],
+	"timeLimit": 2,
+	"memoryLimit": 256,
+	"maxScore": 100,
+	"status": "active"
 }

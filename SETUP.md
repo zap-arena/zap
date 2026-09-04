@@ -246,6 +246,19 @@ CREATE TABLE IF NOT EXISTS rate_limits (
 CREATE INDEX IF NOT EXISTS ix_rate_limits_expires_at ON rate_limits (expires_at);
 ```
 
+Progressive ("Code War") chain problem support adds new columns and tables
+(`Base.metadata.create_all` creates the new tables `problem_stages` and
+`contest_chain_progress` automatically; the columns below need to be added
+manually on an existing database):
+
+```sql
+ALTER TABLE problems    ADD COLUMN IF NOT EXISTS is_progressive BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE contests    ADD COLUMN IF NOT EXISTS mode VARCHAR(20) NOT NULL DEFAULT 'standard';
+ALTER TABLE test_cases  ADD COLUMN IF NOT EXISTS stage_id VARCHAR(32) REFERENCES problem_stages(id) ON DELETE CASCADE;
+ALTER TABLE test_cases  ADD COLUMN IF NOT EXISTS perf_tier VARCHAR(10);
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS stage_id VARCHAR(32) REFERENCES problem_stages(id) ON DELETE CASCADE;
+```
+
 ---
 
 See [CODEBASE.md](CODEBASE.md) for a file-by-file description of the project.
