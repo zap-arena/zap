@@ -46,6 +46,7 @@ import { Skeleton } from "../components/ui/skeleton";
 import ContestTimer from "../components/ContestTimer";
 import VerdictBadge from "../components/VerdictBadge";
 import DifficultyBadge from "../components/DifficultyBadge";
+import DebuggingWorkspace from "../components/workspace/DebuggingWorkspace";
 import ThemeToggle from "../components/ThemeToggle";
 import ThemeColorPicker from "../components/ThemeColorPicker";
 import { useProctoring } from "../hooks/useProctoring";
@@ -854,432 +855,446 @@ export default function ContestWorkspacePage() {
           </div>
         </div>
 
-        {/* Main content: resizable panels */}
+        {/* Main content: resizable panels or debugging view */}
         <div className="flex-1 min-w-0">
-          <ResizablePanelGroup direction="horizontal" className="h-full">
-            {/* Problem / Content panel */}
-            <ResizablePanel defaultSize={38} minSize={25}>
-              <div className="h-full flex flex-col bg-background overflow-hidden">
-                {selectedProblem ? (
-                  <>
-                    <div className="px-5 py-4 border-b border-border shrink-0">
-                      <h2 className="font-bold text-base text-foreground mb-1">
-                        {selectedProblem.title}
-                        {activeStage && (
-                          <span className="text-primary">
-                            {" "}
-                            — {activeStage.title}
-                          </span>
-                        )}
-                      </h2>
-                      <div className="flex items-center gap-3">
-                        <DifficultyBadge
-                          difficulty={selectedProblem.difficulty}
-                        />
-                        <span className="text-xs text-muted-foreground font-mono">
-                          ⏱{" "}
-                          {activeStage?.timeLimit ?? selectedProblem.timeLimit}s
-                          · 💾{" "}
-                          {activeStage?.memoryLimit ??
-                            selectedProblem.memoryLimit}
-                          MB
-                        </span>
-                        {activeStage?.expectedComplexity && (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-mono">
-                            target: {activeStage.expectedComplexity}
-                          </span>
-                        )}
-                        {selectedProblem.tags.map((t) => (
-                          <span
-                            key={t}
-                            className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground font-mono"
-                          >
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                      {selectedProblem.isProgressive && (
-                        <p className="text-[11px] text-muted-foreground mt-2">
-                          Stage {activeStage?.stageOrder ?? 1} of{" "}
-                          {selectedProblem.totalStages} — solve and submit to
-                          unlock the next enhancement.
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5 text-sm text-foreground">
-                      <div>
-                        <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
-                          {activeStage ? "Stage Description" : "Description"}
-                        </h3>
-                        <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                          {activeStage?.statement ||
-                            selectedProblem.description}
-                        </p>
-                      </div>
-                      {!activeStage && (
-                        <>
-                          <div>
-                            <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
-                              Input Format
-                            </h3>
-                            <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                              {selectedProblem.inputFormat}
-                            </p>
-                          </div>
-                          <div>
-                            <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
-                              Output Format
-                            </h3>
-                            <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                              {selectedProblem.outputFormat}
-                            </p>
-                          </div>
-                        </>
-                      )}
-                      <div>
-                        <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
-                          Constraints
-                        </h3>
-                        <pre className="text-muted-foreground font-mono text-xs leading-relaxed whitespace-pre-wrap bg-muted p-3 rounded-lg border border-border">
-                          {selectedProblem.constraints}
-                        </pre>
-                      </div>
-                      {activeStage?.testCases
-                        ?.filter((tc) => !tc.hidden)
-                        .map((tc, i) => (
-                          <div key={tc.id}>
-                            <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
-                              Sample {i + 1}
-                            </h3>
-                            <div className="space-y-2">
-                              <div className="bg-muted border border-border rounded-lg p-3">
-                                <div className="text-[10px] text-muted-foreground font-mono mb-1">
-                                  INPUT
-                                </div>
-                                <pre className="text-xs font-mono text-foreground whitespace-pre-wrap">
-                                  {tc.input}
-                                </pre>
-                              </div>
-                              <div className="bg-muted border border-border rounded-lg p-3">
-                                <div className="text-[10px] text-muted-foreground font-mono mb-1">
-                                  EXPECTED OUTPUT
-                                </div>
-                                <pre className="text-xs font-mono text-foreground whitespace-pre-wrap">
-                                  {tc.expectedOutput}
-                                </pre>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      {!activeStage &&
-                        selectedProblem.examples.map((ex, i) => (
-                          <div key={i}>
-                            <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
-                              Example {i + 1}
-                            </h3>
-                            <div className="space-y-2">
-                              <div className="bg-muted border border-border rounded-lg p-3">
-                                <div className="text-[10px] text-muted-foreground font-mono mb-1">
-                                  INPUT
-                                </div>
-                                <pre className="text-xs font-mono text-foreground whitespace-pre-wrap">
-                                  {ex.input}
-                                </pre>
-                              </div>
-                              <div className="bg-muted border border-border rounded-lg p-3">
-                                <div className="text-[10px] text-muted-foreground font-mono mb-1">
-                                  OUTPUT
-                                </div>
-                                <pre className="text-xs font-mono text-foreground whitespace-pre-wrap">
-                                  {ex.output}
-                                </pre>
-                              </div>
-                              {ex.explanation && (
-                                <p className="text-xs text-muted-foreground italic">
-                                  {ex.explanation}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                    </div>
-                  </>
-                ) : (
-                  <div className="flex-1 flex items-center justify-center text-muted-foreground">
-                    <div className="text-center">
-                      <BookOpen size={32} className="mx-auto mb-2 opacity-30" />
-                      <p className="text-sm">Select a problem</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </ResizablePanel>
-
-            <ResizableHandle
-              withHandle
-              className="bg-border hover:bg-primary/50 transition-colors"
+          {selectedProblem?.type === "debugging" ? (
+            <DebuggingWorkspace
+              problem={selectedProblem}
+              onSubmit={(payload) => submitCode.mutate(payload)}
+              isSubmitting={submitCode.isPending}
             />
-
-            {/* Editor + Output panel */}
-            <ResizablePanel defaultSize={62} minSize={40}>
-              <ResizablePanelGroup direction="vertical">
-                {/* Editor */}
-                <ResizablePanel defaultSize={65} minSize={30}>
-                  <div className="h-full flex flex-col bg-background">
-                    {/* Editor toolbar */}
-                    <div className="h-9 border-b border-border bg-card flex items-center px-3 gap-3 shrink-0">
-                      <Select
-                        value={language}
-                        onValueChange={(v) =>
-                          handleLanguageChange(v as Language)
-                        }
-                      >
-                        <SelectTrigger className="h-6 w-28 text-xs bg-muted border-border focus:border-primary/50">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-card border-border">
-                          {LANGUAGES.map((l) => (
-                            <SelectItem
-                              key={l.value}
-                              value={l.value}
-                              className="text-xs cursor-pointer"
-                            >
-                              {l.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Select
-                        value={editorTheme}
-                        onValueChange={(v) => {
-                          setEditorTheme(v);
-                          localStorage.setItem("zap-editor-theme", v);
-                        }}
-                      >
-                        <SelectTrigger className="h-6 w-32 text-xs bg-muted border-border focus:border-primary/50">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-card border-border">
-                          {EDITOR_THEME_OPTIONS.map((t) => (
-                            <SelectItem
-                              key={t.value}
-                              value={t.value}
-                              className="text-xs cursor-pointer"
-                            >
-                              {t.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <div className="flex-1" />
-                      <div className="flex items-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => {
-                            setCode(
-                              selectedProblem?.boilerplates[language] ?? "",
-                            );
-                            toast.info("Reset to boilerplate");
-                          }}
-                          disabled={running || submitting}
-                          title="Reset to boilerplate"
-                          className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground gap-1"
-                        >
-                          <RotateCcw size={11} /> Reset
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={handleRun}
-                          disabled={running || submitting}
-                          className="h-6 px-3 text-xs text-success border-success/30 hover:bg-success/10 gap-1"
-                        >
-                          {running ? (
-                            <Loader2 size={11} className="animate-spin" />
-                          ) : (
-                            <Play size={11} />
+          ) : (
+            <ResizablePanelGroup direction="horizontal" className="h-full">
+              {/* Problem / Content panel */}
+              <ResizablePanel defaultSize={38} minSize={25}>
+                <div className="h-full flex flex-col bg-background overflow-hidden">
+                  {selectedProblem ? (
+                    <>
+                      <div className="px-5 py-4 border-b border-border shrink-0">
+                        <h2 className="font-bold text-base text-foreground mb-1">
+                          {selectedProblem.title}
+                          {activeStage && (
+                            <span className="text-primary">
+                              {" "}
+                              — {activeStage.title}
+                            </span>
                           )}
-                          Run
-                        </Button>
-                        <Button
-                          size="sm"
-                          onClick={handleSubmit}
-                          disabled={running || submitting}
-                          className="h-6 px-3 text-xs btn-primary gap-1"
-                        >
-                          {submitting ? (
-                            <Loader2 size={11} className="animate-spin" />
-                          ) : (
-                            <Send size={11} />
+                        </h2>
+                        <div className="flex items-center gap-3">
+                          <DifficultyBadge
+                            difficulty={selectedProblem.difficulty}
+                          />
+                          <span className="text-xs text-muted-foreground font-mono">
+                            ⏱{" "}
+                            {activeStage?.timeLimit ??
+                              selectedProblem.timeLimit}
+                            s · 💾{" "}
+                            {activeStage?.memoryLimit ??
+                              selectedProblem.memoryLimit}
+                            MB
+                          </span>
+                          {activeStage?.expectedComplexity && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-mono">
+                              target: {activeStage.expectedComplexity}
+                            </span>
                           )}
-                          Submit
-                        </Button>
+                          {selectedProblem.tags.map((t) => (
+                            <span
+                              key={t}
+                              className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground font-mono"
+                            >
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                        {selectedProblem.isProgressive && (
+                          <p className="text-[11px] text-muted-foreground mt-2">
+                            Stage {activeStage?.stageOrder ?? 1} of{" "}
+                            {selectedProblem.totalStages} — solve and submit to
+                            unlock the next enhancement.
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5 text-sm text-foreground">
+                        <div>
+                          <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
+                            {activeStage ? "Stage Description" : "Description"}
+                          </h3>
+                          <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                            {activeStage?.statement ||
+                              selectedProblem.description}
+                          </p>
+                        </div>
+                        {!activeStage && (
+                          <>
+                            <div>
+                              <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
+                                Input Format
+                              </h3>
+                              <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                                {selectedProblem.inputFormat}
+                              </p>
+                            </div>
+                            <div>
+                              <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
+                                Output Format
+                              </h3>
+                              <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                                {selectedProblem.outputFormat}
+                              </p>
+                            </div>
+                          </>
+                        )}
+                        <div>
+                          <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
+                            Constraints
+                          </h3>
+                          <pre className="text-muted-foreground font-mono text-xs leading-relaxed whitespace-pre-wrap bg-muted p-3 rounded-lg border border-border">
+                            {selectedProblem.constraints}
+                          </pre>
+                        </div>
+                        {activeStage?.testCases
+                          ?.filter((tc) => !tc.hidden)
+                          .map((tc, i) => (
+                            <div key={tc.id}>
+                              <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
+                                Sample {i + 1}
+                              </h3>
+                              <div className="space-y-2">
+                                <div className="bg-muted border border-border rounded-lg p-3">
+                                  <div className="text-[10px] text-muted-foreground font-mono mb-1">
+                                    INPUT
+                                  </div>
+                                  <pre className="text-xs font-mono text-foreground whitespace-pre-wrap">
+                                    {tc.input}
+                                  </pre>
+                                </div>
+                                <div className="bg-muted border border-border rounded-lg p-3">
+                                  <div className="text-[10px] text-muted-foreground font-mono mb-1">
+                                    EXPECTED OUTPUT
+                                  </div>
+                                  <pre className="text-xs font-mono text-foreground whitespace-pre-wrap">
+                                    {tc.expectedOutput}
+                                  </pre>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        {!activeStage &&
+                          selectedProblem.examples.map((ex, i) => (
+                            <div key={i}>
+                              <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
+                                Example {i + 1}
+                              </h3>
+                              <div className="space-y-2">
+                                <div className="bg-muted border border-border rounded-lg p-3">
+                                  <div className="text-[10px] text-muted-foreground font-mono mb-1">
+                                    INPUT
+                                  </div>
+                                  <pre className="text-xs font-mono text-foreground whitespace-pre-wrap">
+                                    {ex.input}
+                                  </pre>
+                                </div>
+                                <div className="bg-muted border border-border rounded-lg p-3">
+                                  <div className="text-[10px] text-muted-foreground font-mono mb-1">
+                                    OUTPUT
+                                  </div>
+                                  <pre className="text-xs font-mono text-foreground whitespace-pre-wrap">
+                                    {ex.output}
+                                  </pre>
+                                </div>
+                                {ex.explanation && (
+                                  <p className="text-xs text-muted-foreground italic">
+                                    {ex.explanation}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex-1 flex items-center justify-center text-muted-foreground">
+                      <div className="text-center">
+                        <BookOpen
+                          size={32}
+                          className="mx-auto mb-2 opacity-30"
+                        />
+                        <p className="text-sm">Select a problem</p>
                       </div>
                     </div>
-                    <div className="flex-1 min-h-0">
-                      <CodeEditor
-                        value={code}
-                        language={language}
-                        editorTheme={editorTheme}
-                        onBlockedAction={reportBlocked}
-                        allowClipboard={isAdmin}
-                        onChange={(v) => {
-                          setCode(v);
-                          if (selectedProblem)
-                            saveToStore(selectedProblem.id, language, v);
-                        }}
-                      />
-                    </div>
-                  </div>
-                </ResizablePanel>
+                  )}
+                </div>
+              </ResizablePanel>
 
-                <ResizableHandle
-                  withHandle
-                  className="bg-border hover:bg-primary/50 transition-colors"
-                />
+              <ResizableHandle
+                withHandle
+                className="bg-border hover:bg-primary/50 transition-colors"
+              />
 
-                {/* Output panel */}
-                <ResizablePanel defaultSize={35} minSize={15}>
-                  <Tabs
-                    value={bottomTab}
-                    onValueChange={(v) => setBottomTab(v as "output" | "stdin")}
-                    className="h-full flex flex-col bg-background"
-                  >
-                    <div className="h-9 border-b border-border bg-card flex items-center px-3 gap-1 shrink-0">
-                      <TabsList className="h-7 bg-muted">
-                        <TabsTrigger
-                          value="output"
-                          className="text-[11px] h-5 px-2"
+              {/* Editor + Output panel */}
+              <ResizablePanel defaultSize={62} minSize={40}>
+                <ResizablePanelGroup direction="vertical">
+                  {/* Editor */}
+                  <ResizablePanel defaultSize={65} minSize={30}>
+                    <div className="h-full flex flex-col bg-background">
+                      {/* Editor toolbar */}
+                      <div className="h-9 border-b border-border bg-card flex items-center px-3 gap-3 shrink-0">
+                        <Select
+                          value={language}
+                          onValueChange={(v) =>
+                            handleLanguageChange(v as Language)
+                          }
                         >
-                          <Terminal size={11} className="mr-1" /> Output
-                        </TabsTrigger>
-                        <TabsTrigger
-                          value="stdin"
-                          className="text-[11px] h-5 px-2"
+                          <SelectTrigger className="h-6 w-28 text-xs bg-muted border-border focus:border-primary/50">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card border-border">
+                            {LANGUAGES.map((l) => (
+                              <SelectItem
+                                key={l.value}
+                                value={l.value}
+                                className="text-xs cursor-pointer"
+                              >
+                                {l.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Select
+                          value={editorTheme}
+                          onValueChange={(v) => {
+                            setEditorTheme(v);
+                            localStorage.setItem("zap-editor-theme", v);
+                          }}
                         >
-                          Custom Input
-                        </TabsTrigger>
-                      </TabsList>
-                      {(running || submitting) && (
-                        <div className="ml-auto flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                          <Loader2 size={10} className="animate-spin" />
-                          {running ? "Running…" : "Judging…"}
+                          <SelectTrigger className="h-6 w-32 text-xs bg-muted border-border focus:border-primary/50">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card border-border">
+                            {EDITOR_THEME_OPTIONS.map((t) => (
+                              <SelectItem
+                                key={t.value}
+                                value={t.value}
+                                className="text-xs cursor-pointer"
+                              >
+                                {t.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <div className="flex-1" />
+                        <div className="flex items-center gap-2">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => {
+                              setCode(
+                                selectedProblem?.boilerplates[language] ?? "",
+                              );
+                              toast.info("Reset to boilerplate");
+                            }}
+                            disabled={running || submitting}
+                            title="Reset to boilerplate"
+                            className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground gap-1"
+                          >
+                            <RotateCcw size={11} /> Reset
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={handleRun}
+                            disabled={running || submitting}
+                            className="h-6 px-3 text-xs text-success border-success/30 hover:bg-success/10 gap-1"
+                          >
+                            {running ? (
+                              <Loader2 size={11} className="animate-spin" />
+                            ) : (
+                              <Play size={11} />
+                            )}
+                            Run
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={handleSubmit}
+                            disabled={running || submitting}
+                            className="h-6 px-3 text-xs btn-primary gap-1"
+                          >
+                            {submitting ? (
+                              <Loader2 size={11} className="animate-spin" />
+                            ) : (
+                              <Send size={11} />
+                            )}
+                            Submit
+                          </Button>
                         </div>
-                      )}
-                    </div>
-
-                    <div className="flex-1 overflow-y-auto p-3">
-                      {bottomTab === "stdin" && (
-                        <textarea
-                          value={stdin}
-                          onChange={(e) => setStdin(e.target.value)}
-                          placeholder="Custom stdin input..."
-                          className="w-full h-full bg-transparent text-foreground font-mono text-xs outline-none resize-none placeholder-muted-foreground"
+                      </div>
+                      <div className="flex-1 min-h-0">
+                        <CodeEditor
+                          value={code}
+                          language={language}
+                          editorTheme={editorTheme}
+                          onBlockedAction={reportBlocked}
+                          allowClipboard={isAdmin}
+                          onChange={(v) => {
+                            setCode(v);
+                            if (selectedProblem)
+                              saveToStore(selectedProblem.id, language, v);
+                          }}
                         />
-                      )}
+                      </div>
+                    </div>
+                  </ResizablePanel>
 
-                      {bottomTab === "output" &&
-                        !runOutput &&
-                        !running &&
-                        !submitting && (
-                          <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
-                            <Terminal size={24} className="mb-2 opacity-40" />
-                            <p className="text-xs">
-                              Run or submit to see output
-                            </p>
+                  <ResizableHandle
+                    withHandle
+                    className="bg-border hover:bg-primary/50 transition-colors"
+                  />
+
+                  {/* Output panel */}
+                  <ResizablePanel defaultSize={35} minSize={15}>
+                    <Tabs
+                      value={bottomTab}
+                      onValueChange={(v) =>
+                        setBottomTab(v as "output" | "stdin")
+                      }
+                      className="h-full flex flex-col bg-background"
+                    >
+                      <div className="h-9 border-b border-border bg-card flex items-center px-3 gap-1 shrink-0">
+                        <TabsList className="h-7 bg-muted">
+                          <TabsTrigger
+                            value="output"
+                            className="text-[11px] h-5 px-2"
+                          >
+                            <Terminal size={11} className="mr-1" /> Output
+                          </TabsTrigger>
+                          <TabsTrigger
+                            value="stdin"
+                            className="text-[11px] h-5 px-2"
+                          >
+                            Custom Input
+                          </TabsTrigger>
+                        </TabsList>
+                        {(running || submitting) && (
+                          <div className="ml-auto flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                            <Loader2 size={10} className="animate-spin" />
+                            {running ? "Running…" : "Judging…"}
                           </div>
                         )}
+                      </div>
 
-                      {bottomTab === "output" && runOutput && (
-                        <div className="space-y-3">
-                          {/* Test results grid (submissions only) */}
-                          {runOutput.testResults.length > 0 && (
-                            <div>
-                              <div className="text-[10px] text-muted-foreground font-mono mb-2 uppercase tracking-wider">
-                                Test Cases —{" "}
-                                {
-                                  runOutput.testResults.filter(
-                                    (r) => r.status === "passed",
-                                  ).length
-                                }
-                                /{runOutput.testResults.length} Passed
-                              </div>
-                              <div className="flex flex-wrap gap-2">
-                                {runOutput.testResults.map((r, i) => (
-                                  <div
-                                    key={r.id}
-                                    title={r.errorMessage ?? r.label}
-                                    className={`flex items-center gap-1 px-2 py-1 rounded text-[11px] font-mono ${
-                                      r.status === "passed"
-                                        ? "verdict-accepted"
-                                        : "verdict-wrong"
-                                    }`}
-                                  >
-                                    {r.status === "passed" ? (
-                                      <CheckCircle size={10} />
-                                    ) : (
-                                      <XCircle size={10} />
-                                    )}
-                                    <span>#{i + 1}</span>
-                                    {r.executionTime !== undefined && (
-                                      <span className="opacity-70">
-                                        {r.executionTime}ms
-                                      </span>
-                                    )}
-                                  </div>
-                                ))}
-                              </div>
+                      <div className="flex-1 overflow-y-auto p-3">
+                        {bottomTab === "stdin" && (
+                          <textarea
+                            value={stdin}
+                            onChange={(e) => setStdin(e.target.value)}
+                            placeholder="Custom stdin input..."
+                            className="w-full h-full bg-transparent text-foreground font-mono text-xs outline-none resize-none placeholder-muted-foreground"
+                          />
+                        )}
+
+                        {bottomTab === "output" &&
+                          !runOutput &&
+                          !running &&
+                          !submitting && (
+                            <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+                              <Terminal size={24} className="mb-2 opacity-40" />
+                              <p className="text-xs">
+                                Run or submit to see output
+                              </p>
                             </div>
                           )}
 
-                          {runOutput.status &&
-                            runOutput.testResults.length === 0 && (
-                              <div className="text-[10px] text-muted-foreground font-mono uppercase tracking-wider">
-                                Status: {runOutput.status}
+                        {bottomTab === "output" && runOutput && (
+                          <div className="space-y-3">
+                            {/* Test results grid (submissions only) */}
+                            {runOutput.testResults.length > 0 && (
+                              <div>
+                                <div className="text-[10px] text-muted-foreground font-mono mb-2 uppercase tracking-wider">
+                                  Test Cases —{" "}
+                                  {
+                                    runOutput.testResults.filter(
+                                      (r) => r.status === "passed",
+                                    ).length
+                                  }
+                                  /{runOutput.testResults.length} Passed
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                  {runOutput.testResults.map((r, i) => (
+                                    <div
+                                      key={r.id}
+                                      title={r.errorMessage ?? r.label}
+                                      className={`flex items-center gap-1 px-2 py-1 rounded text-[11px] font-mono ${
+                                        r.status === "passed"
+                                          ? "verdict-accepted"
+                                          : "verdict-wrong"
+                                      }`}
+                                    >
+                                      {r.status === "passed" ? (
+                                        <CheckCircle size={10} />
+                                      ) : (
+                                        <XCircle size={10} />
+                                      )}
+                                      <span>#{i + 1}</span>
+                                      {r.executionTime !== undefined && (
+                                        <span className="opacity-70">
+                                          {r.executionTime}ms
+                                        </span>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
                               </div>
                             )}
 
-                          {runOutput.compileOutput && (
-                            <div>
-                              <div className="text-[10px] text-warning font-mono mb-1 uppercase tracking-wider">
-                                Compile Output
-                              </div>
-                              <pre className="text-xs font-mono text-warning bg-warning/5 p-2 rounded border border-warning/20 whitespace-pre-wrap">
-                                {runOutput.compileOutput}
-                              </pre>
-                            </div>
-                          )}
+                            {runOutput.status &&
+                              runOutput.testResults.length === 0 && (
+                                <div className="text-[10px] text-muted-foreground font-mono uppercase tracking-wider">
+                                  Status: {runOutput.status}
+                                </div>
+                              )}
 
-                          {runOutput.stdout && (
-                            <div>
-                              <div className="text-[10px] text-muted-foreground font-mono mb-1 uppercase tracking-wider">
-                                Stdout
+                            {runOutput.compileOutput && (
+                              <div>
+                                <div className="text-[10px] text-warning font-mono mb-1 uppercase tracking-wider">
+                                  Compile Output
+                                </div>
+                                <pre className="text-xs font-mono text-warning bg-warning/5 p-2 rounded border border-warning/20 whitespace-pre-wrap">
+                                  {runOutput.compileOutput}
+                                </pre>
                               </div>
-                              <pre className="text-xs font-mono text-foreground bg-muted p-2 rounded border border-border whitespace-pre-wrap">
-                                {runOutput.stdout}
-                              </pre>
-                            </div>
-                          )}
+                            )}
 
-                          {runOutput.stderr && (
-                            <div>
-                              <div className="text-[10px] text-destructive font-mono mb-1 uppercase tracking-wider">
-                                Stderr
+                            {runOutput.stdout && (
+                              <div>
+                                <div className="text-[10px] text-muted-foreground font-mono mb-1 uppercase tracking-wider">
+                                  Stdout
+                                </div>
+                                <pre className="text-xs font-mono text-foreground bg-muted p-2 rounded border border-border whitespace-pre-wrap">
+                                  {runOutput.stdout}
+                                </pre>
                               </div>
-                              <pre className="text-xs font-mono text-destructive bg-destructive/5 p-2 rounded border border-destructive/20 whitespace-pre-wrap">
-                                {runOutput.stderr}
-                              </pre>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </Tabs>
-                </ResizablePanel>
-              </ResizablePanelGroup>
-            </ResizablePanel>
-          </ResizablePanelGroup>
+                            )}
+
+                            {runOutput.stderr && (
+                              <div>
+                                <div className="text-[10px] text-destructive font-mono mb-1 uppercase tracking-wider">
+                                  Stderr
+                                </div>
+                                <pre className="text-xs font-mono text-destructive bg-destructive/5 p-2 rounded border border-destructive/20 whitespace-pre-wrap">
+                                  {runOutput.stderr}
+                                </pre>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </Tabs>
+                  </ResizablePanel>
+                </ResizablePanelGroup>
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          )}
         </div>
       </div>
 

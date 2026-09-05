@@ -21,6 +21,7 @@ import AdminLayout from "../../components/AdminLayout";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
+import DebuggingProblemEditor from "../../components/admin/DebuggingProblemEditor";
 import { Textarea } from "../../components/ui/textarea";
 import {
   Select,
@@ -595,7 +596,13 @@ function EditProblemDialog({
     memoryLimit: String(problem.memoryLimit),
     maxScore: String(problem.maxScore),
     languages: [...problem.languages],
+    type: problem.type || "coding",
+    isProgressive: problem.isProgressive || false,
   });
+
+  const [debuggingData, setDebuggingData] = useState<any>(
+    problem.debuggingData || null,
+  );
 
   const [testCases, setTestCases] = useState<(TestCase & { _new?: boolean })[]>(
     problem.testCases.map((tc) => ({ ...tc })),
@@ -668,7 +675,7 @@ function EditProblemDialog({
       toast.error("Title is required");
       return;
     }
-    if (testCases.length === 0) {
+    if (details.type === "coding" && testCases.length === 0) {
       toast.error("At least one test case required");
       return;
     }
@@ -699,6 +706,9 @@ function EditProblemDialog({
         memoryLimit: Number(details.memoryLimit),
         maxScore: Number(details.maxScore),
         status: problem.status,
+        type: details.type,
+        isProgressive: details.isProgressive,
+        debuggingData: details.type === "debugging" ? debuggingData : null,
       });
       toast.success(`"${details.title}" saved!`);
       onSaved();
@@ -730,13 +740,20 @@ function EditProblemDialog({
         <Tabs defaultValue="details" className="flex-1 flex flex-col min-h-0">
           <TabsList className="bg-muted shrink-0">
             <TabsTrigger value="details">Details</TabsTrigger>
-            <TabsTrigger value="testcases">
-              Test Cases
-              <span className="ml-1.5 text-[10px] px-1.5 py-0.5 rounded-full bg-primary/20 text-primary font-bold">
-                {testCases.length}
-              </span>
-            </TabsTrigger>
-            <TabsTrigger value="boilerplate">Boilerplate</TabsTrigger>
+            {details.type === "coding" && (
+              <>
+                <TabsTrigger value="testcases">
+                  Test Cases
+                  <span className="ml-1.5 text-[10px] px-1.5 py-0.5 rounded-full bg-primary/20 text-primary font-bold">
+                    {testCases.length}
+                  </span>
+                </TabsTrigger>
+                <TabsTrigger value="boilerplate">Boilerplate</TabsTrigger>
+              </>
+            )}
+            {details.type === "debugging" && (
+              <TabsTrigger value="debugging">Liar's Log</TabsTrigger>
+            )}
           </TabsList>
 
           {/* ── Details tab ── */}
@@ -745,7 +762,7 @@ function EditProblemDialog({
             className="flex-1 overflow-y-auto mt-4 space-y-4"
           >
             <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2 space-y-2">
+              <div className="col-span-2 space-y-1">
                 <Label>Title</Label>
                 <Input
                   value={details.title}
@@ -753,7 +770,38 @@ function EditProblemDialog({
                   className="bg-muted border-border"
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1">
+                <Label>Type</Label>
+                <Select
+                  value={details.type}
+                  onValueChange={(v) => setDetails((d) => ({ ...d, type: v }))}
+                >
+                  <SelectTrigger className="bg-muted border-border">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card border-border">
+                    <SelectItem value="coding">Standard Coding</SelectItem>
+                    <SelectItem value="debugging">
+                      Debugging (Liar's Log)
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1 flex flex-col justify-center">
+                <Label>Progressive (Code War)</Label>
+                <div className="flex items-center gap-2 mt-2">
+                  <Switch
+                    checked={details.isProgressive}
+                    onCheckedChange={(v) =>
+                      setDetails((d) => ({ ...d, isProgressive: v }))
+                    }
+                  />
+                  <span className="text-sm text-muted-foreground">
+                    {details.isProgressive ? "Yes" : "No"}
+                  </span>
+                </div>
+              </div>
+              <div className="space-y-1">
                 <Label>Difficulty</Label>
                 <Select
                   value={details.difficulty}
@@ -771,7 +819,7 @@ function EditProblemDialog({
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <Label>Tags (comma-separated)</Label>
                 <Input
                   value={details.tags}
@@ -780,7 +828,7 @@ function EditProblemDialog({
                   className="bg-muted border-border"
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <Label>Time Limit (s)</Label>
                 <Input
                   type="number"
@@ -789,7 +837,7 @@ function EditProblemDialog({
                   className="bg-muted border-border"
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <Label>Memory Limit (MB)</Label>
                 <Input
                   type="number"
@@ -798,7 +846,7 @@ function EditProblemDialog({
                   className="bg-muted border-border"
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <Label>Max Score</Label>
                 <Input
                   type="number"
@@ -807,7 +855,7 @@ function EditProblemDialog({
                   className="bg-muted border-border"
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <Label>Supported Languages</Label>
                 <div className="flex gap-2 flex-wrap pt-1">
                   {(["c", "cpp", "java", "python"] as Language[]).map(
@@ -829,7 +877,7 @@ function EditProblemDialog({
                   )}
                 </div>
               </div>
-              <div className="col-span-2 space-y-2">
+              <div className="col-span-2 space-y-1">
                 <Label>Description</Label>
                 <Textarea
                   value={details.description}
@@ -838,7 +886,7 @@ function EditProblemDialog({
                   rows={4}
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <Label>Input Format</Label>
                 <Textarea
                   value={details.inputFormat}
@@ -847,7 +895,7 @@ function EditProblemDialog({
                   rows={3}
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <Label>Output Format</Label>
                 <Textarea
                   value={details.outputFormat}
@@ -856,7 +904,7 @@ function EditProblemDialog({
                   rows={3}
                 />
               </div>
-              <div className="col-span-2 space-y-2">
+              <div className="col-span-2 space-y-1">
                 <Label>Constraints</Label>
                 <Textarea
                   value={details.constraints}
@@ -1030,6 +1078,24 @@ function EditProblemDialog({
               </div>
             )}
           </TabsContent>
+
+          {/* ── Debugging tab ── */}
+          <TabsContent
+            value="debugging"
+            className="flex-1 overflow-y-auto mt-4 p-4"
+          >
+            <div className="space-y-1 mb-4">
+              <Label className="text-lg">Dry Run Table</Label>
+              <p className="text-xs text-muted-foreground">
+                Configure the variables and iterations, then click the checkbox
+                inside a cell to mark it as the imposter.
+              </p>
+            </div>
+            <DebuggingProblemEditor
+              value={debuggingData}
+              onChange={setDebuggingData}
+            />
+          </TabsContent>
         </Tabs>
 
         <DialogFooter className="shrink-0 border-t border-border pt-4 mt-2">
@@ -1080,6 +1146,7 @@ export default function AdminProblems() {
     timeLimit: "2",
     memoryLimit: "256",
     tags: "",
+    type: "coding",
   });
 
   const invalidateProblems = () =>
@@ -1123,6 +1190,7 @@ export default function AdminProblems() {
         memoryLimit: Number(form.memoryLimit),
         maxScore: 100,
         status: "active",
+        type: form.type,
       });
       toast.success(`Problem "${form.title}" created!`);
       setShowCreate(false);
@@ -1133,6 +1201,7 @@ export default function AdminProblems() {
         timeLimit: "2",
         memoryLimit: "256",
         tags: "",
+        type: "coding",
       });
       invalidateProblems();
     } catch (err) {
@@ -1354,7 +1423,7 @@ export default function AdminProblems() {
             </DialogHeader>
             <div className="space-y-4 py-2">
               <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2 space-y-2">
+                <div className="space-y-2">
                   <Label>Title</Label>
                   <Input
                     placeholder="Two Sum"
@@ -1364,6 +1433,23 @@ export default function AdminProblems() {
                     }
                     className="bg-muted border-border"
                   />
+                </div>
+                <div className="space-y-2">
+                  <Label>Type</Label>
+                  <Select
+                    value={form.type}
+                    onValueChange={(v) => setForm((f) => ({ ...f, type: v }))}
+                  >
+                    <SelectTrigger className="bg-muted border-border">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card border-border">
+                      <SelectItem value="coding">Standard Coding</SelectItem>
+                      <SelectItem value="debugging">
+                        Debugging (Liar's Log)
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label>Difficulty</Label>

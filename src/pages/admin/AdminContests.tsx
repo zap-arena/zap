@@ -571,7 +571,7 @@ function ContestForm({
               onValueChange={(v) =>
                 setForm((f) => ({
                   ...f,
-                  mode: v as "standard" | "progressive",
+                  mode: v as "standard" | "progressive" | "debugging",
                 }))
               }
             >
@@ -582,6 +582,9 @@ function ContestForm({
                 <SelectItem value="standard">Standard</SelectItem>
                 <SelectItem value="progressive">
                   Progressive ("Code War" chains)
+                </SelectItem>
+                <SelectItem value="debugging">
+                  Debugging (Liar's Log)
                 </SelectItem>
               </SelectContent>
             </Select>

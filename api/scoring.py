@@ -1,3 +1,4 @@
+import json
 from typing import Any, Optional
 
 import models
@@ -29,6 +30,49 @@ async def judge_submission(
     When `stage` is given (progressive/"Code War" mode), judges against that stage's own
     test cases instead of the problem-level ones, using the stage's time limit override.
     """
+    if getattr(problem, "type", "coding") == "debugging":
+        try:
+            answer = json.loads(code)
+            candidate_index = int(answer.get("index", -1))
+            candidate_value = str(answer.get("expected_value", "")).strip()
+            
+            debugging_data = problem.debugging_data or {}
+            expected_index = int(debugging_data.get("bug_row", -1))
+            expected_val = str(debugging_data.get("expected_value", "")).strip()
+            
+            passed = (candidate_index == expected_index and candidate_value == expected_val)
+            max_score = problem.max_score
+            score = max_score if passed else 0
+            status = "ACCEPTED" if passed else "WRONG_ANSWER"
+            return {
+                "status": status,
+                "passedTests": 1 if passed else 0,
+                "totalTests": 1,
+                "score": score,
+                "maxScore": max_score,
+                "executionTime": 0.0,
+                "compileOutput": None,
+                "testResults": [{
+                    "name": "Spot the Imposter",
+                    "hidden": False,
+                    "passed": passed,
+                    "status": "PASSED" if passed else "WRONG_ANSWER",
+                    "executionTime": 0.0,
+                    "errorMessage": None if passed else "Incorrect row or expected value."
+                }]
+            }
+        except Exception as e:
+            return {
+                "status": "INTERNAL_ERROR",
+                "passedTests": 0,
+                "totalTests": 1,
+                "score": 0,
+                "maxScore": problem.max_score,
+                "executionTime": 0.0,
+                "compileOutput": f"Failed to parse debugging answer: {e}",
+                "testResults": []
+            }
+
     if stage is not None:
         test_cases = sorted(
             [tc for tc in stage.test_cases if tc.perf_tier in (None, "", "small")], key=lambda t: t.order
