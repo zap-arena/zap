@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Brain, ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import AdminLayout from "../../components/AdminLayout";
 import { Button } from "../../components/ui/button";
 import { api } from "../../lib/api";
 import type {
+  BehaviorPattern,
   Contest,
   ParticipantAnalytics,
-  BehaviorPattern,
 } from "../../types";
 
 const PATTERN_LABEL: Record<BehaviorPattern, string> = {

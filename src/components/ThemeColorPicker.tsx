@@ -1,8 +1,8 @@
 import { Check, Palette } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useAccent } from "../store/theme";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { useAccent } from "../store/theme";
-import { cn } from "@/lib/utils";
 
 export default function ThemeColorPicker({
   size = "sm",

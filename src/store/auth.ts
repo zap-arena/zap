@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { ApiError, api, getToken, setToken } from "../lib/api";
 import type { User } from "../types";
-import { api, ApiError, getToken, setToken } from "../lib/api";
 
 let _user: User | null = null;
 let _initialized = false;

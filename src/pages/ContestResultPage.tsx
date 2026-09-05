@@ -1,11 +1,11 @@
-import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Trophy, CheckCircle, BarChart2, Clock, Home } from "lucide-react";
+import { BarChart2, CheckCircle, Clock, Home, Trophy } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import VerdictBadge from "../components/VerdictBadge";
-import { useAuth } from "../store/auth";
 import { api } from "../lib/api";
-import type { Contest, Submission, LeaderboardEntry } from "../types";
+import { useAuth } from "../store/auth";
+import type { Contest, LeaderboardEntry, Submission } from "../types";
 
 export default function ContestResultPage() {
   const { contestId } = useParams<{ contestId: string }>();

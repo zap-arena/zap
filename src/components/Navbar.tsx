@@ -1,7 +1,10 @@
+import { Code2, LayoutDashboard, LogOut, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { Code2, LogOut, User, LayoutDashboard } from "lucide-react";
-import { Button } from "./ui/button";
 import { useAuth } from "../store/auth";
+import ThemeColorPicker from "./ThemeColorPicker";
+import ThemeToggle from "./ThemeToggle";
+import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,9 +12,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "./ui/avatar";
-import ThemeToggle from "./ThemeToggle";
-import ThemeColorPicker from "./ThemeColorPicker";
 
 export default function Navbar() {
   const { user, logout } = useAuth();

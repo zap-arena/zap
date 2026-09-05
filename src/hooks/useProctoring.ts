@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ProctorTracker, type ProctorEventType } from "../lib/proctor";
+import { type ProctorEventType, ProctorTracker } from "../lib/proctor";
 
 export interface BlockedAction {
   title: string;

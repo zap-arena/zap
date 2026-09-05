@@ -1,33 +1,31 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Editor from "@monaco-editor/react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  Play,
-  Send,
-  CheckCircle,
-  XCircle,
-  Trophy,
+  AlertTriangle,
   BookOpen,
+  CheckCircle,
+  Flag,
   History,
   List,
   Loader2,
-  AlertTriangle,
-  Flag,
-  Terminal,
-  RotateCcw,
   Maximize,
   Minimize,
+  Play,
+  RotateCcw,
+  Send,
   ShieldAlert,
+  Terminal,
+  Trophy,
+  XCircle,
 } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
+import ContestTimer from "../components/ContestTimer";
+import DifficultyBadge from "../components/DifficultyBadge";
+import ThemeColorPicker from "../components/ThemeColorPicker";
+import ThemeToggle from "../components/ThemeToggle";
 import { Button } from "../components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -37,31 +35,33 @@ import {
   DialogTitle,
 } from "../components/ui/dialog";
 import {
-  ResizablePanelGroup,
-  ResizablePanel,
   ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
 } from "../components/ui/resizable";
-import { Tabs, TabsList, TabsTrigger } from "../components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
 import { Skeleton } from "../components/ui/skeleton";
-import ContestTimer from "../components/ContestTimer";
+import { Tabs, TabsList, TabsTrigger } from "../components/ui/tabs";
 import VerdictBadge from "../components/VerdictBadge";
-import DifficultyBadge from "../components/DifficultyBadge";
-import ThemeToggle from "../components/ThemeToggle";
-import ThemeColorPicker from "../components/ThemeColorPicker";
 import { useProctoring } from "../hooks/useProctoring";
+import { ApiError, api } from "../lib/api";
+import { EDITOR_THEME_OPTIONS, MONACO_THEMES } from "../lib/monaco-themes";
 import { useAuth } from "../store/auth";
-import { api, ApiError } from "../lib/api";
-import { MONACO_THEMES, EDITOR_THEME_OPTIONS } from "../lib/monaco-themes";
-import { useAccent, accentHex } from "../store/theme";
+import { accentHex, useAccent } from "../store/theme";
 import type {
-  Language,
-  Verdict,
-  Problem,
   Contest,
-  Submission,
+  Language,
   LeaderboardEntry,
+  Problem,
+  Submission,
+  Verdict,
 } from "../types";
-import { toast } from "sonner";
 
 interface ContestNotice {
   id: string;

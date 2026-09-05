@@ -1,21 +1,21 @@
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  Clock,
-  BookOpen,
-  Trophy,
-  CheckCircle,
   AlertCircle,
+  BookOpen,
+  CheckCircle,
+  Clock,
   Loader2,
   Lock,
+  Trophy,
 } from "lucide-react";
-import { Button } from "../components/ui/button";
-import Navbar from "../components/Navbar";
-import { useAuth } from "../store/auth";
-import { api, ApiError } from "../lib/api";
-import type { Contest } from "../types";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import Navbar from "../components/Navbar";
+import { Button } from "../components/ui/button";
+import { ApiError, api } from "../lib/api";
+import { useAuth } from "../store/auth";
+import type { Contest } from "../types";
 
 interface ContestSession {
   started: boolean;

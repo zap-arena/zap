@@ -1,41 +1,25 @@
-import { useState, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  Plus,
-  Search,
-  Edit,
-  Trash2,
-  Eye,
+  AlertCircle,
   Archive,
   CheckCircle,
-  XCircle,
-  AlertCircle,
-  Loader2,
-  Plus as PlusIcon,
-  Trash,
-  Lock,
   ChevronDown,
   ChevronUp,
+  Edit,
+  Eye,
+  Loader2,
+  Lock,
+  Plus,
+  Plus as PlusIcon,
+  Search,
+  Trash,
+  Trash2,
+  XCircle,
 } from "lucide-react";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
 import AdminLayout from "../../components/AdminLayout";
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { Textarea } from "../../components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "../../components/ui/dialog";
+import DifficultyBadge from "../../components/DifficultyBadge";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -46,24 +30,40 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../../components/ui/alert-dialog";
+import { Button } from "../../components/ui/button";
+import { Checkbox } from "../../components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../../components/ui/dialog";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
+import { Switch } from "../../components/ui/switch";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "../../components/ui/tabs";
-import { Checkbox } from "../../components/ui/checkbox";
-import { Switch } from "../../components/ui/switch";
-import DifficultyBadge from "../../components/DifficultyBadge";
-import { api, ApiError } from "../../lib/api";
+import { Textarea } from "../../components/ui/textarea";
+import { ApiError, api } from "../../lib/api";
 import type {
-  Problem,
   Contest,
   Difficulty,
   Language,
+  Problem,
   TestCase,
 } from "../../types";
-import { toast } from "sonner";
 
 // ── ZIP Import ────────────────────────────────────────────────────────────────
 type ZipParseState =
