@@ -114,7 +114,7 @@ class Contest(Base):
     duration: Mapped[int] = mapped_column(Integer, default=60)  # minutes
     status: Mapped[str] = mapped_column(String(20), default="draft")
     scoring_mode: Mapped[str] = mapped_column(String(20), default="partial")  # full | partial
-    mode: Mapped[str] = mapped_column(String(20), default="standard", quote=True)  # standard | progressive
+    mode: Mapped[str] = mapped_column("mode", String(20), default="standard", quote=True)  # standard | progressive
     leaderboard_visible: Mapped[bool] = mapped_column(Boolean, default=True)
     created_by: Mapped[str] = mapped_column(String(32), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
