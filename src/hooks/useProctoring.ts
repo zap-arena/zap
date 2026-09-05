@@ -52,6 +52,13 @@ export function useProctoring(
   const [isFullscreen, setIsFullscreen] = useState(
     () => !!document.fullscreenElement,
   );
+  // Only enforce fullscreen after the user has entered it at least once.
+  // Without this, the blocking overlay appears immediately on page load
+  // (before the user ever clicks the fullscreen button).
+  const hasEnteredFullscreenRef = useRef(!!document.fullscreenElement);
+  const [hasEnteredFullscreen, setHasEnteredFullscreen] = useState(
+    () => !!document.fullscreenElement,
+  );
   const [blocked, setBlocked] = useState<BlockedAction | null>(null);
 
   const report = useCallback(
@@ -133,6 +140,10 @@ export function useProctoring(
     const onFullscreenChange = () => {
       const now = !!document.fullscreenElement;
       setIsFullscreen(now);
+      if (now && !hasEnteredFullscreenRef.current) {
+        hasEnteredFullscreenRef.current = true;
+        setHasEnteredFullscreen(true);
+      }
       trackerRef.current?.track(
         now ? "FULLSCREEN_ENTERED" : "FULLSCREEN_EXITED",
       );
@@ -171,6 +182,10 @@ export function useProctoring(
     try {
       await document.documentElement.requestFullscreen();
       setIsFullscreen(true);
+      if (!hasEnteredFullscreenRef.current) {
+        hasEnteredFullscreenRef.current = true;
+        setHasEnteredFullscreen(true);
+      }
     } catch {
       setIsFullscreen(!!document.fullscreenElement);
     }
@@ -178,6 +193,7 @@ export function useProctoring(
 
   return {
     isFullscreen,
+    hasEnteredFullscreen,
     requestFullscreen,
     blocked,
     dismissBlocked: () => setBlocked(null),
