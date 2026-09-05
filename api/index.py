@@ -85,10 +85,6 @@ def _auto_migrate_schema(engine):
         # Check 'problems' table
         if inspector.has_table("problems"):
             columns = [col["name"] for col in inspector.get_columns("problems")]
-            if "type" not in columns:
-                conn.execute(text("ALTER TABLE problems ADD COLUMN type VARCHAR(20) NOT NULL DEFAULT 'coding'"))
-            if "debugging_data" not in columns:
-                conn.execute(text("ALTER TABLE problems ADD COLUMN debugging_data JSON"))
             if "is_progressive" not in columns:
                 conn.execute(text("ALTER TABLE problems ADD COLUMN is_progressive BOOLEAN NOT NULL DEFAULT FALSE"))
                 
@@ -102,8 +98,15 @@ def _auto_migrate_schema(engine):
         if inspector.has_table("test_cases"):
             columns = [col["name"] for col in inspector.get_columns("test_cases")]
             if "stage_id" not in columns:
-                # problem_stages will already be created by create_all()
                 conn.execute(text("ALTER TABLE test_cases ADD COLUMN stage_id VARCHAR(32) REFERENCES problem_stages(id) ON DELETE CASCADE"))
+            if "perf_tier" not in columns:
+                conn.execute(text("ALTER TABLE test_cases ADD COLUMN perf_tier VARCHAR(10)"))
+                
+        # Check 'submissions' table
+        if inspector.has_table("submissions"):
+            columns = [col["name"] for col in inspector.get_columns("submissions")]
+            if "stage_id" not in columns:
+                conn.execute(text("ALTER TABLE submissions ADD COLUMN stage_id VARCHAR(32) REFERENCES problem_stages(id) ON DELETE CASCADE"))
 
 def _ensure_bootstrap_admin():
     admin_email = os.getenv("ADMIN_EMAIL")
