@@ -222,9 +222,9 @@ export default function ContestEntryPage() {
                 ? "Partial scoring: score is proportional to test cases passed."
                 : "Full scoring: all test cases must pass to earn points.",
               "Submissions made after the contest end time are not scored.",
-            ].map((inst, i) => (
+            ].map((inst) => (
               <li
-                key={i}
+                key={inst}
                 className="flex items-start gap-2 text-sm text-muted-foreground"
               >
                 <CheckCircle

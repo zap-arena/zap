@@ -372,7 +372,7 @@ export default function ContestWorkspacePage() {
   useEffect(() => {
     const unseen = notifications.filter((n) => !seenNotifications.has(n.id));
     if (unseen.length === 0) return;
-    unseen.forEach((n) => toast.info(n.message, { duration: 10000 }));
+    unseen.forEach((n) => { toast.info(n.message, { duration: 10000 }); });
     setSeenNotifications(
       (prev) => new Set([...prev, ...unseen.map((n) => n.id)]),
     );

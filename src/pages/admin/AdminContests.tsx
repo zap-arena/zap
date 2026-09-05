@@ -77,9 +77,13 @@ interface ProblemSearchResult {
 function ProblemPicker({
   attached,
   onAdd,
+  onAddAll,
+  contestMode,
 }: {
   attached: { problemId: string }[];
   onAdd: (p: ProblemSearchResult) => void;
+  onAddAll: (p: ProblemSearchResult[]) => void;
+  contestMode: string;
 }) {
   const [term, setTerm] = useState("");
   const [debounced, setDebounced] = useState("");
@@ -90,34 +94,47 @@ function ProblemPicker({
   }, [term]);
 
   const { data: results = [], isFetching } = useQuery({
-    queryKey: ["problem-search", debounced],
+    queryKey: ["problem-search", debounced, contestMode],
     queryFn: () =>
       api.get<ProblemSearchResult[]>(
-        `/admin/problems/search?limit=20&q=${encodeURIComponent(debounced)}`,
+        `/admin/problems/search?limit=20&q=${encodeURIComponent(debounced)}&isProgressive=${contestMode === "progressive"}`,
       ),
   });
 
   const attachedIds = new Set(attached.map((a) => a.problemId));
+  const unattached = results.filter((p) => !attachedIds.has(p.id));
 
   return (
     <div className="space-y-2">
-      <div className="relative">
-        <Search
-          size={14}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-        />
-        {isFetching && (
-          <Loader2
-            size={13}
-            className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-muted-foreground"
+      <div className="flex items-center gap-2">
+        <div className="relative flex-1">
+          <Search
+            size={14}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
           />
+          {isFetching && (
+            <Loader2
+              size={13}
+              className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-muted-foreground"
+            />
+          )}
+          <Input
+            placeholder="Search problems by title or slug…"
+            value={term}
+            onChange={(e) => setTerm(e.target.value)}
+            className="pl-9 h-9 bg-muted border-border"
+          />
+        </div>
+        {unattached.length > 0 && (
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="h-9 whitespace-nowrap"
+            onClick={() => onAddAll(unattached)}
+          >
+            Add All ({unattached.length})
+          </Button>
         )}
-        <Input
-          placeholder="Search problems by title or slug…"
-          value={term}
-          onChange={(e) => setTerm(e.target.value)}
-          className="pl-9 h-9 bg-muted border-border"
-        />
       </div>
       <div className="border border-border rounded-lg divide-y divide-border max-h-52 overflow-y-auto">
         {results.length === 0 && (
@@ -568,12 +585,16 @@ function ContestForm({
             <Label>Contest Mode</Label>
             <Select
               value={form.mode}
-              onValueChange={(v) =>
+              onValueChange={(v) => {
+                if (form.mode !== v) {
+                  setAttached([]);
+                  toast.info(`Switched to ${v} mode. Problem list cleared.`);
+                }
                 setForm((f) => ({
                   ...f,
                   mode: v as "standard" | "progressive",
-                }))
-              }
+                }));
+              }}
             >
               <SelectTrigger className="bg-muted border-border">
                 <SelectValue />
@@ -624,7 +645,27 @@ function ContestForm({
 
         <div className="space-y-2">
           <Label>Add Problems</Label>
-          <ProblemPicker attached={attached} onAdd={addProblem} />
+          <ProblemPicker 
+            attached={attached} 
+            onAdd={addProblem} 
+            onAddAll={(problems) => {
+              setAttached((prev) => {
+                const newAttached = [...prev];
+                let order = newAttached.length > 0 ? Math.max(...newAttached.map((a) => a.order)) + 1 : 1;
+                for (const p of problems) {
+                  newAttached.push({
+                    problemId: p.id,
+                    order: order++,
+                    maxScore: p.maxScore,
+                    title: p.title,
+                    difficulty: p.difficulty,
+                  });
+                }
+                return newAttached;
+              });
+            }}
+            contestMode={form.mode} 
+          />
         </div>
 
         <div className="space-y-2">

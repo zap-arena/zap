@@ -5,7 +5,10 @@ import type { User } from "../types";
 let _user: User | null = null;
 let _initialized = false;
 const listeners: Set<() => void> = new Set();
-const notify = () => listeners.forEach((fn) => fn());
+const notify = () =>
+  listeners.forEach((fn) => {
+    fn();
+  });
 
 async function loadCurrentUser() {
   if (!getToken()) {

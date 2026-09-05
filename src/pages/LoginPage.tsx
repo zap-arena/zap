@@ -86,7 +86,7 @@ export default function LoginPage() {
             </div>
           </div>
           <div className="text-xs text-white/50">
-            <span className="font-mono text-primary">// </span>
+            <span className="font-mono text-primary">{"// "}</span>
             Sign in with your ZAP account to continue
           </div>
         </div>

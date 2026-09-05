@@ -88,7 +88,7 @@ export default function RegisterPage() {
             </div>
           </div>
           <div className="text-xs text-white/50">
-            <span className="font-mono text-primary">// </span>
+            <span className="font-mono text-primary">{"// "}</span>
             Create your ZAP account to continue
           </div>
         </div>
