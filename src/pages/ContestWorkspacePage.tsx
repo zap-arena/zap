@@ -242,7 +242,7 @@ export default function ContestWorkspacePage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: contest } = useQuery({
+  const { data: contest, isLoading: contestLoading } = useQuery({
     queryKey: ["contest", contestId],
     queryFn: () => api.get<Contest>(`/contests/${contestId}`),
     enabled: !!contestId,
@@ -257,10 +257,10 @@ export default function ContestWorkspacePage() {
     enabled: !!contestId,
   });
 
-  const { data: problems = [] } = useQuery({
+  const { data: problems = [], isLoading: problemsLoading } = useQuery({
     queryKey: ["contest-problems", contestId],
     queryFn: () => api.get<Problem[]>(`/contests/${contestId}/problems`),
-    enabled: !!contestId && !!session?.started,
+    enabled: !!contestId,
   });
 
   const { data: mySubmissions = [] } = useQuery({
@@ -394,28 +394,32 @@ export default function ContestWorkspacePage() {
   const expiresAt =
     session?.expiresAt ?? new Date(Date.now() + 60 * 60 * 1000).toISOString();
 
-  // Autosave debounce
   const autosaveTimer = useRef<number | undefined>(undefined);
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "unsaved">(
     "saved",
   );
+  
+  const ENABLE_AUTOSAVE = false;
+
+  const saveDraft = async (forceCode?: string) => {
+    if (!selectedProblem || !contestId) return;
+    setSaveStatus("saving");
+    try {
+      await api.put(
+        `/contests/${contestId}/problems/${selectedProblem.id}/draft`,
+        { language, sourceCode: forceCode ?? code },
+      );
+      setSaveStatus("saved");
+    } catch {
+      setSaveStatus("unsaved");
+    }
+  };
 
   useEffect(() => {
-    if (!selectedProblem || !contestId) return;
+    if (!selectedProblem || !contestId || !ENABLE_AUTOSAVE) return;
     setSaveStatus("unsaved");
     clearTimeout(autosaveTimer.current);
-    autosaveTimer.current = window.setTimeout(async () => {
-      setSaveStatus("saving");
-      try {
-        await api.put(
-          `/contests/${contestId}/problems/${selectedProblem.id}/draft`,
-          { language, sourceCode: code },
-        );
-        setSaveStatus("saved");
-      } catch {
-        setSaveStatus("unsaved");
-      }
-    }, 1500);
+    autosaveTimer.current = window.setTimeout(saveDraft, 1500);
     return () => clearTimeout(autosaveTimer.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
@@ -465,6 +469,11 @@ export default function ContestWorkspacePage() {
 
   const handleRun = async () => {
     if (!selectedProblem) return;
+    
+    if (!ENABLE_AUTOSAVE) {
+      await saveDraft();
+    }
+    
     setRunning(true);
     setRunOutput(null);
     setBottomTab("output");
@@ -495,7 +504,13 @@ export default function ContestWorkspacePage() {
         testResults: [],
       });
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Failed to run code");
+      setRunOutput({
+        stdout: "",
+        stderr: err instanceof ApiError ? err.message : "Failed to run code",
+        compileOutput: "",
+        status: "ERROR",
+        testResults: [],
+      });
     } finally {
       setRunning(false);
     }
@@ -503,6 +518,11 @@ export default function ContestWorkspacePage() {
 
   const handleSubmit = async () => {
     if (!selectedProblem || !contestId) return;
+    
+    if (!ENABLE_AUTOSAVE) {
+      await saveDraft();
+    }
+
     setSubmitting(true);
     setRunOutput(null);
     setBottomTab("output");
@@ -539,13 +559,19 @@ export default function ContestWorkspacePage() {
               ? "🏆 Chain complete! All stages solved."
               : "✅ Stage cleared — next challenge unlocked!",
           );
+          if (isLastStage) {
+            const nextIndex = problems.findIndex(p => p.id === selectedProblem.id) + 1;
+            if (nextIndex < problems.length) {
+              handleProblemSelect(problems[nextIndex]);
+            }
+          }
         } else {
           toast.success("✅ Accepted! All test cases passed!");
+          const nextIndex = problems.findIndex(p => p.id === selectedProblem.id) + 1;
+          if (nextIndex < problems.length) {
+            handleProblemSelect(problems[nextIndex]);
+          }
         }
-      } else {
-        toast.info(
-          `${result.passedTests}/${result.totalTests} test cases passed`,
-        );
       }
 
       setRunOutput({
@@ -571,9 +597,13 @@ export default function ContestWorkspacePage() {
         queryKey: ["contest-problems", contestId],
       });
     } catch (err) {
-      toast.error(
-        err instanceof ApiError ? err.message : "Failed to submit solution",
-      );
+      setRunOutput({
+        stdout: "",
+        stderr: err instanceof ApiError ? err.message : "Failed to submit solution",
+        compileOutput: "",
+        status: "ERROR",
+        testResults: [],
+      });
     } finally {
       setSubmitting(false);
     }
@@ -600,7 +630,7 @@ export default function ContestWorkspacePage() {
     }
   };
 
-  if (!contest || !session?.started) {
+  if (contestLoading || problemsLoading) {
     return (
       <div className="h-screen flex flex-col bg-background overflow-hidden">
         <div className="h-12 border-b border-border bg-card flex items-center px-4 shrink-0">
@@ -621,6 +651,14 @@ export default function ContestWorkspacePage() {
             <Skeleton className="h-32 w-full mt-8" />
           </div>
         </div>
+      </div>
+    );
+  }
+
+  if (!contest) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-background">
+        <p className="text-muted-foreground">Contest not found</p>
       </div>
     );
   }
@@ -1235,7 +1273,7 @@ export default function ContestWorkspacePage() {
 
                           {runOutput.status &&
                             runOutput.testResults.length === 0 && (
-                              <div className="text-[10px] text-muted-foreground font-mono uppercase tracking-wider">
+                              <div className={`text-[11px] font-mono uppercase tracking-wider font-semibold ${runOutput.status === 'ERROR' ? 'text-destructive' : 'text-muted-foreground'}`}>
                                 Status: {runOutput.status}
                               </div>
                             )}
