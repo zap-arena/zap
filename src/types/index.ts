@@ -48,6 +48,14 @@ export interface Problem {
   maxScore: number;
   status: "active" | "archived";
   createdAt: string;
+  type?: "coding" | "debugging";
+  debuggingData?: {
+    columns: string[];
+    rows: Record<string, string | number>[];
+    bug_row: number;
+    bug_column: string;
+    expected_value: string;
+  } | null;
   isProgressive?: boolean;
   stages?: ProblemStage[];
   currentStageOrder?: number;

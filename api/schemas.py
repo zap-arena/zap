@@ -4,7 +4,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
-Language = Literal["c", "cpp", "java", "python"]
+Language = Literal["c", "cpp", "java", "python", "text"]
 Difficulty = Literal["Easy", "Medium", "Hard"]
 
 
@@ -99,6 +99,8 @@ class ProblemIn(BaseModel):
     status: Literal["active", "archived"] = "active"
     isProgressive: bool = False
     stages: list[ProblemStageIn] = []
+    type: Literal["coding", "debugging"] = "coding"
+    debuggingData: Optional[dict] = None
 
 
 class ProblemOut(BaseModel):
@@ -124,6 +126,8 @@ class ProblemOut(BaseModel):
     stages: list[dict] = []
     currentStageOrder: Optional[int] = None
     totalStages: Optional[int] = None
+    type: str = "coding"
+    debuggingData: Optional[dict] = None
 
 
 class ProblemSummaryOut(BaseModel):
@@ -154,7 +158,7 @@ class ContestIn(BaseModel):
     endTime: datetime
     duration: int = Field(default=60, ge=5, le=1440)
     scoringMode: Literal["full", "partial"] = "partial"
-    mode: Literal["standard", "progressive"] = "standard"
+    mode: Literal["standard", "progressive", "debugging"] = "standard"
     leaderboardVisible: bool = True
     problems: list[ContestProblemIn] = []
     moderatorIds: list[str] = []

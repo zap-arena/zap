@@ -72,7 +72,8 @@ async def run_code(payload: schemas.RunRequest, db: Session = Depends(get_db), u
 @router.post("/submissions", status_code=201)
 async def create_submission(payload: schemas.SubmitRequest, db: Session = Depends(get_db), user: models.User = Depends(get_current_user)):
     problem = _get_active_problem(db, payload.problemId)
-    if payload.language not in (problem.languages or []):
+    is_debugging = getattr(problem, "type", "coding") == "debugging"
+    if not is_debugging and payload.language not in (problem.languages or []):
         raise HTTPException(status_code=400, detail="Language not supported for this problem")
 
     contest = None

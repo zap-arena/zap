@@ -47,6 +47,8 @@ class Problem(Base):
     memory_limit: Mapped[int] = mapped_column(Integer, default=256)
     max_score: Mapped[int] = mapped_column(Integer, default=100)
     status: Mapped[str] = mapped_column(String(20), default="active")  # active | archived
+    type: Mapped[str] = mapped_column(String(20), default="coding")  # coding | debugging
+    debugging_data: Mapped[dict] = mapped_column(JSON, nullable=True)
     # Chain problem: has ordered ProblemStage children instead of a single flat statement.
     is_progressive: Mapped[bool] = mapped_column(Boolean, default=False)
     created_by: Mapped[str] = mapped_column(String(32), nullable=True)
