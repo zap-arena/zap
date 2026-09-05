@@ -354,6 +354,7 @@ export default function ContestWorkspacePage() {
     isFullscreen,
     requestFullscreen,
     blocked,
+    dismissBlocked,
     report: reportBlocked,
   } = useProctoring(contestId, attemptActive, currentProblemId, isAdmin);
 
