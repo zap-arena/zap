@@ -72,8 +72,38 @@ async def rate_limit(request: Request, call_next):
 def on_startup():
     if engine is not None:
         Base.metadata.create_all(bind=engine)
+        _auto_migrate_schema(engine)
         _ensure_bootstrap_admin()
 
+
+def _auto_migrate_schema(engine):
+    """Automatically adds missing columns to existing tables so we don't have to use alembic or drop tables."""
+    from sqlalchemy import inspect, text
+    inspector = inspect(engine)
+    
+    with engine.begin() as conn:
+        # Check 'problems' table
+        if inspector.has_table("problems"):
+            columns = [col["name"] for col in inspector.get_columns("problems")]
+            if "type" not in columns:
+                conn.execute(text("ALTER TABLE problems ADD COLUMN type VARCHAR(20) NOT NULL DEFAULT 'coding'"))
+            if "debugging_data" not in columns:
+                conn.execute(text("ALTER TABLE problems ADD COLUMN debugging_data JSON"))
+            if "is_progressive" not in columns:
+                conn.execute(text("ALTER TABLE problems ADD COLUMN is_progressive BOOLEAN NOT NULL DEFAULT FALSE"))
+                
+        # Check 'contests' table
+        if inspector.has_table("contests"):
+            columns = [col["name"] for col in inspector.get_columns("contests")]
+            if "mode" not in columns:
+                conn.execute(text('ALTER TABLE contests ADD COLUMN "mode" VARCHAR(20) NOT NULL DEFAULT \'standard\''))
+                
+        # Check 'test_cases' table
+        if inspector.has_table("test_cases"):
+            columns = [col["name"] for col in inspector.get_columns("test_cases")]
+            if "stage_id" not in columns:
+                # problem_stages will already be created by create_all()
+                conn.execute(text("ALTER TABLE test_cases ADD COLUMN stage_id VARCHAR(32) REFERENCES problem_stages(id) ON DELETE CASCADE"))
 
 def _ensure_bootstrap_admin():
     admin_email = os.getenv("ADMIN_EMAIL")
