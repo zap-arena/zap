@@ -1,16 +1,9 @@
-import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Trophy, Calendar, CheckCircle, Clock } from "lucide-react";
-import { api } from "../lib/api";
+import { Calendar, CheckCircle, Clock, Trophy } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "../components/ui/tabs";
-import { Skeleton } from "../components/ui/skeleton";
 import { Button } from "../components/ui/button";
+import { Skeleton } from "../components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -19,6 +12,13 @@ import {
   TableHeader,
   TableRow,
 } from "../components/ui/table";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../components/ui/tabs";
+import { api } from "../lib/api";
 
 interface Contest {
   id: string;

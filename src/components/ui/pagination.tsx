@@ -1,12 +1,10 @@
-import * as React from "react";
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
-
-import { cn } from "@/lib/utils";
+import * as React from "react";
 import { type ButtonProps, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
   <nav
-    role="navigation"
     aria-label="pagination"
     className={cn("mx-auto flex w-full justify-center", className)}
     {...props}
@@ -109,9 +107,9 @@ PaginationEllipsis.displayName = "PaginationEllipsis";
 export {
   Pagination,
   PaginationContent,
-  PaginationLink,
-  PaginationItem,
-  PaginationPrevious,
-  PaginationNext,
   PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
 };

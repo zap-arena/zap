@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 import {
-  Trophy,
-  Target,
-  Send,
-  CheckCircle2,
   Calendar,
-  Medal,
+  CheckCircle2,
   Loader2,
+  Medal,
+  Send,
+  Target,
+  Trophy,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { Button } from "../components/ui/button";
 import { api } from "../lib/api";

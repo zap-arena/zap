@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Users, Code2, Trophy, Send, TrendingUp } from "lucide-react";
+import { Code2, Send, TrendingUp, Trophy, Users } from "lucide-react";
 import AdminLayout from "../../components/AdminLayout";
 import VerdictBadge from "../../components/VerdictBadge";
 import { api } from "../../lib/api";

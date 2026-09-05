@@ -1,26 +1,26 @@
-import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
+  BarChart2,
+  Brain,
+  Clock,
   Download,
+  ShieldAlert,
   Trophy,
   Users,
-  BarChart2,
-  Clock,
-  ShieldAlert,
-  Brain,
 } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import AdminLayout from "../../components/AdminLayout";
 import { Button } from "../../components/ui/button";
 import VerdictBadge from "../../components/VerdictBadge";
 import { api } from "../../lib/api";
 import type {
   Contest,
-  Submission,
   LeaderboardEntry,
   ParticipantStatus,
+  Submission,
 } from "../../types";
-import { toast } from "sonner";
 
 interface AdminParticipant {
   id: string;
