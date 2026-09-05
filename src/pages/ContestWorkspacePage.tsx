@@ -47,9 +47,12 @@ import ContestTimer from "../components/ContestTimer";
 import VerdictBadge from "../components/VerdictBadge";
 import DifficultyBadge from "../components/DifficultyBadge";
 import ThemeToggle from "../components/ThemeToggle";
+import ThemeColorPicker from "../components/ThemeColorPicker";
 import { useProctoring } from "../hooks/useProctoring";
+import { useAuth } from "../store/auth";
 import { api, ApiError } from "../lib/api";
 import { MONACO_THEMES, EDITOR_THEME_OPTIONS } from "../lib/monaco-themes";
+import { useAccent, accentHex } from "../store/theme";
 import type {
   Language,
   Verdict,
@@ -89,12 +92,54 @@ interface RunOutput {
   testResults: TestResult[];
 }
 
+const BUILTIN_BASE: Record<string, "vs" | "vs-dark" | "hc-black"> = {
+  "vs-dark": "vs-dark",
+  light: "vs",
+  "hc-black": "hc-black",
+};
+
+// Overlay the app accent colour onto whichever syntax theme is active.
+function decorateEditorTheme(
+  monaco: any,
+  themeName: string,
+  accentColor: string,
+) {
+  const overrides: Record<string, string> = {
+    "editorCursor.foreground": accentColor,
+    "editor.selectionBackground": accentColor + "55",
+    "editor.inactiveSelectionBackground": accentColor + "33",
+    "editor.selectionHighlightBackground": accentColor + "26",
+    "editorLineNumber.activeForeground": accentColor,
+    "editorIndentGuide.activeBackground": accentColor + "99",
+    "editorBracketMatch.border": accentColor,
+    focusBorder: accentColor,
+  };
+  const custom = MONACO_THEMES[themeName];
+  if (custom) {
+    monaco.editor.defineTheme(themeName, {
+      ...custom,
+      colors: { ...(custom.colors ?? {}), ...overrides },
+    });
+    monaco.editor.setTheme(themeName);
+  } else {
+    const variant = `${themeName}-accent`;
+    monaco.editor.defineTheme(variant, {
+      base: BUILTIN_BASE[themeName] ?? "vs-dark",
+      inherit: true,
+      rules: [],
+      colors: overrides,
+    });
+    monaco.editor.setTheme(variant);
+  }
+}
+
 function CodeEditor({
   value,
   onChange,
   language,
   onBlockedAction,
   editorTheme,
+  allowClipboard,
 }: {
   value: string;
   onChange: (v: string) => void;
@@ -103,9 +148,17 @@ function CodeEditor({
     type: "COPY_BLOCKED" | "CUT_BLOCKED" | "PASTE_BLOCKED",
   ) => void;
   editorTheme: string;
+  allowClipboard?: boolean;
 }) {
   const monacoLang =
     LANGUAGES.find((l) => l.value === language)?.monacoLang ?? "plaintext";
+  const { accent } = useAccent();
+  const monacoRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (monacoRef.current)
+      decorateEditorTheme(monacoRef.current, editorTheme, accentHex(accent));
+  }, [editorTheme, accent]);
 
   return (
     <div className="relative h-full flex flex-col bg-muted/30 dark:bg-[#0d1117] rounded-none overflow-hidden">
@@ -117,38 +170,46 @@ function CodeEditor({
           theme={editorTheme}
           onChange={(v) => onChange(v ?? "")}
           onMount={(editor, monaco) => {
+            monacoRef.current = monaco;
             // Load custom themes
             Object.entries(MONACO_THEMES).forEach(([themeName, themeData]) => {
               monaco.editor.defineTheme(themeName, themeData as any);
             });
+            decorateEditorTheme(monaco, editorTheme, accentHex(accent));
             // Monaco handles clipboard internally, so the document listeners never fire here.
-            const block =
-              (type: "COPY_BLOCKED" | "CUT_BLOCKED" | "PASTE_BLOCKED") => () =>
-                onBlockedAction?.(type);
-            editor.addCommand(
-              monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyC,
-              block("COPY_BLOCKED"),
-            );
-            editor.addCommand(
-              monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyX,
-              block("CUT_BLOCKED"),
-            );
-            editor.addCommand(
-              monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyV,
-              block("PASTE_BLOCKED"),
-            );
-            editor.addCommand(
-              monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyV,
-              block("PASTE_BLOCKED"),
-            );
-            editor.addCommand(
-              monaco.KeyMod.CtrlCmd | monaco.KeyCode.Insert,
-              block("COPY_BLOCKED"),
-            );
-            editor.addCommand(
-              monaco.KeyMod.Shift | monaco.KeyCode.Insert,
-              block("PASTE_BLOCKED"),
-            );
+            // Admins keep native clipboard shortcuts; everyone else is blocked.
+            if (!allowClipboard) {
+              const block =
+                (type: "COPY_BLOCKED" | "CUT_BLOCKED" | "PASTE_BLOCKED") =>
+                () =>
+                  onBlockedAction?.(type);
+              editor.addCommand(
+                monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyC,
+                block("COPY_BLOCKED"),
+              );
+              editor.addCommand(
+                monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyX,
+                block("CUT_BLOCKED"),
+              );
+              editor.addCommand(
+                monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyV,
+                block("PASTE_BLOCKED"),
+              );
+              editor.addCommand(
+                monaco.KeyMod.CtrlCmd |
+                  monaco.KeyMod.Shift |
+                  monaco.KeyCode.KeyV,
+                block("PASTE_BLOCKED"),
+              );
+              editor.addCommand(
+                monaco.KeyMod.CtrlCmd | monaco.KeyCode.Insert,
+                block("COPY_BLOCKED"),
+              );
+              editor.addCommand(
+                monaco.KeyMod.Shift | monaco.KeyCode.Insert,
+                block("PASTE_BLOCKED"),
+              );
+            }
           }}
           options={{
             fontSize: 13,
@@ -157,7 +218,7 @@ function CodeEditor({
             scrollBeyondLastLine: false,
             tabSize: 2,
             automaticLayout: true,
-            contextmenu: false,
+            contextmenu: !!allowClipboard,
           }}
         />
       </div>
@@ -279,6 +340,9 @@ export default function ContestWorkspacePage() {
   );
 
   // Proctoring: lockdown + event tracking, active for the whole attempt.
+  // Admins are exempt from the clipboard lockdown so they can test problems.
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
   const attemptActive = !!session?.started && session.status === "in_progress";
   const selectedProblemRef = useRef<Problem | undefined>(undefined);
   selectedProblemRef.current = selectedProblem;
@@ -290,9 +354,8 @@ export default function ContestWorkspacePage() {
     isFullscreen,
     requestFullscreen,
     blocked,
-    dismissBlocked,
     report: reportBlocked,
-  } = useProctoring(contestId, attemptActive, currentProblemId);
+  } = useProctoring(contestId, attemptActive, currentProblemId, isAdmin);
 
   const { data: notifications = [] } = useQuery({
     queryKey: ["contest-notifications", contestId],
@@ -580,6 +643,7 @@ export default function ContestWorkspacePage() {
                 ? "Saving…"
                 : "● Unsaved"}
           </span>
+          <ThemeColorPicker size="xs" />
           <ThemeToggle size="xs" />
           <Button
             size="sm"
@@ -952,7 +1016,7 @@ export default function ContestWorkspacePage() {
 
             <ResizableHandle
               withHandle
-              className="bg-transparent hover:bg-border/50 transition-colors"
+              className="bg-border hover:bg-primary/50 transition-colors"
             />
 
             {/* Editor + Output panel */}
@@ -1058,6 +1122,7 @@ export default function ContestWorkspacePage() {
                         language={language}
                         editorTheme={editorTheme}
                         onBlockedAction={reportBlocked}
+                        allowClipboard={isAdmin}
                         onChange={(v) => {
                           setCode(v);
                           if (selectedProblem)
@@ -1070,7 +1135,7 @@ export default function ContestWorkspacePage() {
 
                 <ResizableHandle
                   withHandle
-                  className="bg-transparent hover:bg-border/50 transition-colors"
+                  className="bg-border hover:bg-primary/50 transition-colors"
                 />
 
                 {/* Output panel */}

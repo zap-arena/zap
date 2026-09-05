@@ -46,6 +46,7 @@ export function useProctoring(
   contestId: string | undefined,
   active: boolean,
   problemId: () => string | undefined,
+  allowClipboard = false,
 ) {
   const trackerRef = useRef<ProctorTracker | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(
@@ -78,18 +79,24 @@ export function useProctoring(
         return;
       }
       if (ctrl && key === "c") {
-        e.preventDefault();
-        report("COPY_BLOCKED", { source: "keyboard" });
+        if (!allowClipboard) {
+          e.preventDefault();
+          report("COPY_BLOCKED", { source: "keyboard" });
+        }
         return;
       }
       if (ctrl && key === "x") {
-        e.preventDefault();
-        report("CUT_BLOCKED", { source: "keyboard" });
+        if (!allowClipboard) {
+          e.preventDefault();
+          report("CUT_BLOCKED", { source: "keyboard" });
+        }
         return;
       }
       if (ctrl && key === "v") {
-        e.preventDefault();
-        report("PASTE_BLOCKED", { source: "keyboard" });
+        if (!allowClipboard) {
+          e.preventDefault();
+          report("PASTE_BLOCKED", { source: "keyboard" });
+        }
         return;
       }
 
@@ -133,10 +140,12 @@ export function useProctoring(
 
     // Capture phase so the editor cannot swallow these first.
     document.addEventListener("keydown", onKeyDown, true);
-    document.addEventListener("copy", onCopy, true);
-    document.addEventListener("cut", onCut, true);
-    document.addEventListener("paste", onPaste, true);
-    document.addEventListener("contextmenu", onContextMenu, true);
+    if (!allowClipboard) {
+      document.addEventListener("copy", onCopy, true);
+      document.addEventListener("cut", onCut, true);
+      document.addEventListener("paste", onPaste, true);
+      document.addEventListener("contextmenu", onContextMenu, true);
+    }
     document.addEventListener("visibilitychange", onVisibility);
     document.addEventListener("fullscreenchange", onFullscreenChange);
     window.addEventListener("blur", onBlur);
@@ -155,7 +164,7 @@ export function useProctoring(
       tracker.dispose();
       trackerRef.current = null;
     };
-  }, [contestId, active, problemId, report]);
+  }, [contestId, active, problemId, report, allowClipboard]);
 
   /** Must be called from a user gesture — browsers reject programmatic fullscreen otherwise. */
   const requestFullscreen = useCallback(async () => {
