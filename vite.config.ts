@@ -21,12 +21,12 @@ export default defineConfig({
   build: {
     assetsInlineLimit: 10000000000, // Inline all assets
     cssCodeSplit: false,
-    minify: 'esbuild',              // Faster than terser
-    reportCompressedSize: false,    // Skip gzip calc (saves time)
-    chunkSizeWarningLimit: 1000,    // Suppress warnings
+    minify: "esbuild", // Faster than terser
+    reportCompressedSize: false, // Skip gzip calc (saves time)
+    chunkSizeWarningLimit: 1000, // Suppress warnings
     rollupOptions: {
       output: {
-        manualChunks: undefined,    // Single chunk = faster for small apps
+        manualChunks: undefined, // Single chunk = faster for small apps
       },
     },
   },

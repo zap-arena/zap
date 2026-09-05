@@ -1,18 +1,18 @@
-import { api } from './api';
+import { api } from "./api";
 
 export type ProctorEventType =
-  | 'ESCAPE_PRESSED'
-  | 'FULLSCREEN_EXITED'
-  | 'FULLSCREEN_ENTERED'
-  | 'TAB_HIDDEN'
-  | 'TAB_VISIBLE'
-  | 'WINDOW_BLUR'
-  | 'WINDOW_FOCUS'
-  | 'COPY_BLOCKED'
-  | 'PASTE_BLOCKED'
-  | 'CUT_BLOCKED'
-  | 'CONTEXT_MENU_BLOCKED'
-  | 'DEVTOOLS_ATTEMPT';
+  | "ESCAPE_PRESSED"
+  | "FULLSCREEN_EXITED"
+  | "FULLSCREEN_ENTERED"
+  | "TAB_HIDDEN"
+  | "TAB_VISIBLE"
+  | "WINDOW_BLUR"
+  | "WINDOW_FOCUS"
+  | "COPY_BLOCKED"
+  | "PASTE_BLOCKED"
+  | "CUT_BLOCKED"
+  | "CONTEXT_MENU_BLOCKED"
+  | "DEVTOOLS_ATTEMPT";
 
 interface QueuedEvent {
   clientEventId: string;
@@ -75,7 +75,9 @@ export class ProctorTracker {
 
     this.inFlight = this.queue.splice(0, BATCH_SIZE);
     try {
-      await api.post(`/contests/${this.contestId}/activity`, { events: this.inFlight });
+      await api.post(`/contests/${this.contestId}/activity`, {
+        events: this.inFlight,
+      });
       this.inFlight = [];
     } catch {
       // Put them back so the next flush retries; ids keep the retry idempotent.

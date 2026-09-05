@@ -1,8 +1,0 @@
-{
-  "name": "Sample 2 - two nodes",
-  "input": "2\n1 2",
-  "expected_output": "2 1",
-  "hidden": false,
-  "marks": 20,
-  "order": 2
-}

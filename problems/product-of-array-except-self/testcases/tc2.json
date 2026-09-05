@@ -1,8 +1,0 @@
-{
-  "name": "Sample 2 - contains a zero",
-  "input": "5\n-1 1 0 -3 3",
-  "expected_output": "0 0 9 0 0",
-  "hidden": false,
-  "marks": 20,
-  "order": 2
-}

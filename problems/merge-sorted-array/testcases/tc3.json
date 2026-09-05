@@ -1,8 +1,0 @@
-{
-  "name": "Hidden - empty first array",
-  "input": "0\n\n4\n-5 -1 0 8",
-  "expected_output": "-5 -1 0 8",
-  "hidden": true,
-  "marks": 30,
-  "order": 3
-}

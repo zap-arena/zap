@@ -1,4 +1,4 @@
-export type UserRole = 'admin' | 'user';
+export type UserRole = "admin" | "user";
 
 export interface User {
   id: string;
@@ -7,8 +7,8 @@ export interface User {
   role: UserRole;
 }
 
-export type Difficulty = 'Easy' | 'Medium' | 'Hard';
-export type Language = 'c' | 'cpp' | 'java' | 'python';
+export type Difficulty = "Easy" | "Medium" | "Hard";
+export type Language = "c" | "cpp" | "java" | "python";
 
 export interface TestCase {
   id: string;
@@ -46,11 +46,33 @@ export interface Problem {
   timeLimit: number;
   memoryLimit: number;
   maxScore: number;
-  status: 'active' | 'archived';
+  status: "active" | "archived";
   createdAt: string;
+  isProgressive?: boolean;
+  stages?: ProblemStage[];
+  currentStageOrder?: number;
+  totalStages?: number;
 }
 
-export type ContestStatus = 'draft' | 'scheduled' | 'active' | 'completed' | 'cancelled';
+export interface ProblemStage {
+  id: string;
+  stageOrder: number;
+  title: string;
+  statement?: string;
+  expectedComplexity?: string | null;
+  timeLimit?: number | null;
+  memoryLimit?: number | null;
+  maxScore?: number;
+  testCases?: TestCase[];
+  locked: boolean;
+}
+
+export type ContestStatus =
+  | "draft"
+  | "scheduled"
+  | "active"
+  | "completed"
+  | "cancelled";
 
 export interface ContestProblem {
   problemId: string;
@@ -81,21 +103,29 @@ export interface Contest {
   problemCount: number;
   maxScore: number;
   moderators: ContestModerator[];
-  scoringMode: 'full' | 'partial';
+  scoringMode: "full" | "partial";
+  mode?: "standard" | "progressive";
   leaderboardVisible: boolean;
   createdAt: string;
 }
 
 export type Verdict =
-  | 'ACCEPTED' | 'WRONG_ANSWER' | 'PARTIAL'
-  | 'COMPILATION_ERROR' | 'RUNTIME_ERROR'
-  | 'TIME_LIMIT_EXCEEDED' | 'MEMORY_LIMIT_EXCEEDED'
-  | 'INTERNAL_ERROR' | 'QUEUED' | 'RUNNING';
+  | "ACCEPTED"
+  | "WRONG_ANSWER"
+  | "PARTIAL"
+  | "COMPILATION_ERROR"
+  | "RUNTIME_ERROR"
+  | "TIME_LIMIT_EXCEEDED"
+  | "MEMORY_LIMIT_EXCEEDED"
+  | "INTERNAL_ERROR"
+  | "QUEUED"
+  | "RUNNING";
 
 export interface Submission {
   id: string;
   contestId: string;
   problemId: string;
+  stageId?: string | null;
   problemTitle: string;
   userId: string;
   language: Language;
@@ -111,7 +141,11 @@ export interface Submission {
   isLate?: boolean;
 }
 
-export type ParticipantStatus = 'not_started' | 'in_progress' | 'completed' | 'auto_completed';
+export type ParticipantStatus =
+  | "not_started"
+  | "in_progress"
+  | "completed"
+  | "auto_completed";
 
 export interface Participant {
   id: string;
@@ -153,7 +187,7 @@ export interface RunResult {
   executionTime: number;
   memoryUsage: number;
   exitCode: number;
-  status: 'success' | 'compile_error' | 'runtime_error' | 'timeout';
+  status: "success" | "compile_error" | "runtime_error" | "timeout";
 }
 
 export interface LeaderboardEntry {
@@ -165,4 +199,51 @@ export interface LeaderboardEntry {
   totalProblems: number;
   submissions: number;
   completionTime: string;
+}
+
+// ---------- Progressive ("Code War") analytics ----------
+export type BehaviorPattern =
+  | "optimal_from_start"
+  | "brute_then_optimized"
+  | "shortcut_then_rework"
+  | "struggling";
+
+export interface StageAnalytics {
+  stageId: string;
+  stageOrder: number;
+  solved: boolean;
+  attempts: number;
+  runs: number;
+  errorsSeen: string[];
+  errorsResolved: number;
+  timeToSolveSeconds: number | null;
+  codeChurn: number;
+  crossStageRewrite: number | null;
+  complexity: {
+    label: string;
+    confidence: "high" | "low";
+    empirical: string | null;
+    static: string;
+  } | null;
+  expectedComplexity: string | null;
+  submissions?: {
+    id: string;
+    status: Verdict;
+    submittedAt: string;
+    language: Language;
+  }[];
+}
+
+export interface ChainAnalytics {
+  problemId: string;
+  problemTitle: string;
+  pattern: BehaviorPattern;
+  behaviorScore: number;
+  stages: StageAnalytics[];
+}
+
+export interface ParticipantAnalytics {
+  userId: string;
+  userName: string;
+  chains: ChainAnalytics[];
 }

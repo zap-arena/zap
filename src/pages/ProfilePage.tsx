@@ -1,22 +1,30 @@
-import { useQuery } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
-import { Trophy, Target, Send, CheckCircle2, Calendar, Medal, Loader2 } from 'lucide-react';
-import Navbar from '../components/Navbar';
-import { Button } from '../components/ui/button';
-import { api } from '../lib/api';
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import {
+  Trophy,
+  Target,
+  Send,
+  CheckCircle2,
+  Calendar,
+  Medal,
+  Loader2,
+} from "lucide-react";
+import Navbar from "../components/Navbar";
+import { Button } from "../components/ui/button";
+import { api } from "../lib/api";
 
 const STATUS_STYLES: Record<string, string> = {
-  active: 'bg-success/15 text-success',
-  scheduled: 'bg-warning/15 text-warning',
-  completed: 'bg-muted text-muted-foreground',
-  draft: 'bg-secondary text-secondary-foreground',
-  cancelled: 'bg-destructive/15 text-destructive',
+  active: "bg-success/15 text-success",
+  scheduled: "bg-warning/15 text-warning",
+  completed: "bg-muted text-muted-foreground",
+  draft: "bg-secondary text-secondary-foreground",
+  cancelled: "bg-destructive/15 text-destructive",
 };
 
 const DIFFICULTY_STYLES: Record<string, string> = {
-  Easy: 'text-success',
-  Medium: 'text-warning',
-  Hard: 'text-destructive',
+  Easy: "text-success",
+  Medium: "text-warning",
+  Hard: "text-destructive",
 };
 
 interface ProfileProblem {
@@ -63,12 +71,22 @@ interface ProfileResponse {
   contests: ProfileContest[];
 }
 
-function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: React.ReactNode }) {
+function StatCard({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: React.ReactNode;
+}) {
   return (
     <div className="card-glow rounded-xl p-4">
       <div className="flex items-center gap-2 text-muted-foreground mb-1">
         {icon}
-        <span className="text-xs uppercase tracking-wider font-semibold">{label}</span>
+        <span className="text-xs uppercase tracking-wider font-semibold">
+          {label}
+        </span>
       </div>
       <p className="text-2xl font-bold">{value}</p>
     </div>
@@ -78,8 +96,8 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
 export default function ProfilePage() {
   const navigate = useNavigate();
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['my-profile'],
-    queryFn: () => api.get<ProfileResponse>('/me/profile'),
+    queryKey: ["my-profile"],
+    queryFn: () => api.get<ProfileResponse>("/me/profile"),
   });
 
   if (isLoading) {
@@ -97,15 +115,18 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
-        <div className="py-24 text-center text-muted-foreground">Could not load your profile.</div>
+        <div className="py-24 text-center text-muted-foreground">
+          Could not load your profile.
+        </div>
       </div>
     );
   }
 
   const { user, stats, contests } = data;
-  const accuracy = stats.totalSubmissions > 0
-    ? Math.round((stats.acceptedSubmissions / stats.totalSubmissions) * 100)
-    : 0;
+  const accuracy =
+    stats.totalSubmissions > 0
+      ? Math.round((stats.acceptedSubmissions / stats.totalSubmissions) * 100)
+      : 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -114,23 +135,49 @@ export default function ProfilePage() {
         {/* Header */}
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center text-primary text-xl font-bold">
-            {user.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+            {user.name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .slice(0, 2)}
           </div>
           <div>
             <h1 className="text-2xl font-bold">{user.name}</h1>
-            <p className="text-sm text-muted-foreground font-mono">{user.email}</p>
+            <p className="text-sm text-muted-foreground font-mono">
+              {user.email}
+            </p>
           </div>
         </div>
 
         {/* Stats */}
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-          <StatCard icon={<Calendar size={14} />} label="Contests" value={stats.contestsRegistered} />
-          <StatCard icon={<Target size={14} />} label="Problems solved" value={stats.problemsSolved} />
-          <StatCard icon={<Trophy size={14} />} label="Total score" value={stats.totalScore} />
+          <StatCard
+            icon={<Calendar size={14} />}
+            label="Contests"
+            value={stats.contestsRegistered}
+          />
+          <StatCard
+            icon={<Target size={14} />}
+            label="Problems solved"
+            value={stats.problemsSolved}
+          />
+          <StatCard
+            icon={<Trophy size={14} />}
+            label="Total score"
+            value={stats.totalScore}
+          />
           <StatCard
             icon={<Send size={14} />}
             label="Submissions"
-            value={<>{stats.totalSubmissions}<span className="text-sm text-muted-foreground font-normal"> · {accuracy}% accepted</span></>}
+            value={
+              <>
+                {stats.totalSubmissions}
+                <span className="text-sm text-muted-foreground font-normal">
+                  {" "}
+                  · {accuracy}% accepted
+                </span>
+              </>
+            }
           />
         </div>
 
@@ -139,25 +186,41 @@ export default function ProfilePage() {
           <h2 className="font-semibold mb-3">My Contests</h2>
           {contests.length === 0 ? (
             <div className="card-glow rounded-xl p-10 text-center">
-              <p className="text-sm text-muted-foreground mb-4">You haven't joined any contests yet.</p>
-              <Button size="sm" className="btn-primary" onClick={() => navigate('/')}>Browse contests</Button>
+              <p className="text-sm text-muted-foreground mb-4">
+                You haven't joined any contests yet.
+              </p>
+              <Button
+                size="sm"
+                className="btn-primary"
+                onClick={() => navigate("/")}
+              >
+                Browse contests
+              </Button>
             </div>
           ) : (
             <div className="space-y-3">
-              {contests.map(c => (
+              {contests.map((c) => (
                 <div key={c.contestId} className="card-glow rounded-xl p-5">
                   <div className="flex items-start gap-4 flex-wrap">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
                         <h3 className="font-semibold text-sm">{c.name}</h3>
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wide ${STATUS_STYLES[c.status]}`}>
+                        <span
+                          className={`text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wide ${STATUS_STYLES[c.status]}`}
+                        >
                           {c.status}
                         </span>
                       </div>
                       <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
-                        <span>🗓 {new Date(c.startTime).toLocaleDateString()}</span>
-                        <span>📝 {c.problemsSolved}/{c.totalProblems} solved</span>
-                        <span>🏆 {c.score}/{c.maxScore} pts</span>
+                        <span>
+                          🗓 {new Date(c.startTime).toLocaleDateString()}
+                        </span>
+                        <span>
+                          📝 {c.problemsSolved}/{c.totalProblems} solved
+                        </span>
+                        <span>
+                          🏆 {c.score}/{c.maxScore} pts
+                        </span>
                         <span>📤 {c.submissions} submissions</span>
                       </div>
                     </div>
@@ -168,11 +231,17 @@ export default function ProfilePage() {
                             <Medal size={14} />
                             <span className="text-lg font-bold">#{c.rank}</span>
                           </div>
-                          <p className="text-[10px] text-muted-foreground">of {c.totalParticipants}</p>
+                          <p className="text-[10px] text-muted-foreground">
+                            of {c.totalParticipants}
+                          </p>
                         </div>
                       )}
-                      <Button variant="outline" size="sm" className="h-7 px-2 text-xs"
-                        onClick={() => navigate(`/contest/${c.slug}`)}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-7 px-2 text-xs"
+                        onClick={() => navigate(`/contest/${c.slug}`)}
+                      >
                         View
                       </Button>
                     </div>
@@ -180,18 +249,35 @@ export default function ProfilePage() {
 
                   {/* Per-problem breakdown */}
                   <div className="mt-4 border-t border-border pt-3 space-y-1.5">
-                    {c.problems.map(p => (
-                      <div key={p.problemId} className="flex items-center gap-2 text-xs">
+                    {c.problems.map((p) => (
+                      <div
+                        key={p.problemId}
+                        className="flex items-center gap-2 text-xs"
+                      >
                         <CheckCircle2
                           size={13}
-                          className={p.solved ? 'text-success shrink-0' : 'text-muted-foreground/30 shrink-0'}
+                          className={
+                            p.solved
+                              ? "text-success shrink-0"
+                              : "text-muted-foreground/30 shrink-0"
+                          }
                         />
-                        <span className={p.solved ? 'font-medium' : 'text-muted-foreground'}>{p.title}</span>
-                        <span className={`text-[10px] font-mono font-semibold ${DIFFICULTY_STYLES[p.difficulty ?? 'Easy']}`}>
+                        <span
+                          className={
+                            p.solved ? "font-medium" : "text-muted-foreground"
+                          }
+                        >
+                          {p.title}
+                        </span>
+                        <span
+                          className={`text-[10px] font-mono font-semibold ${DIFFICULTY_STYLES[p.difficulty ?? "Easy"]}`}
+                        >
                           {p.difficulty}
                         </span>
                         <span className="ml-auto font-mono text-muted-foreground">
-                          {p.attempted ? `${p.score}/${p.maxScore}` : 'not attempted'}
+                          {p.attempted
+                            ? `${p.score}/${p.maxScore}`
+                            : "not attempted"}
                         </span>
                       </div>
                     ))}

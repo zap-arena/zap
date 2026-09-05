@@ -1,8 +1,0 @@
-{
-  "name": "Hidden - empty list",
-  "input": "0\n",
-  "expected_output": "",
-  "hidden": true,
-  "marks": 30,
-  "order": 3
-}

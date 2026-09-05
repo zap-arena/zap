@@ -1,8 +1,0 @@
-{
-  "name": "Sample 1 - odd total length",
-  "input": "2\n1 3\n1\n2",
-  "expected_output": "2.00000",
-  "hidden": false,
-  "marks": 20,
-  "order": 1
-}

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -52,12 +52,21 @@
     --info: 211 100% 50%;
     --info-foreground: 210 40% 98%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(221.2 83.2% 53.3%), hsl(210 100% 50%));
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(221.2 83.2% 53.3%),
+      hsl(210 100% 50%)
+    );
     --gradient-dark: linear-gradient(180deg, hsl(0 0% 100%), hsl(210 40% 98%));
-    --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(221.2 83.2% 53.3% / 0.08) 0%, transparent 70%);
+    --gradient-glow: radial-gradient(
+      ellipse at 50% 0%,
+      hsl(221.2 83.2% 53.3% / 0.08) 0%,
+      transparent 70%
+    );
 
     --shadow-glow: 0 0 30px hsl(221.2 83.2% 53.3% / 0.15);
-    --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-card:
+      0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
     --shadow-dramatic: 0 20px 60px hsl(222.2 47.4% 11.2% / 0.15);
 
     --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -105,9 +114,21 @@
     --info: 210 100% 56%;
     --info-foreground: 210 40% 98%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(210 40% 98%), hsl(213 31% 91%));
-    --gradient-dark: linear-gradient(180deg, hsl(222.2 47.4% 11.2%), hsl(224 71% 4%));
-    --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(210 40% 98% / 0.12) 0%, transparent 70%);
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(210 40% 98%),
+      hsl(213 31% 91%)
+    );
+    --gradient-dark: linear-gradient(
+      180deg,
+      hsl(222.2 47.4% 11.2%),
+      hsl(224 71% 4%)
+    );
+    --gradient-glow: radial-gradient(
+      ellipse at 50% 0%,
+      hsl(210 40% 98% / 0.12) 0%,
+      transparent 70%
+    );
 
     --shadow-glow: 0 0 30px hsl(210 40% 98% / 0.1);
     --shadow-card: 0 4px 24px hsl(0 0% 0% / 0.5);
@@ -119,7 +140,9 @@
     box-sizing: border-box;
   }
 
-  html, body, #root {
+  html,
+  body,
+  #root {
     height: 100%;
     margin: 0;
     padding: 0;
@@ -128,12 +151,14 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: "Plus Jakarta Sans", sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
-  code, pre, .font-mono {
-    font-family: 'JetBrains Mono', monospace;
+  code,
+  pre,
+  .font-mono {
+    font-family: "JetBrains Mono", monospace;
   }
 }
 
@@ -143,7 +168,9 @@
     background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
     box-shadow: var(--shadow-card);
-    transition: border-color 0.2s var(--ease-smooth), box-shadow 0.2s var(--ease-smooth);
+    transition:
+      border-color 0.2s var(--ease-smooth),
+      box-shadow 0.2s var(--ease-smooth);
   }
   .card-glow:hover {
     border-color: hsl(var(--primary) / 0.4);
@@ -164,26 +191,63 @@
   }
 
   /* Surface hierarchy */
-  .surface-1 { background: hsl(var(--surface-1)); }
-  .surface-2 { background: hsl(var(--surface-2)); }
-  .surface-3 { background: hsl(var(--surface-3)); }
+  .surface-1 {
+    background: hsl(var(--surface-1));
+  }
+  .surface-2 {
+    background: hsl(var(--surface-2));
+  }
+  .surface-3 {
+    background: hsl(var(--surface-3));
+  }
 
   /* Verdict badges */
-  .verdict-accepted { color: hsl(var(--success)); background: hsl(var(--success) / 0.12); border: 1px solid hsl(var(--success) / 0.25); }
-  .verdict-wrong { color: hsl(var(--destructive)); background: hsl(var(--destructive) / 0.12); border: 1px solid hsl(var(--destructive) / 0.25); }
-  .verdict-partial { color: hsl(var(--warning)); background: hsl(var(--warning) / 0.12); border: 1px solid hsl(var(--warning) / 0.25); }
-  .verdict-error { color: hsl(38 92% 50%); background: hsl(38 92% 50% / 0.12); border: 1px solid hsl(38 92% 50% / 0.25); }
-  .verdict-running { color: hsl(var(--info)); background: hsl(var(--info) / 0.12); border: 1px solid hsl(var(--info) / 0.25); }
+  .verdict-accepted {
+    color: hsl(var(--success));
+    background: hsl(var(--success) / 0.12);
+    border: 1px solid hsl(var(--success) / 0.25);
+  }
+  .verdict-wrong {
+    color: hsl(var(--destructive));
+    background: hsl(var(--destructive) / 0.12);
+    border: 1px solid hsl(var(--destructive) / 0.25);
+  }
+  .verdict-partial {
+    color: hsl(var(--warning));
+    background: hsl(var(--warning) / 0.12);
+    border: 1px solid hsl(var(--warning) / 0.25);
+  }
+  .verdict-error {
+    color: hsl(38 92% 50%);
+    background: hsl(38 92% 50% / 0.12);
+    border: 1px solid hsl(38 92% 50% / 0.25);
+  }
+  .verdict-running {
+    color: hsl(var(--info));
+    background: hsl(var(--info) / 0.12);
+    border: 1px solid hsl(var(--info) / 0.25);
+  }
 
   /* Difficulty badges */
-  .diff-easy { color: hsl(var(--success)); }
-  .diff-medium { color: hsl(var(--warning)); }
-  .diff-hard { color: hsl(var(--destructive)); }
+  .diff-easy {
+    color: hsl(var(--success));
+  }
+  .diff-medium {
+    color: hsl(var(--warning));
+  }
+  .diff-hard {
+    color: hsl(var(--destructive));
+  }
 
   /* Glow line */
   .glow-line {
     height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.5), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(var(--primary) / 0.5),
+      transparent
+    );
   }
 
   /* Sidebar item */
@@ -211,33 +275,73 @@
   }
 
   /* Monaco-style scrollbar */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: hsl(var(--background)); }
-  ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground)); }
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
 
   /* Animation keyframes */
   @keyframes fade-in {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   @keyframes slide-in-left {
-    from { opacity: 0; transform: translateX(-16px); }
-    to { opacity: 1; transform: translateX(0); }
+    from {
+      opacity: 0;
+      transform: translateX(-16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
   }
   @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 8px hsl(var(--primary) / 0.3); }
-    50% { box-shadow: 0 0 20px hsl(var(--primary) / 0.6); }
+    0%,
+    100% {
+      box-shadow: 0 0 8px hsl(var(--primary) / 0.3);
+    }
+    50% {
+      box-shadow: 0 0 20px hsl(var(--primary) / 0.6);
+    }
   }
   @keyframes timer-pulse {
-    0%, 100% { color: hsl(var(--destructive)); }
-    50% { color: hsl(var(--destructive) / 0.5); }
+    0%,
+    100% {
+      color: hsl(var(--destructive));
+    }
+    50% {
+      color: hsl(var(--destructive) / 0.5);
+    }
   }
 
-  .animate-fade-in { animation: fade-in 0.3s var(--ease-smooth) both; }
-  .animate-slide-left { animation: slide-in-left 0.3s var(--ease-smooth) both; }
-  .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
-  .animate-timer-pulse { animation: timer-pulse 1s ease-in-out infinite; }
+  .animate-fade-in {
+    animation: fade-in 0.3s var(--ease-smooth) both;
+  }
+  .animate-slide-left {
+    animation: slide-in-left 0.3s var(--ease-smooth) both;
+  }
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+  .animate-timer-pulse {
+    animation: timer-pulse 1s ease-in-out infinite;
+  }
 
   /* Table styles */
   .data-table th {
@@ -254,8 +358,12 @@
     border-bottom: 1px solid hsl(var(--border) / 0.5);
     font-size: 0.875rem;
   }
-  .data-table tr:last-child td { border-bottom: none; }
-  .data-table tr:hover td { background: hsl(var(--secondary) / 0.5); }
+  .data-table tr:last-child td {
+    border-bottom: none;
+  }
+  .data-table tr:hover td {
+    background: hsl(var(--secondary) / 0.5);
+  }
 }
 
 /* Sonner only reveals the close button on hover; keep it visible and easy to hit. */
@@ -268,7 +376,9 @@
   right: -0.5rem;
   transform: none;
   cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
 }
 
 [data-sonner-toast] [data-close-button]:hover {

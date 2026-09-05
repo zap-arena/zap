@@ -1,8 +1,0 @@
-{
-  "name": "Hidden - non-contiguous trap",
-  "input": "pwwkew",
-  "expected_output": "3",
-  "hidden": true,
-  "marks": 30,
-  "order": 3
-}

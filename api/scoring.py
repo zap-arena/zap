@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 import models
 from piston_service import execute, normalize_output
@@ -21,9 +21,22 @@ async def run_public(problem: models.Problem, language: str, code: str, stdin: s
     }
 
 
-async def judge_submission(problem: models.Problem, language: str, code: str) -> dict[str, Any]:
-    """Run every test case (public + hidden) and compute a server-side score. Never reveals hidden IO."""
-    test_cases = sorted(problem.test_cases, key=lambda t: t.order)
+async def judge_submission(
+    problem: models.Problem, language: str, code: str, stage: Optional[models.ProblemStage] = None
+) -> dict[str, Any]:
+    """Run every test case (public + hidden) and compute a server-side score. Never reveals hidden IO.
+
+    When `stage` is given (progressive/"Code War" mode), judges against that stage's own
+    test cases instead of the problem-level ones, using the stage's time limit override.
+    """
+    if stage is not None:
+        test_cases = sorted(
+            [tc for tc in stage.test_cases if tc.perf_tier in (None, "", "small")], key=lambda t: t.order
+        )
+        time_limit = stage.time_limit or problem.time_limit
+    else:
+        test_cases = sorted([tc for tc in problem.test_cases if not tc.stage_id], key=lambda t: t.order)
+        time_limit = problem.time_limit
     if not test_cases:
         return {
             "status": "INTERNAL_ERROR", "passedTests": 0, "totalTests": 0, "score": 0,
@@ -38,7 +51,7 @@ async def judge_submission(problem: models.Problem, language: str, code: str) ->
     overall_status = "ACCEPTED"
 
     for index, tc in enumerate(test_cases, start=1):
-        execution = await execute(language, code, tc.input, problem.time_limit)
+        execution = await execute(language, code, tc.input, time_limit)
         result = execution.get("result") or {}
         run_result = result.get("run") or {}
         compile_result = result.get("compile") or {}

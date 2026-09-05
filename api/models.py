@@ -47,11 +47,38 @@ class Problem(Base):
     memory_limit: Mapped[int] = mapped_column(Integer, default=256)
     max_score: Mapped[int] = mapped_column(Integer, default=100)
     status: Mapped[str] = mapped_column(String(20), default="active")  # active | archived
+    # Chain problem: has ordered ProblemStage children instead of a single flat statement.
+    is_progressive: Mapped[bool] = mapped_column(Boolean, default=False)
     created_by: Mapped[str] = mapped_column(String(32), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc, onupdate=now_utc)
 
     test_cases: Mapped[list["TestCase"]] = relationship(back_populates="problem", cascade="all, delete-orphan")
+    stages: Mapped[list["ProblemStage"]] = relationship(
+        back_populates="problem", cascade="all, delete-orphan", order_by="ProblemStage.stage_order"
+    )
+
+
+class ProblemStage(Base):
+    """One enhancement level of a progressive ('Code War') chain problem."""
+
+    __tablename__ = "problem_stages"
+    __table_args__ = (UniqueConstraint("problem_id", "stage_order", name="uq_problem_stage_order"),)
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=gen_id)
+    problem_id: Mapped[str] = mapped_column(String(32), ForeignKey("problems.id", ondelete="CASCADE"))
+    stage_order: Mapped[int] = mapped_column(Integer, default=1)
+    title: Mapped[str] = mapped_column(String(200), default="")
+    statement: Mapped[str] = mapped_column(Text, default="")
+    # Admin-set reference complexity (e.g. "O(n)") used by the analytics engine.
+    expected_complexity: Mapped[str] = mapped_column(String(20), nullable=True)
+    time_limit: Mapped[int] = mapped_column(Integer, nullable=True)
+    memory_limit: Mapped[int] = mapped_column(Integer, nullable=True)
+    max_score: Mapped[int] = mapped_column(Integer, default=100)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
+
+    problem: Mapped["Problem"] = relationship(back_populates="stages")
+    test_cases: Mapped[list["TestCase"]] = relationship(back_populates="stage", cascade="all, delete-orphan")
 
 
 class TestCase(Base):
@@ -59,14 +86,19 @@ class TestCase(Base):
 
     id: Mapped[str] = mapped_column(String(32), primary_key=True, default=gen_id)
     problem_id: Mapped[str] = mapped_column(String(32), ForeignKey("problems.id", ondelete="CASCADE"))
+    # Set only for progressive-stage cases; NULL means a normal problem-level case.
+    stage_id: Mapped[str] = mapped_column(String(32), ForeignKey("problem_stages.id", ondelete="CASCADE"), nullable=True)
     name: Mapped[str] = mapped_column(String(120), default="Test case")
     input: Mapped[str] = mapped_column(Text, default="")
     expected_output: Mapped[str] = mapped_column(Text, default="")
     hidden: Mapped[bool] = mapped_column(Boolean, default=False)
     marks: Mapped[int] = mapped_column(Integer, default=0)
     order: Mapped[int] = mapped_column(Integer, default=0)
+    # small | medium | large input size variant of the same case, for empirical complexity timing.
+    perf_tier: Mapped[str] = mapped_column(String(10), nullable=True)
 
     problem: Mapped["Problem"] = relationship(back_populates="test_cases")
+    stage: Mapped["ProblemStage"] = relationship(back_populates="test_cases")
 
 
 class Contest(Base):
@@ -82,6 +114,7 @@ class Contest(Base):
     duration: Mapped[int] = mapped_column(Integer, default=60)  # minutes
     status: Mapped[str] = mapped_column(String(20), default="draft")
     scoring_mode: Mapped[str] = mapped_column(String(20), default="partial")  # full | partial
+    mode: Mapped[str] = mapped_column("mode", String(20), default="standard", quote=True)  # standard | progressive
     leaderboard_visible: Mapped[bool] = mapped_column(Boolean, default=True)
     created_by: Mapped[str] = mapped_column(String(32), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
@@ -133,6 +166,22 @@ class ContestParticipant(Base):
     total_submissions: Mapped[int] = mapped_column(Integer, default=0)
 
 
+class ContestChainProgress(Base):
+    """Per-user unlock cursor for a progressive chain problem within a contest."""
+
+    __tablename__ = "contest_chain_progress"
+    __table_args__ = (UniqueConstraint("contest_id", "user_id", "problem_id", name="uq_chain_progress"),)
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=gen_id)
+    contest_id: Mapped[str] = mapped_column(String(32), ForeignKey("contests.id", ondelete="CASCADE"))
+    user_id: Mapped[str] = mapped_column(String(32), ForeignKey("users.id", ondelete="CASCADE"))
+    problem_id: Mapped[str] = mapped_column(String(32), ForeignKey("problems.id", ondelete="CASCADE"))
+    current_stage_order: Mapped[int] = mapped_column(Integer, default=1)
+    completed: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc, onupdate=now_utc)
+
+
 class CodeDraft(Base):
     __tablename__ = "code_drafts"
     __table_args__ = (UniqueConstraint("contest_id", "problem_id", "user_id", name="uq_draft"),)
@@ -152,6 +201,7 @@ class Submission(Base):
     id: Mapped[str] = mapped_column(String(32), primary_key=True, default=gen_id)
     contest_id: Mapped[str] = mapped_column(String(32), ForeignKey("contests.id", ondelete="CASCADE"), nullable=True)
     problem_id: Mapped[str] = mapped_column(String(32), ForeignKey("problems.id", ondelete="CASCADE"))
+    stage_id: Mapped[str] = mapped_column(String(32), ForeignKey("problem_stages.id", ondelete="CASCADE"), nullable=True)
     user_id: Mapped[str] = mapped_column(String(32), ForeignKey("users.id", ondelete="CASCADE"))
     language: Mapped[str] = mapped_column(String(20))
     source_code: Mapped[str] = mapped_column(Text)
