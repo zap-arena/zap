@@ -1,33 +1,33 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Editor from "@monaco-editor/react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  Play,
-  Send,
-  CheckCircle,
-  XCircle,
-  Trophy,
+  AlertTriangle,
   BookOpen,
+  CheckCircle,
+  Flag,
   History,
   List,
   Loader2,
-  AlertTriangle,
-  Flag,
-  Terminal,
-  RotateCcw,
   Maximize,
+  Menu,
   Minimize,
+  Play,
+  RotateCcw,
+  Send,
   ShieldAlert,
+  Terminal,
+  Trophy,
+  // Wand2,
+  XCircle,
 } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
+import ContestTimer from "../components/ContestTimer";
+import DifficultyBadge from "../components/DifficultyBadge";
+import ThemeColorPicker from "../components/ThemeColorPicker";
+import ThemeToggle from "../components/ThemeToggle";
 import { Button } from "../components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -37,31 +37,33 @@ import {
   DialogTitle,
 } from "../components/ui/dialog";
 import {
-  ResizablePanelGroup,
-  ResizablePanel,
   ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
 } from "../components/ui/resizable";
-import { Tabs, TabsList, TabsTrigger } from "../components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
 import { Skeleton } from "../components/ui/skeleton";
-import ContestTimer from "../components/ContestTimer";
+import { Tabs, TabsList, TabsTrigger } from "../components/ui/tabs";
 import VerdictBadge from "../components/VerdictBadge";
-import DifficultyBadge from "../components/DifficultyBadge";
-import ThemeToggle from "../components/ThemeToggle";
-import ThemeColorPicker from "../components/ThemeColorPicker";
 import { useProctoring } from "../hooks/useProctoring";
+import { ApiError, api } from "../lib/api";
+import { EDITOR_THEME_OPTIONS, MONACO_THEMES } from "../lib/monaco-themes";
 import { useAuth } from "../store/auth";
-import { api, ApiError } from "../lib/api";
-import { MONACO_THEMES, EDITOR_THEME_OPTIONS } from "../lib/monaco-themes";
-import { useAccent, accentHex } from "../store/theme";
+import { accentHex, useAccent } from "../store/theme";
 import type {
-  Language,
-  Verdict,
-  Problem,
   Contest,
-  Submission,
+  Language,
   LeaderboardEntry,
+  Problem,
+  Submission,
+  Verdict,
 } from "../types";
-import { toast } from "sonner";
 
 interface ContestNotice {
   id: string;
@@ -140,6 +142,7 @@ function CodeEditor({
   onBlockedAction,
   editorTheme,
   allowClipboard,
+  onMount,
 }: {
   value: string;
   onChange: (v: string) => void;
@@ -149,6 +152,7 @@ function CodeEditor({
   ) => void;
   editorTheme: string;
   allowClipboard?: boolean;
+  onMount?: (editor: any, monaco: any) => void;
 }) {
   const monacoLang =
     LANGUAGES.find((l) => l.value === language)?.monacoLang ?? "plaintext";
@@ -171,6 +175,7 @@ function CodeEditor({
           onChange={(v) => onChange(v ?? "")}
           onMount={(editor, monaco) => {
             monacoRef.current = monaco;
+            if (onMount) onMount(editor, monaco);
             // Load custom themes
             Object.entries(MONACO_THEMES).forEach(([themeName, themeData]) => {
               monaco.editor.defineTheme(themeName, themeData as any);
@@ -242,7 +247,7 @@ export default function ContestWorkspacePage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: contest } = useQuery({
+  const { data: contest, isLoading: contestLoading } = useQuery({
     queryKey: ["contest", contestId],
     queryFn: () => api.get<Contest>(`/contests/${contestId}`),
     enabled: !!contestId,
@@ -257,17 +262,21 @@ export default function ContestWorkspacePage() {
     enabled: !!contestId,
   });
 
-  const { data: problems = [] } = useQuery({
+  const { data: problems = [], isLoading: problemsLoading } = useQuery({
     queryKey: ["contest-problems", contestId],
     queryFn: () => api.get<Problem[]>(`/contests/${contestId}/problems`),
-    enabled: !!contestId && !!session?.started,
+    enabled: !!contestId,
   });
+
+  const [activeTab, setActiveTab] = useState<
+    "problem" | "submissions" | "leaderboard"
+  >("problem");
 
   const { data: mySubmissions = [] } = useQuery({
     queryKey: ["my-submissions", contestId],
     queryFn: () =>
       api.get<Submission[]>(`/contests/${contestId}/my-submissions`),
-    enabled: !!contestId && !!session?.started,
+    enabled: !!contestId && !!session?.started && activeTab === "submissions",
     refetchInterval: 15000,
   });
 
@@ -275,7 +284,7 @@ export default function ContestWorkspacePage() {
     queryKey: ["leaderboard", contestId],
     queryFn: () =>
       api.get<LeaderboardEntry[]>(`/contests/${contestId}/leaderboard`),
-    enabled: !!contestId && !!session?.started,
+    enabled: !!contestId && !!session?.started && activeTab === "leaderboard",
     refetchInterval: 20000,
   });
 
@@ -288,10 +297,9 @@ export default function ContestWorkspacePage() {
   );
   const [code, setCode] = useState("");
   const codeStore = useRef<Record<string, Record<string, string>>>({});
-  const [activeTab, setActiveTab] = useState<
-    "problem" | "submissions" | "leaderboard"
-  >("problem");
+  const editorRef = useRef<any>(null);
   const [bottomTab, setBottomTab] = useState<"output" | "stdin">("output");
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [running, setRunning] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [runOutput, setRunOutput] = useState<RunOutput | null>(null);
@@ -352,6 +360,7 @@ export default function ContestWorkspacePage() {
   );
   const {
     isFullscreen,
+    hasEnteredFullscreen,
     requestFullscreen,
     blocked,
     dismissBlocked,
@@ -369,14 +378,23 @@ export default function ContestWorkspacePage() {
   const [seenNotifications, setSeenNotifications] = useState<Set<string>>(
     new Set(),
   );
+  const [activeNotification, setActiveNotification] =
+    useState<ContestNotice | null>(null);
+
   useEffect(() => {
     const unseen = notifications.filter((n) => !seenNotifications.has(n.id));
     if (unseen.length === 0) return;
-    unseen.forEach((n) => toast.info(n.message, { duration: 10000 }));
-    setSeenNotifications(
-      (prev) => new Set([...prev, ...unseen.map((n) => n.id)]),
-    );
-  }, [notifications, seenNotifications]);
+    if (!activeNotification) {
+      setActiveNotification(unseen[0]);
+    }
+  }, [notifications, seenNotifications, activeNotification]);
+
+  const dismissNotification = () => {
+    if (activeNotification) {
+      setSeenNotifications((prev) => new Set([...prev, activeNotification.id]));
+      setActiveNotification(null);
+    }
+  };
 
   const toggleFullscreen = async () => {
     if (!document.fullscreenElement) {
@@ -394,31 +412,56 @@ export default function ContestWorkspacePage() {
   const expiresAt =
     session?.expiresAt ?? new Date(Date.now() + 60 * 60 * 1000).toISOString();
 
-  // Autosave debounce
   const autosaveTimer = useRef<number | undefined>(undefined);
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "unsaved">(
     "saved",
   );
 
-  useEffect(() => {
+  const ENABLE_AUTOSAVE = false;
+
+  const saveDraft = async (forceCode?: string) => {
     if (!selectedProblem || !contestId) return;
+    setSaveStatus("saving");
+    try {
+      await api.put(
+        `/contests/${contestId}/problems/${selectedProblem.id}/draft`,
+        { language, sourceCode: forceCode ?? code },
+      );
+      setSaveStatus("saved");
+    } catch {
+      setSaveStatus("unsaved");
+    }
+  };
+
+  useEffect(() => {
+    if (!selectedProblem || !contestId || !ENABLE_AUTOSAVE) return;
     setSaveStatus("unsaved");
     clearTimeout(autosaveTimer.current);
-    autosaveTimer.current = window.setTimeout(async () => {
-      setSaveStatus("saving");
-      try {
-        await api.put(
-          `/contests/${contestId}/problems/${selectedProblem.id}/draft`,
-          { language, sourceCode: code },
-        );
-        setSaveStatus("saved");
-      } catch {
-        setSaveStatus("unsaved");
-      }
-    }, 1500);
+    autosaveTimer.current = window.setTimeout(saveDraft, 1500);
     return () => clearTimeout(autosaveTimer.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
+
+  // Keep a ref to the latest saveDraft so the keyboard handler never goes stale
+  const saveDraftRef = useRef(saveDraft);
+  saveDraftRef.current = saveDraft;
+
+  // Ctrl+S / Cmd+S → save draft
+  useEffect(() => {
+    const handleKeyDown = async (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+        e.preventDefault();
+        try {
+          await saveDraftRef.current();
+          // toast.success("Code saved");
+        } catch {
+          toast.error("Failed to save code");
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const saveToStore = (pid: string, lang: Language, source: string) => {
     if (!codeStore.current[pid]) codeStore.current[pid] = {};
@@ -465,6 +508,11 @@ export default function ContestWorkspacePage() {
 
   const handleRun = async () => {
     if (!selectedProblem) return;
+
+    if (!ENABLE_AUTOSAVE) {
+      await saveDraft();
+    }
+
     setRunning(true);
     setRunOutput(null);
     setBottomTab("output");
@@ -495,7 +543,13 @@ export default function ContestWorkspacePage() {
         testResults: [],
       });
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Failed to run code");
+      setRunOutput({
+        stdout: "",
+        stderr: err instanceof ApiError ? err.message : "Failed to run code",
+        compileOutput: "",
+        status: "ERROR",
+        testResults: [],
+      });
     } finally {
       setRunning(false);
     }
@@ -503,6 +557,11 @@ export default function ContestWorkspacePage() {
 
   const handleSubmit = async () => {
     if (!selectedProblem || !contestId) return;
+
+    if (!ENABLE_AUTOSAVE) {
+      await saveDraft();
+    }
+
     setSubmitting(true);
     setRunOutput(null);
     setBottomTab("output");
@@ -539,13 +598,21 @@ export default function ContestWorkspacePage() {
               ? "🏆 Chain complete! All stages solved."
               : "✅ Stage cleared — next challenge unlocked!",
           );
+          if (isLastStage) {
+            const nextIndex =
+              problems.findIndex((p) => p.id === selectedProblem.id) + 1;
+            if (nextIndex < problems.length) {
+              handleProblemSelect(problems[nextIndex]);
+            }
+          }
         } else {
           toast.success("✅ Accepted! All test cases passed!");
+          const nextIndex =
+            problems.findIndex((p) => p.id === selectedProblem.id) + 1;
+          if (nextIndex < problems.length) {
+            handleProblemSelect(problems[nextIndex]);
+          }
         }
-      } else {
-        toast.info(
-          `${result.passedTests}/${result.totalTests} test cases passed`,
-        );
       }
 
       setRunOutput({
@@ -571,9 +638,14 @@ export default function ContestWorkspacePage() {
         queryKey: ["contest-problems", contestId],
       });
     } catch (err) {
-      toast.error(
-        err instanceof ApiError ? err.message : "Failed to submit solution",
-      );
+      setRunOutput({
+        stdout: "",
+        stderr:
+          err instanceof ApiError ? err.message : "Failed to submit solution",
+        compileOutput: "",
+        status: "ERROR",
+        testResults: [],
+      });
     } finally {
       setSubmitting(false);
     }
@@ -600,7 +672,7 @@ export default function ContestWorkspacePage() {
     }
   };
 
-  if (!contest || !session?.started) {
+  if (contestLoading || problemsLoading) {
     return (
       <div className="h-screen flex flex-col bg-background overflow-hidden">
         <div className="h-12 border-b border-border bg-card flex items-center px-4 shrink-0">
@@ -625,15 +697,31 @@ export default function ContestWorkspacePage() {
     );
   }
 
+  if (!contest) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-background">
+        <p className="text-muted-foreground">Contest not found</p>
+      </div>
+    );
+  }
+
   return (
     <div className="h-screen flex flex-col bg-background overflow-hidden">
       {/* Top Bar */}
       <div className="h-12 border-b border-border bg-card flex items-center px-4 gap-4 shrink-0">
         <div className="flex items-center gap-2 text-primary font-semibold text-sm">
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => setSidebarOpen((prev) => !prev)}
+            className="w-8 h-8 mr-1 text-muted-foreground hover:text-foreground hover:bg-muted"
+          >
+            <Menu size={16} />
+          </Button>
           <div className="w-5 h-5 rounded bg-primary/20 flex items-center justify-center">
             <Trophy size={11} className="text-primary" />
           </div>
-          <span className="hidden sm:block">{contest.name}</span>
+          <span className="hidden sm:block capitalize">{contest.name}</span>
         </div>
         <div className="flex-1" />
         <div className="flex items-center gap-2">
@@ -673,186 +761,184 @@ export default function ContestWorkspacePage() {
       {/* Main Layout */}
       <div className="flex-1 flex min-h-0">
         {/* Left sidebar: problem list */}
-        <div className="w-52 shrink-0 border-r border-border bg-card flex flex-col">
-          <div className="p-3 border-b border-border">
-            <div className="flex gap-1">
-              {(["problem", "submissions", "leaderboard"] as const).map(
-                (tab) => {
-                  const icons = {
-                    problem: List,
-                    submissions: History,
-                    leaderboard: Trophy,
-                  };
-                  const Icon = icons[tab];
+        {sidebarOpen && (
+          <div className="w-52 shrink-0 border-r border-border bg-card flex flex-col">
+            <div className="p-3 border-b border-border">
+              <div className="flex gap-1">
+                {(["problem", "submissions", "leaderboard"] as const).map(
+                  (tab) => {
+                    const icons = {
+                      problem: List,
+                      submissions: History,
+                      leaderboard: Trophy,
+                    };
+                    const Icon = icons[tab];
+                    return (
+                      <button
+                        key={tab}
+                        onClick={() => setActiveTab(tab)}
+                        title={tab.charAt(0).toUpperCase() + tab.slice(1)}
+                        className={`flex-1 h-7 rounded flex items-center justify-center transition-colors ${
+                          activeTab === tab
+                            ? "bg-primary/15 text-primary"
+                            : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                        }`}
+                      >
+                        <Icon size={13} />
+                      </button>
+                    );
+                  },
+                )}
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-2 space-y-1">
+              {activeTab === "problem" &&
+                problems.map((p, i) => {
+                  const solved = p.isProgressive
+                    ? (p.currentStageOrder ?? 1) > (p.totalStages ?? 1)
+                    : solvedProblems.has(p.id);
+                  const isSelected = selectedProblem?.id === p.id;
                   return (
                     <button
-                      key={tab}
-                      onClick={() => setActiveTab(tab)}
-                      title={tab.charAt(0).toUpperCase() + tab.slice(1)}
-                      className={`flex-1 h-7 rounded flex items-center justify-center transition-colors ${
-                        activeTab === tab
-                          ? "bg-primary/15 text-primary"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      key={p.id}
+                      onClick={() => handleProblemSelect(p)}
+                      className={`w-full text-left px-3 py-2.5 rounded-lg transition-colors ${
+                        isSelected
+                          ? "bg-primary/10 border border-primary/20"
+                          : "hover:bg-muted border border-transparent"
                       }`}
                     >
-                      <Icon size={13} />
+                      <div className="flex items-center gap-2 mb-0.5">
+                        {solved ? (
+                          <CheckCircle
+                            size={12}
+                            className="text-success shrink-0"
+                          />
+                        ) : (
+                          <div
+                            className={`w-3 h-3 rounded-full border shrink-0 ${isSelected ? "border-primary" : "border-border"}`}
+                          />
+                        )}
+                        <span
+                          className={`text-xs font-semibold truncate capitalize ${isSelected ? "text-primary" : solved ? "text-success" : "text-foreground"}`}
+                        >
+                          {i + 1}. {p.title}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between pl-5">
+                        <span
+                          className={`text-[10px] font-mono ${
+                            p.difficulty === "Easy"
+                              ? "text-success"
+                              : p.difficulty === "Medium"
+                                ? "text-warning"
+                                : "text-destructive"
+                          }`}
+                        >
+                          {p.difficulty}
+                        </span>
+                        {p.isProgressive && (
+                          <span className="text-[10px] text-muted-foreground font-mono">
+                            Stage {p.currentStageOrder}/{p.totalStages}
+                          </span>
+                        )}
+                        {!p.isProgressive && p.maxScore && (
+                          <span className="text-[10px] text-muted-foreground font-mono">
+                            {p.maxScore}p
+                          </span>
+                        )}
+                      </div>
+                      {p.isProgressive && p.stages && (
+                        <div className="flex gap-1 pl-5 mt-1">
+                          {p.stages.map((s) => (
+                            <span
+                              key={s.id}
+                              title={s.title}
+                              className={`w-1.5 h-1.5 rounded-full ${
+                                s.locked
+                                  ? "bg-border"
+                                  : s.stageOrder < (p.currentStageOrder ?? 1)
+                                    ? "bg-success"
+                                    : "bg-primary"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      )}
                     </button>
                   );
-                },
+                })}
+
+              {activeTab === "submissions" && (
+                <div className="space-y-2 pt-1">
+                  {mySubmissions.length === 0 && (
+                    <p className="text-xs text-muted-foreground text-center py-8">
+                      No submissions yet
+                    </p>
+                  )}
+                  {mySubmissions.map((s) => (
+                    <div
+                      key={s.id}
+                      className="p-2 rounded-lg bg-muted border border-border"
+                    >
+                      <div className="text-[11px] font-medium text-foreground truncate mb-1 capitalize">
+                        {s.problemTitle}
+                      </div>
+                      <VerdictBadge status={s.status} />
+                      <div className="flex justify-between mt-1">
+                        <span className="text-[10px] text-muted-foreground font-mono">
+                          {s.passedTests}/{s.totalTests}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground font-mono">
+                          {s.language.toUpperCase()}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {activeTab === "leaderboard" && (
+                <div className="space-y-1 pt-1">
+                  {leaderboardEntries.map((e) => (
+                    <div
+                      key={e.userId}
+                      className="px-2 py-2 rounded-lg hover:bg-muted transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`text-xs font-bold w-5 text-center font-mono ${
+                            e.rank === 1
+                              ? "text-warning"
+                              : e.rank === 2
+                                ? "text-muted-foreground"
+                                : e.rank === 3
+                                  ? "text-amber-600"
+                                  : "text-muted-foreground"
+                          }`}
+                        >
+                          {e.rank}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs font-medium text-foreground truncate capitalize">
+                            {e.userName}
+                          </div>
+                          <div className="text-[10px] text-muted-foreground font-mono">
+                            {e.solved}/{e.totalProblems} solved
+                          </div>
+                        </div>
+                        <span className="text-xs font-bold text-primary font-mono">
+                          {e.score}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           </div>
-
-          <div className="flex-1 overflow-y-auto p-2 space-y-1">
-            {activeTab === "problem" &&
-              problems.map((p, i) => {
-                const solved = p.isProgressive
-                  ? (p.currentStageOrder ?? 1) > (p.totalStages ?? 1)
-                  : solvedProblems.has(p.id);
-                const isSelected = selectedProblem?.id === p.id;
-                return (
-                  <button
-                    key={p.id}
-                    onClick={() => handleProblemSelect(p)}
-                    className={`w-full text-left px-3 py-2.5 rounded-lg transition-colors ${
-                      isSelected
-                        ? "bg-primary/10 border border-primary/20"
-                        : "hover:bg-muted border border-transparent"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 mb-0.5">
-                      {solved ? (
-                        <CheckCircle
-                          size={12}
-                          className="text-success shrink-0"
-                        />
-                      ) : (
-                        <div
-                          className={`w-3 h-3 rounded-full border shrink-0 ${isSelected ? "border-primary" : "border-border"}`}
-                        />
-                      )}
-                      <span
-                        className={`text-xs font-semibold truncate ${isSelected ? "text-primary" : solved ? "text-success" : "text-foreground"}`}
-                      >
-                        {i + 1}. {p.title}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between pl-5">
-                      <span
-                        className={`text-[10px] font-mono ${
-                          p.difficulty === "Easy"
-                            ? "text-success"
-                            : p.difficulty === "Medium"
-                              ? "text-warning"
-                              : "text-destructive"
-                        }`}
-                      >
-                        {p.difficulty}
-                      </span>
-                      {p.isProgressive ? (
-                        <span className="text-[10px] text-primary font-mono">
-                          Stage{" "}
-                          {Math.min(
-                            p.currentStageOrder ?? 1,
-                            p.totalStages ?? 1,
-                          )}
-                          /{p.totalStages}
-                        </span>
-                      ) : (
-                        <span className="text-[10px] text-muted-foreground font-mono">
-                          {p.maxScore}p
-                        </span>
-                      )}
-                    </div>
-                    {p.isProgressive && p.stages && (
-                      <div className="flex gap-1 pl-5 mt-1">
-                        {p.stages.map((s) => (
-                          <span
-                            key={s.id}
-                            title={s.title}
-                            className={`w-1.5 h-1.5 rounded-full ${
-                              s.locked
-                                ? "bg-border"
-                                : s.stageOrder < (p.currentStageOrder ?? 1)
-                                  ? "bg-success"
-                                  : "bg-primary"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
-
-            {activeTab === "submissions" && (
-              <div className="space-y-2 pt-1">
-                {mySubmissions.length === 0 && (
-                  <p className="text-xs text-muted-foreground text-center py-8">
-                    No submissions yet
-                  </p>
-                )}
-                {mySubmissions.map((s) => (
-                  <div
-                    key={s.id}
-                    className="p-2 rounded-lg bg-muted border border-border"
-                  >
-                    <div className="text-[11px] font-medium text-foreground truncate mb-1">
-                      {s.problemTitle}
-                    </div>
-                    <VerdictBadge status={s.status} />
-                    <div className="flex justify-between mt-1">
-                      <span className="text-[10px] text-muted-foreground font-mono">
-                        {s.passedTests}/{s.totalTests}
-                      </span>
-                      <span className="text-[10px] text-muted-foreground font-mono">
-                        {s.language.toUpperCase()}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {activeTab === "leaderboard" && (
-              <div className="space-y-1 pt-1">
-                {leaderboardEntries.map((e) => (
-                  <div
-                    key={e.userId}
-                    className="px-2 py-2 rounded-lg hover:bg-muted transition-colors"
-                  >
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={`text-xs font-bold w-5 text-center font-mono ${
-                          e.rank === 1
-                            ? "text-warning"
-                            : e.rank === 2
-                              ? "text-muted-foreground"
-                              : e.rank === 3
-                                ? "text-amber-600"
-                                : "text-muted-foreground"
-                        }`}
-                      >
-                        {e.rank}
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-xs font-medium text-foreground truncate">
-                          {e.userName}
-                        </div>
-                        <div className="text-[10px] text-muted-foreground font-mono">
-                          {e.solved}/{e.totalProblems} solved
-                        </div>
-                      </div>
-                      <span className="text-xs font-bold text-primary font-mono">
-                        {e.score}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+        )}
 
         {/* Main content: resizable panels */}
         <div className="flex-1 min-w-0">
@@ -863,7 +949,7 @@ export default function ContestWorkspacePage() {
                 {selectedProblem ? (
                   <>
                     <div className="px-5 py-4 border-b border-border shrink-0">
-                      <h2 className="font-bold text-base text-foreground mb-1">
+                      <h2 className="font-bold text-base text-foreground mb-1 capitalize">
                         {selectedProblem.title}
                         {activeStage && (
                           <span className="text-primary">
@@ -872,31 +958,37 @@ export default function ContestWorkspacePage() {
                           </span>
                         )}
                       </h2>
-                      <div className="flex items-center gap-3">
-                        <DifficultyBadge
-                          difficulty={selectedProblem.difficulty}
-                        />
-                        <span className="text-xs text-muted-foreground font-mono">
-                          ⏱{" "}
-                          {activeStage?.timeLimit ?? selectedProblem.timeLimit}s
-                          · 💾{" "}
-                          {activeStage?.memoryLimit ??
-                            selectedProblem.memoryLimit}
-                          MB
-                        </span>
-                        {activeStage?.expectedComplexity && (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-mono">
-                            target: {activeStage.expectedComplexity}
+                      <div className="flex flex-col gap-2 mb-3 mt-1">
+                        <div className="flex items-center gap-3">
+                          <DifficultyBadge
+                            difficulty={selectedProblem.difficulty}
+                          />
+                          <span className="text-xs text-muted-foreground font-mono">
+                            ⏱{" "}
+                            {activeStage?.timeLimit ??
+                              selectedProblem.timeLimit}
+                            s · 💾{" "}
+                            {activeStage?.memoryLimit ??
+                              selectedProblem.memoryLimit}
+                            MB
                           </span>
-                        )}
-                        {selectedProblem.tags.map((t) => (
-                          <span
-                            key={t}
-                            className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground font-mono"
-                          >
-                            {t}
-                          </span>
-                        ))}
+                        </div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {activeStage?.expectedComplexity && (
+                            <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-primary/10 text-primary border border-primary/20 text-[10px] font-mono font-semibold">
+                              <span>Target:</span>
+                              <span>{activeStage.expectedComplexity}</span>
+                            </div>
+                          )}
+                          {selectedProblem.tags.map((t) => (
+                            <span
+                              key={t}
+                              className="px-2 py-1 rounded bg-muted border border-border text-muted-foreground text-[10px] font-mono font-medium capitalize"
+                            >
+                              {t}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                       {selectedProblem.isProgressive && (
                         <p className="text-[11px] text-muted-foreground mt-2">
@@ -1073,6 +1165,15 @@ export default function ContestWorkspacePage() {
                       </Select>
                       <div className="flex-1" />
                       <div className="flex items-center gap-2">
+                        {/* <Button
+                          size="sm"
+                          variant="ghost"
+                          disabled
+                          title="Format code (coming soon)"
+                          className="h-6 px-2 text-xs text-muted-foreground gap-1 opacity-50 cursor-not-allowed"
+                        >
+                          <Wand2 size={11} /> Format
+                        </Button> */}
                         <Button
                           size="sm"
                           variant="ghost"
@@ -1124,6 +1225,9 @@ export default function ContestWorkspacePage() {
                         editorTheme={editorTheme}
                         onBlockedAction={reportBlocked}
                         allowClipboard={isAdmin}
+                        onMount={(editor) => {
+                          editorRef.current = editor;
+                        }}
                         onChange={(v) => {
                           setCode(v);
                           if (selectedProblem)
@@ -1235,7 +1339,9 @@ export default function ContestWorkspacePage() {
 
                           {runOutput.status &&
                             runOutput.testResults.length === 0 && (
-                              <div className="text-[10px] text-muted-foreground font-mono uppercase tracking-wider">
+                              <div
+                                className={`text-[11px] font-mono uppercase tracking-wider font-semibold ${runOutput.status === "ERROR" ? "text-destructive" : "text-muted-foreground"}`}
+                              >
                                 Status: {runOutput.status}
                               </div>
                             )}
@@ -1339,8 +1445,35 @@ export default function ContestWorkspacePage() {
         </DialogContent>
       </Dialog>
 
+      {/* Notification Message Modal */}
+      <Dialog
+        open={!!activeNotification}
+        onOpenChange={(open) => !open && dismissNotification()}
+      >
+        <DialogContent
+          className="bg-card border-border max-w-sm"
+          onEscapeKeyDown={(e) => e.preventDefault()}
+          onPointerDownOutside={(e) => e.preventDefault()}
+        >
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Flag size={18} className="text-primary" />
+              New Message
+            </DialogTitle>
+            <DialogDescription className="text-foreground font-medium pt-2 text-sm leading-relaxed capitalize">
+              {activeNotification?.message}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button className="btn-primary" onClick={dismissNotification}>
+              Dismiss
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Fullscreen guard - blocks the workspace until fullscreen is restored */}
-      {attemptActive && !isFullscreen && (
+      {attemptActive && hasEnteredFullscreen && !isFullscreen && (
         <div className="fixed inset-0 z-[100] bg-background/95 backdrop-blur-sm flex items-center justify-center p-6">
           <div className="card-glow rounded-xl p-8 max-w-md text-center space-y-4">
             <ShieldAlert size={40} className="text-warning mx-auto" />

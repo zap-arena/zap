@@ -1,19 +1,29 @@
 import { useQuery } from "@tanstack/react-query";
-import {
-  BarChart3,
-  Activity,
-  Search,
-  ArrowUpDown,
-  Globe,
-  AlertTriangle,
-  Download,
-  FileText,
-} from "lucide-react";
-import { useState, useMemo } from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import {
+  Activity,
+  AlertTriangle,
+  ArrowUpDown,
+  BarChart3,
+  Download,
+  FileText,
+  Globe,
+  Search,
+} from "lucide-react";
+import { useMemo, useState } from "react";
+import {
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from "recharts";
 import AdminLayout from "../../components/AdminLayout";
-import { api } from "../../lib/api";
+import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import {
   Tabs,
@@ -21,17 +31,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "../../components/ui/tabs";
-import { Button } from "../../components/ui/button";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip as RechartsTooltip,
-  ResponsiveContainer,
-  Legend,
-} from "recharts";
+import { api } from "../../lib/api";
 import type { Contest } from "../../types";
 
 interface UserAnalytics {

@@ -1,7 +1,14 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Search, Eye, Code2 } from "lucide-react";
+import { Code2, Eye, Search } from "lucide-react";
+import { useState } from "react";
 import AdminLayout from "../../components/AdminLayout";
+import { Button } from "../../components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "../../components/ui/dialog";
 import { Input } from "../../components/ui/input";
 import {
   Select,
@@ -10,16 +17,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { Button } from "../../components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "../../components/ui/dialog";
 import VerdictBadge from "../../components/VerdictBadge";
 import { api } from "../../lib/api";
-import type { Submission, Contest } from "../../types";
+import type { Contest, Submission } from "../../types";
 
 interface AdminSubmission extends Submission {
   userName?: string;

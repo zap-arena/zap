@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Brain, ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import AdminLayout from "../../components/AdminLayout";
 import { Button } from "../../components/ui/button";
 import { api } from "../../lib/api";
 import type {
+  BehaviorPattern,
   Contest,
   ParticipantAnalytics,
-  BehaviorPattern,
 } from "../../types";
 
 const PATTERN_LABEL: Record<BehaviorPattern, string> = {
@@ -88,7 +88,7 @@ export default function ProgressiveAnalyticsPage() {
 
         {participants.map((p) => (
           <div key={p.userId} className="card-glow rounded-xl overflow-hidden">
-            <button
+            <button type="button"
               onClick={() => toggle(p.userId)}
               className="w-full px-5 py-4 flex items-center justify-between hover:bg-muted/30 transition-colors"
             >

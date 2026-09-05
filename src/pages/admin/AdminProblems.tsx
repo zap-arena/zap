@@ -1,41 +1,25 @@
-import { useState, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  Plus,
-  Search,
-  Edit,
-  Trash2,
-  Eye,
+  AlertCircle,
   Archive,
   CheckCircle,
-  XCircle,
-  AlertCircle,
-  Loader2,
-  Plus as PlusIcon,
-  Trash,
-  Lock,
   ChevronDown,
   ChevronUp,
+  Edit,
+  Eye,
+  Loader2,
+  Lock,
+  Plus,
+  Plus as PlusIcon,
+  Search,
+  Trash,
+  Trash2,
+  XCircle,
 } from "lucide-react";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
 import AdminLayout from "../../components/AdminLayout";
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { Textarea } from "../../components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "../../components/ui/dialog";
+import DifficultyBadge from "../../components/DifficultyBadge";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -46,24 +30,40 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../../components/ui/alert-dialog";
+import { Button } from "../../components/ui/button";
+import { Checkbox } from "../../components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../../components/ui/dialog";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
+import { Switch } from "../../components/ui/switch";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "../../components/ui/tabs";
-import { Checkbox } from "../../components/ui/checkbox";
-import { Switch } from "../../components/ui/switch";
-import DifficultyBadge from "../../components/DifficultyBadge";
-import { api, ApiError } from "../../lib/api";
+import { Textarea } from "../../components/ui/textarea";
+import { ApiError, api } from "../../lib/api";
 import type {
-  Problem,
   Contest,
   Difficulty,
   Language,
+  Problem,
   TestCase,
 } from "../../types";
-import { toast } from "sonner";
 
 // ── ZIP Import ────────────────────────────────────────────────────────────────
 type ZipParseState =
@@ -600,6 +600,39 @@ function EditProblemDialog({
   const [testCases, setTestCases] = useState<(TestCase & { _new?: boolean })[]>(
     problem.testCases.map((tc) => ({ ...tc })),
   );
+  const [stages, setStages] = useState(
+    problem.stages
+      ? problem.stages.map((s) => ({
+          ...s,
+          testCases: (s.testCases || []).map((tc) => ({ ...tc })),
+        }))
+      : [],
+  );
+  const [activeStageId, setActiveStageId] = useState<string | null>(null);
+
+  const activeTestCases = activeStageId
+    ? stages.find((s) => s.id === activeStageId)?.testCases || []
+    : testCases;
+
+  const setActiveTestCases = (updater: any) => {
+    if (activeStageId) {
+      setStages((stgs) =>
+        stgs.map((s) =>
+          s.id === activeStageId
+            ? {
+                ...s,
+                testCases:
+                  typeof updater === "function"
+                    ? updater(s.testCases || [])
+                    : updater,
+              }
+            : s,
+        ),
+      );
+    } else {
+      setTestCases(updater);
+    }
+  };
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
   const [boilerplates, setBoilerplates] = useState<Record<string, string>>({
@@ -632,7 +665,8 @@ function EditProblemDialog({
       return n;
     });
   };
-  const expandAll = () => setExpandedIds(new Set(testCases.map((tc) => tc.id)));
+  const expandAll = () =>
+    setExpandedIds(new Set(activeTestCases.map((tc: any) => tc.id)));
   const collapseAll = () => setExpandedIds(new Set());
 
   const addTestCase = () => {
@@ -644,7 +678,7 @@ function EditProblemDialog({
       marks: 0,
       _new: true,
     };
-    setTestCases((tcs) => [...tcs, newTc]);
+    setActiveTestCases((tcs: any) => [...tcs, newTc]);
     setExpandedIds((s) => new Set([...s, newTc.id]));
   };
 
@@ -653,13 +687,13 @@ function EditProblemDialog({
     field: keyof TestCase,
     val: string | number | boolean,
   ) => {
-    setTestCases((tcs) =>
-      tcs.map((tc) => (tc.id === id ? { ...tc, [field]: val } : tc)),
+    setActiveTestCases((tcs: any) =>
+      tcs.map((tc: any) => (tc.id === id ? { ...tc, [field]: val } : tc)),
     );
   };
 
   const deleteTestCase = (id: string) => {
-    setTestCases((tcs) => tcs.filter((tc) => tc.id !== id));
+    setActiveTestCases((tcs: any) => tcs.filter((tc: any) => tc.id !== id));
     toast.info("Test case removed");
   };
 
@@ -695,6 +729,17 @@ function EditProblemDialog({
           hidden: tc.hidden,
           marks: tc.marks,
         })),
+        isProgressive: problem.isProgressive,
+        stages: stages.map((s) => ({
+          ...s,
+          testCases: (s.testCases || []).map((tc) => ({
+            name: tc.id,
+            input: tc.input,
+            expectedOutput: tc.expectedOutput,
+            hidden: tc.hidden,
+            marks: tc.marks,
+          })),
+        })),
         timeLimit: Number(details.timeLimit),
         memoryLimit: Number(details.memoryLimit),
         maxScore: Number(details.maxScore),
@@ -712,8 +757,12 @@ function EditProblemDialog({
     }
   };
 
-  const publicCount = testCases.filter((t) => !t.hidden).length;
-  const hiddenCount = testCases.filter((t) => t.hidden).length;
+  const publicCount = activeTestCases.filter((t: any) => !t.hidden).length;
+  const hiddenCount = activeTestCases.filter((t: any) => t.hidden).length;
+  const totalTestCasesLength = problem.isProgressive
+    ? testCases.length +
+      stages.reduce((acc, s) => acc + (s.testCases?.length || 0), 0)
+    : testCases.length;
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -733,7 +782,7 @@ function EditProblemDialog({
             <TabsTrigger value="testcases">
               Test Cases
               <span className="ml-1.5 text-[10px] px-1.5 py-0.5 rounded-full bg-primary/20 text-primary font-bold">
-                {testCases.length}
+                {totalTestCasesLength}
               </span>
             </TabsTrigger>
             <TabsTrigger value="boilerplate">Boilerplate</TabsTrigger>
@@ -873,6 +922,26 @@ function EditProblemDialog({
             value="testcases"
             className="flex-1 overflow-y-auto mt-4 space-y-3"
           >
+            {problem.isProgressive && (
+              <div className="flex gap-2 overflow-x-auto pb-2 border-b border-border mb-3">
+                <button
+                  onClick={() => setActiveStageId(null)}
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-full whitespace-nowrap ${!activeStageId ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
+                >
+                  Base Problem
+                </button>
+                {stages.map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() => setActiveStageId(s.id)}
+                    className={`px-3 py-1.5 text-xs font-semibold rounded-full whitespace-nowrap ${activeStageId === s.id ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
+                  >
+                    Stage {s.stageOrder}: {s.title || "Untitled"}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {/* Summary bar */}
             <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
               <div className="flex items-center gap-4 text-xs">
@@ -883,8 +952,11 @@ function EditProblemDialog({
                   <Lock size={12} /> {hiddenCount} hidden
                 </span>
                 <span className="text-primary font-mono font-semibold">
-                  {testCases.reduce((s, tc) => s + (tc.marks || 0), 0)} pts
-                  total
+                  {activeTestCases.reduce(
+                    (s: any, tc: any) => s + (tc.marks || 0),
+                    0,
+                  )}{" "}
+                  pts total
                 </span>
               </div>
               <Button
@@ -915,8 +987,8 @@ function EditProblemDialog({
               <span>·</span>
               <button
                 onClick={() =>
-                  setTestCases((tcs) =>
-                    tcs.map((tc) => ({ ...tc, hidden: false, marks: 0 })),
+                  setActiveTestCases((tcs: any) =>
+                    tcs.map((tc: any) => ({ ...tc, hidden: false, marks: 0 })),
                   )
                 }
                 className="text-success hover:underline"
@@ -926,8 +998,8 @@ function EditProblemDialog({
               <span>·</span>
               <button
                 onClick={() =>
-                  setTestCases((tcs) =>
-                    tcs.map((tc) => ({
+                  setActiveTestCases((tcs: any) =>
+                    tcs.map((tc: any) => ({
                       ...tc,
                       hidden: true,
                       marks: tc.marks || 10,
@@ -942,7 +1014,7 @@ function EditProblemDialog({
 
             {/* Test case list */}
             <div className="space-y-2">
-              {testCases.map((tc, i) => (
+              {activeTestCases.map((tc: any, i: any) => (
                 <TestCaseRow
                   key={tc.id}
                   tc={tc}
@@ -955,7 +1027,7 @@ function EditProblemDialog({
               ))}
             </div>
 
-            {testCases.length === 0 && (
+            {activeTestCases.length === 0 && (
               <div className="text-center py-12 text-muted-foreground">
                 <AlertCircle size={28} className="mx-auto mb-2 opacity-30" />
                 <p className="text-sm">No test cases. Add at least one.</p>
@@ -1067,6 +1139,7 @@ export default function AdminProblems() {
 
   const [search, setSearch] = useState("");
   const [filterDiff, setFilterDiff] = useState<string>("all");
+  const [filterType, setFilterType] = useState<string>("all");
   const [filterContest, setFilterContest] = useState<string>("all");
   const [showCreate, setShowCreate] = useState(false);
   const [showImport, setShowImport] = useState(false);
@@ -1098,7 +1171,11 @@ export default function AdminProblems() {
     const matchDiff = filterDiff === "all" || p.difficulty === filterDiff;
     const matchContest =
       filterContest === "all" || problemInContest(p.id, filterContest);
-    return matchSearch && matchDiff && matchContest;
+    const matchType =
+      filterType === "all" ||
+      (filterType === "standard" && !p.isProgressive) ||
+      (filterType === "progressive" && p.isProgressive);
+    return matchSearch && matchDiff && matchContest && matchType;
   });
 
   const handleCreate = async () => {
@@ -1219,6 +1296,16 @@ export default function AdminProblems() {
               <SelectItem value="Hard">Hard</SelectItem>
             </SelectContent>
           </Select>
+          <Select value={filterType} onValueChange={setFilterType}>
+            <SelectTrigger className="w-32 h-9 bg-muted border-border">
+              <SelectValue placeholder="Type" />
+            </SelectTrigger>
+            <SelectContent className="bg-card border-border">
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="standard">Standard</SelectItem>
+              <SelectItem value="progressive">Progressive</SelectItem>
+            </SelectContent>
+          </Select>
           <Select value={filterContest} onValueChange={setFilterContest}>
             <SelectTrigger className="w-48 h-9 bg-muted border-border">
               <SelectValue placeholder="Filter by contest" />
@@ -1272,11 +1359,31 @@ export default function AdminProblems() {
                     <td className="text-center hidden md:table-cell">
                       <div className="text-xs text-muted-foreground">
                         <span className="text-success font-medium">
-                          {p.testCases.filter((tc) => !tc.hidden).length}
+                          {p.testCases.filter((tc) => !tc.hidden).length +
+                            (p.isProgressive
+                              ? (p.stages || []).reduce(
+                                  (acc, s) =>
+                                    acc +
+                                    (s.testCases || []).filter(
+                                      (tc) => !tc.hidden,
+                                    ).length,
+                                  0,
+                                )
+                              : 0)}
                         </span>
                         <span className="text-muted-foreground"> pub · </span>
                         <span className="text-warning font-medium">
-                          {p.testCases.filter((tc) => tc.hidden).length}
+                          {p.testCases.filter((tc) => tc.hidden).length +
+                            (p.isProgressive
+                              ? (p.stages || []).reduce(
+                                  (acc, s) =>
+                                    acc +
+                                    (s.testCases || []).filter(
+                                      (tc) => tc.hidden,
+                                    ).length,
+                                  0,
+                                )
+                              : 0)}
                         </span>
                         <span className="text-muted-foreground"> hid</span>
                       </div>
