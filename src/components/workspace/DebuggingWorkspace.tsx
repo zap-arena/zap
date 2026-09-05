@@ -73,16 +73,70 @@ export default function DebuggingWorkspace({
               {problem.description || "No description provided."}
             </p>
           </div>
+          
+          <div>
+            <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
+              Input Format
+            </h3>
+            <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap text-sm">
+              {problem.inputFormat || "None"}
+            </p>
+          </div>
+          <div>
+            <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
+              Output Format
+            </h3>
+            <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap text-sm">
+              {problem.outputFormat || "None"}
+            </p>
+          </div>
+
           {problem.constraints && (
-            <div className="mt-8">
-              <h3 className="font-semibold text-sm mb-2 text-muted-foreground uppercase tracking-wider">
+            <div>
+              <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
                 Constraints
               </h3>
-              <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap text-sm">
+              <pre className="text-muted-foreground font-mono text-xs leading-relaxed whitespace-pre-wrap bg-muted p-3 rounded-lg border border-border">
                 {problem.constraints}
-              </p>
+              </pre>
             </div>
           )}
+
+          {problem.examples?.map((tc, i) => (
+            <div key={i}>
+              <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
+                Sample {i + 1}
+              </h3>
+              <div className="space-y-2">
+                <div className="bg-muted border border-border rounded-lg p-3">
+                  <div className="text-[10px] text-muted-foreground font-mono mb-1">
+                    INPUT
+                  </div>
+                  <pre className="text-xs font-mono text-foreground whitespace-pre-wrap">
+                    {tc.input}
+                  </pre>
+                </div>
+                <div className="bg-muted border border-border rounded-lg p-3">
+                  <div className="text-[10px] text-muted-foreground font-mono mb-1">
+                    OUTPUT
+                  </div>
+                  <pre className="text-xs font-mono text-foreground whitespace-pre-wrap">
+                    {tc.output}
+                  </pre>
+                </div>
+                {tc.explanation && (
+                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-3">
+                    <div className="text-[10px] text-primary font-mono mb-1">
+                      EXPLANATION
+                    </div>
+                    <p className="text-xs text-foreground whitespace-pre-wrap">
+                      {tc.explanation}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

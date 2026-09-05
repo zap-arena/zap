@@ -860,8 +860,48 @@ export default function ContestWorkspacePage() {
           {selectedProblem?.type === "debugging" ? (
             <DebuggingWorkspace
               problem={selectedProblem}
-              onSubmit={(payload) => submitCode.mutate(payload)}
-              isSubmitting={submitCode.isPending}
+              onSubmit={async (payload) => {
+                if (!selectedProblem || !contestId) return;
+                setSubmitting(true);
+                try {
+                  const result = await api.post<{
+                    status: Verdict;
+                    passedTests: number;
+                    totalTests: number;
+                    score: number;
+                    compileOutput?: string;
+                    testResults: {
+                      name: string;
+                      hidden: boolean;
+                      passed: boolean;
+                      status: string;
+                      executionTime: number;
+                      errorMessage?: string | null;
+                    }[];
+                  }>("/submissions", {
+                    problemId: selectedProblem.id,
+                    contestId,
+                    language: "text",
+                    code: payload,
+                  });
+                  if (result.status === "ACCEPTED") {
+                    toast.success("✅ Correct! You found the imposter value!");
+                  } else {
+                    toast.error("❌ Incorrect. Try again!");
+                  }
+                  queryClient.invalidateQueries({ queryKey: ["my-submissions", contestId] });
+                  queryClient.invalidateQueries({ queryKey: ["leaderboard", contestId] });
+                  queryClient.invalidateQueries({ queryKey: ["session", contestId] });
+                  queryClient.invalidateQueries({ queryKey: ["contest-problems", contestId] });
+                } catch (err) {
+                  toast.error(
+                    err instanceof ApiError ? err.message : "Failed to submit answer",
+                  );
+                } finally {
+                  setSubmitting(false);
+                }
+              }}
+              isSubmitting={submitting}
             />
           ) : (
             <ResizablePanelGroup direction="horizontal" className="h-full">

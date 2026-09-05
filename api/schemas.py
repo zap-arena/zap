@@ -4,7 +4,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
-Language = Literal["c", "cpp", "java", "python"]
+Language = Literal["c", "cpp", "java", "python", "text"]
 Difficulty = Literal["Easy", "Medium", "Hard"]
 
 

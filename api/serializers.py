@@ -40,6 +40,8 @@ def serialize_problem(
         ],
         "timeLimit": p.time_limit, "memoryLimit": p.memory_limit, "maxScore": p.max_score,
         "status": p.status, "createdAt": p.created_at.isoformat(), "isProgressive": p.is_progressive,
+        "type": getattr(p, "type", "coding"),
+        "debuggingData": getattr(p, "debugging_data", None),
     }
     if p.is_progressive:
         stages = sorted(p.stages, key=lambda s: s.stage_order)
