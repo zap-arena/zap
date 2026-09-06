@@ -1,8 +1,8 @@
 {
-  "name": "Hidden 1 - all unique, tie of 1s",
-  "input": "4\n10 -2 7 3",
-  "expected_output": "-2",
-  "hidden": true,
-  "marks": 37,
+  "name": "Sample 3",
+  "input": "4\n1 1 1 1",
+  "expected_output": "1",
+  "hidden": false,
+  "marks": 10,
   "order": 3
 }

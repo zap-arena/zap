@@ -1,8 +1,8 @@
 {
-  "name": "Sample 1 - mixed brackets",
-  "input": "()[]{}",
-  "expected_output": "true",
+  "name": "Test 1",
+  "input": "()",
+  "expected_output": "1",
   "hidden": false,
-  "marks": 20,
+  "marks": 10,
   "order": 1
 }

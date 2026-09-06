@@ -1,0 +1,8 @@
+{
+  "name": "Test 9",
+  "input": "lhrxyrggwpwvzvaknpkywijkpeqrfwmhanhsolyafoyzlpbbipwpbbivszyrkcxdhvphqoorwefwmphiyhpefosfgekbhemoscsjwxgzkxnebaemgqvqfzvzuhvrhryjzeouawawrzgboiumuvfssosozwpalcicgwsluirpxotanxzzlhxypptakopywaxvsinswvsb\ndhhwvgkxdjybyuldgtnvnpaeawhkaxacfswqoonfgxbubrkyjvwcnfdutugnmelwqdyzlktsowwvzbfiojesfdzydidutngodzqkjzfhpewboawwkagooddocjyezsqkyxdvltfcdohvbdnmhbrxtjohsdjauwejyxgyvpxytxhwdaopzdjqzahwduxebmtpbhwzygoi",
+  "expected_output": "62",
+  "hidden": true,
+  "marks": 10,
+  "order": 9
+}

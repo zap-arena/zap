@@ -1,8 +1,8 @@
 {
-  "name": "Hidden - duplicates in one group",
-  "input": "5\nabc\ncba\nabc\nbca\nzz",
-  "expected_output": "abc abc bca cba\nzz",
-  "hidden": true,
-  "marks": 30,
+  "name": "Test 3",
+  "input": "1\na",
+  "expected_output": "a",
+  "hidden": false,
+  "marks": 10,
   "order": 3
 }

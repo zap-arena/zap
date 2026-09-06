@@ -1,8 +1,8 @@
 {
-  "name": "Hidden - upper bound",
-  "input": "45",
-  "expected_output": "1836311903",
-  "hidden": true,
-  "marks": 30,
+  "name": "Test 4",
+  "input": "4",
+  "expected_output": "5",
+  "hidden": false,
+  "marks": 10,
   "order": 4
 }

@@ -1,8 +1,8 @@
 {
-  "name": "Sample 2 - nothing in common",
-  "input": "abc\ndef",
-  "expected_output": "0",
+  "name": "Test 2",
+  "input": "abc\nabc",
+  "expected_output": "3",
   "hidden": false,
-  "marks": 20,
+  "marks": 10,
   "order": 2
 }

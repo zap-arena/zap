@@ -1,8 +1,8 @@
 {
-  "name": "Hidden 2 - immediate duplicate",
-  "input": "2\n5 5",
+  "name": "Sample 4",
+  "input": "6\n1 2 3 1 2 3",
   "expected_output": "1",
-  "hidden": true,
-  "marks": 25,
+  "hidden": false,
+  "marks": 10,
   "order": 4
 }

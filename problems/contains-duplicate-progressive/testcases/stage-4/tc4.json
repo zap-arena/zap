@@ -1,8 +1,8 @@
 {
-  "name": "Hidden 2 - negative values",
-  "input": "5\n-1 -1 -1 2 2",
-  "expected_output": "-1",
-  "hidden": true,
-  "marks": 37,
+  "name": "Sample 4",
+  "input": "6\n1 2 3 1 2 3",
+  "expected_output": "1",
+  "hidden": false,
+  "marks": 10,
   "order": 4
 }

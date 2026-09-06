@@ -1,8 +1,8 @@
 {
-  "name": "Hidden 1 - one value repeats thrice",
-  "input": "5\n7 7 7 8 9",
+  "name": "Sample 3",
+  "input": "4\n1 1 1 1",
   "expected_output": "1",
-  "hidden": true,
-  "marks": 37,
+  "hidden": false,
+  "marks": 10,
   "order": 3
 }

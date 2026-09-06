@@ -1,8 +1,8 @@
 {
-  "name": "Hidden - disjoint ranges with duplicates",
-  "input": "5\n1 1 2 9 9\n4\n-3 0 9 10",
-  "expected_output": "-3 0 1 1 2 9 9 9 10",
-  "hidden": true,
-  "marks": 30,
+  "name": "Test 4",
+  "input": "1\n0\n1\n1",
+  "expected_output": "0 1",
+  "hidden": false,
+  "marks": 10,
   "order": 4
 }

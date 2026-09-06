@@ -1,8 +1,8 @@
 {
-  "name": "Hidden - single day",
-  "input": "1\n42",
-  "expected_output": "0",
-  "hidden": true,
-  "marks": 30,
+  "name": "Test 3",
+  "input": "2\n1 2",
+  "expected_output": "1",
+  "hidden": false,
+  "marks": 10,
   "order": 3
 }

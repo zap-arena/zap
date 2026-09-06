@@ -1,0 +1,8 @@
+{
+  "name": "Test 8",
+  "input": "nzvekjkkodyuglqnndtctaigszyrwzgjsopuqaesipjweciyqqqolxidpphpxmfmqrhguvfsoxattxcxlairuuyzcxecfusaqvwwawuhndkqavhjjzaneheqwhivfckrexrfpitmqjgenoajqisattsxzjwlzfkycyjurthbkcaywhvirncfuyhsqxnoryntnvrmnlip\norojtoeoyqowfeczpyvdhlwwxqzybatsahxtlxlhihkokzsnugkvqifigsmhzacrmuwwcnuydvzfhafqkmpmcbvijpqbcwiibhodzovxqmplsebhgkfuvzvzweqggxldrdhgokmutxcadaxqcqcytzliwrbldnxjcifxxtilazatibpmxtzzbydhabjzcrllhbbgrsff",
+  "expected_output": "59",
+  "hidden": true,
+  "marks": 10,
+  "order": 8
+}

@@ -1,8 +1,8 @@
 {
-  "name": "Sample 2 - even total length",
+  "name": "Test 2",
   "input": "2\n1 2\n2\n3 4",
   "expected_output": "2.50000",
   "hidden": false,
-  "marks": 20,
+  "marks": 10,
   "order": 2
 }

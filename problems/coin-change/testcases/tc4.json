@@ -1,8 +1,8 @@
 {
-  "name": "Hidden - greedy fails",
-  "input": "3\n1 6 9\n12",
-  "expected_output": "2",
-  "hidden": true,
-  "marks": 30,
+  "name": "Test 4",
+  "input": "4\n186 419 83 408\n6249",
+  "expected_output": "20",
+  "hidden": false,
+  "marks": 10,
   "order": 4
 }

@@ -1,0 +1,8 @@
+{
+  "name": "Sample 2",
+  "input": "()()",
+  "expected_output": "4",
+  "hidden": false,
+  "marks": 10,
+  "order": 2
+}

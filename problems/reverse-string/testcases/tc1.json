@@ -1,8 +1,8 @@
 {
-  "name": "Sample 1 - lowercase word",
+  "name": "Test 1",
   "input": "hello",
   "expected_output": "olleh",
   "hidden": false,
-  "marks": 20,
+  "marks": 10,
   "order": 1
 }

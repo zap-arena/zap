@@ -1,8 +1,8 @@
 {
-  "name": "Sample 1 - no duplicate",
-  "input": "5\n1 2 3 4 5",
-  "expected_output": "0",
+  "name": "Sample 1",
+  "input": "5\n1 2 3 2 5",
+  "expected_output": "1",
   "hidden": false,
-  "marks": 25,
+  "marks": 10,
   "order": 1
 }

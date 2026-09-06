@@ -1,8 +1,8 @@
 {
-  "name": "Hidden 2 - single repeated value",
-  "input": "3\n9 9 9",
-  "expected_output": "9",
-  "hidden": true,
-  "marks": 37,
+  "name": "Sample 4",
+  "input": "6\n1 2 3 1 2 3",
+  "expected_output": "1 2 3",
+  "hidden": false,
+  "marks": 10,
   "order": 4
 }

@@ -1,0 +1,8 @@
+{
+  "name": "Test 7",
+  "input": "xwcycbzyfsmbzahhllfwtzglehvduxfqusekaypijysrwsvwhwrpucafyoyfjqpnghlesocydqcqxarxuhvfbsvhpfkryyneddwtpsnqcmxjdxbqucwzsekehrrzkszdaxvlnijlsfntymunbeudigjeplccqiizmwppjtdzwtfavrxvmtzgzcaeusgaggadjxgaoonn\ncfupeqwvcfpwyhuaepkeihisbgwytcongfnmnllilphldhrjbfmbcfzskrqaxxovcjaumvlqnljlajynnkyfpiytcdnvxbmyrghwqhgetwjencstwzplnjpxommkoofxsselcjunfvknwbmexohpgglyabxbxuksyjlrjvuvqzxsbvmmdfngajfizbiltgtknnmvrfal",
+  "expected_output": "60",
+  "hidden": true,
+  "marks": 10,
+  "order": 7
+}

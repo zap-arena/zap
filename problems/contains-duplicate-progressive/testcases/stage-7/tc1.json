@@ -1,8 +1,8 @@
 {
-  "name": "Sample 1 - one repeat in the middle",
-  "input": "6\n1 2 3 2 4 5",
-  "expected_output": "4",
+  "name": "Sample 1",
+  "input": "5\n1 2 3 2 5",
+  "expected_output": "3",
   "hidden": false,
-  "marks": 50,
+  "marks": 10,
   "order": 1
 }

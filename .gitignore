@@ -1,0 +1,6 @@
+api
+dist
+node_modules/
+.vscode
+.vite
+.DS_Store

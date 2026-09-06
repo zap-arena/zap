@@ -1,8 +1,8 @@
 {
-  "name": "Sample 2 - three islands",
+  "name": "Test 2",
   "input": "4 5\n11000\n11000\n00100\n00011",
   "expected_output": "3",
   "hidden": false,
-  "marks": 20,
+  "marks": 10,
   "order": 2
 }

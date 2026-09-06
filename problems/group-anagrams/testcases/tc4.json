@@ -1,8 +1,8 @@
 {
-  "name": "Hidden - no anagrams at all",
-  "input": "4\nzebra\nyak\nxray\nwolf",
-  "expected_output": "wolf\nxray\nyak\nzebra",
-  "hidden": true,
-  "marks": 30,
+  "name": "Test 4",
+  "input": "3\na\nb\nc",
+  "expected_output": "a\nb\nc",
+  "hidden": false,
+  "marks": 10,
   "order": 4
 }

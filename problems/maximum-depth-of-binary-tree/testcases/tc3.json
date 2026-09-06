@@ -1,8 +1,8 @@
 {
-  "name": "Hidden - empty tree",
-  "input": "1\n-1",
+  "name": "Test 3",
+  "input": "0",
   "expected_output": "0",
-  "hidden": true,
-  "marks": 30,
+  "hidden": false,
+  "marks": 10,
   "order": 3
 }

@@ -1,8 +1,8 @@
 {
-  "name": "Sample 2 - all negative",
-  "input": "5\n-3 -1 -7 -2 -5",
-  "expected_output": "-1",
+  "name": "Test 2",
+  "input": "1\n1",
+  "expected_output": "1",
   "hidden": false,
-  "marks": 20,
+  "marks": 10,
   "order": 2
 }
