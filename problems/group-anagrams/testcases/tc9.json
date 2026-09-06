@@ -1,8 +1,0 @@
-{
-  "name": "Test 9",
-  "input": "100\nftaliaypth\ns\ns\ns\ncmttspcn\noyiqo\nctncmpts\naatlhtfyip\niooyq\ndbkafym\nitphaaytfl\niysaunbdu\ns\nk\ndfbmkay\nabsindyuu\nicndw\nykadfbm\ndicnw\nhttpalyifa\ntlatyiahpf\niuaybdsnu\nuysndabui\ns\nk\nioyqo\nptihyaaltf\ns\niyoqo\noqyoi\ns\nc\nkyafmdb\nctpmtsnc\nudnbuiysa\nambdyfk\nsdnuaiyub\npcuq\nsmctpnct\nbuudayins\nyoioq\ns\nyfmdbka\nmabfdky\nk\nc\niuunbdysa\nc\nfkdbmay\naptyatlihf\nccptmnts\nc\nc\ns\nusiaundyb\naiydusbnu\ns\nwndic\nk\namdfkby\nk\nk\ns\ns\nc\nyooqi\ns\ndncwi\nupcq\niyoqo\ns\npucq\nkmaydbf\nk\naidyunsub\nyqooi\nwicnd\nncwdi\ns\nk\ns\niwdcn\noqoyi\nc\nyathpilatf\nudsanybui\nthayaltpfi\nfaydbmk\nqupc\nmnttccps\nttahypafli\ns\nk\nwcndi\ncntcstpm\nioyoq\nk\nbymafdk\nc\ns",
-  "expected_output": "aatlhtfyip aptyatlihf ftaliaypth httpalyifa itphaaytfl ptihyaaltf thayaltpfi tlatyiahpf ttahypafli yathpilatf\nabsindyuu aidyunsub aiydusbnu buudayins iuaybdsnu iuunbdysa iysaunbdu sdnuaiyub udnbuiysa udsanybui usiaundyb uysndabui\nambdyfk amdfkby bymafdk dbkafym dfbmkay faydbmk fkdbmay kmaydbf kyafmdb mabfdky yfmdbka ykadfbm\nc c c c c c c c\nccptmnts cmttspcn cntcstpm ctncmpts ctpmtsnc mnttccps smctpnct\ndicnw dncwi icndw iwdcn ncwdi wcndi wicnd wndic\niooyq ioyoq ioyqo iyoqo iyoqo oqoyi oqyoi oyiqo yoioq yooqi yqooi\nk k k k k k k k k k\npcuq pucq qupc upcq\ns s s s s s s s s s s s s s s s s s",
-  "hidden": true,
-  "marks": 10,
-  "order": 9
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Test 5",
-  "input": "2",
-  "expected_output": "1 2",
-  "hidden": false,
-  "marks": 10,
-  "order": 5
-}

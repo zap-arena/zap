@@ -1,8 +1,0 @@
-{
-  "name": "Hidden 7",
-  "input": "((((",
-  "expected_output": "4",
-  "hidden": true,
-  "marks": 10,
-  "order": 7
-}

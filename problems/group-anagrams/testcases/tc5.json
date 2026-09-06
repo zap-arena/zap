@@ -1,8 +1,0 @@
-{
-  "name": "Test 5",
-  "input": "5\nhello\nolleh\nllohe\nworld\ndlrow",
-  "expected_output": "dlrow world\nhello llohe olleh",
-  "hidden": false,
-  "marks": 10,
-  "order": 5
-}

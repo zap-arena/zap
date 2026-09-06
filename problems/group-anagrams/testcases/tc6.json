@@ -1,8 +1,0 @@
-{
-  "name": "Test 6",
-  "input": "100\netkyuc\nvvnz\nekyutc\nfgwujxt\nfjwugxt\nlf\nwxtugjf\nkcuety\nvwolca\ncetyuk\njfxuwtg\netyuck\nzvvn\nvvnz\nfl\nzvvn\nomnkkx\nvyjucig\ng\nigycvuj\nmzswx\nygijvcu\ngivcujy\nvolwca\ng\ng\nacvlwo\nujtfgwx\nxnmkok\nwcavol\nvznv\nlcaowv\nwmsxz\nckeuty\nfxgtuwj\nvznv\ng\ng\nmxzsw\nmnkxko\nfl\nucykte\nxtwufjg\nomnxkk\nxgjfuwt\nfl\ncgijyvu\nzsxmw\nvznv\ng\nbafb\nxtgufjw\ngjciuyv\nxwmzs\nkuytce\njfxugtw\nfl\nszxwm\nyketuc\ncwalov\nwvolca\ng\nnvvz\nolacwv\nfl\nxfwjugt\nxfgwtuj\ng\nbabf\nxmkkno\ng\neyctuk\nfl\nigvucyj\nvvnz\nucktye\ng\nykucet\nvloawc\novlawc\nnvvz\nvoacwl\ntxwgjfu\ng\nfl\necukty\nutwjxgf\nxkonkm\ngwtxjfu\nkxmkno\ngvujiyc\nzsmxw\nlf\nbafb\ng\nvvnz\nzvnv\nnvzv\nvvzn\nycgijuv",
-  "expected_output": "acvlwo cwalov lcaowv olacwv ovlawc vloawc voacwl volwca vwolca wcavol wvolca\nbabf bafb bafb\ncetyuk ckeuty ecukty ekyutc etkyuc etyuck eyctuk kcuety kuytce ucktye ucykte yketuc ykucet\ncgijyvu givcujy gjciuyv gvujiyc igvucyj igycvuj vyjucig ycgijuv ygijvcu\nfgwujxt fjwugxt fxgtuwj gwtxjfu jfxugtw jfxuwtg txwgjfu ujtfgwx utwjxgf wxtugjf xfgwtuj xfwjugt xgjfuwt xtgufjw xtwufjg\nfl fl fl fl fl fl fl lf lf\ng g g g g g g g g g g g\nkxmkno mnkxko omnkkx omnxkk xkonkm xmkkno xnmkok\nmxzsw mzswx szxwm wmsxz xwmzs zsmxw zsxmw\nnvvz nvvz nvzv vvnz vvnz vvnz vvnz vvzn vznv vznv vznv zvnv zvvn zvvn",
-  "hidden": true,
-  "marks": 10,
-  "order": 6
-}

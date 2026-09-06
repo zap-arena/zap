@@ -1,8 +1,0 @@
-{
-  "name": "Test 6",
-  "input": "vvvjohxribfqmxyyzxdhkhkrhhjtipnrhhaiokhjxsoygjrmbhsbrpkbhvlkihdwadjpinqqaobkioxdofaurxwpesqrgtvfjexqjbiltnqosrxaeymvsahrpjhqdgvrlfckzifkbngegubazkbfwmsyifmwrekdgkgynpdrqpepomnxjfmhjuknpkldhaglekizvchg\nlrvnpsjsohuubcuhbdvzpzjsoyigbkmzhoqbtcbmwcuaitiyczxxlwtdxnrozmbxmuezlmgntubntsjceqvnzkpmbfaspsspxvmkihljsifrpdkaibbutkpzovqfzbpsdifbmxsfbibwnzvhjsepktitvezcnpnwfohspetepyxueczhkhbzmmukdvwvdmxqclseqelg",
-  "expected_output": "64",
-  "hidden": true,
-  "marks": 10,
-  "order": 6
-}

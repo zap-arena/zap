@@ -1,8 +1,0 @@
-{
-  "name": "Test 10",
-  "input": "100\nkgwwkpy\noqhrgrpi\nhrroqipg\nztzaxgv\niz\nzq\nsbuizvo\nuduslg\nzvztxag\nlcrjuxjef\nqz\nsuudgl\ngludsu\nzq\nykkwgpw\njecflujrx\nqz\ntazgxzv\nugusdl\njjfrwo\nsuudlg\nwjrjof\nwygkkpw\nzavgxtz\nulsdgu\nsczhdixl\navzgztx\ntzzaxvg\nguulsd\nsubzivo\nzi\nlzxdsihc\niz\nusizovb\nhprrqigo\nowrjjf\nguldsu\nzovsuib\njuecxjflr\nfjeuxrljc\nrpqihgor\nexulfjjcr\nusulgd\nkwwypgk\nzi\nwgwkkpy\nzi\nypkwgwk\ndlxshicz\necfrxjulj\nzi\nrjlxjceuf\nhgriproq\nxjeuclrjf\njjfowr\nypkwgwk\nrogirqph\njrowjf\nqghorpri\nrojjfw\niz\noiusvzb\nqz\nlduusg\nosuvibz\nrjujxflce\nrpqgohri\nzi\njforjw\nldhsxczi\nxjflceruj\nugsldu\nlfrexjjuc\nzq\nhqigrrpo\nuldsug\nrojfwj\ndclihxzs\nazzvtgx\nduulsg\nkkgpwwy\njfrwoj\ndgulsu\nuejxfljcr\nxgvzatz\nsxzhdlci\nkpywkwg\nvzosiub\nzi\nowfrjj\nzi\nrrpqiohg\nrqprgiho\nzbisouv\nxrucfjlje\niz\nzq\nduulsg\nqz\nkwgywkp",
-  "expected_output": "avzgztx azzvtgx tazgxzv tzzaxvg xgvzatz zavgxtz ztzaxgv zvztxag\ndclihxzs dlxshicz ldhsxczi lzxdsihc sczhdixl sxzhdlci\ndgulsu duulsg duulsg gludsu guldsu guulsd lduusg suudgl suudlg uduslg ugsldu ugusdl uldsug ulsdgu usulgd\necfrxjulj exulfjjcr fjeuxrljc jecflujrx juecxjflr lcrjuxjef lfrexjjuc rjlxjceuf rjujxflce uejxfljcr xjeuclrjf xjflceruj xrucfjlje\nhgriproq hprrqigo hqigrrpo hrroqipg oqhrgrpi qghorpri rogirqph rpqgohri rpqihgor rqprgiho rrpqiohg\niz iz iz iz zi zi zi zi zi zi zi\njforjw jfrwoj jjfowr jjfrwo jrowjf owfrjj owrjjf rojfwj rojjfw wjrjof\nkgwwkpy kkgpwwy kpywkwg kwgywkp kwwypgk wgwkkpy wygkkpw ykkwgpw ypkwgwk ypkwgwk\noiusvzb osuvibz sbuizvo subzivo usizovb vzosiub zbisouv zovsuib\nqz qz qz qz zq zq zq zq",
-  "hidden": true,
-  "marks": 10,
-  "order": 10
-}
