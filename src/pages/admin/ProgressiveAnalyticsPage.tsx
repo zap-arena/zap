@@ -88,7 +88,8 @@ export default function ProgressiveAnalyticsPage() {
 
         {participants.map((p) => (
           <div key={p.userId} className="card-glow rounded-xl overflow-hidden">
-            <button type="button"
+            <button
+              type="button"
               onClick={() => toggle(p.userId)}
               className="w-full px-5 py-4 flex items-center justify-between hover:bg-muted/30 transition-colors"
             >

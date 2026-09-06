@@ -126,9 +126,9 @@ function ProblemPicker({
           />
         </div>
         {unattached.length > 0 && (
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="outline"
+            size="sm"
             className="h-9 whitespace-nowrap"
             onClick={() => onAddAll(unattached)}
           >
@@ -645,13 +645,16 @@ function ContestForm({
 
         <div className="space-y-2">
           <Label>Add Problems</Label>
-          <ProblemPicker 
-            attached={attached} 
-            onAdd={addProblem} 
+          <ProblemPicker
+            attached={attached}
+            onAdd={addProblem}
             onAddAll={(problems) => {
               setAttached((prev) => {
                 const newAttached = [...prev];
-                let order = newAttached.length > 0 ? Math.max(...newAttached.map((a) => a.order)) + 1 : 1;
+                let order =
+                  newAttached.length > 0
+                    ? Math.max(...newAttached.map((a) => a.order)) + 1
+                    : 1;
                 for (const p of problems) {
                   newAttached.push({
                     problemId: p.id,
@@ -664,7 +667,7 @@ function ContestForm({
                 return newAttached;
               });
             }}
-            contestMode={form.mode} 
+            contestMode={form.mode}
           />
         </div>
 
