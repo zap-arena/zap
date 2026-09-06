@@ -383,10 +383,20 @@ def update_contest(contest_id: str, payload: schemas.ContestIn, db: Session = De
     return serialize_contest(contest) | {"status": compute_status(contest)}
 
 
+@router.delete("/api/admin/contests", status_code=204)
+def delete_all_contests(db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
+    db.query(models.Contest).delete()
+    db.commit()
+    return None
+
+
 @router.delete("/api/admin/contests/{contest_id}", status_code=204)
-def delete_contest(contest_id: str, db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
+def delete_contest(contest_id: str, hard: bool = False, db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
     contest = get_contest_or_404(db, contest_id)
-    contest.status = "cancelled"
+    if hard:
+        db.delete(contest)
+    else:
+        contest.status = "cancelled"
     db.commit()
     return None
 

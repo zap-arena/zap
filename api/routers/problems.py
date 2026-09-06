@@ -154,11 +154,16 @@ def update_problem(problem_id: str, payload: schemas.ProblemIn, db: Session = De
 
 
 @router.delete("/api/admin/problems/{problem_id}", status_code=204)
-def delete_problem(problem_id: str, db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
+def delete_problem(problem_id: str, hard: bool = False, db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
     problem = db.get(models.Problem, problem_id)
     if not problem:
         raise HTTPException(status_code=404, detail="Problem not found")
-    problem.status = "archived"
+    
+    if hard:
+        db.delete(problem)
+    else:
+        problem.status = "archived"
+        
     db.commit()
     return None
 
@@ -200,20 +205,22 @@ async def import_problems_zip(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
     wanted = {s.strip() for s in slugs.split(",") if s.strip()}
-    existing = {
-        s for s in db.scalars(
-            select(models.Problem.slug).where(models.Problem.slug.in_([p["slug"] for p in parsed_problems]))
-        ).all()
-    }
+    # We no longer block on existing problems, we will overwrite them.
 
     results: list[dict] = []
     imported = 0
     for parsed in parsed_problems:
-        conflict = ["A problem with this slug already exists"] if parsed["slug"] in existing else []
+        conflict = []
         summary = _summary(parsed, conflict)
         selected = not wanted or parsed["slug"] in wanted
 
         if not dry_run and selected and summary["valid"]:
+            # Delete existing problem if it exists to overwrite
+            existing_prob = db.scalar(select(models.Problem).where(models.Problem.slug == parsed["slug"]))
+            if existing_prob:
+                db.delete(existing_prob)
+                db.flush()
+
             problem = models.Problem(
                 slug=parsed["slug"],
                 title=parsed["title"],
