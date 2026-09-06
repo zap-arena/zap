@@ -1,22 +1,22 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  LayoutDashboard,
+  Activity,
+  BarChart3,
+  ChevronRight,
   Code2,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Send,
   Trophy,
   Users,
-  Send,
-  Activity,
-  LogOut,
-  ChevronRight,
-  Menu,
   X,
-  BarChart3,
 } from "lucide-react";
 import { useState } from "react";
-import { useAuth } from "../store/auth";
-import ThemeToggle from "./ThemeToggle";
-import ThemeColorPicker from "./ThemeColorPicker";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useAuth } from "../store/auth";
+import ThemeColorPicker from "./ThemeColorPicker";
+import ThemeToggle from "./ThemeToggle";
 
 const NAV_ITEMS = [
   { path: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },

@@ -31,6 +31,7 @@ def admin_search_problems(
     q: str = "",
     difficulty: Optional[str] = None,
     status: str = "active",
+    isProgressive: Optional[bool] = None,
     limit: int = 20,
     db: Session = Depends(get_db),
     _: models.User = Depends(require_admin),
@@ -40,6 +41,8 @@ def admin_search_problems(
         stmt = stmt.where(models.Problem.status == status)
     if difficulty:
         stmt = stmt.where(models.Problem.difficulty == difficulty)
+    if isProgressive is not None:
+        stmt = stmt.where(models.Problem.is_progressive == isProgressive)
     term = q.strip()
     if term:
         # Escape LIKE wildcards so user input cannot broaden the match.
@@ -90,16 +93,44 @@ def _apply_problem_fields(problem: models.Problem, payload: schemas.ProblemIn, d
     problem.memory_limit = payload.memoryLimit
     problem.max_score = payload.maxScore
     problem.status = payload.status
+    problem.is_progressive = payload.isProgressive
 
     db.add(problem)
     db.flush()  # assigns problem.id before the test case rows reference it
 
-    db.query(models.TestCase).filter(models.TestCase.problem_id == problem.id).delete()
+    db.query(models.TestCase).filter(
+        models.TestCase.problem_id == problem.id,
+        models.TestCase.stage_id == None
+    ).delete()
+
     for i, tc in enumerate(payload.testCases):
         db.add(models.TestCase(
             problem_id=problem.id, name=tc.name, input=tc.input, expected_output=tc.expectedOutput,
             hidden=tc.hidden, marks=tc.marks, order=i,
         ))
+
+    if payload.isProgressive:
+        existing_stages = {s.id: s for s in problem.stages}
+        for s_in in payload.stages:
+            stage = existing_stages.get(s_in.id)
+            if not stage:
+                stage = models.ProblemStage(problem_id=problem.id)
+                db.add(stage)
+            stage.stage_order = s_in.stageOrder
+            stage.title = s_in.title
+            stage.statement = s_in.statement
+            stage.expected_complexity = s_in.expectedComplexity
+            stage.time_limit = s_in.timeLimit
+            stage.memory_limit = s_in.memoryLimit
+            stage.max_score = s_in.maxScore
+            db.flush()
+
+            db.query(models.TestCase).filter(models.TestCase.stage_id == stage.id).delete()
+            for i, tc in enumerate(s_in.testCases):
+                db.add(models.TestCase(
+                    problem_id=problem.id, stage_id=stage.id, name=tc.name, input=tc.input,
+                    expected_output=tc.expectedOutput, hidden=tc.hidden, marks=tc.marks, order=i,
+                ))
 
 
 @router.post("/api/admin/problems", status_code=201)

@@ -1,11 +1,11 @@
+import { ArrowLeft, Code2, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Code2, Eye, EyeOff, Loader2, ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { useAuth } from "../store/auth";
-import { toast } from "sonner";
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -88,7 +88,7 @@ export default function RegisterPage() {
             </div>
           </div>
           <div className="text-xs text-white/50">
-            <span className="font-mono text-primary">// </span>
+            <span className="font-mono text-primary">{"// "}</span>
             Create your ZAP account to continue
           </div>
         </div>

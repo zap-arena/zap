@@ -1,7 +1,14 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Search, Eye } from "lucide-react";
+import { Eye, Search } from "lucide-react";
+import { useState } from "react";
 import AdminLayout from "../../components/AdminLayout";
+import { Button } from "../../components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "../../components/ui/dialog";
 import { Input } from "../../components/ui/input";
 import {
   Select,
@@ -10,15 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { Button } from "../../components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "../../components/ui/dialog";
 import { api } from "../../lib/api";
-import type { Participant, Contest, Submission } from "../../types";
+import type { Contest, Participant, Submission } from "../../types";
 
 const STATUS_STYLES: Record<string, string> = {
   in_progress: "bg-info/15 text-info",

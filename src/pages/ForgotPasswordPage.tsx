@@ -1,9 +1,9 @@
+import { ArrowLeft, CheckCircle2, Mail, Zap } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Zap, ArrowLeft, Mail, CheckCircle2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import { toast } from "sonner";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");

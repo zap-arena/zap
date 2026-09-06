@@ -1,20 +1,20 @@
-import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
+  ArrowRight,
+  BarChart2,
+  Building,
+  CheckCircle2,
   Code2,
+  Globe,
+  GraduationCap,
+  Shield,
   Trophy,
   Users,
   Zap,
-  Shield,
-  BarChart2,
-  Globe,
-  ArrowRight,
-  Building,
-  GraduationCap,
-  CheckCircle2,
 } from "lucide-react";
-import { Button } from "../components/ui/button";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { Button } from "../components/ui/button";
 import { api } from "../lib/api";
 import { useAuth } from "../store/auth";
 

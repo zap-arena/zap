@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const STORAGE_KEY = "zap-theme";
 const ACCENT_KEY = "zap-accent";
@@ -27,7 +27,10 @@ applyTheme(getInitial());
 
 let _theme: Theme = getInitial();
 const listeners = new Set<() => void>();
-const notify = () => listeners.forEach((fn) => fn());
+const notify = () =>
+  listeners.forEach((fn) => {
+    fn();
+  });
 
 export const themeStore = {
   get: () => _theme,
@@ -252,7 +255,10 @@ applyAccent(getInitialAccent());
 
 let _accent: Accent = getInitialAccent();
 const accentListeners = new Set<() => void>();
-const notifyAccent = () => accentListeners.forEach((fn) => fn());
+const notifyAccent = () =>
+  accentListeners.forEach((fn) => {
+    fn();
+  });
 
 export const accentStore = {
   get: () => _accent,

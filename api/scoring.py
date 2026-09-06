@@ -83,7 +83,7 @@ async def judge_submission(
         time_limit = problem.time_limit
     if not test_cases:
         return {
-            "status": "INTERNAL_ERROR", "passedTests": 0, "totalTests": 0, "score": 0,
+            "status": "INTERNAL_ERROR", "passedTests": 0, "totalTests": 0, "score": 0, "maxScore": 0,
             "executionTime": 0, "compileOutput": None, "testResults": [],
         }
 
