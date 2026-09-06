@@ -25,9 +25,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-problems
-solutions
-dsa-graph
 
 # Local dev Postgres cluster and Python venv
 .postgres/
@@ -36,10 +33,14 @@ api/.venv/
 api/venv/
 api/
 
-# Single-file bundle artifact from bundle-artifact.sh
+# User defined folders
 render/
+problems/
+solutions/
+dsa-graph/
 
 # Local environment configuration (contains secrets)
 .env
 api/.env
 __pycache__/
+.DS_Store
