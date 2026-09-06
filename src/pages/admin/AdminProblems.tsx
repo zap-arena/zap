@@ -736,7 +736,7 @@ function EditProblemDialog({
           hidden: tc.hidden,
           marks: tc.marks,
         })),
-        isProgressive: problem.isProgressive,
+        // isProgressive: problem.isProgressive,
         stages: stages.map((s) => ({
           ...s,
           testCases: (s.testCases || []).map((tc) => ({

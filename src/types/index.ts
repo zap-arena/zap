@@ -48,7 +48,7 @@ export interface Problem {
   maxScore: number;
   status: "active" | "archived";
   createdAt: string;
-  type?: "coding" | "debugging";
+  type?: "coding" | "progressive" | "debugging";
   debuggingData?: {
     columns: string[];
     rows: Record<string, string | number>[];
@@ -112,7 +112,7 @@ export interface Contest {
   maxScore: number;
   moderators: ContestModerator[];
   scoringMode: "full" | "partial";
-  mode?: "standard" | "progressive";
+  mode?: "standard" | "progressive" | "debugging";
   leaderboardVisible: boolean;
   createdAt: string;
 }
