@@ -1,0 +1,26 @@
+{
+  "title": "Median of Two Sorted Arrays",
+  "slug": "median-of-two-sorted-arrays",
+  "difficulty": "Hard",
+  "inputFormat": "Line 1: integer m.\nLine 2: m space-separated integers sorted ascending (empty line when m == 0).\nLine 3: integer n.\nLine 4: n space-separated integers sorted ascending (empty line when n == 0).",
+  "outputFormat": "The median of the two arrays combined, printed with exactly 5 digits after the decimal point.",
+  "constraints": "0 <= m, n <= 1000\n1 <= m + n\n-10^6 <= values <= 10^6\nBoth arrays are sorted ascending.",
+  "examples": [
+    {
+      "input": "2\n1 3\n1\n2",
+      "output": "2.00000",
+      "explanation": "The merged array is [1, 2, 3] and its median is 2."
+    },
+    {
+      "input": "2\n1 2\n2\n3 4",
+      "output": "2.50000",
+      "explanation": "The merged array is [1, 2, 3, 4]; the median is (2 + 3) / 2."
+    }
+  ],
+  "tags": ["array", "binary-search", "divide-and-conquer"],
+  "languages": ["c", "cpp", "java", "python"],
+  "timeLimit": 2,
+  "memoryLimit": 256,
+  "maxScore": 100,
+  "status": "active"
+}

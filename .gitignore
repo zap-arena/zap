@@ -8,12 +8,14 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+node_modules/
 dist
 dist-ssr
 *.local
 .vite
 
 # Editor directories and files
+.vscode
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -32,6 +34,7 @@ dsa-graph
 .venv/
 api/.venv/
 api/venv/
+api/
 
 # Single-file bundle artifact from bundle-artifact.sh
 render/

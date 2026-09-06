@@ -1,0 +1,26 @@
+{
+  "title": "Fizz Buzz",
+  "slug": "fizz-buzz",
+  "difficulty": "Easy",
+  "inputFormat": "A single line containing the integer n.",
+  "outputFormat": "n lines. For line i (1-indexed): \"FizzBuzz\" if i is divisible by 15, \"Fizz\" if divisible by 3, \"Buzz\" if divisible by 5, otherwise i itself.",
+  "constraints": "1 <= n <= 10^5",
+  "examples": [
+    {
+      "input": "5",
+      "output": "1\n2\nFizz\n4\nBuzz",
+      "explanation": "3 is divisible by 3 and 5 is divisible by 5."
+    },
+    {
+      "input": "3",
+      "output": "1\n2\nFizz",
+      "explanation": "Only 3 is divisible by 3."
+    }
+  ],
+  "tags": ["math", "simulation"],
+  "languages": ["c", "cpp", "java", "python"],
+  "timeLimit": 2,
+  "memoryLimit": 256,
+  "maxScore": 100,
+  "status": "active"
+}

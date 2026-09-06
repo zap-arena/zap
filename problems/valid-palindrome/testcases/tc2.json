@@ -1,0 +1,8 @@
+{
+  "name": "Test 2",
+  "input": "race a car",
+  "expected_output": "0",
+  "hidden": false,
+  "marks": 10,
+  "order": 2
+}

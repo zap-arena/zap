@@ -1,0 +1,8 @@
+{
+  "name": "Test 8",
+  "input": "100\nyuxqtjpma\ndvv\nbtqunmt\ngn\ngepnrsddjz\nlkao\nqmjutpyax\nokla\nbntuqtm\nupen\neunp\nuvgqdzmz\nnuep\ngn\nnpeu\nzgudzqmv\nka\nuepn\nlako\nxuptmqjya\npneu\nak\nng\nntbqtum\nnpue\nvdv\npnedjgsrdz\njzrsdgdnep\nuzzqdmgv\nak\nnpue\nakol\nkaol\ngjrnddezps\nng\nvvd\nqtbtnmu\nnpue\naokl\nquayptxjm\nvvd\ngn\nnttbqum\nka\noakl\nvlokr\nnzjsegrdpd\nepnu\nsrjpdegzdn\nkoal\nak\ndvv\ndvgzzmqu\nng\nqtmtubn\ngn\nbqtumtn\nka\nak\ntnqubmt\ndvv\nvqmzgzdu\nak\npenu\nng\ntmtqbnu\nak\npnue\nlrvok\nvvd\ndgdzspnrej\nudgzvmqz\ntqxuajpmy\nqptuxayjm\nlaok\nak\nmzqgvduz\nrvkol\nepun\nvvd\nmatxpyqju\nak\nzmzdgvuq\nka\nmdvzugqz\ngn\nng\novrkl\nakol\ngdqmvuzz\nmbutnqt\nka\nng\nytmxaujpq\nng\nytxjaupmq\nqmyaxptju\nytjxapqum\nka\nuxqmjyatp",
+  "expected_output": "ak ak ak ak ak ak ak ak ka ka ka ka ka ka\nakol akol aokl kaol koal lako laok lkao oakl okla\nbntuqtm bqtumtn btqunmt mbutnqt ntbqtum nttbqum qtbtnmu qtmtubn tmtqbnu tnqubmt\ndgdzspnrej gepnrsddjz gjrnddezps jzrsdgdnep nzjsegrdpd pnedjgsrdz srjpdegzdn\ndvgzzmqu gdqmvuzz mdvzugqz mzqgvduz udgzvmqz uvgqdzmz uzzqdmgv vqmzgzdu zgudzqmv zmzdgvuq\ndvv dvv dvv vdv vvd vvd vvd vvd\nepnu epun eunp npeu npue npue npue nuep penu pneu pnue uepn upen\ngn gn gn gn gn ng ng ng ng ng ng ng\nlrvok ovrkl rvkol vlokr\nmatxpyqju qmjutpyax qmyaxptju qptuxayjm quayptxjm tqxuajpmy uxqmjyatp xuptmqjya ytjxapqum ytmxaujpq ytxjaupmq yuxqtjpma",
+  "hidden": true,
+  "marks": 10,
+  "order": 8
+}

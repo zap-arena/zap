@@ -1,0 +1,8 @@
+{
+  "name": "Test 2",
+  "input": "5",
+  "expected_output": "1 2 Fizz 4 Buzz",
+  "hidden": false,
+  "marks": 10,
+  "order": 2
+}
