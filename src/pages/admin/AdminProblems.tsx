@@ -233,22 +233,30 @@ function BulkImportDialog({
                 Browse ZIP
               </Button>
             </div>
-            <div className="bg-muted/30 rounded-lg p-3 border border-border">
+            <div className="bg-muted/30 rounded-lg p-3 border border-border mt-4">
               <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">
                 Expected ZIP Structure
               </p>
               <pre className="text-xs font-mono text-foreground whitespace-pre leading-relaxed">{`problems.zip/
 ├── two-sum/
-│   ├── problem.json
+│   ├── problem.json (standard)
 │   ├── statement.md
 │   ├── boilerplate/
-│   │   ├── cpp.cpp
 │   │   └── python.py
 │   └── testcases/
-│       ├── tc1.json   ← { "input": "...", "expected_output": "...", "hidden": false }
-│       └── tc2.json
-└── another-problem/
-    └── ...`}</pre>
+│       └── tc1.json
+└── some-progressive-chain/
+    ├── problem.json (progressive)
+    ├── boilerplate/
+    └── testcases/
+        ├── stage-1/
+        │   └── tc1.json
+        └── stage-2/
+            └── tc1.json`}</pre>
+              <p className="text-xs text-muted-foreground mt-3 italic">
+                Note: Uploading a problem that already exists will completely
+                replace and overwrite it.
+              </p>
             </div>
           </div>
         )}
@@ -1221,11 +1229,15 @@ export default function AdminProblems() {
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (hard: boolean = false) => {
     if (!deletingProblem) return;
     try {
-      await api.delete(`/admin/problems/${deletingProblem.id}`);
-      toast.success(`"${deletingProblem.title}" removed`);
+      await api.delete(
+        `/admin/problems/${deletingProblem.id}${hard ? "?hard=true" : ""}`,
+      );
+      toast.success(
+        `"${deletingProblem.title}" ${hard ? "deleted permanently" : "archived"}`,
+      );
       setDeletingProblem(null);
       invalidateProblems();
     } catch (err) {
@@ -1579,19 +1591,31 @@ export default function AdminProblems() {
         >
           <AlertDialogContent className="bg-card border-border">
             <AlertDialogHeader>
-              <AlertDialogTitle>Archive this problem?</AlertDialogTitle>
+              <AlertDialogTitle>
+                Archive or Delete this problem?
+              </AlertDialogTitle>
               <AlertDialogDescription>
-                "{deletingProblem?.title}" will be archived and hidden from new
-                contests. Contests already using it keep their results.
+                <strong>Archiving</strong> will hide "{deletingProblem?.title}"
+                from new contests, but preserve existing results.
+                <br />
+                <br />
+                <strong>Deleting</strong> will permanently erase it and all its
+                testcases from the database.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Keep problem</AlertDialogCancel>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
-                onClick={handleDelete}
+                onClick={() => handleDelete(false)}
+                className="bg-muted text-foreground hover:bg-muted/80"
+              >
+                Archive
+              </AlertDialogAction>
+              <AlertDialogAction
+                onClick={() => handleDelete(true)}
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
-                Archive problem
+                Delete Permanently
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

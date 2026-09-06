@@ -8,12 +8,14 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+node_modules/
 dist
 dist-ssr
 *.local
 .vite
 
 # Editor directories and files
+.vscode
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -29,11 +31,16 @@ dist-ssr
 .venv/
 api/.venv/
 api/venv/
+api/
 
-# Single-file bundle artifact from bundle-artifact.sh
+# User defined folders
 render/
+problems/
+solutions/
+dsa-graph/
 
 # Local environment configuration (contains secrets)
 .env
 api/.env
 __pycache__/
+.DS_Store
