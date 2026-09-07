@@ -31,7 +31,6 @@ dist-ssr
 .venv/
 api/.venv/
 api/venv/
-api/
 
 # User defined folders
 render/
