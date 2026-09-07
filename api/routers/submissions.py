@@ -102,6 +102,8 @@ async def create_submission(payload: schemas.SubmitRequest, db: Session = Depend
         ))
         if not participant or participant.status != "in_progress":
             raise HTTPException(status_code=403, detail="You have not started this contest")
+        if participant.locked:
+            raise HTTPException(status_code=403, detail="Contest is locked due to proctoring violation")
         if participant.expires_at and now_utc() > participant.expires_at:
             participant.status = "auto_completed"
             participant.completed_at = now_utc()
@@ -178,21 +180,21 @@ async def create_submission(payload: schemas.SubmitRequest, db: Session = Depend
             prior_best_score = prior_best.score if prior_best else 0
             if score > prior_best_score:
                 participant.score += (score - prior_best_score)
-                if not stage and all_passed and prior_best_score < contest_max_score:
-                    participant.problems_solved += 1
-
-            # Progression is deliberately independent of the score delta: clearing a stage must
-            # unlock the next one even when the score does not move.
-            if stage and all_passed and stage.stage_order == chain_progress.current_stage_order:
-                chain_progress.current_stage_order += 1
-                db.add(models.ContestActivityLog(
-                    contest_id=contest.id, user_id=user.id, problem_id=problem.id,
-                    event_type="STAGE_UNLOCKED",
-                    event_metadata={"stageId": stage.id, "newStageOrder": chain_progress.current_stage_order},
-                ))
-                # A chain counts as one solved "problem", awarded once its final stage clears.
-                if chain_progress.current_stage_order > len(problem.stages) and not chain_progress.completed:
-                    chain_progress.completed = True
+                if stage:
+                    passed_threshold = all_passed or (contest_max_score > 0 and score > contest_max_score * 0.90)
+                    prior_passed = prior_best_score == contest_max_score or (contest_max_score > 0 and prior_best_score > contest_max_score * 0.90)
+                    if passed_threshold and not prior_passed:
+                        total_stages = len(problem.stages)
+                        chain_progress.current_stage_order += 1
+                        db.add(models.ContestActivityLog(
+                            contest_id=contest.id, user_id=user.id, problem_id=problem.id,
+                            event_type="STAGE_UNLOCKED",
+                            event_metadata={"stageId": stage.id, "newStageOrder": chain_progress.current_stage_order},
+                        ))
+                        if chain_progress.current_stage_order > total_stages and not chain_progress.completed:
+                            chain_progress.completed = True
+                            participant.problems_solved += 1
+                elif all_passed and prior_best_score < contest_max_score:
                     participant.problems_solved += 1
         db.add(models.ContestActivityLog(
             contest_id=contest.id, user_id=user.id, problem_id=problem.id, submission_id=submission.id,

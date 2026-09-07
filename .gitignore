@@ -31,7 +31,6 @@ dist-ssr
 .venv/
 api/.venv/
 api/venv/
-api/
 
 # User defined folders
 render/
@@ -44,3 +43,8 @@ dsa-graph/
 api/.env
 __pycache__/
 .DS_Store
+
+
+# serverless
+.serverless
+.requirements.zip

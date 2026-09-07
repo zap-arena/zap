@@ -62,6 +62,7 @@ export const authStore = {
     }
   },
   register: async (
+    collegeId: string,
     name: string,
     email: string,
     password: string,
@@ -69,7 +70,7 @@ export const authStore = {
     try {
       const res = await api.post<{ token: string; user: User }>(
         "/auth/register",
-        { name, email, password },
+        { collegeId, name, email, password },
       );
       setToken(res.token);
       _user = res.user;

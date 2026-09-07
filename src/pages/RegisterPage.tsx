@@ -10,7 +10,12 @@ import { useAuth } from "../store/auth";
 export default function RegisterPage() {
   const { register } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({
+    collegeId: "",
+    name: "",
+    email: "",
+    password: "",
+  });
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -19,12 +24,21 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.collegeId.trim()) {
+      toast.error("College ID is required");
+      return;
+    }
     if (form.password.length < 8) {
       toast.error("Password must be at least 8 characters");
       return;
     }
     setLoading(true);
-    const res = await register(form.name, form.email, form.password);
+    const res = await register(
+      form.collegeId,
+      form.name,
+      form.email,
+      form.password,
+    );
     setLoading(false);
     if (res.ok) {
       toast.success("Account created! Welcome to ZAP.");
@@ -113,6 +127,17 @@ export default function RegisterPage() {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="collegeId">College ID</Label>
+              <Input
+                id="collegeId"
+                placeholder="e.g. ZAP-1234"
+                value={form.collegeId}
+                onChange={set("collegeId")}
+                className="bg-muted border-border focus:border-primary/50 h-11 uppercase"
+                required
+              />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
               <Input

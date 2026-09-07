@@ -347,6 +347,8 @@ function ContestForm({
     scoringMode: contest?.scoringMode ?? "partial",
     mode: contest?.mode ?? "standard",
     leaderboardVisible: contest?.leaderboardVisible ?? true,
+    maxTabSwitches: String(contest?.maxTabSwitches ?? 3),
+    proctorPassword: contest?.proctorPassword ?? "",
   });
   const [moderatorIds, setModeratorIds] = useState<string[]>(
     (contest?.moderators ?? []).map((m) => m.userId),
@@ -444,6 +446,8 @@ function ContestForm({
         scoringMode: form.scoringMode,
         mode: form.mode,
         leaderboardVisible: form.leaderboardVisible,
+        maxTabSwitches: Number(form.maxTabSwitches) || 3,
+        proctorPassword: form.proctorPassword || undefined,
         startTime: startTime.toISOString(),
         endTime: endTime.toISOString(),
         slug: form.slug.trim() || undefined,
@@ -609,6 +613,39 @@ function ContestForm({
             <p className="text-[11px] text-muted-foreground">
               Progressive contests only attach chain problems; each stage
               unlocks after the previous one is accepted.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Max Tab Switches (Proctoring)</Label>
+            <Input
+              type="number"
+              min="0"
+              value={form.maxTabSwitches}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, maxTabSwitches: e.target.value }))
+              }
+              className="bg-muted border-border font-mono text-sm"
+            />
+            <p className="text-[11px] text-muted-foreground">
+              0 to disable tab switch proctoring entirely.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <Label>Proctor Password</Label>
+            <Input
+              type="text"
+              placeholder="e.g. unlock123"
+              value={form.proctorPassword}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, proctorPassword: e.target.value }))
+              }
+              className="bg-muted border-border font-mono text-sm"
+            />
+            <p className="text-[11px] text-muted-foreground">
+              Required if max limit reached.
             </p>
           </div>
         </div>
@@ -843,8 +880,12 @@ export default function AdminContests() {
   const handleDelete = async (hard: boolean = false) => {
     if (!deleting) return;
     try {
-      await api.delete(`/admin/contests/${deleting.id}${hard ? "?hard=true" : ""}`);
-      toast.success(`"${deleting.name}" ${hard ? "deleted permanently" : "cancelled"}`);
+      await api.delete(
+        `/admin/contests/${deleting.id}${hard ? "?hard=true" : ""}`,
+      );
+      toast.success(
+        `"${deleting.name}" ${hard ? "deleted permanently" : "cancelled"}`,
+      );
       setDeleting(null);
       refresh();
     } catch (err) {
@@ -1069,15 +1110,14 @@ export default function AdminContests() {
         </Dialog>
 
         {/* Delete All confirmation */}
-        <AlertDialog
-          open={deletingAll}
-          onOpenChange={setDeletingAll}
-        >
+        <AlertDialog open={deletingAll} onOpenChange={setDeletingAll}>
           <AlertDialogContent className="bg-card border-border">
             <AlertDialogHeader>
               <AlertDialogTitle>Delete ALL contests?</AlertDialogTitle>
               <AlertDialogDescription>
-                <strong>Warning:</strong> This will permanently delete <strong>all</strong> contests from the database. This action cannot be undone.
+                <strong>Warning:</strong> This will permanently delete{" "}
+                <strong>all</strong> contests from the database. This action
+                cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -1099,10 +1139,16 @@ export default function AdminContests() {
         >
           <AlertDialogContent className="bg-card border-border">
             <AlertDialogHeader>
-              <AlertDialogTitle>Archive or Delete this contest?</AlertDialogTitle>
+              <AlertDialogTitle>
+                Archive or Delete this contest?
+              </AlertDialogTitle>
               <AlertDialogDescription>
-                <strong>Archiving</strong> will mark "{deleting?.name}" as cancelled and hide it from new participants.<br/><br/>
-                <strong>Deleting</strong> will permanently erase it from the database.
+                <strong>Archiving</strong> will mark "{deleting?.name}" as
+                cancelled and hide it from new participants.
+                <br />
+                <br />
+                <strong>Deleting</strong> will permanently erase it from the
+                database.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

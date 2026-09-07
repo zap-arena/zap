@@ -30,6 +30,7 @@ interface AdminParticipant {
 
 interface ActivitySummary {
   userId: string;
+  collegeId?: string | null;
   userName: string | null;
   events: Record<string, number>;
   total: number;
@@ -38,6 +39,7 @@ interface ActivitySummary {
 interface ActivityEvent {
   id: string;
   userId: string;
+  collegeId?: string | null;
   userName: string | null;
   eventType: string;
   occurredAt: string;
@@ -268,7 +270,9 @@ export default function AdminContestDetail() {
                     </span>
                   </td>
                   <td>
-                    <p className="font-medium text-sm">{e.userName}</p>
+                    <p className="font-medium text-sm">
+                      {e.collegeId ?? e.userName ?? e.userId}
+                    </p>
                   </td>
                   <td className="text-center font-mono font-bold text-primary">
                     {e.score}
@@ -307,7 +311,9 @@ export default function AdminContestDetail() {
             <tbody>
               {submissions.map((s) => (
                 <tr key={s.id}>
-                  <td className="text-xs">{s.userId}</td>
+                  <td className="text-xs">
+                    {s.collegeId ?? s.userName ?? s.userId}
+                  </td>
                   <td className="text-sm font-medium">{s.problemTitle}</td>
                   <td className="text-center text-xs font-mono uppercase">
                     {s.language}
@@ -355,7 +361,7 @@ export default function AdminContestDetail() {
                 <div key={a.userId} className="px-5 py-3">
                   <div className="flex items-center justify-between mb-1.5">
                     <span className="text-sm font-medium">
-                      {a.userName ?? a.userId}
+                      {a.collegeId ?? a.userName ?? a.userId}
                     </span>
                     <span className="text-xs text-muted-foreground font-mono">
                       {a.total} events
@@ -399,7 +405,7 @@ export default function AdminContestDetail() {
                   className="px-5 py-2 flex items-center gap-3 text-xs"
                 >
                   <span className="font-medium w-40 truncate">
-                    {e.userName ?? e.userId}
+                    {e.collegeId ?? e.userName ?? e.userId}
                   </span>
                   <span
                     className={`font-mono ${FLAGGED_EVENTS.includes(e.eventType) ? "text-destructive" : "text-muted-foreground"}`}

@@ -16,6 +16,7 @@ import type { Verdict } from "../../types";
 
 interface AdminLogEntry {
   id: string;
+  collegeId: string;
   submissionId: string | null;
   userId: string | null;
   userName: string | null;
@@ -51,7 +52,8 @@ export default function AdminLogs() {
 
   const filtered = logs.filter(
     (log) =>
-      ((log.userName ?? "").toLowerCase().includes(search.toLowerCase()) ||
+      ((log.collegeId?.toLowerCase() || "").includes(search.toLowerCase()) ||
+        (log.userName ?? "").toLowerCase().includes(search.toLowerCase()) ||
         (log.problemTitle ?? "").toLowerCase().includes(search.toLowerCase()) ||
         (log.submissionId ?? "").includes(search)) &&
       (statusFilter === "all" || log.status === statusFilter) &&
@@ -176,7 +178,7 @@ export default function AdminLogs() {
                     {log.submissionId}
                   </td>
                   <td className="text-xs text-foreground font-sans">
-                    {log.userName}
+                    {log.collegeId ?? log.userName}
                   </td>
                   <td className="text-xs text-foreground font-sans">
                     {log.problemTitle}

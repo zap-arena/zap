@@ -59,13 +59,15 @@ export default function AdminCodeWar() {
             <Brain size={20} className="text-primary" /> Code War Analysis
           </h1>
           <p className="text-muted-foreground text-sm">
-            Pick a Code War contest to see how each candidate solved its chains —
-            approach, complexity and behaviour score.
+            Pick a Code War contest to see how each candidate solved its chains
+            — approach, complexity and behaviour score.
           </p>
         </div>
 
         {isLoading && (
-          <div className="text-center text-muted-foreground py-10">Loading…</div>
+          <div className="text-center text-muted-foreground py-10">
+            Loading…
+          </div>
         )}
 
         {!isLoading && progressive.length === 0 && (

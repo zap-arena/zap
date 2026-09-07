@@ -2,6 +2,7 @@ export type UserRole = "admin" | "user";
 
 export interface User {
   id: string;
+  collegeId?: string;
   name: string;
   email: string;
   role: UserRole;
@@ -18,7 +19,7 @@ export interface TestCase {
   hidden: boolean;
   marks: number;
   /** Only set on progressive-stage cases that feed the complexity estimator. */
-  perfTier?: 'small' | 'medium' | 'large' | null;
+  perfTier?: "small" | "medium" | "large" | null;
 }
 
 export interface Boilerplate {
@@ -110,6 +111,8 @@ export interface Contest {
   scoringMode: "full" | "partial";
   mode?: "standard" | "progressive";
   leaderboardVisible: boolean;
+  maxTabSwitches?: number;
+  proctorPassword?: string;
   createdAt: string;
 }
 
@@ -132,6 +135,8 @@ export interface Submission {
   stageId?: string | null;
   problemTitle: string;
   userId: string;
+  userName?: string;
+  collegeId?: string;
   language: Language;
   sourceCode: string;
   status: Verdict;
@@ -155,6 +160,7 @@ export interface Participant {
   id: string;
   contestId: string;
   userId: string;
+  collegeId?: string;
   userName: string;
   userEmail: string;
   joinedAt: string;
@@ -165,6 +171,8 @@ export interface Participant {
   score: number;
   problemsSolved: number;
   totalSubmissions: number;
+  tabSwitches: number;
+  locked: boolean;
   rank?: number;
   duration?: string;
 }
@@ -173,6 +181,7 @@ export interface ExecutionLog {
   id: string;
   submissionId: string;
   userId: string;
+  collegeId?: string;
   userName: string;
   problemTitle: string;
   language: Language;
@@ -197,6 +206,7 @@ export interface RunResult {
 export interface LeaderboardEntry {
   rank: number;
   userId: string;
+  collegeId?: string;
   userName: string;
   score: number;
   solved: number;
@@ -256,6 +266,7 @@ export interface ChainAnalytics {
 
 export interface ParticipantAnalytics {
   userId: string;
+  collegeId?: string;
   userName: string;
   chains: ChainAnalytics[];
 }

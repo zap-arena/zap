@@ -14,11 +14,20 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 @router.post("/register", response_model=schemas.AuthResponse)
 def register(payload: schemas.RegisterRequest, db: Session = Depends(get_db)):
-    existing = db.scalar(select(models.User).where(models.User.email == payload.email.lower()))
-    if existing:
+    college_id_upper = payload.collegeId.strip().upper()
+    
+    # Check email
+    existing_email = db.scalar(select(models.User).where(models.User.email == payload.email.lower()))
+    if existing_email:
         raise HTTPException(status_code=409, detail="An account with this email already exists")
 
+    # Check college ID
+    existing_college_id = db.scalar(select(models.User).where(models.User.college_id == college_id_upper))
+    if existing_college_id:
+        raise HTTPException(status_code=409, detail="An account with this College ID already exists")
+
     user = models.User(
+        college_id=college_id_upper,
         name=payload.name.strip(),
         email=payload.email.lower(),
         password_hash=hash_password(payload.password),

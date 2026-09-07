@@ -10,6 +10,7 @@ Difficulty = Literal["Easy", "Medium", "Hard"]
 
 # ---------- Auth ----------
 class RegisterRequest(BaseModel):
+    collegeId: str = Field(min_length=1, max_length=50)
     name: str = Field(min_length=1, max_length=120)
     email: EmailStr
     password: str = Field(min_length=8, max_length=128)
@@ -22,6 +23,7 @@ class LoginRequest(BaseModel):
 
 class UserOut(BaseModel):
     id: str
+    collegeId: Optional[str] = None
     name: str
     email: str
     role: str
@@ -156,6 +158,9 @@ class ContestIn(BaseModel):
     scoringMode: Literal["full", "partial"] = "partial"
     mode: Literal["standard", "progressive"] = "standard"
     leaderboardVisible: bool = True
+    # accidental tab switches can happen, so does maxtab value is 3
+    maxTabSwitches: int = 3
+    proctorPassword: Optional[str] = None
     problems: list[ContestProblemIn] = []
     moderatorIds: list[str] = []
 
@@ -200,6 +205,10 @@ class NotificationIn(BaseModel):
     message: str = Field(min_length=1, max_length=1000)
 
 
+class UnlockRequest(BaseModel):
+    password: str
+
+
 class ContestOut(BaseModel):
     id: str
     name: str
@@ -212,6 +221,8 @@ class ContestOut(BaseModel):
     scoringMode: str
     mode: str = "standard"
     leaderboardVisible: bool
+    maxTabSwitches: int = 3
+    proctorPassword: Optional[str] = None
     problems: list[dict]
     createdAt: str
 

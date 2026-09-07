@@ -60,7 +60,8 @@ export default function AdminParticipants() {
 
   const filtered = participants.filter(
     (p) =>
-      (p.userName.toLowerCase().includes(search.toLowerCase()) ||
+      ((p.collegeId?.toLowerCase() || "").includes(search.toLowerCase()) ||
+        p.userName.toLowerCase().includes(search.toLowerCase()) ||
         p.userEmail.toLowerCase().includes(search.toLowerCase())) &&
       (contestFilter === "all" || p.contestId === contestFilter),
   );
@@ -147,6 +148,7 @@ export default function AdminParticipants() {
             <thead>
               <tr>
                 <th className="text-left">Participant</th>
+                <th className="text-left hidden md:table-cell">College ID</th>
                 <th className="text-left hidden md:table-cell">Contest</th>
                 <th className="text-center">Status</th>
                 <th className="text-center">Score</th>
@@ -163,10 +165,17 @@ export default function AdminParticipants() {
                 return (
                   <tr key={p.id} className="group">
                     <td>
-                      <div className="font-medium text-sm">{p.userName}</div>
+                      <div className="font-medium text-sm">
+                        {p.userName ?? p.userId}
+                      </div>
                       <div className="text-xs text-muted-foreground">
                         {p.userEmail}
                       </div>
+                    </td>
+                    <td className="hidden md:table-cell">
+                      <span className="text-xs font-mono text-muted-foreground">
+                        {p.collegeId ?? "—"}
+                      </span>
                     </td>
                     <td className="hidden md:table-cell">
                       <span className="text-xs text-muted-foreground">
@@ -208,7 +217,7 @@ export default function AdminParticipants() {
 
         {/* Detail dialog */}
         <Dialog open={!!selected} onOpenChange={() => setSelected(null)}>
-          <DialogContent className="bg-card border-border max-w-lg max-h-[80vh] overflow-y-auto">
+          <DialogContent className="bg-card border-border max-w-2xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Participant Details</DialogTitle>
             </DialogHeader>
@@ -217,6 +226,7 @@ export default function AdminParticipants() {
                 <div className="grid grid-cols-2 gap-3">
                   {[
                     ["Name", selected.userName],
+                    ["College ID", selected.collegeId ?? "—"],
                     ["Email", selected.userEmail],
                     ["Contest", contest?.name ?? "—"],
                     ["Status", selected.status.replace("_", " ")],
