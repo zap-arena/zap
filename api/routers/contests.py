@@ -335,7 +335,7 @@ def leaderboard(contest_id: str, db: Session = Depends(get_db)):
         user = db.get(models.User, p.user_id)
         duration_s = int((p.completed_at - p.started_at).total_seconds()) if p.started_at and p.completed_at else None
         entries.append({
-            "rank": rank, "userId": p.user_id, "userName": user.name if user else "Unknown",
+            "rank": rank, "userId": p.user_id, "collegeId": user.college_id if user else None, "userName": user.name if user else "Unknown",
             "score": p.score, "solved": p.problems_solved, "totalProblems": total_problems,
             "submissions": p.total_submissions,
             "completionTime": f"{duration_s // 60}m" if duration_s is not None else "-",
@@ -499,6 +499,7 @@ def admin_activity(contest_id: str, userId: Optional[str] = None, limit: int = 5
     return [
         {
             "id": r.id, "userId": r.user_id,
+            "collegeId": users[r.user_id].college_id if r.user_id in users else None,
             "userName": users[r.user_id].name if r.user_id in users else None,
             "eventType": r.event_type, "problemId": r.problem_id,
             "metadata": r.event_metadata or {},
@@ -526,6 +527,7 @@ def admin_activity_summary(contest_id: str, db: Session = Depends(get_db), _: mo
     for user_id, event_type, count in rows:
         entry = summary.setdefault(user_id, {
             "userId": user_id,
+            "collegeId": users[user_id].college_id if user_id in users else None,
             "userName": users[user_id].name if user_id in users else None,
             "events": {}, "total": 0,
         })

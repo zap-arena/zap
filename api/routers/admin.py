@@ -36,7 +36,7 @@ def statistics(db: Session = Depends(get_db), _: models.User = Depends(require_a
         "acceptedSubmissions": accepted, "failedSubmissions": total_submissions - accepted,
         "recentContests": [{"id": c.id, "name": c.name, "status": compute_status(c)} for c in recent_contests],
         "recentSubmissions": [
-            serialize_submission(s, db.get(models.Problem, s.problem_id).title if db.get(models.Problem, s.problem_id) else None, include_code=False)
+            serialize_submission(s, db.get(models.Problem, s.problem_id).title if db.get(models.Problem, s.problem_id) else None, include_code=False) | {"collegeId": db.get(models.User, s.user_id).college_id if db.get(models.User, s.user_id) else None, "userName": db.get(models.User, s.user_id).name if db.get(models.User, s.user_id) else None}
             for s in recent_subs
         ],
     }
@@ -64,6 +64,7 @@ def admin_submissions(
         problem = db.get(models.Problem, s.problem_id)
         user = db.get(models.User, s.user_id)
         row = serialize_submission(s, problem.title if problem else None)
+        row["collegeId"] = user.college_id if user else None
         row["userName"] = user.name if user else None
         row["userEmail"] = user.email if user else None
         out.append(row)
@@ -79,6 +80,7 @@ def admin_logs(db: Session = Depends(get_db), _: models.User = Depends(require_a
         problem = db.get(models.Problem, log.problem_id) if log.problem_id else None
         out.append({
             "id": log.id, "submissionId": log.submission_id, "userId": log.user_id,
+            "collegeId": user.college_id if user else None,
             "userName": user.name if user else None, "problemTitle": problem.title if problem else None,
             "language": log.language, "status": log.status, "executionDuration": log.execution_duration,
             "passedTests": log.passed_tests, "failedTests": log.failed_tests, "errorType": log.error_type,
@@ -176,7 +178,7 @@ def analytics_users(
             if not user:
                 continue
             users_data[user_id] = {
-                "user": {"id": user.id, "name": user.name, "email": user.email},
+                "user": {"id": user.id, "name": user.name, "email": user.email, "collegeId": user.college_id},
                 "metrics": {}
             }
         users_data[user_id]["metrics"][event_type] = count
@@ -290,7 +292,7 @@ async def progressive_analytics(contest_id: str, db: Session = Depends(get_db), 
             cohort_by_problem[problem.id].append(analysis["_metrics"])
             chains.append(analysis)
         per_participant.append({
-            "userId": participant.user_id, "userName": user.name if user else "Unknown", "chains": chains,
+            "userId": participant.user_id, "collegeId": user.college_id if user else None, "userName": user.name if user else "Unknown", "chains": chains,
         })
 
     for entry in per_participant:

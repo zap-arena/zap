@@ -103,6 +103,7 @@ def serialize_submission(s: models.Submission, problem_title: Optional[str] = No
 def serialize_participant(p: models.ContestParticipant, user: Optional[models.User] = None) -> dict:
     return {
         "id": p.id, "contestId": p.contest_id, "userId": p.user_id,
+        "collegeId": user.college_id if user else None,
         "userName": user.name if user else None, "userEmail": user.email if user else None,
         "joinedAt": p.joined_at.isoformat(),
         "startedAt": p.started_at.isoformat() if p.started_at else None,

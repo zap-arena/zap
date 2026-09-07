@@ -155,8 +155,7 @@ export function useProctoring(
         trackerRef.current?.track("TAB_VISIBLE");
       }
     };
-    const onBlur = () => trackerRef.current?.track("WINDOW_BLUR");
-    // const onBlur = () => report("WINDOW_BLUR");
+    const onBlur = () => report("WINDOW_BLUR");
     const onFocus = () => trackerRef.current?.track("WINDOW_FOCUS");
 
     const onFullscreenChange = () => {

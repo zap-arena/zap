@@ -127,7 +127,7 @@ export default function AdminDashboard() {
             <tbody>
               {(stats?.recentSubmissions ?? []).map((s) => (
                 <tr key={s.id}>
-                  <td className="text-xs text-muted-foreground">{s.userId}</td>
+                  <td className="text-xs text-muted-foreground">{s.collegeId ?? s.userName ?? s.userId}</td>
                   <td className="text-xs">{s.problemTitle}</td>
                   <td>
                     <VerdictBadge status={s.status} />

@@ -35,7 +35,7 @@ import { api } from "../../lib/api";
 import type { Contest } from "../../types";
 
 interface UserAnalytics {
-  user: { id: string; name: string; email: string };
+  user: { id: string; name: string; email: string; collegeId?: string };
   metrics: Record<string, number>;
 }
 
@@ -125,8 +125,9 @@ export default function AdminAnalytics() {
       const lower = search.toLowerCase();
       result = result.filter(
         (row) =>
-          row.user.name?.toLowerCase().includes(lower) ||
-          row.user.email?.toLowerCase().includes(lower) ||
+          (row.user.name?.toLowerCase() || "").includes(lower) ||
+          (row.user.email?.toLowerCase() || "").includes(lower) ||
+          (row.user.collegeId?.toLowerCase() || "").includes(lower) ||
           row.user.id.toLowerCase().includes(lower),
       );
     }
@@ -195,6 +196,7 @@ export default function AdminAnalytics() {
   const exportCSV = () => {
     const headers = [
       "Candidate Name",
+      "College ID",
       "Candidate Email",
       "Malpractice Score",
       "Total Events",
@@ -213,6 +215,7 @@ export default function AdminAnalytics() {
 
       const rowData = [
         row.user.name,
+        row.user.collegeId || "—",
         row.user.email,
         malpracticeScore.toString(),
         totalEvents.toString(),
@@ -261,7 +264,7 @@ export default function AdminAnalytics() {
     }
 
     const headers = [
-      ["Name", "Email", "Malpractice", "Total", ...dynamicLabels],
+      ["Name", "College ID", "Email", "Malpractice", "Total", ...dynamicLabels],
     ];
 
     const data = filteredAndSorted.map((row) => {
@@ -276,6 +279,7 @@ export default function AdminAnalytics() {
 
       return [
         row.user.name,
+        row.user.collegeId || "—",
         row.user.email,
         malpracticeScore.toString(),
         totalEvents.toString(),
@@ -540,6 +544,9 @@ export default function AdminAnalytics() {
                       <th className="text-left whitespace-nowrap">
                         {renderSortHeader("email", "Contact")}
                       </th>
+                      <th className="text-left whitespace-nowrap">
+                        <span className="font-semibold text-muted-foreground">College ID</span>
+                      </th>
                       <th className="text-center whitespace-nowrap border-l border-r border-border bg-destructive/5 text-destructive">
                         {renderSortHeader(
                           "malpracticeScore",
@@ -608,6 +615,9 @@ export default function AdminAnalytics() {
                             </td>
                             <td className="text-sm text-muted-foreground whitespace-nowrap">
                               {row.user.email}
+                            </td>
+                            <td className="text-sm font-mono text-muted-foreground whitespace-nowrap">
+                              {row.user.collegeId ?? "—"}
                             </td>
 
                             <td className="text-center border-l border-r border-border bg-destructive/5 font-bold">

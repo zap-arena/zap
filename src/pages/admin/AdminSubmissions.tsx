@@ -61,7 +61,9 @@ export default function AdminSubmissions() {
 
   const filtered = submissions.filter(
     (s) =>
-      (s.problemTitle?.toLowerCase().includes(search.toLowerCase()) ||
+      ((s.collegeId?.toLowerCase() || "").includes(search.toLowerCase()) ||
+        (s.problemTitle?.toLowerCase() || "").includes(search.toLowerCase()) ||
+        (s.userName?.toLowerCase() || "").includes(search.toLowerCase()) ||
         s.userId.toLowerCase().includes(search.toLowerCase())) &&
       (langFilter === "all" || s.language === langFilter),
   );
@@ -142,8 +144,9 @@ export default function AdminSubmissions() {
           <table className="w-full data-table">
             <thead>
               <tr>
-                <th className="text-left">ID</th>
-                <th className="text-left">User</th>
+                {/* <th className="text-left">ID</th> */}
+                <th className="text-left">Name</th>
+                <th className="text-left">College ID</th>
                 <th className="text-left">Problem</th>
                 <th className="text-center">Language</th>
                 <th className="text-center">Status</th>
@@ -156,10 +159,13 @@ export default function AdminSubmissions() {
             <tbody>
               {filtered.map((s) => (
                 <tr key={s.id} className="group">
-                  <td className="font-mono text-xs text-muted-foreground">
+                  {/* <td className="font-mono text-xs text-muted-foreground">
                     {s.id}
+                  </td> */}
+                  <td className="font-mono text-xs">{s.userName}</td>
+                  <td className="font-mono text-xs">
+                    {s.collegeId ?? s.userName ?? s.userId}
                   </td>
-                  <td className="text-xs">{s.userName ?? s.userId}</td>
                   <td className="text-sm font-medium">{s.problemTitle}</td>
                   <td className="text-center font-mono text-xs uppercase">
                     {s.language}

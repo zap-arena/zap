@@ -1519,7 +1519,7 @@ export default function ContestWorkspacePage() {
 
       {/* Lock Overlay */}
       {isLocked && (
-        <div className="fixed inset-0 z-[100] bg-background/95 backdrop-blur flex items-center justify-center">
+        <div className="fixed inset-0 z-[200] bg-background/95 backdrop-blur flex items-center justify-center">
           <div className="max-w-md w-full mx-4 p-8 bg-card border border-border rounded-xl shadow-2xl flex flex-col items-center text-center space-y-6">
             <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center">
               <ShieldAlert className="w-8 h-8 text-destructive" />

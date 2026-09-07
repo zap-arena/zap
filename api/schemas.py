@@ -10,6 +10,7 @@ Difficulty = Literal["Easy", "Medium", "Hard"]
 
 # ---------- Auth ----------
 class RegisterRequest(BaseModel):
+    collegeId: str = Field(min_length=1, max_length=50)
     name: str = Field(min_length=1, max_length=120)
     email: EmailStr
     password: str = Field(min_length=8, max_length=128)
@@ -22,6 +23,7 @@ class LoginRequest(BaseModel):
 
 class UserOut(BaseModel):
     id: str
+    collegeId: Optional[str] = None
     name: str
     email: str
     role: str

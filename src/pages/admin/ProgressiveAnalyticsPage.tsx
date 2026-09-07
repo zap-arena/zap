@@ -94,7 +94,7 @@ export default function ProgressiveAnalyticsPage() {
               className="w-full px-5 py-4 flex items-center justify-between hover:bg-muted/30 transition-colors"
             >
               <div className="text-left">
-                <div className="font-semibold text-sm">{p.userName}</div>
+                <div className="font-semibold text-sm">{p.collegeId ?? p.userName}</div>
                 <div className="text-xs text-muted-foreground">
                   {p.chains.length} chain(s) attempted
                 </div>
