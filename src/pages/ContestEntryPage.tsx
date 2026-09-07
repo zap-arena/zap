@@ -41,7 +41,7 @@ export default function ContestEntryPage() {
 
   const { data: session } = useQuery({
     queryKey: ["session", contest?.id],
-    queryFn: () => api.get<ContestSession>(`/contests/${contest!.id}/session`),
+    queryFn: () => api.get<ContestSession>(`/contests/${contest?.id}/session`),
     enabled: !!contest?.id && !!user,
     retry: false,
   });
@@ -97,7 +97,7 @@ export default function ContestEntryPage() {
       if (!document.fullscreenElement) {
         await document.documentElement.requestFullscreen().catch(() => {});
       }
-      
+
       await api.post(`/contests/${contest.id}/start`);
       await queryClient.invalidateQueries({
         queryKey: ["session", contest.id],

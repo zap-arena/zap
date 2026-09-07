@@ -270,7 +270,9 @@ export default function AdminContestDetail() {
                     </span>
                   </td>
                   <td>
-                    <p className="font-medium text-sm">{e.collegeId ?? e.userName ?? e.userId}</p>
+                    <p className="font-medium text-sm">
+                      {e.collegeId ?? e.userName ?? e.userId}
+                    </p>
                   </td>
                   <td className="text-center font-mono font-bold text-primary">
                     {e.score}
@@ -309,7 +311,9 @@ export default function AdminContestDetail() {
             <tbody>
               {submissions.map((s) => (
                 <tr key={s.id}>
-                  <td className="text-xs">{s.collegeId ?? s.userName ?? s.userId}</td>
+                  <td className="text-xs">
+                    {s.collegeId ?? s.userName ?? s.userId}
+                  </td>
                   <td className="text-sm font-medium">{s.problemTitle}</td>
                   <td className="text-center text-xs font-mono uppercase">
                     {s.language}

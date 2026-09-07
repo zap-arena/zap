@@ -880,8 +880,12 @@ export default function AdminContests() {
   const handleDelete = async (hard: boolean = false) => {
     if (!deleting) return;
     try {
-      await api.delete(`/admin/contests/${deleting.id}${hard ? "?hard=true" : ""}`);
-      toast.success(`"${deleting.name}" ${hard ? "deleted permanently" : "cancelled"}`);
+      await api.delete(
+        `/admin/contests/${deleting.id}${hard ? "?hard=true" : ""}`,
+      );
+      toast.success(
+        `"${deleting.name}" ${hard ? "deleted permanently" : "cancelled"}`,
+      );
       setDeleting(null);
       refresh();
     } catch (err) {
@@ -1106,15 +1110,14 @@ export default function AdminContests() {
         </Dialog>
 
         {/* Delete All confirmation */}
-        <AlertDialog
-          open={deletingAll}
-          onOpenChange={setDeletingAll}
-        >
+        <AlertDialog open={deletingAll} onOpenChange={setDeletingAll}>
           <AlertDialogContent className="bg-card border-border">
             <AlertDialogHeader>
               <AlertDialogTitle>Delete ALL contests?</AlertDialogTitle>
               <AlertDialogDescription>
-                <strong>Warning:</strong> This will permanently delete <strong>all</strong> contests from the database. This action cannot be undone.
+                <strong>Warning:</strong> This will permanently delete{" "}
+                <strong>all</strong> contests from the database. This action
+                cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -1136,10 +1139,16 @@ export default function AdminContests() {
         >
           <AlertDialogContent className="bg-card border-border">
             <AlertDialogHeader>
-              <AlertDialogTitle>Archive or Delete this contest?</AlertDialogTitle>
+              <AlertDialogTitle>
+                Archive or Delete this contest?
+              </AlertDialogTitle>
               <AlertDialogDescription>
-                <strong>Archiving</strong> will mark "{deleting?.name}" as cancelled and hide it from new participants.<br/><br/>
-                <strong>Deleting</strong> will permanently erase it from the database.
+                <strong>Archiving</strong> will mark "{deleting?.name}" as
+                cancelled and hide it from new participants.
+                <br />
+                <br />
+                <strong>Deleting</strong> will permanently erase it from the
+                database.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

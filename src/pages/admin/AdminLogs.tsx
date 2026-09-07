@@ -16,6 +16,7 @@ import type { Verdict } from "../../types";
 
 interface AdminLogEntry {
   id: string;
+  collegeId: string;
   submissionId: string | null;
   userId: string | null;
   userName: string | null;

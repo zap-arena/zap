@@ -114,11 +114,11 @@ function decorateEditorTheme(
 ) {
   const overrides: Record<string, string> = {
     "editorCursor.foreground": accentColor,
-    "editor.selectionBackground": accentColor + "55",
-    "editor.inactiveSelectionBackground": accentColor + "33",
-    "editor.selectionHighlightBackground": accentColor + "26",
+    "editor.selectionBackground": `${accentColor}55`,
+    "editor.inactiveSelectionBackground": `${accentColor}33`,
+    "editor.selectionHighlightBackground": `${accentColor}26`,
     "editorLineNumber.activeForeground": accentColor,
-    "editorIndentGuide.activeBackground": accentColor + "99",
+    "editorIndentGuide.activeBackground": `${accentColor}99`,
     "editorBracketMatch.border": accentColor,
     focusBorder: accentColor,
   };
@@ -253,7 +253,9 @@ function CodeEditor({
           >
             -
           </button>
-          <span className="text-[11px] font-mono w-4 text-center select-none">{fontSize}</span>
+          <span className="text-[11px] font-mono w-4 text-center select-none">
+            {fontSize}
+          </span>
           <button
             onClick={() => setFontSize((f) => Math.min(24, f + 1))}
             className="hover:text-foreground px-1 py-0.5 rounded transition-colors hover:bg-muted"
@@ -366,9 +368,9 @@ export default function ContestWorkspacePage() {
     : [];
   const chainCompleted = !!selectedProblem?.chainCompleted;
   const activeStage = selectedProblem?.isProgressive
-    ? chainStages.find(
+    ? (chainStages.find(
         (s) => s.stageOrder === selectedProblem.currentStageOrder,
-      ) ?? (chainCompleted ? chainStages[chainStages.length - 1] : undefined)
+      ) ?? (chainCompleted ? chainStages[chainStages.length - 1] : undefined))
     : undefined;
 
   // Solved problems tracking (derived from the best submission per problem)
@@ -410,7 +412,9 @@ export default function ContestWorkspacePage() {
     }
     setUnlocking(true);
     try {
-      await api.post(`/contests/${contestId}/unlock`, { password: unlockPassword });
+      await api.post(`/contests/${contestId}/unlock`, {
+        password: unlockPassword,
+      });
       setIsLocked(false);
       setUnlockPassword("");
       toast.success("Contest unlocked successfully");
@@ -663,7 +667,7 @@ export default function ContestWorkspacePage() {
       });
 
       const isProgressivePassed =
-        activeStage && activeStage.maxScore && result.score > activeStage.maxScore * 0.90;
+        activeStage?.maxScore && result.score > activeStage.maxScore * 0.9;
 
       if (result.status === "ACCEPTED" || isProgressivePassed) {
         if (activeStage) {
@@ -1649,11 +1653,14 @@ export default function ContestWorkspacePage() {
             <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center">
               <ShieldAlert className="w-8 h-8 text-destructive" />
             </div>
-            
+
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold tracking-tight">Contest Locked</h2>
+              <h2 className="text-2xl font-bold tracking-tight">
+                Contest Locked
+              </h2>
               <p className="text-muted-foreground text-sm">
-                You have exceeded the maximum allowed tab/window switches. Your session has been locked by the proctoring system.
+                You have exceeded the maximum allowed tab/window switches. Your
+                session has been locked by the proctoring system.
               </p>
             </div>
 
@@ -1669,12 +1676,16 @@ export default function ContestWorkspacePage() {
                     placeholder="Enter password to unlock..."
                     onKeyDown={(e) => e.key === "Enter" && handleUnlock()}
                   />
-                  <Button 
-                    className="btn-primary shrink-0" 
+                  <Button
+                    className="btn-primary shrink-0"
                     onClick={handleUnlock}
                     disabled={unlocking}
                   >
-                    {unlocking ? <Loader2 className="w-4 h-4 animate-spin" /> : "Unlock"}
+                    {unlocking ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      "Unlock"
+                    )}
                   </Button>
                 </div>
               </div>
@@ -1696,7 +1707,9 @@ export default function ContestWorkspacePage() {
             </p>
             <Button className="btn-primary w-full" onClick={requestFullscreen}>
               <Maximize size={14} className="mr-2" />
-              {hasEnteredFullscreen ? "Re-enter fullscreen" : "Enter fullscreen"}
+              {hasEnteredFullscreen
+                ? "Re-enter fullscreen"
+                : "Enter fullscreen"}
             </Button>
           </div>
         </div>

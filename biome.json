@@ -32,7 +32,7 @@
       "correctness": {
         "useExhaustiveDependencies": "off"
       },
-      "recommended": true,
+      "preset": "recommended",
       "security": {
         "noDangerouslySetInnerHtml": "off"
       }

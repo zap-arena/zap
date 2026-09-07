@@ -10,7 +10,12 @@ import { useAuth } from "../store/auth";
 export default function RegisterPage() {
   const { register } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ collegeId: "", name: "", email: "", password: "" });
+  const [form, setForm] = useState({
+    collegeId: "",
+    name: "",
+    email: "",
+    password: "",
+  });
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -28,7 +33,12 @@ export default function RegisterPage() {
       return;
     }
     setLoading(true);
-    const res = await register(form.collegeId, form.name, form.email, form.password);
+    const res = await register(
+      form.collegeId,
+      form.name,
+      form.email,
+      form.password,
+    );
     setLoading(false);
     if (res.ok) {
       toast.success("Account created! Welcome to ZAP.");

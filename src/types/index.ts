@@ -19,7 +19,7 @@ export interface TestCase {
   hidden: boolean;
   marks: number;
   /** Only set on progressive-stage cases that feed the complexity estimator. */
-  perfTier?: 'small' | 'medium' | 'large' | null;
+  perfTier?: "small" | "medium" | "large" | null;
 }
 
 export interface Boilerplate {
@@ -135,6 +135,7 @@ export interface Submission {
   stageId?: string | null;
   problemTitle: string;
   userId: string;
+  userName?: string;
   collegeId?: string;
   language: Language;
   sourceCode: string;

@@ -87,18 +87,17 @@ export class ProctorTracker {
 
     this.inFlight = this.queue.splice(0, BATCH_SIZE);
     try {
-      const response: { locked: boolean; tabSwitches: number } =
-        await api.post(`/contests/${this.contestId}/activity`, {
+      const response: { locked: boolean; tabSwitches: number } = await api.post(
+        `/contests/${this.contestId}/activity`,
+        {
           events: this.inFlight,
-        });
+        },
+      );
       this.inFlight = [];
 
       if (response) {
         if (typeof response.locked === "boolean" && this.onStateChange) {
-          this.onStateChange(
-            response.locked,
-            response.tabSwitches ?? 0,
-          );
+          this.onStateChange(response.locked, response.tabSwitches ?? 0);
         }
       }
     } catch {

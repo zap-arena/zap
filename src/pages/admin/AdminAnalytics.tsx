@@ -545,7 +545,9 @@ export default function AdminAnalytics() {
                         {renderSortHeader("email", "Contact")}
                       </th>
                       <th className="text-left whitespace-nowrap">
-                        <span className="font-semibold text-muted-foreground">College ID</span>
+                        <span className="font-semibold text-muted-foreground">
+                          College ID
+                        </span>
                       </th>
                       <th className="text-center whitespace-nowrap border-l border-r border-border bg-destructive/5 text-destructive">
                         {renderSortHeader(
