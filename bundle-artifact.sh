@@ -22,7 +22,7 @@ rm -rf dist bundle.html render
 
 # Build with Vite (vite-plugin-singlefile will inline everything)
 echo "🔨 Building with Vite (all assets will be inlined)..."
-pnpm build
+SINGLE_FILE=1 pnpm build
 
 # Copy the single-file build output
 echo "� Copying single-file bundle..."

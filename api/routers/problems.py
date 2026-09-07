@@ -58,7 +58,11 @@ def admin_search_problems(
         {
             "id": p.id, "title": p.title, "slug": p.slug, "difficulty": p.difficulty,
             "tags": p.tags, "maxScore": p.max_score, "status": p.status,
-            "testCasesCount": len(p.test_cases),
+            "isProgressive": p.is_progressive,
+            # A chain's cases live on its stages, a plain problem's live on the problem itself.
+            "testCasesCount": sum(
+                1 for tc in p.test_cases if bool(tc.stage_id) == p.is_progressive and tc.perf_tier in (None, "", "small")
+            ),
         }
         for p in db.scalars(stmt).all()
     ]
@@ -67,7 +71,8 @@ def admin_search_problems(
 @router.get("/api/admin/problems")
 def admin_list_problems(db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
     problems = db.scalars(select(models.Problem)).all()
-    return [serialize_problem(p, include_hidden=True) for p in problems]
+    # The list only renders counts, so omitting the test case bodies keeps this response small.
+    return [serialize_problem(p, include_hidden=True, reveal_stages=True, include_io=False) for p in problems]
 
 
 @router.get("/api/admin/problems/{problem_id}")
@@ -75,7 +80,7 @@ def admin_get_problem(problem_id: str, db: Session = Depends(get_db), _: models.
     problem = db.get(models.Problem, problem_id)
     if not problem:
         raise HTTPException(status_code=404, detail="Problem not found")
-    return serialize_problem(problem, include_hidden=True)
+    return serialize_problem(problem, include_hidden=True, reveal_stages=True)
 
 
 def _apply_problem_fields(problem: models.Problem, payload: schemas.ProblemIn, db: Session):
@@ -106,7 +111,7 @@ def _apply_problem_fields(problem: models.Problem, payload: schemas.ProblemIn, d
     for i, tc in enumerate(payload.testCases):
         db.add(models.TestCase(
             problem_id=problem.id, name=tc.name, input=tc.input, expected_output=tc.expectedOutput,
-            hidden=tc.hidden, marks=tc.marks, order=i,
+            hidden=tc.hidden, marks=tc.marks, order=i, perf_tier=tc.perfTier,
         ))
 
     if payload.isProgressive:
@@ -116,21 +121,33 @@ def _apply_problem_fields(problem: models.Problem, payload: schemas.ProblemIn, d
             if not stage:
                 stage = models.ProblemStage(problem_id=problem.id)
                 db.add(stage)
-            stage.stage_order = s_in.stageOrder
-            stage.title = s_in.title
-            stage.statement = s_in.statement
-            stage.expected_complexity = s_in.expectedComplexity
-            stage.time_limit = s_in.timeLimit
-            stage.memory_limit = s_in.memoryLimit
-            stage.max_score = s_in.maxScore
+            # Only apply fields the client actually sent, so a partial payload never wipes
+            # a stage's statement, score or test cases.
+            sent = s_in.model_fields_set
+            if "stageOrder" in sent:
+                stage.stage_order = s_in.stageOrder
+            if "title" in sent:
+                stage.title = s_in.title
+            if "statement" in sent:
+                stage.statement = s_in.statement
+            if "expectedComplexity" in sent:
+                stage.expected_complexity = s_in.expectedComplexity
+            if "timeLimit" in sent:
+                stage.time_limit = s_in.timeLimit
+            if "memoryLimit" in sent:
+                stage.memory_limit = s_in.memoryLimit
+            if "maxScore" in sent:
+                stage.max_score = s_in.maxScore
             db.flush()
 
-            db.query(models.TestCase).filter(models.TestCase.stage_id == stage.id).delete()
-            for i, tc in enumerate(s_in.testCases):
-                db.add(models.TestCase(
-                    problem_id=problem.id, stage_id=stage.id, name=tc.name, input=tc.input,
-                    expected_output=tc.expectedOutput, hidden=tc.hidden, marks=tc.marks, order=i,
-                ))
+            if "testCases" in sent:
+                db.query(models.TestCase).filter(models.TestCase.stage_id == stage.id).delete()
+                for i, tc in enumerate(s_in.testCases):
+                    db.add(models.TestCase(
+                        problem_id=problem.id, stage_id=stage.id, name=tc.name, input=tc.input,
+                        expected_output=tc.expectedOutput, hidden=tc.hidden, marks=tc.marks, order=i,
+                        perf_tier=tc.perfTier,
+                    ))
 
 
 @router.post("/api/admin/problems", status_code=201)
@@ -139,7 +156,7 @@ def create_problem(payload: schemas.ProblemIn, db: Session = Depends(get_db), ad
     _apply_problem_fields(problem, payload, db)
     db.commit()
     db.refresh(problem)
-    return serialize_problem(problem, include_hidden=True)
+    return serialize_problem(problem, include_hidden=True, reveal_stages=True)
 
 
 @router.put("/api/admin/problems/{problem_id}")
@@ -150,7 +167,7 @@ def update_problem(problem_id: str, payload: schemas.ProblemIn, db: Session = De
     _apply_problem_fields(problem, payload, db)
     db.commit()
     db.refresh(problem)
-    return serialize_problem(problem, include_hidden=True)
+    return serialize_problem(problem, include_hidden=True, reveal_stages=True)
 
 
 @router.delete("/api/admin/problems/{problem_id}", status_code=204)

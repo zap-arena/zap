@@ -9,7 +9,7 @@ import models
 import schemas
 from database import get_db
 from deps import get_current_user
-from scoring import judge_submission, run_public, compute_problem_score
+from scoring import judge_submission, run_public, run_samples, compute_problem_score
 from serializers import serialize_submission
 
 router = APIRouter(prefix="/api", tags=["submissions"])
@@ -29,18 +29,27 @@ def _get_active_problem(db: Session, problem_id: str) -> models.Problem:
 
 
 def _get_chain_progress(db: Session, contest_id: str, user_id: str, problem_id: str) -> models.ContestChainProgress:
+    """Chain cursor for this participant, created on demand (see contests.get_chain_progress)."""
     progress = db.scalar(select(models.ContestChainProgress).where(
         models.ContestChainProgress.contest_id == contest_id, models.ContestChainProgress.user_id == user_id,
         models.ContestChainProgress.problem_id == problem_id,
     ))
-    if not progress:
-        raise HTTPException(status_code=400, detail="Progressive chain has not been initialized for this attempt")
+    if progress is None:
+        progress = models.ContestChainProgress(
+            contest_id=contest_id, user_id=user_id, problem_id=problem_id,
+        )
+        db.add(progress)
+        db.flush()
     return progress
 
 
 def _resolve_stage(db: Session, problem: models.Problem, contest, stage_id: Optional[str]) -> Optional[models.ProblemStage]:
-    """For progressive contests, resolve and gate access to the requested stage."""
-    if not (contest and contest.mode == "progressive" and problem.is_progressive):
+    """Resolve the stage a chain-problem submission targets.
+
+    Keyed off the problem rather than the contest mode: a chain problem judges against stage test
+    cases wherever it is used, and it has no problem-level cases to fall back on.
+    """
+    if not (contest and problem.is_progressive):
         return None
     if not stage_id:
         raise HTTPException(status_code=400, detail="stageId is required for a progressive chain problem")
@@ -60,7 +69,14 @@ async def run_code(payload: schemas.RunRequest, db: Session = Depends(get_db), u
     stage = _resolve_stage(db, problem, contest, payload.stageId)
     time_limit = (stage.time_limit if stage else None) or problem.time_limit
 
-    result = await run_public(problem, payload.language, payload.code, payload.stdin, time_limit)
+    # With no custom stdin, run every sample case so the UI can show actual vs expected per case.
+    if payload.stdin.strip():
+        result = await run_public(problem, payload.language, payload.code, payload.stdin, time_limit)
+    else:
+        result = await run_samples(problem, payload.language, payload.code, time_limit, stage=stage)
+        if result["status"] == "NO_SAMPLES":
+            result = await run_public(problem, payload.language, payload.code, "", time_limit)
+
     db.add(models.ContestActivityLog(
         contest_id=payload.contestId, user_id=user.id, problem_id=problem.id, event_type="CODE_RUN",
         event_metadata={"stageId": stage.id} if stage else {},
@@ -162,20 +178,21 @@ async def create_submission(payload: schemas.SubmitRequest, db: Session = Depend
             prior_best_score = prior_best.score if prior_best else 0
             if score > prior_best_score:
                 participant.score += (score - prior_best_score)
-                if stage:
-                    # A chain counts as one solved "problem" only once, when its final stage clears.
-                    if all_passed and prior_best_score < contest_max_score:
-                        total_stages = len(problem.stages)
-                        chain_progress.current_stage_order += 1
-                        db.add(models.ContestActivityLog(
-                            contest_id=contest.id, user_id=user.id, problem_id=problem.id,
-                            event_type="STAGE_UNLOCKED",
-                            event_metadata={"stageId": stage.id, "newStageOrder": chain_progress.current_stage_order},
-                        ))
-                        if chain_progress.current_stage_order > total_stages and not chain_progress.completed:
-                            chain_progress.completed = True
-                            participant.problems_solved += 1
-                elif all_passed and prior_best_score < contest_max_score:
+                if not stage and all_passed and prior_best_score < contest_max_score:
+                    participant.problems_solved += 1
+
+            # Progression is deliberately independent of the score delta: clearing a stage must
+            # unlock the next one even when the score does not move.
+            if stage and all_passed and stage.stage_order == chain_progress.current_stage_order:
+                chain_progress.current_stage_order += 1
+                db.add(models.ContestActivityLog(
+                    contest_id=contest.id, user_id=user.id, problem_id=problem.id,
+                    event_type="STAGE_UNLOCKED",
+                    event_metadata={"stageId": stage.id, "newStageOrder": chain_progress.current_stage_order},
+                ))
+                # A chain counts as one solved "problem", awarded once its final stage clears.
+                if chain_progress.current_stage_order > len(problem.stages) and not chain_progress.completed:
+                    chain_progress.completed = True
                     participant.problems_solved += 1
         db.add(models.ContestActivityLog(
             contest_id=contest.id, user_id=user.id, problem_id=problem.id, submission_id=submission.id,
