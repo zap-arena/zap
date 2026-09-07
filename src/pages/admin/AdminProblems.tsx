@@ -678,16 +678,18 @@ function EditProblemDialog({
   const collapseAll = () => setExpandedIds(new Set());
 
   const addTestCase = () => {
-    const newTc: TestCase & { _new?: boolean } = {
-      id: `tc_new_${Date.now()}`,
-      input: "",
-      expectedOutput: "",
-      hidden: false,
-      marks: 0,
-      _new: true,
-    };
-    setActiveTestCases((tcs: any) => [...tcs, newTc]);
-    setExpandedIds((s) => new Set([...s, newTc.id]));
+    setActiveTestCases((tcs: any) => {
+      const newTc: TestCase & { _new?: boolean } = {
+        id: `tc_new_${Date.now()}`,
+        input: "",
+        expectedOutput: "",
+        hidden: tcs.length >= 2,
+        marks: 0,
+        _new: true,
+      };
+      setExpandedIds((s) => new Set([...s, newTc.id]));
+      return [...tcs, newTc];
+    });
   };
 
   const updateTestCase = (

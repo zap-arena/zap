@@ -75,11 +75,12 @@ def _read_text(zf: zipfile.ZipFile, info: zipfile.ZipInfo) -> str:
 
 
 def _parse_test_case(raw: dict, index: int) -> dict:
+    default_hidden = False if index <= 2 else True
     return {
         "name": str(_pick(raw, "name", default=f"Test case {index}")),
         "input": str(_pick(raw, "input", default="")),
         "expectedOutput": str(_pick(raw, "expected_output", "expectedOutput", "output", default="")),
-        "hidden": bool(_pick(raw, "hidden", default=False)),
+        "hidden": bool(_pick(raw, "hidden", default=default_hidden)),
         "marks": int(_pick(raw, "marks", "score", default=0) or 0),
         "order": int(_pick(raw, "order", default=index) or index),
         "perfTier": (_pick(raw, "perf_tier", "perfTier", default=None) or None),
