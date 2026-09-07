@@ -712,11 +712,25 @@ function EditProblemDialog({
       toast.error("Title is required");
       return;
     }
-    if (testCases.length === 0) {
-      toast.error("At least one test case required");
+    // A chain problem keeps its cases on the stages, so the base list is expected to be empty.
+    if (totalTestCasesLength === 0) {
+      toast.error(
+        problem.isProgressive
+          ? "Add at least one test case to a stage"
+          : "At least one test case required",
+      );
       return;
     }
     setSaving(true);
+    const serializeCases = (list: (TestCase & { _new?: boolean })[]) =>
+      list.map((tc, i) => ({
+        name: tc.name || `Test case ${i + 1}`,
+        input: tc.input,
+        expectedOutput: tc.expectedOutput,
+        hidden: tc.hidden,
+        marks: tc.marks,
+        perfTier: tc.perfTier ?? null,
+      }));
     try {
       await api.put(`/admin/problems/${problem.id}`, {
         title: details.title,
@@ -732,23 +746,11 @@ function EditProblemDialog({
           .filter(Boolean),
         languages: details.languages,
         boilerplates,
-        testCases: testCases.map((tc) => ({
-          name: tc.id,
-          input: tc.input,
-          expectedOutput: tc.expectedOutput,
-          hidden: tc.hidden,
-          marks: tc.marks,
-        })),
+        testCases: serializeCases(testCases),
         isProgressive: problem.isProgressive,
         stages: stages.map((s) => ({
           ...s,
-          testCases: (s.testCases || []).map((tc) => ({
-            name: tc.id,
-            input: tc.input,
-            expectedOutput: tc.expectedOutput,
-            hidden: tc.hidden,
-            marks: tc.marks,
-          })),
+          testCases: serializeCases(s.testCases || []),
         })),
         timeLimit: Number(details.timeLimit),
         memoryLimit: Number(details.memoryLimit),
@@ -1132,6 +1134,44 @@ function EditProblemDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+// The problem list omits test case bodies to stay small, so the editor loads the full record
+// before mounting. Editing a stripped problem would blank its test cases on save.
+function EditProblemLoader({
+  problemId,
+  onClose,
+  onSaved,
+}: {
+  problemId: string;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const { data: problem, isLoading } = useQuery({
+    queryKey: ["admin-problem", problemId],
+    queryFn: () => api.get<Problem>(`/admin/problems/${problemId}`),
+  });
+
+  if (isLoading || !problem) {
+    return (
+      <Dialog open onOpenChange={onClose}>
+        <DialogContent className="bg-card border-border max-w-3xl">
+          <div className="py-16 text-center text-sm text-muted-foreground">
+            Loading problem…
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <EditProblemDialog
+      problem={problem}
+      open
+      onClose={onClose}
+      onSaved={onSaved}
+    />
   );
 }
 
@@ -1578,9 +1618,8 @@ export default function AdminProblems() {
 
         {/* Edit Problem Dialog */}
         {editingProblem && (
-          <EditProblemDialog
-            problem={editingProblem}
-            open={!!editingProblem}
+          <EditProblemLoader
+            problemId={editingProblem.id}
             onClose={() => setEditingProblem(null)}
             onSaved={invalidateProblems}
           />

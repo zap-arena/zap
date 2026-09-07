@@ -54,14 +54,27 @@ def get_participant(db: Session, contest_id: str, user_id: str) -> Optional[mode
     )
 
 
-def get_chain_progress(db: Session, contest_id: str, user_id: str, problem_id: str) -> Optional[models.ContestChainProgress]:
-    return db.scalar(
+def get_chain_progress(db: Session, contest_id: str, user_id: str, problem_id: str) -> models.ContestChainProgress:
+    """Chain cursor for this participant, created on demand.
+
+    Lazily created because a chain problem can be attached to a contest after the participant
+    already started it, in which case no row was seeded at start time.
+    """
+    progress = db.scalar(
         select(models.ContestChainProgress).where(
             models.ContestChainProgress.contest_id == contest_id,
             models.ContestChainProgress.user_id == user_id,
             models.ContestChainProgress.problem_id == problem_id,
         )
     )
+    if progress is None:
+        progress = models.ContestChainProgress(
+            contest_id=contest_id, user_id=user_id, problem_id=problem_id,
+        )
+        db.add(progress)
+        db.commit()
+        db.refresh(progress)
+    return progress
 
 
 # ---------- Public / participant ----------
@@ -202,7 +215,7 @@ def contest_problems(contest_id: str, db: Session = Depends(get_db), user: model
     result = []
     for cp in sorted(contest.problems, key=lambda x: x.order):
         chain_progress = None
-        if contest.mode == "progressive" and cp.problem and cp.problem.is_progressive:
+        if cp.problem and cp.problem.is_progressive:
             chain_progress = get_chain_progress(db, contest.id, user.id, cp.problem_id)
         result.append(
             serialize_problem(cp.problem, include_hidden=False, chain_progress=chain_progress)

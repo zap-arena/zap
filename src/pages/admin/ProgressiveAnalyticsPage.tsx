@@ -25,6 +25,13 @@ const PATTERN_COLOR: Record<BehaviorPattern, string> = {
   struggling: "text-destructive bg-destructive/10",
 };
 
+const APPROACH_LABEL: Record<string, string> = {
+  brute_force: "Brute force",
+  data_structure: "Data structure / DSA",
+  mixed: "Mixed",
+  unclear: "Unclear",
+};
+
 export default function ProgressiveAnalyticsPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -124,11 +131,19 @@ export default function ProgressiveAnalyticsPage() {
                       <h4 className="text-sm font-semibold">
                         {chain.problemTitle}
                       </h4>
-                      <span
-                        className={`text-xs px-2 py-1 rounded-full font-mono ${PATTERN_COLOR[chain.pattern]}`}
-                      >
-                        {PATTERN_LABEL[chain.pattern]}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        {chain.averageCodeReuse != null && (
+                          <span className="text-[11px] px-2 py-1 rounded-full font-mono bg-muted text-muted-foreground">
+                            avg code reuse{" "}
+                            {Math.round(chain.averageCodeReuse * 100)}%
+                          </span>
+                        )}
+                        <span
+                          className={`text-xs px-2 py-1 rounded-full font-mono ${PATTERN_COLOR[chain.pattern]}`}
+                        >
+                          {PATTERN_LABEL[chain.pattern]}
+                        </span>
+                      </div>
                     </div>
                     <table className="w-full data-table text-xs">
                       <thead>
@@ -139,7 +154,9 @@ export default function ProgressiveAnalyticsPage() {
                           <th className="text-center">Runs</th>
                           <th className="text-center">Errors resolved</th>
                           <th className="text-center">Time to solve</th>
-                          <th className="text-center">Code churn</th>
+                          <th className="text-center">Reused</th>
+                          <th className="text-center">Reworked</th>
+                          <th className="text-left">Approach</th>
                           <th className="text-center">Complexity (target)</th>
                         </tr>
                       </thead>
@@ -162,8 +179,51 @@ export default function ProgressiveAnalyticsPage() {
                                 ? `${Math.round(s.timeToSolveSeconds)}s`
                                 : "—"}
                             </td>
-                            <td className="text-center font-mono">
+                            <td
+                              className={`text-center font-mono ${
+                                s.codeReuse == null
+                                  ? ""
+                                  : s.codeReuse >= 0.6
+                                    ? "text-success"
+                                    : s.codeReuse <= 0.25
+                                      ? "text-warning"
+                                      : ""
+                              }`}
+                              title="Share of the previous stage's accepted solution kept"
+                            >
+                              {s.codeReuse != null
+                                ? `${Math.round(s.codeReuse * 100)}%`
+                                : "—"}
+                            </td>
+                            <td
+                              className="text-center font-mono"
+                              title="How much of this stage's own code changed before it passed"
+                            >
                               {Math.round(s.codeChurn * 100)}%
+                            </td>
+                            <td className="text-left">
+                              {s.approach ? (
+                                <div className="flex flex-col gap-0.5">
+                                  <span
+                                    className={`font-mono ${
+                                      s.approach.label === "brute_force"
+                                        ? "text-destructive"
+                                        : s.approach.label === "data_structure"
+                                          ? "text-success"
+                                          : "text-muted-foreground"
+                                    }`}
+                                  >
+                                    {APPROACH_LABEL[s.approach.label]}
+                                  </span>
+                                  {s.approach.techniques.length > 0 && (
+                                    <span className="text-[10px] text-muted-foreground">
+                                      {s.approach.techniques.join(", ")}
+                                    </span>
+                                  )}
+                                </div>
+                              ) : (
+                                "—"
+                              )}
                             </td>
                             <td className="text-center font-mono">
                               {s.complexity?.label ?? "—"} (

@@ -254,15 +254,20 @@ async def _analyze_participant_chain(
 
     expected = {s.id: s.expected_complexity for s in problem.stages}
     pattern = analytics_engine.classify_pattern(metrics, expected)
+    reuse_values = [m.code_reuse for m in metrics if m.code_reuse is not None]
 
     return {
         "problemId": problem.id, "problemTitle": problem.title, "pattern": pattern,
+        "averageCodeReuse": round(sum(reuse_values) / len(reuse_values), 3) if reuse_values else None,
         "stages": [
             {
                 "stageId": m.stage_id, "stageOrder": m.stage_order, "solved": m.solved,
                 "attempts": m.attempts, "runs": m.runs, "errorsSeen": sorted(m.errors_seen),
                 "errorsResolved": m.errors_resolved, "timeToSolveSeconds": m.time_to_solve_seconds,
-                "codeChurn": round(m.code_churn, 3), "crossStageRewrite": round(m.cross_stage_rewrite, 3) if m.cross_stage_rewrite is not None else None,
+                "codeChurn": round(m.code_churn, 3),
+                "crossStageRewrite": round(m.cross_stage_rewrite, 3) if m.cross_stage_rewrite is not None else None,
+                "codeReuse": round(m.code_reuse, 3) if m.code_reuse is not None else None,
+                "approach": m.approach,
                 "complexity": m.complexity, "expectedComplexity": expected.get(m.stage_id),
             }
             for m in metrics

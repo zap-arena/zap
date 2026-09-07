@@ -1,25 +1,40 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster } from "./components/ui/sonner";
-import AdminAnalytics from "./pages/admin/AdminAnalytics";
-import AdminContestDetail from "./pages/admin/AdminContestDetail";
-import AdminContests from "./pages/admin/AdminContests";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminLogs from "./pages/admin/AdminLogs";
-import AdminParticipants from "./pages/admin/AdminParticipants";
-import AdminProblems from "./pages/admin/AdminProblems";
-import AdminSubmissions from "./pages/admin/AdminSubmissions";
-import AdminUsers from "./pages/admin/AdminUsers";
-import ProgressiveAnalyticsPage from "./pages/admin/ProgressiveAnalyticsPage";
 import ContestEntryPage from "./pages/ContestEntryPage";
-import ContestResultPage from "./pages/ContestResultPage";
 import ContestsPage from "./pages/ContestsPage";
-import ContestWorkspacePage from "./pages/ContestWorkspacePage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
-import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
 import { useAuth } from "./store/auth";
+
+// Admin screens and the Monaco-based workspace are large and rarely the entry point, so they
+// load on demand instead of inflating the initial download.
+const AdminAnalytics = lazy(() => import("./pages/admin/AdminAnalytics"));
+const AdminContestDetail = lazy(() => import("./pages/admin/AdminContestDetail"));
+const AdminContests = lazy(() => import("./pages/admin/AdminContests"));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const AdminLogs = lazy(() => import("./pages/admin/AdminLogs"));
+const AdminParticipants = lazy(() => import("./pages/admin/AdminParticipants"));
+const AdminProblems = lazy(() => import("./pages/admin/AdminProblems"));
+const AdminSubmissions = lazy(() => import("./pages/admin/AdminSubmissions"));
+const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
+const AdminCodeWar = lazy(() => import("./pages/admin/AdminCodeWar"));
+const ProgressiveAnalyticsPage = lazy(
+  () => import("./pages/admin/ProgressiveAnalyticsPage"),
+);
+const ContestWorkspacePage = lazy(() => import("./pages/ContestWorkspacePage"));
+const ContestResultPage = lazy(() => import("./pages/ContestResultPage"));
+const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+
+function PageFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+  );
+}
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, isInitialized } = useAuth();
@@ -50,6 +65,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Toaster position="top-right" closeButton duration={4000} />
+      <Suspense fallback={<PageFallback />}>
       <Routes>
         {/* Public */}
         <Route path="/" element={<HomePage />} />
@@ -127,6 +143,14 @@ export default function App() {
           }
         />
         <Route
+          path="/admin/code-war"
+          element={
+            <RequireAdmin>
+              <AdminCodeWar />
+            </RequireAdmin>
+          }
+        />
+        <Route
           path="/admin/participants"
           element={
             <RequireAdmin>
@@ -170,6 +194,7 @@ export default function App() {
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }

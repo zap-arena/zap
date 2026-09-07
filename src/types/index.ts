@@ -13,10 +13,13 @@ export type Language = "c" | "cpp" | "java" | "python";
 
 export interface TestCase {
   id: string;
+  name?: string;
   input: string;
   expectedOutput: string;
   hidden: boolean;
   marks: number;
+  /** Only set on progressive-stage cases that feed the complexity estimator. */
+  perfTier?: 'small' | 'medium' | 'large' | null;
 }
 
 export interface Boilerplate {
@@ -53,6 +56,7 @@ export interface Problem {
   stages?: ProblemStage[];
   currentStageOrder?: number;
   totalStages?: number;
+  chainCompleted?: boolean;
 }
 
 export interface ProblemStage {
@@ -228,6 +232,13 @@ export interface StageAnalytics {
   timeToSolveSeconds: number | null;
   codeChurn: number;
   crossStageRewrite: number | null;
+  /** Share of the previous stage's accepted solution kept in this one (1 = untouched). */
+  codeReuse: number | null;
+  approach: {
+    label: "brute_force" | "data_structure" | "mixed" | "unclear";
+    techniques: string[];
+    loopDepth: number;
+  } | null;
   complexity: {
     label: string;
     confidence: "high" | "low";
@@ -248,6 +259,7 @@ export interface ChainAnalytics {
   problemTitle: string;
   pattern: BehaviorPattern;
   behaviorScore: number;
+  averageCodeReuse: number | null;
   stages: StageAnalytics[];
 }
 
