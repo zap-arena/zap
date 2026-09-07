@@ -9,6 +9,7 @@ import AdminParticipants from "./pages/admin/AdminParticipants";
 import AdminProblems from "./pages/admin/AdminProblems";
 import AdminSubmissions from "./pages/admin/AdminSubmissions";
 import AdminUsers from "./pages/admin/AdminUsers";
+import AdminCodeWar from "./pages/admin/AdminCodeWar";
 import ProgressiveAnalyticsPage from "./pages/admin/ProgressiveAnalyticsPage";
 import ContestEntryPage from "./pages/ContestEntryPage";
 import ContestResultPage from "./pages/ContestResultPage";
@@ -123,6 +124,14 @@ export default function App() {
           element={
             <RequireAdmin>
               <ProgressiveAnalyticsPage />
+            </RequireAdmin>
+          }
+        />
+        <Route
+          path="/admin/code-war"
+          element={
+            <RequireAdmin>
+              <AdminCodeWar />
             </RequireAdmin>
           }
         />

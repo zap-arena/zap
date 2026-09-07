@@ -84,6 +84,10 @@ interface TestResult {
   status: "passed" | "failed" | "running";
   executionTime?: number;
   errorMessage?: string | null;
+  /** Present for sample runs, which compare actual against expected output. */
+  input?: string;
+  expectedOutput?: string;
+  actualOutput?: string;
 }
 
 interface RunOutput {
@@ -92,6 +96,8 @@ interface RunOutput {
   compileOutput: string;
   status: string;
   testResults: TestResult[];
+  /** Sample runs show the full comparison; submissions only report pass/fail. */
+  showComparison?: boolean;
 }
 
 const BUILTIN_BASE: Record<string, "vs" | "vs-dark" | "hc-black"> = {
@@ -334,10 +340,16 @@ export default function ContestWorkspacePage() {
     if (fresh && fresh !== selectedProblem) setSelectedProblem(fresh);
   }, [problems, selectedProblem]);
 
+  // Once every stage is cleared `currentStageOrder` runs past the last stage, so fall back to it
+  // rather than dropping to the base problem description.
+  const chainStages = selectedProblem?.isProgressive
+    ? (selectedProblem.stages ?? [])
+    : [];
+  const chainCompleted = !!selectedProblem?.chainCompleted;
   const activeStage = selectedProblem?.isProgressive
-    ? selectedProblem.stages?.find(
+    ? chainStages.find(
         (s) => s.stageOrder === selectedProblem.currentStageOrder,
-      )
+      ) ?? (chainCompleted ? chainStages[chainStages.length - 1] : undefined)
     : undefined;
 
   // Solved problems tracking (derived from the best submission per problem)
@@ -517,30 +529,50 @@ export default function ContestWorkspacePage() {
     setRunOutput(null);
     setBottomTab("output");
     try {
-      // Use sample test case input if stdin is empty
-      const runInput =
-        stdin.trim() || selectedProblem.examples?.[0]?.input || "";
-
+      // Sending an empty stdin makes the backend run every sample case and report
+      // actual vs expected for each; a custom stdin runs just that one input.
       const result = await api.post<{
         status: string;
         stdout: string;
         stderr: string;
         compileOutput: string;
         error?: string;
+        testResults?: {
+          id: string;
+          name: string;
+          input: string;
+          expectedOutput: string;
+          actualOutput: string;
+          passed: boolean;
+          status: string;
+          executionTime: number;
+          errorMessage?: string | null;
+        }[];
       }>("/code/run", {
         problemId: selectedProblem.id,
         contestId,
         stageId: activeStage?.id,
         language,
         code,
-        stdin: runInput,
+        stdin: stdin.trim(),
       });
+      const cases = result.testResults ?? [];
       setRunOutput({
         stdout: result.stdout,
         stderr: result.stderr || result.error || "",
         compileOutput: result.compileOutput,
         status: result.status,
-        testResults: [],
+        showComparison: cases.length > 0,
+        testResults: cases.map((tr, i) => ({
+          id: tr.id || String(i),
+          label: tr.name || `Sample ${i + 1}`,
+          status: tr.passed ? "passed" : "failed",
+          executionTime: Math.round(tr.executionTime * 1000),
+          errorMessage: tr.errorMessage,
+          input: tr.input,
+          expectedOutput: tr.expectedOutput,
+          actualOutput: tr.actualOutput,
+        })),
       });
     } catch (err) {
       setRunOutput({
@@ -992,9 +1024,18 @@ export default function ContestWorkspacePage() {
                       </div>
                       {selectedProblem.isProgressive && (
                         <p className="text-[11px] text-muted-foreground mt-2">
-                          Stage {activeStage?.stageOrder ?? 1} of{" "}
-                          {selectedProblem.totalStages} — solve and submit to
-                          unlock the next enhancement.
+                          {chainCompleted ? (
+                            <span className="text-success">
+                              Chain complete — all {selectedProblem.totalStages}{" "}
+                              stages cleared.
+                            </span>
+                          ) : (
+                            <>
+                              Stage {activeStage?.stageOrder ?? 1} of{" "}
+                              {selectedProblem.totalStages} — solve and submit
+                              to unlock the next enhancement.
+                            </>
+                          )}
                         </p>
                       )}
                     </div>
@@ -1297,11 +1338,11 @@ export default function ContestWorkspacePage() {
 
                       {bottomTab === "output" && runOutput && (
                         <div className="space-y-3">
-                          {/* Test results grid (submissions only) */}
-                          {runOutput.testResults.length > 0 && (
-                            <div>
-                              <div className="text-[10px] text-muted-foreground font-mono mb-2 uppercase tracking-wider">
-                                Test Cases —{" "}
+                          {/* Sample run: full input / expected / actual comparison per case */}
+                          {runOutput.showComparison && (
+                            <div className="space-y-2">
+                              <div className="text-[10px] text-muted-foreground font-mono mb-1 uppercase tracking-wider">
+                                Sample Test Cases —{" "}
                                 {
                                   runOutput.testResults.filter(
                                     (r) => r.status === "passed",
@@ -1309,33 +1350,117 @@ export default function ContestWorkspacePage() {
                                 }
                                 /{runOutput.testResults.length} Passed
                               </div>
-                              <div className="flex flex-wrap gap-2">
-                                {runOutput.testResults.map((r, i) => (
+                              {runOutput.testResults.map((r, i) => {
+                                const passed = r.status === "passed";
+                                return (
                                   <div
                                     key={r.id}
-                                    title={r.errorMessage ?? r.label}
-                                    className={`flex items-center gap-1 px-2 py-1 rounded text-[11px] font-mono ${
-                                      r.status === "passed"
-                                        ? "verdict-accepted"
-                                        : "verdict-wrong"
-                                    }`}
+                                    className={`rounded border ${passed ? "border-success/30 bg-success/5" : "border-destructive/30 bg-destructive/5"}`}
                                   >
-                                    {r.status === "passed" ? (
-                                      <CheckCircle size={10} />
-                                    ) : (
-                                      <XCircle size={10} />
-                                    )}
-                                    <span>#{i + 1}</span>
-                                    {r.executionTime !== undefined && (
-                                      <span className="opacity-70">
-                                        {r.executionTime}ms
+                                    <div className="flex items-center gap-2 px-2 py-1.5 border-b border-border/50">
+                                      {passed ? (
+                                        <CheckCircle
+                                          size={11}
+                                          className="text-success shrink-0"
+                                        />
+                                      ) : (
+                                        <XCircle
+                                          size={11}
+                                          className="text-destructive shrink-0"
+                                        />
+                                      )}
+                                      <span className="text-[11px] font-mono font-semibold">
+                                        Case #{i + 1}
                                       </span>
+                                      <span className="text-[10px] text-muted-foreground truncate">
+                                        {r.label}
+                                      </span>
+                                      <div className="flex-1" />
+                                      {r.executionTime !== undefined && (
+                                        <span className="text-[10px] text-muted-foreground font-mono">
+                                          {r.executionTime}ms
+                                        </span>
+                                      )}
+                                    </div>
+                                    <div className="grid sm:grid-cols-3 gap-2 p-2">
+                                      <div>
+                                        <div className="text-[9px] text-muted-foreground font-mono mb-1 uppercase tracking-wider">
+                                          Input
+                                        </div>
+                                        <pre className="text-[11px] font-mono text-foreground bg-muted p-1.5 rounded whitespace-pre-wrap break-all">
+                                          {r.input || "(empty)"}
+                                        </pre>
+                                      </div>
+                                      <div>
+                                        <div className="text-[9px] text-muted-foreground font-mono mb-1 uppercase tracking-wider">
+                                          Expected Output
+                                        </div>
+                                        <pre className="text-[11px] font-mono text-success bg-muted p-1.5 rounded whitespace-pre-wrap break-all">
+                                          {r.expectedOutput || "(empty)"}
+                                        </pre>
+                                      </div>
+                                      <div>
+                                        <div className="text-[9px] text-muted-foreground font-mono mb-1 uppercase tracking-wider">
+                                          Your Output
+                                        </div>
+                                        <pre
+                                          className={`text-[11px] font-mono p-1.5 rounded whitespace-pre-wrap break-all bg-muted ${passed ? "text-success" : "text-destructive"}`}
+                                        >
+                                          {r.actualOutput || "(no output)"}
+                                        </pre>
+                                      </div>
+                                    </div>
+                                    {!passed && r.errorMessage && (
+                                      <pre className="mx-2 mb-2 text-[10px] font-mono text-destructive whitespace-pre-wrap">
+                                        {r.errorMessage}
+                                      </pre>
                                     )}
                                   </div>
-                                ))}
-                              </div>
+                                );
+                              })}
                             </div>
                           )}
+
+                          {/* Submission verdict: pass/fail chips only, hidden cases stay hidden */}
+                          {!runOutput.showComparison &&
+                            runOutput.testResults.length > 0 && (
+                              <div>
+                                <div className="text-[10px] text-muted-foreground font-mono mb-2 uppercase tracking-wider">
+                                  Test Cases —{" "}
+                                  {
+                                    runOutput.testResults.filter(
+                                      (r) => r.status === "passed",
+                                    ).length
+                                  }
+                                  /{runOutput.testResults.length} Passed
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                  {runOutput.testResults.map((r, i) => (
+                                    <div
+                                      key={r.id}
+                                      title={r.errorMessage ?? r.label}
+                                      className={`flex items-center gap-1 px-2 py-1 rounded text-[11px] font-mono ${
+                                        r.status === "passed"
+                                          ? "verdict-accepted"
+                                          : "verdict-wrong"
+                                      }`}
+                                    >
+                                      {r.status === "passed" ? (
+                                        <CheckCircle size={10} />
+                                      ) : (
+                                        <XCircle size={10} />
+                                      )}
+                                      <span>#{i + 1}</span>
+                                      {r.executionTime !== undefined && (
+                                        <span className="opacity-70">
+                                          {r.executionTime}ms
+                                        </span>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
 
                           {runOutput.status &&
                             runOutput.testResults.length === 0 && (
@@ -1472,19 +1597,20 @@ export default function ContestWorkspacePage() {
         </DialogContent>
       </Dialog>
 
-      {/* Fullscreen guard - blocks the workspace until fullscreen is restored */}
-      {attemptActive && hasEnteredFullscreen && !isFullscreen && (
+      {/* Fullscreen guard - blocks the workspace until fullscreen is entered/restored */}
+      {attemptActive && !isFullscreen && (
         <div className="fixed inset-0 z-[100] bg-background/95 backdrop-blur-sm flex items-center justify-center p-6">
           <div className="card-glow rounded-xl p-8 max-w-md text-center space-y-4">
             <ShieldAlert size={40} className="text-warning mx-auto" />
             <h2 className="text-xl font-bold">Fullscreen is required</h2>
             <p className="text-sm text-muted-foreground">
-              This contest can only be taken in fullscreen mode. Leaving
-              fullscreen has been recorded. Return to fullscreen to continue —
-              your timer is still running.
+              {hasEnteredFullscreen
+                ? "This contest can only be taken in fullscreen mode. Leaving fullscreen has been recorded. Return to fullscreen to continue — your timer is still running."
+                : "This contest must be taken in fullscreen mode. Your timer is already running, so enter fullscreen to begin."}
             </p>
             <Button className="btn-primary w-full" onClick={requestFullscreen}>
-              <Maximize size={14} className="mr-2" /> Re-enter fullscreen
+              <Maximize size={14} className="mr-2" />
+              {hasEnteredFullscreen ? "Re-enter fullscreen" : "Enter fullscreen"}
             </Button>
           </div>
         </div>

@@ -21,6 +21,74 @@ async def run_public(problem: models.Problem, language: str, code: str, stdin: s
     }
 
 
+def visible_test_cases(problem: models.Problem, stage: Optional[models.ProblemStage] = None) -> list[models.TestCase]:
+    source = stage.test_cases if stage is not None else [tc for tc in problem.test_cases if not tc.stage_id]
+    return sorted(
+        [tc for tc in source if not tc.hidden and tc.perf_tier in (None, "", "small")],
+        key=lambda t: t.order,
+    )
+
+
+async def run_samples(
+    problem: models.Problem, language: str, code: str, time_limit: int,
+    stage: Optional[models.ProblemStage] = None,
+) -> dict[str, Any]:
+    """Run every visible sample case so 'Run' can show actual vs expected output per case."""
+    test_cases = visible_test_cases(problem, stage)
+    if not test_cases:
+        return {"status": "NO_SAMPLES", "stdout": "", "stderr": "", "compileOutput": "", "testResults": []}
+
+    test_results: list[dict[str, Any]] = []
+    compile_output = ""
+    overall_status = "COMPLETED"
+
+    for tc in test_cases:
+        execution = await execute(language, code, tc.input, time_limit)
+        result = execution.get("result") or {}
+        run_result = result.get("run") or {}
+        compile_result = result.get("compile") or {}
+        status = execution["status"]
+
+        if status == "COMPILATION_ERROR":
+            compile_output = compile_result.get("stderr") or compile_result.get("output") or ""
+
+        actual = run_result.get("stdout") or run_result.get("output") or ""
+        passed = status == "COMPLETED" and normalize_output(actual) == normalize_output(tc.expected_output)
+
+        test_results.append({
+            "id": tc.id,
+            "name": tc.name,
+            "input": tc.input,
+            "expectedOutput": tc.expected_output,
+            "actualOutput": actual,
+            "passed": passed,
+            "status": "PASSED" if passed else (status if status != "COMPLETED" else "WRONG_ANSWER"),
+            "executionTime": round(execution["elapsedMs"] / 1000, 3),
+            "stderr": run_result.get("stderr") or "",
+            "errorMessage": (
+                compile_result.get("stderr") or run_result.get("stderr") or execution.get("error")
+            ) if not passed else None,
+        })
+
+        # A compile failure or dead judge applies to every case, so stop rather than repeat it.
+        if status in {"COMPILATION_ERROR", "JUDGE_UNAVAILABLE"}:
+            overall_status = status
+            break
+
+    if overall_status == "COMPLETED" and any(not t["passed"] for t in test_results):
+        overall_status = "WRONG_ANSWER"
+
+    return {
+        "status": overall_status,
+        "stdout": "",
+        "stderr": "",
+        "compileOutput": compile_output,
+        "passedCount": sum(1 for t in test_results if t["passed"]),
+        "totalCount": len(test_cases),
+        "testResults": test_results,
+    }
+
+
 async def judge_submission(
     problem: models.Problem, language: str, code: str, stage: Optional[models.ProblemStage] = None
 ) -> dict[str, Any]:

@@ -1,6 +1,7 @@
 import {
   Activity,
   BarChart3,
+  Brain,
   ChevronRight,
   Code2,
   LayoutDashboard,
@@ -22,6 +23,7 @@ const NAV_ITEMS = [
   { path: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { path: "/admin/problems", label: "Problems", icon: Code2 },
   { path: "/admin/contests", label: "Contests", icon: Trophy },
+  { path: "/admin/code-war", label: "Code War", icon: Brain },
   { path: "/admin/participants", label: "Participants", icon: Users },
   { path: "/admin/submissions", label: "Submissions", icon: Send },
   { path: "/admin/logs", label: "Exec Logs", icon: Activity },

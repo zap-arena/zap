@@ -702,11 +702,25 @@ function EditProblemDialog({
       toast.error("Title is required");
       return;
     }
-    if (testCases.length === 0) {
-      toast.error("At least one test case required");
+    // A chain problem keeps its cases on the stages, so the base list is expected to be empty.
+    if (totalTestCasesLength === 0) {
+      toast.error(
+        problem.isProgressive
+          ? "Add at least one test case to a stage"
+          : "At least one test case required",
+      );
       return;
     }
     setSaving(true);
+    const serializeCases = (list: (TestCase & { _new?: boolean })[]) =>
+      list.map((tc, i) => ({
+        name: tc.name || `Test case ${i + 1}`,
+        input: tc.input,
+        expectedOutput: tc.expectedOutput,
+        hidden: tc.hidden,
+        marks: tc.marks,
+        perfTier: tc.perfTier ?? null,
+      }));
     try {
       await api.put(`/admin/problems/${problem.id}`, {
         title: details.title,
@@ -722,23 +736,11 @@ function EditProblemDialog({
           .filter(Boolean),
         languages: details.languages,
         boilerplates,
-        testCases: testCases.map((tc) => ({
-          name: tc.id,
-          input: tc.input,
-          expectedOutput: tc.expectedOutput,
-          hidden: tc.hidden,
-          marks: tc.marks,
-        })),
+        testCases: serializeCases(testCases),
         isProgressive: problem.isProgressive,
         stages: stages.map((s) => ({
           ...s,
-          testCases: (s.testCases || []).map((tc) => ({
-            name: tc.id,
-            input: tc.input,
-            expectedOutput: tc.expectedOutput,
-            hidden: tc.hidden,
-            marks: tc.marks,
-          })),
+          testCases: serializeCases(s.testCases || []),
         })),
         timeLimit: Number(details.timeLimit),
         memoryLimit: Number(details.memoryLimit),

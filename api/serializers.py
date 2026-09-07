@@ -7,11 +7,13 @@ def serialize_test_case(tc: models.TestCase, include_hidden: bool) -> dict:
         return {"id": tc.id, "name": tc.name, "hidden": True, "marks": tc.marks}
     return {
         "id": tc.id, "name": tc.name, "input": tc.input, "expectedOutput": tc.expected_output,
-        "hidden": tc.hidden, "marks": tc.marks,
+        "hidden": tc.hidden, "marks": tc.marks, "perfTier": tc.perf_tier,
     }
 
 
-def serialize_stage(stage: models.ProblemStage, include_hidden: bool, locked: bool = False) -> dict:
+def serialize_stage(
+    stage: models.ProblemStage, include_hidden: bool, locked: bool = False, include_perf_tiers: bool = False
+) -> dict:
     if locked:
         return {"id": stage.id, "stageOrder": stage.stage_order, "title": stage.title, "locked": True}
     return {
@@ -20,15 +22,25 @@ def serialize_stage(stage: models.ProblemStage, include_hidden: bool, locked: bo
         "memoryLimit": stage.memory_limit, "maxScore": stage.max_score,
         "testCases": [
             serialize_test_case(tc, include_hidden) for tc in sorted(stage.test_cases, key=lambda t: t.order)
-            if tc.perf_tier in (None, "", "small")
+            # Perf-tier cases only feed the complexity estimator, so candidates never see them.
+            if include_perf_tiers or tc.perf_tier in (None, "", "small")
         ],
         "locked": False,
     }
 
 
 def serialize_problem(
-    p: models.Problem, include_hidden: bool = False, chain_progress: Optional["models.ContestChainProgress"] = None
+    p: models.Problem,
+    include_hidden: bool = False,
+    chain_progress: Optional["models.ContestChainProgress"] = None,
+    reveal_stages: bool = False,
 ) -> dict:
+    """Serialize a problem.
+
+    `reveal_stages` must be set for admin/authoring contexts: without it every stage after the
+    candidate's current one is returned as a locked stub, and saving that stub back would wipe
+    the stage's statement and test cases.
+    """
     out = {
         "id": p.id, "title": p.title, "slug": p.slug, "difficulty": p.difficulty,
         "description": p.description, "inputFormat": p.input_format, "outputFormat": p.output_format,
@@ -46,9 +58,15 @@ def serialize_problem(
         current_order = chain_progress.current_stage_order if chain_progress else 1
         out["currentStageOrder"] = current_order
         out["totalStages"] = len(stages)
+        out["chainCompleted"] = bool(stages) and current_order > len(stages)
         # Never leak future-stage statements/test cases to the candidate.
         out["stages"] = [
-            serialize_stage(s, include_hidden, locked=s.stage_order > current_order) for s in stages
+            serialize_stage(
+                s, include_hidden,
+                locked=not reveal_stages and s.stage_order > current_order,
+                include_perf_tiers=reveal_stages,
+            )
+            for s in stages
         ]
     return out
 

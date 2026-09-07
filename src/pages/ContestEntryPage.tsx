@@ -83,6 +83,15 @@ export default function ContestEntryPage() {
       navigate(`/login?redirect=/contest/${slug}`);
       return;
     }
+    // Must fire synchronously inside the click: awaiting first consumes the user
+    // gesture and the browser then rejects the fullscreen request.
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+      }
+    } catch {
+      // Fullscreen is best-effort; the workspace still prompts for it.
+    }
     setStarting(true);
     try {
       await api.post(`/contests/${contest.id}/start`);
