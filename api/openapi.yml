@@ -1,0 +1,2088 @@
+openapi: 3.1.0
+info:
+  title: CodeArena API
+  version: 0.1.0
+paths:
+  /api/auth/register:
+    post:
+      tags:
+      - auth
+      summary: Register
+      operationId: register_api_auth_register_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/auth/login:
+    post:
+      tags:
+      - auth
+      summary: Login
+      operationId: login_api_auth_login_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/auth/logout:
+    post:
+      tags:
+      - auth
+      summary: Logout
+      operationId: logout_api_auth_logout_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      security:
+      - HTTPBearer: []
+  /api/auth/me:
+    get:
+      tags:
+      - auth
+      summary: Me
+      operationId: me_api_auth_me_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOut'
+      security:
+      - HTTPBearer: []
+  /api/admin/problems/search:
+    get:
+      tags:
+      - problems
+      summary: Admin Search Problems
+      operationId: admin_search_problems_api_admin_problems_search_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+          default: ''
+          title: Q
+      - name: difficulty
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Difficulty
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          default: active
+          title: Status
+      - name: isProgressive
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Isprogressive
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 20
+          title: Limit
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/problems:
+    get:
+      tags:
+      - problems
+      summary: Admin List Problems
+      operationId: admin_list_problems_api_admin_problems_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - problems
+      summary: Create Problem
+      operationId: create_problem_api_admin_problems_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProblemIn'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/admin/problems/{problem_id}:
+    get:
+      tags:
+      - problems
+      summary: Admin Get Problem
+      operationId: admin_get_problem_api_admin_problems__problem_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: problem_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Problem Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - problems
+      summary: Update Problem
+      operationId: update_problem_api_admin_problems__problem_id__put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: problem_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Problem Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProblemIn'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - problems
+      summary: Delete Problem
+      operationId: delete_problem_api_admin_problems__problem_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: problem_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Problem Id
+      - name: hard
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+          title: Hard
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/problems/import:
+    post:
+      tags:
+      - problems
+      summary: Import Problem
+      operationId: import_problem_api_admin_problems_import_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProblemIn'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/admin/problems/import-zip:
+    post:
+      tags:
+      - problems
+      summary: Import Problems Zip
+      operationId: import_problems_zip_api_admin_problems_import_zip_post
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_import_problems_zip_api_admin_problems_import_zip_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/contests:
+    get:
+      tags:
+      - contests
+      summary: List Public Contests
+      operationId: list_public_contests_api_contests_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/contests/{slug}:
+    get:
+      tags:
+      - contests
+      summary: Get Contest
+      operationId: get_contest_api_contests__slug__get
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Slug
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/contests/{contest_id}/start:
+    post:
+      tags:
+      - contests
+      summary: Start Contest
+      operationId: start_contest_api_contests__contest_id__start_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/contests/{contest_id}/session:
+    get:
+      tags:
+      - contests
+      summary: Get Session
+      operationId: get_session_api_contests__contest_id__session_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/contests/{contest_id}/finish:
+    post:
+      tags:
+      - contests
+      summary: Finish Contest
+      operationId: finish_contest_api_contests__contest_id__finish_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/contests/{contest_id}/problems:
+    get:
+      tags:
+      - contests
+      summary: Contest Problems
+      operationId: contest_problems_api_contests__contest_id__problems_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/contests/{contest_id}/problems/{problem_id}/draft:
+    put:
+      tags:
+      - contests
+      summary: Save Draft
+      operationId: save_draft_api_contests__contest_id__problems__problem_id__draft_put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      - name: problem_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Problem Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DraftIn'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - contests
+      summary: Get Draft
+      operationId: get_draft_api_contests__contest_id__problems__problem_id__draft_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      - name: problem_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Problem Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/contests/{contest_id}/my-submissions:
+    get:
+      tags:
+      - contests
+      summary: My Submissions
+      operationId: my_submissions_api_contests__contest_id__my_submissions_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/contests/{contest_id}/activity:
+    post:
+      tags:
+      - contests
+      summary: Record Activity
+      description: Ingest a batch of proctoring events. Only accepted while the attempt
+        is in progress.
+      operationId: record_activity_api_contests__contest_id__activity_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProctorBatchIn'
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/contests/{contest_id}/notifications:
+    get:
+      tags:
+      - contests
+      summary: My Notifications
+      operationId: my_notifications_api_contests__contest_id__notifications_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/contests/{contest_id}/leaderboard:
+    get:
+      tags:
+      - contests
+      summary: Leaderboard
+      operationId: leaderboard_api_contests__contest_id__leaderboard_get
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/contests:
+    get:
+      tags:
+      - contests
+      summary: Admin List Contests
+      operationId: admin_list_contests_api_admin_contests_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - contests
+      summary: Create Contest
+      operationId: create_contest_api_admin_contests_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContestIn'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    delete:
+      tags:
+      - contests
+      summary: Delete All Contests
+      operationId: delete_all_contests_api_admin_contests_delete
+      responses:
+        '204':
+          description: Successful Response
+      security:
+      - HTTPBearer: []
+  /api/admin/contests/{contest_id}:
+    get:
+      tags:
+      - contests
+      summary: Admin Get Contest
+      operationId: admin_get_contest_api_admin_contests__contest_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - contests
+      summary: Update Contest
+      operationId: update_contest_api_admin_contests__contest_id__put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContestIn'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - contests
+      summary: Delete Contest
+      operationId: delete_contest_api_admin_contests__contest_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      - name: hard
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+          title: Hard
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/contests/{contest_id}/publish:
+    post:
+      tags:
+      - contests
+      summary: Publish Contest
+      operationId: publish_contest_api_admin_contests__contest_id__publish_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/contests/{contest_id}/participants:
+    get:
+      tags:
+      - contests
+      summary: Admin Participants
+      operationId: admin_participants_api_admin_contests__contest_id__participants_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/contests/{contest_id}/participants/{user_id}:
+    get:
+      tags:
+      - contests
+      summary: Admin Participant Detail
+      operationId: admin_participant_detail_api_admin_contests__contest_id__participants__user_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: User Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/contests/{contest_id}/results:
+    get:
+      tags:
+      - contests
+      summary: Admin Results
+      operationId: admin_results_api_admin_contests__contest_id__results_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/contests/{contest_id}/activity:
+    get:
+      tags:
+      - contests
+      summary: Admin Activity
+      description: Proctoring trail for a contest, newest first.
+      operationId: admin_activity_api_admin_contests__contest_id__activity_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      - name: userId
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Userid
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 500
+          title: Limit
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/contests/{contest_id}/activity/summary:
+    get:
+      tags:
+      - contests
+      summary: Admin Activity Summary
+      description: Per-participant counts of each proctoring event type.
+      operationId: admin_activity_summary_api_admin_contests__contest_id__activity_summary_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/contests/{contest_id}/notifications:
+    get:
+      tags:
+      - contests
+      summary: Admin List Notifications
+      operationId: admin_list_notifications_api_admin_contests__contest_id__notifications_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - contests
+      summary: Admin Create Notification
+      operationId: admin_create_notification_api_admin_contests__contest_id__notifications_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationIn'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/contests/{contest_id}/notifications/{notification_id}:
+    delete:
+      tags:
+      - contests
+      summary: Admin Delete Notification
+      operationId: admin_delete_notification_api_admin_contests__contest_id__notifications__notification_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      - name: notification_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Notification Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/code/run:
+    post:
+      tags:
+      - submissions
+      summary: Run Code
+      operationId: run_code_api_code_run_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RunRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/submissions:
+    post:
+      tags:
+      - submissions
+      summary: Create Submission
+      operationId: create_submission_api_submissions_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/submissions/{submission_id}:
+    get:
+      tags:
+      - submissions
+      summary: Get Submission
+      operationId: get_submission_api_submissions__submission_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: submission_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Submission Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/statistics:
+    get:
+      tags:
+      - admin
+      summary: Statistics
+      operationId: statistics_api_admin_statistics_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      security:
+      - HTTPBearer: []
+  /api/admin/submissions:
+    get:
+      tags:
+      - admin
+      summary: Admin Submissions
+      operationId: admin_submissions_api_admin_submissions_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contestId
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Contestid
+      - name: userId
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Userid
+      - name: problemId
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Problemid
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 500
+          default: 100
+          title: Limit
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/logs:
+    get:
+      tags:
+      - admin
+      summary: Admin Logs
+      operationId: admin_logs_api_admin_logs_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 500
+          default: 100
+          title: Limit
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/users:
+    get:
+      tags:
+      - admin
+      summary: Admin Users
+      operationId: admin_users_api_admin_users_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Contest Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/contests/{contest_id}/results/export:
+    get:
+      tags:
+      - admin
+      summary: Export Results
+      operationId: export_results_api_admin_contests__contest_id__results_export_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      - name: format
+        in: query
+        required: false
+        schema:
+          type: string
+          default: csv
+          title: Format
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/analytics/users:
+    get:
+      tags:
+      - admin
+      summary: Analytics Users
+      operationId: analytics_users_api_admin_analytics_users_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Contest Id
+      - name: user_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/analytics/events:
+    get:
+      tags:
+      - admin
+      summary: Analytics Events
+      operationId: analytics_events_api_admin_analytics_events_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: interval
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: hour
+          title: Interval
+      - name: contest_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Contest Id
+      - name: user_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/contests/{contest_id}/progressive-analytics:
+    get:
+      tags:
+      - admin
+      summary: Progressive Analytics
+      operationId: progressive_analytics_api_admin_contests__contest_id__progressive_analytics_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/admin/contests/{contest_id}/progressive-analytics/{user_id}:
+    get:
+      tags:
+      - admin
+      summary: Progressive Analytics Detail
+      operationId: progressive_analytics_detail_api_admin_contests__contest_id__progressive_analytics__user_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: contest_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Contest Id
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: User Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/me/profile:
+    get:
+      tags:
+      - profile
+      summary: My Profile
+      operationId: my_profile_api_me_profile_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      security:
+      - HTTPBearer: []
+  /api/public/home:
+    get:
+      tags:
+      - public
+      summary: Home Snapshot
+      operationId: home_snapshot_api_public_home_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/health:
+    get:
+      summary: Health
+      operationId: health_api_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api:
+    get:
+      summary: Root
+      operationId: root_api_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+components:
+  schemas:
+    AuthResponse:
+      properties:
+        token:
+          type: string
+          title: Token
+        user:
+          $ref: '#/components/schemas/UserOut'
+      type: object
+      required:
+      - token
+      - user
+      title: AuthResponse
+    Body_import_problems_zip_api_admin_problems_import_zip_post:
+      properties:
+        file:
+          type: string
+          format: binary
+          title: File
+        slugs:
+          type: string
+          title: Slugs
+          default: ''
+        dry_run:
+          type: boolean
+          title: Dry Run
+          default: false
+      type: object
+      required:
+      - file
+      title: Body_import_problems_zip_api_admin_problems_import_zip_post
+    ContestIn:
+      properties:
+        name:
+          type: string
+          maxLength: 200
+          minLength: 1
+          title: Name
+        slug:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Slug
+        description:
+          type: string
+          title: Description
+          default: ''
+        instructions:
+          type: string
+          title: Instructions
+          default: ''
+        startTime:
+          type: string
+          format: date-time
+          title: Starttime
+        endTime:
+          type: string
+          format: date-time
+          title: Endtime
+        duration:
+          type: integer
+          maximum: 1440.0
+          minimum: 5.0
+          title: Duration
+          default: 60
+        scoringMode:
+          type: string
+          enum:
+          - full
+          - partial
+          title: Scoringmode
+          default: partial
+        mode:
+          type: string
+          enum:
+          - standard
+          - progressive
+          title: Mode
+          default: standard
+        leaderboardVisible:
+          type: boolean
+          title: Leaderboardvisible
+          default: true
+        problems:
+          items:
+            $ref: '#/components/schemas/ContestProblemIn'
+          type: array
+          title: Problems
+          default: []
+        moderatorIds:
+          items:
+            type: string
+          type: array
+          title: Moderatorids
+          default: []
+      type: object
+      required:
+      - name
+      - startTime
+      - endTime
+      title: ContestIn
+    ContestProblemIn:
+      properties:
+        problemId:
+          type: string
+          title: Problemid
+        order:
+          type: integer
+          title: Order
+          default: 0
+        maxScore:
+          type: integer
+          title: Maxscore
+          default: 100
+      type: object
+      required:
+      - problemId
+      title: ContestProblemIn
+    DraftIn:
+      properties:
+        language:
+          type: string
+          enum:
+          - c
+          - cpp
+          - java
+          - python
+          title: Language
+        sourceCode:
+          type: string
+          maxLength: 30000
+          title: Sourcecode
+          default: ''
+      type: object
+      required:
+      - language
+      title: DraftIn
+    ExampleIn:
+      properties:
+        input:
+          type: string
+          title: Input
+          default: ''
+        output:
+          type: string
+          title: Output
+          default: ''
+        explanation:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Explanation
+      type: object
+      title: ExampleIn
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    LoginRequest:
+      properties:
+        email:
+          type: string
+          format: email
+          title: Email
+        password:
+          type: string
+          maxLength: 128
+          minLength: 1
+          title: Password
+      type: object
+      required:
+      - email
+      - password
+      title: LoginRequest
+    NotificationIn:
+      properties:
+        message:
+          type: string
+          maxLength: 1000
+          minLength: 1
+          title: Message
+      type: object
+      required:
+      - message
+      title: NotificationIn
+    ProblemIn:
+      properties:
+        title:
+          type: string
+          maxLength: 200
+          minLength: 1
+          title: Title
+        difficulty:
+          type: string
+          enum:
+          - Easy
+          - Medium
+          - Hard
+          title: Difficulty
+          default: Easy
+        description:
+          type: string
+          title: Description
+          default: ''
+        inputFormat:
+          type: string
+          title: Inputformat
+          default: ''
+        outputFormat:
+          type: string
+          title: Outputformat
+          default: ''
+        constraints:
+          type: string
+          title: Constraints
+          default: ''
+        examples:
+          items:
+            $ref: '#/components/schemas/ExampleIn'
+          type: array
+          title: Examples
+          default: []
+        tags:
+          items:
+            type: string
+          type: array
+          title: Tags
+          default: []
+        languages:
+          items:
+            type: string
+            enum:
+            - c
+            - cpp
+            - java
+            - python
+          type: array
+          title: Languages
+          default:
+          - cpp
+          - python
+        boilerplates:
+          additionalProperties:
+            type: string
+          type: object
+          title: Boilerplates
+          default: {}
+        testCases:
+          items:
+            $ref: '#/components/schemas/TestCaseIn'
+          type: array
+          title: Testcases
+          default: []
+        timeLimit:
+          type: integer
+          maximum: 15.0
+          minimum: 1.0
+          title: Timelimit
+          default: 2
+        memoryLimit:
+          type: integer
+          maximum: 1024.0
+          minimum: 16.0
+          title: Memorylimit
+          default: 256
+        maxScore:
+          type: integer
+          maximum: 10000.0
+          minimum: 0.0
+          title: Maxscore
+          default: 100
+        status:
+          type: string
+          enum:
+          - active
+          - archived
+          title: Status
+          default: active
+        isProgressive:
+          type: boolean
+          title: Isprogressive
+          default: false
+        stages:
+          items:
+            $ref: '#/components/schemas/ProblemStageIn'
+          type: array
+          title: Stages
+          default: []
+      type: object
+      required:
+      - title
+      title: ProblemIn
+    ProblemStageIn:
+      properties:
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+        stageOrder:
+          type: integer
+          title: Stageorder
+          default: 1
+        title:
+          type: string
+          title: Title
+          default: ''
+        statement:
+          type: string
+          title: Statement
+          default: ''
+        expectedComplexity:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Expectedcomplexity
+        timeLimit:
+          anyOf:
+          - type: integer
+            maximum: 15.0
+            minimum: 1.0
+          - type: 'null'
+          title: Timelimit
+        memoryLimit:
+          anyOf:
+          - type: integer
+            maximum: 1024.0
+            minimum: 16.0
+          - type: 'null'
+          title: Memorylimit
+        maxScore:
+          type: integer
+          maximum: 10000.0
+          minimum: 0.0
+          title: Maxscore
+          default: 100
+        testCases:
+          items:
+            $ref: '#/components/schemas/TestCaseIn'
+          type: array
+          title: Testcases
+          default: []
+      type: object
+      title: ProblemStageIn
+    ProctorBatchIn:
+      properties:
+        events:
+          items:
+            $ref: '#/components/schemas/ProctorEventIn'
+          type: array
+          maxItems: 50
+          minItems: 1
+          title: Events
+      type: object
+      required:
+      - events
+      title: ProctorBatchIn
+    ProctorEventIn:
+      properties:
+        clientEventId:
+          type: string
+          maxLength: 64
+          minLength: 1
+          title: Clienteventid
+        type:
+          type: string
+          enum:
+          - ESCAPE_PRESSED
+          - FULLSCREEN_EXITED
+          - FULLSCREEN_ENTERED
+          - TAB_HIDDEN
+          - TAB_VISIBLE
+          - WINDOW_BLUR
+          - WINDOW_FOCUS
+          - COPY_BLOCKED
+          - PASTE_BLOCKED
+          - CUT_BLOCKED
+          - CONTEXT_MENU_BLOCKED
+          - DEVTOOLS_ATTEMPT
+          title: Type
+        occurredAt:
+          type: string
+          format: date-time
+          title: Occurredat
+        problemId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Problemid
+        metadata:
+          type: object
+          title: Metadata
+          default: {}
+      type: object
+      required:
+      - clientEventId
+      - type
+      - occurredAt
+      title: ProctorEventIn
+    RegisterRequest:
+      properties:
+        name:
+          type: string
+          maxLength: 120
+          minLength: 1
+          title: Name
+        email:
+          type: string
+          format: email
+          title: Email
+        password:
+          type: string
+          maxLength: 128
+          minLength: 8
+          title: Password
+      type: object
+      required:
+      - name
+      - email
+      - password
+      title: RegisterRequest
+    RunRequest:
+      properties:
+        problemId:
+          type: string
+          title: Problemid
+        contestId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Contestid
+        stageId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Stageid
+        language:
+          type: string
+          enum:
+          - c
+          - cpp
+          - java
+          - python
+          title: Language
+        code:
+          type: string
+          maxLength: 30000
+          minLength: 1
+          title: Code
+        stdin:
+          type: string
+          maxLength: 12000
+          title: Stdin
+          default: ''
+      type: object
+      required:
+      - problemId
+      - language
+      - code
+      title: RunRequest
+    SubmitRequest:
+      properties:
+        problemId:
+          type: string
+          title: Problemid
+        contestId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Contestid
+        stageId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Stageid
+        language:
+          type: string
+          enum:
+          - c
+          - cpp
+          - java
+          - python
+          title: Language
+        code:
+          type: string
+          maxLength: 30000
+          minLength: 1
+          title: Code
+      type: object
+      required:
+      - problemId
+      - language
+      - code
+      title: SubmitRequest
+    TestCaseIn:
+      properties:
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+        name:
+          type: string
+          title: Name
+          default: Test case
+        input:
+          type: string
+          title: Input
+          default: ''
+        expectedOutput:
+          type: string
+          title: Expectedoutput
+          default: ''
+        hidden:
+          type: boolean
+          title: Hidden
+          default: false
+        marks:
+          type: integer
+          title: Marks
+          default: 0
+        perfTier:
+          anyOf:
+          - type: string
+            enum:
+            - small
+            - medium
+            - large
+          - type: 'null'
+          title: Perftier
+      type: object
+      title: TestCaseIn
+    UserOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+        email:
+          type: string
+          title: Email
+        role:
+          type: string
+          title: Role
+      type: object
+      required:
+      - id
+      - name
+      - email
+      - role
+      title: UserOut
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
