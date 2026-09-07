@@ -1,0 +1,38 @@
+service: codearena-api
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.9
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'ap-south-1'}
+  memorySize: 1024
+  timeout: 30
+  environment:
+    # Environment variables can be defined here
+    # e.g., DATABASE_URL: ${env:DATABASE_URL}
+    STAGE: ${self:provider.stage}
+
+functions:
+  api:
+    handler: api/handler.handler
+    events:
+      - http:
+          path: /
+          method: ANY
+          cors: true
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors: true
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: false
+    zip: true
+    fileName: api/requirements.txt
+    pythonBin: python3

@@ -44,3 +44,6 @@ dsa-graph/
 api/.env
 __pycache__/
 .DS_Store
+
+*.zip
+.serverless/
