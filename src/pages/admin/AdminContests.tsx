@@ -347,6 +347,8 @@ function ContestForm({
     scoringMode: contest?.scoringMode ?? "partial",
     mode: contest?.mode ?? "standard",
     leaderboardVisible: contest?.leaderboardVisible ?? true,
+    maxTabSwitches: String(contest?.maxTabSwitches ?? 3),
+    proctorPassword: contest?.proctorPassword ?? "",
   });
   const [moderatorIds, setModeratorIds] = useState<string[]>(
     (contest?.moderators ?? []).map((m) => m.userId),
@@ -444,6 +446,8 @@ function ContestForm({
         scoringMode: form.scoringMode,
         mode: form.mode,
         leaderboardVisible: form.leaderboardVisible,
+        maxTabSwitches: Number(form.maxTabSwitches) || 3,
+        proctorPassword: form.proctorPassword || undefined,
         startTime: startTime.toISOString(),
         endTime: endTime.toISOString(),
         slug: form.slug.trim() || undefined,
@@ -609,6 +613,39 @@ function ContestForm({
             <p className="text-[11px] text-muted-foreground">
               Progressive contests only attach chain problems; each stage
               unlocks after the previous one is accepted.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Max Tab Switches (Proctoring)</Label>
+            <Input
+              type="number"
+              min="0"
+              value={form.maxTabSwitches}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, maxTabSwitches: e.target.value }))
+              }
+              className="bg-muted border-border font-mono text-sm"
+            />
+            <p className="text-[11px] text-muted-foreground">
+              0 to disable tab switch proctoring entirely.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <Label>Proctor Password</Label>
+            <Input
+              type="text"
+              placeholder="e.g. unlock123"
+              value={form.proctorPassword}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, proctorPassword: e.target.value }))
+              }
+              className="bg-muted border-border font-mono text-sm"
+            />
+            <p className="text-[11px] text-muted-foreground">
+              Required if max limit reached.
             </p>
           </div>
         </div>

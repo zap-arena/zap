@@ -176,6 +176,25 @@ def _require_started(db: Session, contest_id: str, user_id: str) -> models.Conte
     return participant
 
 
+@router.post("/api/contests/{contest_id}/unlock")
+def unlock_contest(contest_id: str, payload: schemas.UnlockRequest, db: Session = Depends(get_db),
+                   user: models.User = Depends(get_current_user)):
+    contest = get_contest_or_404(db, contest_id)
+    participant = get_participant(db, contest.id, user.id)
+    if not participant:
+        raise HTTPException(status_code=404, detail="Participant not found")
+    
+    if not contest.proctor_password or payload.password != contest.proctor_password:
+        # Also allow admins to bypass if they are testing
+        if user.role != "admin":
+            raise HTTPException(status_code=403, detail="Invalid proctor password")
+            
+    participant.locked = False
+    db.commit()
+    db.refresh(participant)
+    return serialize_participant(participant, user)
+
+
 @router.get("/api/contests/{contest_id}/problems")
 def contest_problems(contest_id: str, db: Session = Depends(get_db), user: models.User = Depends(get_current_user)):
     contest = get_contest_or_404(db, contest_id)
@@ -252,6 +271,7 @@ def record_activity(contest_id: str, payload: schemas.ProctorBatchIn, db: Sessio
     )).all())
 
     stored = 0
+    new_switch = False
     for client_event_id, event in incoming.items():
         if client_event_id in already:
             continue
@@ -260,10 +280,26 @@ def record_activity(contest_id: str, payload: schemas.ProctorBatchIn, db: Sessio
             event_type=event.type, event_metadata=event.metadata,
             client_event_id=client_event_id, occurred_at=event.occurredAt,
         ))
+        
+        if event.type in ("TAB_HIDDEN", "WINDOW_BLUR"):
+            participant.tab_switches += 1
+            new_switch = True
+
         stored += 1
 
+    if contest.max_tab_switches > 0 and contest.proctor_password:
+        if participant.tab_switches >= contest.max_tab_switches and new_switch:
+            participant.locked = True
+
     db.commit()
-    return {"received": len(payload.events), "stored": stored, "duplicates": len(payload.events) - stored}
+    db.refresh(participant)
+    return {
+        "received": len(payload.events),
+        "stored": stored,
+        "duplicates": len(payload.events) - stored,
+        "tabSwitches": participant.tab_switches,
+        "locked": participant.locked
+    }
 
 
 @router.get("/api/contests/{contest_id}/notifications")
@@ -352,6 +388,8 @@ def _apply_contest_fields(contest: models.Contest, payload: schemas.ContestIn, d
     contest.scoring_mode = payload.scoringMode
     contest.mode = payload.mode
     contest.leaderboard_visible = payload.leaderboardVisible
+    contest.max_tab_switches = payload.maxTabSwitches
+    contest.proctor_password = payload.proctorPassword
 
     db.add(contest)
     db.flush()  # assigns contest.id before the child rows reference it

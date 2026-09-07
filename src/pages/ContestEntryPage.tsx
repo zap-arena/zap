@@ -85,6 +85,10 @@ export default function ContestEntryPage() {
     }
     setStarting(true);
     try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen().catch(() => {});
+      }
+      
       await api.post(`/contests/${contest.id}/start`);
       await queryClient.invalidateQueries({
         queryKey: ["session", contest.id],

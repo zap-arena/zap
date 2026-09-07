@@ -44,10 +44,16 @@ export class ProctorTracker {
   private stopped = false;
   private contestId: string;
   private getProblemId: () => string | undefined;
+  private onStateChange?: (locked: boolean, tabSwitches: number) => void;
 
-  constructor(contestId: string, getProblemId: () => string | undefined) {
+  constructor(
+    contestId: string,
+    getProblemId: () => string | undefined,
+    onStateChange?: (locked: boolean, tabSwitches: number) => void,
+  ) {
     this.contestId = contestId;
     this.getProblemId = getProblemId;
+    this.onStateChange = onStateChange;
     this.timer = window.setInterval(() => void this.flush(), FLUSH_INTERVAL_MS);
   }
 
@@ -67,7 +73,13 @@ export class ProctorTracker {
       metadata,
     });
 
-    if (this.queue.length >= BATCH_SIZE) void this.flush();
+    if (
+      this.queue.length >= BATCH_SIZE ||
+      type === "TAB_HIDDEN" ||
+      type === "WINDOW_BLUR"
+    ) {
+      void this.flush();
+    }
   }
 
   async flush(): Promise<void> {
@@ -75,10 +87,20 @@ export class ProctorTracker {
 
     this.inFlight = this.queue.splice(0, BATCH_SIZE);
     try {
-      await api.post(`/contests/${this.contestId}/activity`, {
-        events: this.inFlight,
-      });
+      const response: { locked: boolean; tabSwitches: number } =
+        await api.post(`/contests/${this.contestId}/activity`, {
+          events: this.inFlight,
+        });
       this.inFlight = [];
+
+      if (response) {
+        if (typeof response.locked === "boolean" && this.onStateChange) {
+          this.onStateChange(
+            response.locked,
+            response.tabSwitches ?? 0,
+          );
+        }
+      }
     } catch {
       // Put them back so the next flush retries; ids keep the retry idempotent.
       this.queue = [...this.inFlight, ...this.queue];

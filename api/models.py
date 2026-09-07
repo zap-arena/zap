@@ -116,6 +116,8 @@ class Contest(Base):
     scoring_mode: Mapped[str] = mapped_column(String(20), default="partial")  # full | partial
     mode: Mapped[str] = mapped_column("mode", String(20), default="standard", quote=True)  # standard | progressive
     leaderboard_visible: Mapped[bool] = mapped_column(Boolean, default=True)
+    max_tab_switches: Mapped[int] = mapped_column(Integer, default=3)
+    proctor_password: Mapped[str] = mapped_column(String(200), nullable=True)
     created_by: Mapped[str] = mapped_column(String(32), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
 
@@ -164,6 +166,8 @@ class ContestParticipant(Base):
     score: Mapped[int] = mapped_column(Integer, default=0)
     problems_solved: Mapped[int] = mapped_column(Integer, default=0)
     total_submissions: Mapped[int] = mapped_column(Integer, default=0)
+    tab_switches: Mapped[int] = mapped_column(Integer, default=0)
+    locked: Mapped[bool] = mapped_column(Boolean, default=False)
 
 
 class ContestChainProgress(Base):

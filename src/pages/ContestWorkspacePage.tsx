@@ -158,6 +158,7 @@ function CodeEditor({
     LANGUAGES.find((l) => l.value === language)?.monacoLang ?? "plaintext";
   const { accent } = useAccent();
   const monacoRef = useRef<any>(null);
+  const [fontSize, setFontSize] = useState(13);
 
   useEffect(() => {
     if (monacoRef.current)
@@ -217,7 +218,7 @@ function CodeEditor({
             }
           }}
           options={{
-            fontSize: 13,
+            fontSize,
             fontFamily: "'JetBrains Mono', monospace",
             minimap: { enabled: false },
             scrollBeyondLastLine: false,
@@ -237,6 +238,24 @@ function CodeEditor({
         <span className="text-[11px] text-muted-foreground font-mono">
           UTF-8
         </span>
+        <div className="flex-1" />
+        <div className="flex items-center gap-1.5 text-muted-foreground">
+          <button
+            onClick={() => setFontSize((f) => Math.max(8, f - 1))}
+            className="hover:text-foreground px-1 py-0.5 rounded transition-colors hover:bg-muted"
+            title="Decrease font size"
+          >
+            -
+          </button>
+          <span className="text-[11px] font-mono w-4 text-center select-none">{fontSize}</span>
+          <button
+            onClick={() => setFontSize((f) => Math.min(24, f + 1))}
+            className="hover:text-foreground px-1 py-0.5 rounded transition-colors hover:bg-muted"
+            title="Increase font size"
+          >
+            +
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -365,7 +384,30 @@ export default function ContestWorkspacePage() {
     blocked,
     dismissBlocked,
     report: reportBlocked,
+    isLocked,
+    setIsLocked,
   } = useProctoring(contestId, attemptActive, currentProblemId, isAdmin);
+
+  const [unlockPassword, setUnlockPassword] = useState("");
+  const [unlocking, setUnlocking] = useState(false);
+
+  const handleUnlock = async () => {
+    if (!unlockPassword.trim()) {
+      toast.error("Please enter the proctor password");
+      return;
+    }
+    setUnlocking(true);
+    try {
+      await api.post(`/contests/${contestId}/unlock`, { password: unlockPassword });
+      setIsLocked(false);
+      setUnlockPassword("");
+      toast.success("Contest unlocked successfully");
+    } catch (e: any) {
+      toast.error(e.response?.data?.detail || "Invalid password");
+    } finally {
+      setUnlocking(false);
+    }
+  };
 
   const { data: notifications = [] } = useQuery({
     queryKey: ["contest-notifications", contestId],
@@ -588,7 +630,10 @@ export default function ContestWorkspacePage() {
         code,
       });
 
-      if (result.status === "ACCEPTED") {
+      const isProgressivePassed =
+        activeStage && activeStage.maxScore && result.score > activeStage.maxScore * 0.90;
+
+      if (result.status === "ACCEPTED" || isProgressivePassed) {
         if (activeStage) {
           const isLastStage =
             activeStage.stageOrder ===
@@ -605,7 +650,7 @@ export default function ContestWorkspacePage() {
               handleProblemSelect(problems[nextIndex]);
             }
           }
-        } else {
+        } else if (result.status === "ACCEPTED") {
           toast.success("✅ Accepted! All test cases passed!");
           const nextIndex =
             problems.findIndex((p) => p.id === selectedProblem.id) + 1;
@@ -1471,6 +1516,47 @@ export default function ContestWorkspacePage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Lock Overlay */}
+      {isLocked && (
+        <div className="fixed inset-0 z-[100] bg-background/95 backdrop-blur flex items-center justify-center">
+          <div className="max-w-md w-full mx-4 p-8 bg-card border border-border rounded-xl shadow-2xl flex flex-col items-center text-center space-y-6">
+            <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center">
+              <ShieldAlert className="w-8 h-8 text-destructive" />
+            </div>
+            
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold tracking-tight">Contest Locked</h2>
+              <p className="text-muted-foreground text-sm">
+                You have exceeded the maximum allowed tab/window switches. Your session has been locked by the proctoring system.
+              </p>
+            </div>
+
+            <div className="w-full space-y-4 pt-4">
+              <div className="space-y-2 text-left">
+                <label className="text-sm font-medium">Proctor Password</label>
+                <div className="flex gap-2">
+                  <input
+                    type="password"
+                    value={unlockPassword}
+                    onChange={(e) => setUnlockPassword(e.target.value)}
+                    className="flex-1 px-3 py-2 bg-muted border border-border rounded-md text-sm outline-none focus:border-primary transition-colors"
+                    placeholder="Enter password to unlock..."
+                    onKeyDown={(e) => e.key === "Enter" && handleUnlock()}
+                  />
+                  <Button 
+                    className="btn-primary shrink-0" 
+                    onClick={handleUnlock}
+                    disabled={unlocking}
+                  >
+                    {unlocking ? <Loader2 className="w-4 h-4 animate-spin" /> : "Unlock"}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Fullscreen guard - blocks the workspace until fullscreen is restored */}
       {attemptActive && hasEnteredFullscreen && !isFullscreen && (

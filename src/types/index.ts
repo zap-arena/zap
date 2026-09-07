@@ -106,6 +106,8 @@ export interface Contest {
   scoringMode: "full" | "partial";
   mode?: "standard" | "progressive";
   leaderboardVisible: boolean;
+  maxTabSwitches?: number;
+  proctorPassword?: string;
   createdAt: string;
 }
 
@@ -161,6 +163,8 @@ export interface Participant {
   score: number;
   problemsSolved: number;
   totalSubmissions: number;
+  tabSwitches: number;
+  locked: boolean;
   rank?: number;
   duration?: string;
 }

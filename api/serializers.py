@@ -72,6 +72,8 @@ def serialize_contest(c: models.Contest, include_problems: bool = True) -> dict:
             {"userId": m.user_id, "name": m.user.name if m.user else None, "email": m.user.email if m.user else None}
             for m in c.moderators
         ],
+        "maxTabSwitches": c.max_tab_switches,
+        "proctorPassword": c.proctor_password,
         "createdAt": c.created_at.isoformat(),
     }
     # Titles and difficulties stay hidden until the candidate is inside the contest.
@@ -108,4 +110,6 @@ def serialize_participant(p: models.ContestParticipant, user: Optional[models.Us
         "completedAt": p.completed_at.isoformat() if p.completed_at else None,
         "status": p.status, "score": p.score, "problemsSolved": p.problems_solved,
         "totalSubmissions": p.total_submissions,
+        "tabSwitches": p.tab_switches,
+        "locked": p.locked,
     }

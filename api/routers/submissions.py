@@ -86,6 +86,8 @@ async def create_submission(payload: schemas.SubmitRequest, db: Session = Depend
         ))
         if not participant or participant.status != "in_progress":
             raise HTTPException(status_code=403, detail="You have not started this contest")
+        if participant.locked:
+            raise HTTPException(status_code=403, detail="Contest is locked due to proctoring violation")
         if participant.expires_at and now_utc() > participant.expires_at:
             participant.status = "auto_completed"
             participant.completed_at = now_utc()
@@ -163,8 +165,9 @@ async def create_submission(payload: schemas.SubmitRequest, db: Session = Depend
             if score > prior_best_score:
                 participant.score += (score - prior_best_score)
                 if stage:
-                    # A chain counts as one solved "problem" only once, when its final stage clears.
-                    if all_passed and prior_best_score < contest_max_score:
+                    passed_threshold = all_passed or (contest_max_score > 0 and score > contest_max_score * 0.90)
+                    prior_passed = prior_best_score == contest_max_score or (contest_max_score > 0 and prior_best_score > contest_max_score * 0.90)
+                    if passed_threshold and not prior_passed:
                         total_stages = len(problem.stages)
                         chain_progress.current_stage_order += 1
                         db.add(models.ContestActivityLog(

@@ -36,6 +36,16 @@ const BLOCK_MESSAGES: Partial<Record<ProctorEventType, BlockedAction>> = {
     message:
       "Opening developer tools is not allowed during the contest. This attempt has been recorded.",
   },
+  TAB_HIDDEN: {
+    title: "Tab Switched",
+    message:
+      "You should not make tab or window switches during the contest. This incident has been recorded.",
+  },
+  WINDOW_BLUR: {
+    title: "Focus Lost",
+    message:
+      "You should not leave the contest window. This incident has been recorded.",
+  },
 };
 
 /**
@@ -61,6 +71,9 @@ export function useProctoring(
   );
   const [blocked, setBlocked] = useState<BlockedAction | null>(null);
 
+  const [isLocked, setIsLocked] = useState(false);
+  const [tabSwitches, setTabSwitches] = useState(0);
+
   const report = useCallback(
     (type: ProctorEventType, metadata: Record<string, unknown> = {}) => {
       trackerRef.current?.track(type, metadata);
@@ -73,7 +86,12 @@ export function useProctoring(
   useEffect(() => {
     if (!contestId || !active) return;
 
-    const tracker = new ProctorTracker(contestId, problemId);
+    const onStateChange = (locked: boolean, switches: number) => {
+      setIsLocked(locked);
+      setTabSwitches(switches);
+    };
+
+    const tracker = new ProctorTracker(contestId, problemId, onStateChange);
     trackerRef.current = tracker;
 
     const onKeyDown = (e: KeyboardEvent) => {
@@ -131,10 +149,14 @@ export function useProctoring(
     };
 
     const onVisibility = () => {
-      // Silent tracking: no modal, since the candidate is not on this tab anyway.
-      trackerRef.current?.track(document.hidden ? "TAB_HIDDEN" : "TAB_VISIBLE");
+      if (document.hidden) {
+        report("TAB_HIDDEN");
+      } else {
+        trackerRef.current?.track("TAB_VISIBLE");
+      }
     };
     const onBlur = () => trackerRef.current?.track("WINDOW_BLUR");
+    // const onBlur = () => report("WINDOW_BLUR");
     const onFocus = () => trackerRef.current?.track("WINDOW_FOCUS");
 
     const onFullscreenChange = () => {
@@ -198,5 +220,8 @@ export function useProctoring(
     blocked,
     dismissBlocked: () => setBlocked(null),
     report,
+    isLocked,
+    tabSwitches,
+    setIsLocked,
   };
 }
