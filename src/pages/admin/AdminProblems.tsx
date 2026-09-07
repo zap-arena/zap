@@ -1135,6 +1135,44 @@ function EditProblemDialog({
   );
 }
 
+// The problem list omits test case bodies to stay small, so the editor loads the full record
+// before mounting. Editing a stripped problem would blank its test cases on save.
+function EditProblemLoader({
+  problemId,
+  onClose,
+  onSaved,
+}: {
+  problemId: string;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const { data: problem, isLoading } = useQuery({
+    queryKey: ["admin-problem", problemId],
+    queryFn: () => api.get<Problem>(`/admin/problems/${problemId}`),
+  });
+
+  if (isLoading || !problem) {
+    return (
+      <Dialog open onOpenChange={onClose}>
+        <DialogContent className="bg-card border-border max-w-3xl">
+          <div className="py-16 text-center text-sm text-muted-foreground">
+            Loading problem…
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <EditProblemDialog
+      problem={problem}
+      open
+      onClose={onClose}
+      onSaved={onSaved}
+    />
+  );
+}
+
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default function AdminProblems() {
   const queryClient = useQueryClient();
@@ -1578,9 +1616,8 @@ export default function AdminProblems() {
 
         {/* Edit Problem Dialog */}
         {editingProblem && (
-          <EditProblemDialog
-            problem={editingProblem}
-            open={!!editingProblem}
+          <EditProblemLoader
+            problemId={editingProblem.id}
             onClose={() => setEditingProblem(null)}
             onSaved={invalidateProblems}
           />

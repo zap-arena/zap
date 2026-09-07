@@ -71,7 +71,8 @@ def admin_search_problems(
 @router.get("/api/admin/problems")
 def admin_list_problems(db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
     problems = db.scalars(select(models.Problem)).all()
-    return [serialize_problem(p, include_hidden=True, reveal_stages=True) for p in problems]
+    # The list only renders counts, so omitting the test case bodies keeps this response small.
+    return [serialize_problem(p, include_hidden=True, reveal_stages=True, include_io=False) for p in problems]
 
 
 @router.get("/api/admin/problems/{problem_id}")

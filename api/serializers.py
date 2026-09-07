@@ -2,9 +2,12 @@ from typing import Optional
 import models
 
 
-def serialize_test_case(tc: models.TestCase, include_hidden: bool) -> dict:
+def serialize_test_case(tc: models.TestCase, include_hidden: bool, include_io: bool = True) -> dict:
     if tc.hidden and not include_hidden:
         return {"id": tc.id, "name": tc.name, "hidden": True, "marks": tc.marks}
+    if not include_io:
+        # List views only need counts; perf-tier inputs run to tens of KB each.
+        return {"id": tc.id, "name": tc.name, "hidden": tc.hidden, "marks": tc.marks, "perfTier": tc.perf_tier}
     return {
         "id": tc.id, "name": tc.name, "input": tc.input, "expectedOutput": tc.expected_output,
         "hidden": tc.hidden, "marks": tc.marks, "perfTier": tc.perf_tier,
@@ -12,7 +15,8 @@ def serialize_test_case(tc: models.TestCase, include_hidden: bool) -> dict:
 
 
 def serialize_stage(
-    stage: models.ProblemStage, include_hidden: bool, locked: bool = False, include_perf_tiers: bool = False
+    stage: models.ProblemStage, include_hidden: bool, locked: bool = False,
+    include_perf_tiers: bool = False, include_io: bool = True,
 ) -> dict:
     if locked:
         return {"id": stage.id, "stageOrder": stage.stage_order, "title": stage.title, "locked": True}
@@ -21,7 +25,8 @@ def serialize_stage(
         "expectedComplexity": stage.expected_complexity, "timeLimit": stage.time_limit,
         "memoryLimit": stage.memory_limit, "maxScore": stage.max_score,
         "testCases": [
-            serialize_test_case(tc, include_hidden) for tc in sorted(stage.test_cases, key=lambda t: t.order)
+            serialize_test_case(tc, include_hidden, include_io)
+            for tc in sorted(stage.test_cases, key=lambda t: t.order)
             # Perf-tier cases only feed the complexity estimator, so candidates never see them.
             if include_perf_tiers or tc.perf_tier in (None, "", "small")
         ],
@@ -34,12 +39,14 @@ def serialize_problem(
     include_hidden: bool = False,
     chain_progress: Optional["models.ContestChainProgress"] = None,
     reveal_stages: bool = False,
+    include_io: bool = True,
 ) -> dict:
     """Serialize a problem.
 
     `reveal_stages` must be set for admin/authoring contexts: without it every stage after the
     candidate's current one is returned as a locked stub, and saving that stub back would wipe
-    the stage's statement and test cases.
+    the stage's statement and test cases. Clear `include_io` for list views, which need counts
+    rather than the test case bodies.
     """
     out = {
         "id": p.id, "title": p.title, "slug": p.slug, "difficulty": p.difficulty,
@@ -47,7 +54,8 @@ def serialize_problem(
         "constraints": p.constraints, "examples": p.examples or [], "tags": p.tags or [],
         "languages": p.languages or [], "boilerplates": p.boilerplates or {},
         "testCases": [
-            serialize_test_case(tc, include_hidden) for tc in sorted(p.test_cases, key=lambda t: t.order)
+            serialize_test_case(tc, include_hidden, include_io)
+            for tc in sorted(p.test_cases, key=lambda t: t.order)
             if not tc.stage_id
         ],
         "timeLimit": p.time_limit, "memoryLimit": p.memory_limit, "maxScore": p.max_score,
@@ -65,6 +73,7 @@ def serialize_problem(
                 s, include_hidden,
                 locked=not reveal_stages and s.stage_order > current_order,
                 include_perf_tiers=reveal_stages,
+                include_io=include_io,
             )
             for s in stages
         ]
