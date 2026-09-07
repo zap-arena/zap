@@ -141,11 +141,13 @@ def _parse_problem(zf: zipfile.ZipFile, folder: str, files: dict[str, zipfile.Zi
         errors.append(f"difficulty must be one of {', '.join(DIFFICULTIES)}")
         difficulty = "Easy"
 
+    is_progressive = bool(_pick(meta, "isProgressive", "is_progressive", default=False))
+
     statement_key = f"{folder}/statement.md"
     description = _read_text(zf, files[statement_key]) if statement_key in files else ""
     if not description:
         description = str(_pick(meta, "description", default=""))
-    if not description.strip():
+    if not is_progressive and not description.strip():
         errors.append("Missing statement.md and description")
 
     boilerplates: dict[str, str] = {}
@@ -165,7 +167,6 @@ def _parse_problem(zf: zipfile.ZipFile, folder: str, files: dict[str, zipfile.Zi
     if not languages:
         languages = sorted(boilerplates.keys()) or ["cpp", "python"]
 
-    is_progressive = bool(_pick(meta, "isProgressive", "is_progressive", default=False))
     raw_stages = _pick(meta, "stages", default=[]) or []
     stages = [
         _parse_stage(s, i, zf, folder, files, errors)

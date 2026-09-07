@@ -126,9 +126,9 @@ function ProblemPicker({
           />
         </div>
         {unattached.length > 0 && (
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="outline"
+            size="sm"
             className="h-9 whitespace-nowrap"
             onClick={() => onAddAll(unattached)}
           >
@@ -645,13 +645,16 @@ function ContestForm({
 
         <div className="space-y-2">
           <Label>Add Problems</Label>
-          <ProblemPicker 
-            attached={attached} 
-            onAdd={addProblem} 
+          <ProblemPicker
+            attached={attached}
+            onAdd={addProblem}
             onAddAll={(problems) => {
               setAttached((prev) => {
                 const newAttached = [...prev];
-                let order = newAttached.length > 0 ? Math.max(...newAttached.map((a) => a.order)) + 1 : 1;
+                let order =
+                  newAttached.length > 0
+                    ? Math.max(...newAttached.map((a) => a.order)) + 1
+                    : 1;
                 for (const p of problems) {
                   newAttached.push({
                     problemId: p.id,
@@ -664,7 +667,7 @@ function ContestForm({
                 return newAttached;
               });
             }}
-            contestMode={form.mode} 
+            contestMode={form.mode}
           />
         </div>
 
@@ -810,6 +813,7 @@ export default function AdminContests() {
   const [showCreate, setShowCreate] = useState(false);
   const [editing, setEditing] = useState<Contest | null>(null);
   const [deleting, setDeleting] = useState<Contest | null>(null);
+  const [deletingAll, setDeletingAll] = useState(false);
   const navigate = useNavigate();
 
   const filtered = contests.filter((c) =>
@@ -836,16 +840,29 @@ export default function AdminContests() {
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (hard: boolean = false) => {
     if (!deleting) return;
     try {
-      await api.delete(`/admin/contests/${deleting.id}`);
-      toast.success(`"${deleting.name}" cancelled`);
+      await api.delete(`/admin/contests/${deleting.id}${hard ? "?hard=true" : ""}`);
+      toast.success(`"${deleting.name}" ${hard ? "deleted permanently" : "cancelled"}`);
       setDeleting(null);
       refresh();
     } catch (err) {
       toast.error(
         err instanceof ApiError ? err.message : "Failed to delete contest",
+      );
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    try {
+      await api.delete("/admin/contests");
+      toast.success("All contests deleted permanently");
+      setDeletingAll(false);
+      refresh();
+    } catch (err) {
+      toast.error(
+        err instanceof ApiError ? err.message : "Failed to delete all contests",
       );
     }
   };
@@ -870,13 +887,23 @@ export default function AdminContests() {
               {contests.length} contests total
             </p>
           </div>
-          <Button
-            size="sm"
-            className="btn-primary gap-1.5"
-            onClick={() => setShowCreate(true)}
-          >
-            <Plus size={14} /> New Contest
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => setDeletingAll(true)}
+              className="gap-1.5"
+            >
+              Delete All
+            </Button>
+            <Button
+              size="sm"
+              className="btn-primary gap-1.5"
+              onClick={() => setShowCreate(true)}
+            >
+              <Plus size={14} /> New Contest
+            </Button>
+          </div>
         </div>
 
         {/* Search */}
@@ -1041,6 +1068,30 @@ export default function AdminContests() {
           </DialogContent>
         </Dialog>
 
+        {/* Delete All confirmation */}
+        <AlertDialog
+          open={deletingAll}
+          onOpenChange={setDeletingAll}
+        >
+          <AlertDialogContent className="bg-card border-border">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete ALL contests?</AlertDialogTitle>
+              <AlertDialogDescription>
+                <strong>Warning:</strong> This will permanently delete <strong>all</strong> contests from the database. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDeleteAll}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Yes, delete everything
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
         {/* Delete confirmation */}
         <AlertDialog
           open={!!deleting}
@@ -1048,19 +1099,25 @@ export default function AdminContests() {
         >
           <AlertDialogContent className="bg-card border-border">
             <AlertDialogHeader>
-              <AlertDialogTitle>Cancel this contest?</AlertDialogTitle>
+              <AlertDialogTitle>Archive or Delete this contest?</AlertDialogTitle>
               <AlertDialogDescription>
-                "{deleting?.name}" will be marked as cancelled and hidden from
-                participants. Existing submissions and results are kept.
+                <strong>Archiving</strong> will mark "{deleting?.name}" as cancelled and hide it from new participants.<br/><br/>
+                <strong>Deleting</strong> will permanently erase it from the database.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Keep contest</AlertDialogCancel>
               <AlertDialogAction
-                onClick={handleDelete}
+                onClick={() => handleDelete(false)}
+                className="bg-muted text-foreground hover:bg-muted/80"
+              >
+                Archive
+              </AlertDialogAction>
+              <AlertDialogAction
+                onClick={() => handleDelete(true)}
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
-                Cancel contest
+                Delete Permanently
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
