@@ -112,3 +112,10 @@ async def health():
 @app.get("/api")
 def root():
     return {"ok": True, "service": "CodeArena API"}
+
+try:
+    # pyrefly: ignore [missing-import]
+    from mangum import Mangum
+    handler = Mangum(app)
+except ImportError:
+    pass
