@@ -10,6 +10,7 @@ interface AdminUser {
   id: string;
   name: string;
   email: string;
+  collegeId?: string;
   role: string;
   createdAt: string;
 }
@@ -44,7 +45,8 @@ export default function AdminUsers() {
   const filtered = users.filter(
     (u) =>
       u.name.toLowerCase().includes(search.toLowerCase()) ||
-      u.email.toLowerCase().includes(search.toLowerCase()),
+      u.email.toLowerCase().includes(search.toLowerCase()) ||
+      (u.collegeId?.toLowerCase() || "").includes(search.toLowerCase()),
   );
 
   return (
@@ -118,6 +120,7 @@ export default function AdminUsers() {
             <thead>
               <tr>
                 <th className="text-left">User</th>
+                <th className="text-left">College ID</th>
                 <th className="text-center">Role</th>
                 <th className="text-right hidden md:table-cell">Joined</th>
               </tr>
@@ -140,6 +143,13 @@ export default function AdminUsers() {
                         </p>
                       </div>
                     </div>
+                  </td>
+                  <td className="text-left">
+                    {u.collegeId ? (
+                      <span className="font-mono text-xs">{u.collegeId}</span>
+                    ) : (
+                      <span className="text-muted-foreground text-xs">—</span>
+                    )}
                   </td>
                   <td className="text-center">
                     <span

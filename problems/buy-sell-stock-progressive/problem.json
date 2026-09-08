@@ -1,0 +1,81 @@
+{
+  "title": "Best Time to Buy and Sell Stock (Code War Chain)",
+  "slug": "buy-sell-stock-progressive",
+  "difficulty": "Hard",
+  "isProgressive": true,
+  "inputFormat": "Line 1: integer n, the number of days.\nLine 2: n space-separated integers, the prices.\nLine 3: integer F, the transaction fee.\nLine 4: integer K, the maximum number of transactions.",
+  "outputFormat": "A single integer, the maximum profit for the current stage.",
+  "constraints": "1 <= n <= 10^5\n0 <= prices[i] <= 10^4\n0 <= F <= 10^4\n1 <= K <= 10^9",
+  "examples": [
+    {
+      "input": "6\n7 1 5 3 6 4\n0\n0",
+      "output": "5",
+      "explanation": "Example for Stage 1: Buy on day 2 (price=1) and sell on day 5 (price=6), profit = 6-1 = 5."
+    }
+  ],
+  "tags": [
+    "array",
+    "dynamic-programming",
+    "code-war"
+  ],
+  "languages": [
+    "c",
+    "cpp",
+    "java",
+    "python"
+  ],
+  "timeLimit": 2,
+  "memoryLimit": 256,
+  "maxScore": 100,
+  "status": "active",
+  "stages": [
+    {
+      "stageOrder": 1,
+      "title": "Stage 1 - Single Transaction",
+      "statement": "Find the maximum profit you can achieve with **exactly one** transaction (buy once and sell once). Ignore `F` and `K`.",
+      "expectedComplexity": "O(n)",
+      "maxScore": 100,
+      "testcasesDir": "stage-1"
+    },
+    {
+      "stageOrder": 2,
+      "title": "Stage 2 - Infinite Transactions",
+      "statement": "Find the maximum profit you can achieve with **unlimited** transactions (buy and sell as many times as you want, but you must sell before you buy again). Ignore `F` and `K`.",
+      "expectedComplexity": "O(n)",
+      "maxScore": 150,
+      "testcasesDir": "stage-2"
+    },
+    {
+      "stageOrder": 3,
+      "title": "Stage 3 - Transaction Fee",
+      "statement": "Find the maximum profit with **unlimited** transactions, but you must pay a transaction fee `F` for every completed trade (buy + sell). Ignore `K`.",
+      "expectedComplexity": "O(n)",
+      "maxScore": 150,
+      "testcasesDir": "stage-3"
+    },
+    {
+      "stageOrder": 4,
+      "title": "Stage 4 - Cooldown Period",
+      "statement": "Find the maximum profit with **unlimited** transactions, but after you sell your stock, you cannot buy stock on the next day (i.e., a 1-day cooldown period). Ignore `F` and `K`.",
+      "expectedComplexity": "O(n)",
+      "maxScore": 150,
+      "testcasesDir": "stage-4"
+    },
+    {
+      "stageOrder": 5,
+      "title": "Stage 5 - At Most 2 Transactions",
+      "statement": "Find the maximum profit you can achieve with **at most two** transactions. Ignore `F` and `K`.",
+      "expectedComplexity": "O(n)",
+      "maxScore": 200,
+      "testcasesDir": "stage-5"
+    },
+    {
+      "stageOrder": 6,
+      "title": "Stage 6 - At Most K Transactions",
+      "statement": "Find the maximum profit you can achieve with **at most K** transactions. Ignore `F`.",
+      "expectedComplexity": "O(n * min(n, K))",
+      "maxScore": 250,
+      "testcasesDir": "stage-6"
+    }
+  ]
+}

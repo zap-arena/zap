@@ -96,7 +96,7 @@ def admin_users(contest_id: Optional[str] = None, db: Session = Depends(get_db),
         query = query.join(models.ContestParticipant, models.User.id == models.ContestParticipant.user_id)\
                      .where(models.ContestParticipant.contest_id == contest_id)
     users = db.scalars(query.order_by(models.User.created_at.desc())).all()
-    return [{"id": u.id, "name": u.name, "email": u.email, "role": u.role, "createdAt": u.created_at.isoformat()} for u in users]
+    return [{"id": u.id, "name": u.name, "email": u.email, "collegeId": u.college_id, "role": u.role, "createdAt": u.created_at.isoformat()} for u in users]
 
 
 def _export_rows(db: Session, contest: models.Contest) -> list[dict]:

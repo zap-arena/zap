@@ -1,0 +1,8 @@
+{
+  "name": "Test 6",
+  "input": "8%h,Z74\f|E-){CP;/WUigMZl/kzur;_\njuBa#W5JQU\"\fV\u000bt|O{0\\4\\v`;:cMylb{.F/L2&`p&%W~k`]6C!A\t`\t[e#%]UH?!8|?V1k>=M`=sTa1&1FW>\rn=:sc0t@lg\"VpO!bpjiY_;L`+Ugl.t_8f\rC!Z&x^BL=y8TP@pH!ND/:%V0%MLgQ G,vuT\\Yy Iy5y5yo')HyWfHbXvJ38lR\t\tkIHm^ouk*+\t.[\fFL2N$![m}`IQ\"1J[X:Z}\rR\"oxYSvJ[#Zxj5{/4]U\u000bHx1sDxB):DXs(n~^$%_z{H|LZ;ry\\/\u000b_,\\t+~y,e:Te*lsb=Br1\fllg5ASZZ4o\\\u000bGv5`ywB`L ;1Zz55J\n9\"wx-xnP\nwvm.X~pc0hsLNe\u000bhhHan%]IEy]uA-1`\nI .CD5l\\utQ\u000b?bNp4(u?Zv?mxz{y]JT|fc`At\\DQT:z\t`H_f4wWO>2Ghf-QWM&f\\?^MjjnLW:,NO'(E@2EU'2-\r#?V1N0t\u000b(N99%z0^Ce5enCu?PP&iz7L.I\ne[.ssRwng+11x4\fs%OJ:\\A^0eUsru\u000b<0eyo)\"mjKLk~tDR(\rI*$p$;T75J]i-F|OY%=*Q r4zPb!lB0@dAsz!R\u000bpjciNq%z|u(x&,w8s,\fZoc[V<QTSeG=$r3b\\$x\n j.XK(&^7*s;u.}.UgU ]zZ_*&t'QnMvf_m\fk>1Q'08i[m\"@ZD1o$ |iZ@O_rZ6\fo~0}&\t\ftzwGc<mk\f6!\"f;MH+xLKiZa7]Z/+yLZ$}ji^\f9nS1PgBx+aSPtUj{~{vp\t;9=p.O\f=;x\"/Pp$VpbBuuh\tE'Q[@v+E|7#%z7hc@-u68;Jxdy\"}a`?~ Ur'6P.GmcY?'d>-_'ni}*t:QyfK\u000bN}Q[cO=ESk`ic|U~_pC\r5*_@gVv\tXQx3}Y(?b};2rig6'>G\\#dsF$qV?1^,\rH 0XRbWu\n23T.l6=DY- b4F\\*HKq\r^Rf]e.jJsM7l)uP]Y9,Z#e\fO-:\u000berrIc;CMi6nz7aJ_NQU<6(bw63\ty[f8SM",
+  "expected_output": "35",
+  "hidden": true,
+  "marks": 10,
+  "order": 6
+}

@@ -1,0 +1,89 @@
+{
+  "title": "Valid Parentheses (Code War Chain)",
+  "slug": "valid-parentheses-progressive",
+  "difficulty": "Medium",
+  "isProgressive": true,
+  "inputFormat": "A single string s consisting of bracket characters.",
+  "outputFormat": "A single line output as described by the current stage.",
+  "constraints": "1 <= s.length <= 10^5",
+  "examples": [
+    {
+      "input": "()[]{}",
+      "output": "1",
+      "explanation": "Valid parenthesis string."
+    }
+  ],
+  "tags": [
+    "string",
+    "stack",
+    "code-war"
+  ],
+  "languages": [
+    "c",
+    "cpp",
+    "java",
+    "python"
+  ],
+  "timeLimit": 3,
+  "memoryLimit": 256,
+  "maxScore": 100,
+  "status": "active",
+  "stages": [
+    {
+      "stageOrder": 1,
+      "title": "Stage 1 - Count Brackets",
+      "statement": "Given a string `s`, print two space-separated integers: the total number of opening brackets `(`, `[`, `{` and the total number of closing brackets `)`, `]`, `}`.",
+      "expectedComplexity": "O(n)",
+      "maxScore": 100,
+      "testcasesDir": "stage-1"
+    },
+    {
+      "stageOrder": 2,
+      "title": "Stage 2 - Balanced Counts",
+      "statement": "Print `1` if the total number of opening brackets exactly equals the total number of closing brackets, otherwise print `0`.",
+      "expectedComplexity": "O(n)",
+      "maxScore": 150,
+      "testcasesDir": "stage-2"
+    },
+    {
+      "stageOrder": 3,
+      "title": "Stage 3 - Valid Parentheses (Single Type)",
+      "statement": "The string will only contain `(` and `)`. Print `1` if it is a valid parenthesis sequence (properly closed and nested), otherwise print `0`.",
+      "expectedComplexity": "O(n)",
+      "maxScore": 150,
+      "testcasesDir": "stage-3"
+    },
+    {
+      "stageOrder": 4,
+      "title": "Stage 4 - Valid Parentheses (All Types)",
+      "statement": "The string contains all types of brackets `()[]{}`. Print `1` if it is a valid sequence, otherwise print `0`.",
+      "expectedComplexity": "O(n)",
+      "maxScore": 150,
+      "testcasesDir": "stage-4"
+    },
+    {
+      "stageOrder": 5,
+      "title": "Stage 5 - Maximum Nesting Depth",
+      "statement": "For a valid string of `()[]{}` brackets, print the maximum nesting depth. If the string is NOT valid, print `-1`.",
+      "expectedComplexity": "O(n)",
+      "maxScore": 150,
+      "testcasesDir": "stage-5"
+    },
+    {
+      "stageOrder": 6,
+      "title": "Stage 6 - Minimum Additions to Make Valid",
+      "statement": "The string contains only `(` and `)`. Print the minimum number of parentheses that must be added to make the sequence valid.",
+      "expectedComplexity": "O(n)",
+      "maxScore": 150,
+      "testcasesDir": "stage-6"
+    },
+    {
+      "stageOrder": 7,
+      "title": "Stage 7 - Longest Valid Parentheses Substring",
+      "statement": "The string contains only `(` and `)`. Print the length of the longest contiguous valid parentheses substring.",
+      "expectedComplexity": "O(n)",
+      "maxScore": 200,
+      "testcasesDir": "stage-7"
+    }
+  ]
+}

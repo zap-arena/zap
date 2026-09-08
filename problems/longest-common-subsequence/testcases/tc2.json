@@ -1,0 +1,8 @@
+{
+  "name": "Test 2",
+  "input": "abc\nabc",
+  "expected_output": "3",
+  "hidden": false,
+  "marks": 10,
+  "order": 2
+}

@@ -1,4 +1,7 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
+const PROD_API_URL = "https://86k13qm8m5.execute-api.ap-south-1.amazonaws.com/dev/api";
+const BASE_URL = import.meta.env.PROD 
+  ? PROD_API_URL 
+  : (import.meta.env.VITE_API_BASE_URL || "/api");
 const TOKEN_KEY = "codearena_token";
 
 export function getToken(): string | null {
