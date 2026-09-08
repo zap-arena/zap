@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 import models
 import problem_import
 import schemas
+from cache import cache_invalidate_problems
 from database import get_db
 from deps import require_admin
 from serializers import serialize_problem
@@ -156,6 +157,7 @@ def create_problem(payload: schemas.ProblemIn, db: Session = Depends(get_db), ad
     _apply_problem_fields(problem, payload, db)
     db.commit()
     db.refresh(problem)
+    cache_invalidate_problems()
     return serialize_problem(problem, include_hidden=True, reveal_stages=True)
 
 
@@ -167,6 +169,7 @@ def update_problem(problem_id: str, payload: schemas.ProblemIn, db: Session = De
     _apply_problem_fields(problem, payload, db)
     db.commit()
     db.refresh(problem)
+    cache_invalidate_problems()
     return serialize_problem(problem, include_hidden=True, reveal_stages=True)
 
 
@@ -182,6 +185,7 @@ def delete_problem(problem_id: str, hard: bool = False, db: Session = Depends(ge
         problem.status = "archived"
         
     db.commit()
+    cache_invalidate_problems()
     return None
 
 

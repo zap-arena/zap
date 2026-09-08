@@ -9,6 +9,10 @@ from sqlalchemy.orm import Session
 
 import models
 import schemas
+from cache import (
+    cache_get, cache_set, cache_delete, cache_invalidate_contest,
+    TTL_CONTESTS_LIST, TTL_CONTEST_DETAIL, TTL_LEADERBOARD, TTL_PROBLEMS,
+)
 from database import get_db
 from deps import get_current_user, require_admin
 from serializers import serialize_contest, serialize_problem, serialize_submission, serialize_participant
@@ -80,18 +84,28 @@ def get_chain_progress(db: Session, contest_id: str, user_id: str, problem_id: s
 # ---------- Public / participant ----------
 @router.get("/api/contests")
 def list_public_contests(db: Session = Depends(get_db)):
+    cached = cache_get("contests:list")
+    if cached is not None:
+        return cached
     contests = db.scalars(select(models.Contest)).all()
     visible = [c for c in contests if c.status in ("active", "scheduled", "completed")]
-    return [serialize_contest(c, include_problems=False) | {"status": compute_status(c)} for c in visible]
+    result = [serialize_contest(c, include_problems=False) | {"status": compute_status(c)} for c in visible]
+    cache_set("contests:list", result, TTL_CONTESTS_LIST)
+    return result
 
 
 @router.get("/api/contests/{slug}")
 def get_contest(slug: str, db: Session = Depends(get_db)):
+    cache_key = f"contest:{slug}"
+    cached = cache_get(cache_key)
+    if cached is not None:
+        return cached
     contest = get_contest_or_404(db, slug)
     if contest.status == "draft":
         raise HTTPException(status_code=404, detail="Contest not found")
-    # Problem list stays hidden until the attempt starts.
-    return serialize_contest(contest, include_problems=False) | {"status": compute_status(contest)}
+    result = serialize_contest(contest, include_problems=False) | {"status": compute_status(contest)}
+    cache_set(cache_key, result, TTL_CONTEST_DETAIL)
+    return result
 
 
 COMPLETED_STATUSES = ("completed", "auto_completed")
@@ -212,6 +226,12 @@ def unlock_contest(contest_id: str, payload: schemas.UnlockRequest, db: Session 
 def contest_problems(contest_id: str, db: Session = Depends(get_db), user: models.User = Depends(get_current_user)):
     contest = get_contest_or_404(db, contest_id)
     _require_started(db, contest.id, user.id)
+
+    cache_key = f"contest:{contest_id}:problems:{user.id}"
+    cached = cache_get(cache_key)
+    if cached is not None:
+        return cached
+
     result = []
     for cp in sorted(contest.problems, key=lambda x: x.order):
         chain_progress = None
@@ -221,6 +241,7 @@ def contest_problems(contest_id: str, db: Session = Depends(get_db), user: model
             serialize_problem(cp.problem, include_hidden=False, chain_progress=chain_progress)
             | {"maxScore": cp.max_score, "order": cp.order}
         )
+    cache_set(cache_key, result, TTL_PROBLEMS)
     return result
 
 
@@ -332,6 +353,11 @@ def leaderboard(contest_id: str, db: Session = Depends(get_db)):
     if not contest.leaderboard_visible:
         raise HTTPException(status_code=403, detail="Leaderboard is not visible for this contest")
 
+    cache_key = f"contest:{contest_id}:leaderboard"
+    cached = cache_get(cache_key)
+    if cached is not None:
+        return cached
+
     participants = db.scalars(select(models.ContestParticipant).where(
         models.ContestParticipant.contest_id == contest.id,
     )).all()
@@ -353,6 +379,7 @@ def leaderboard(contest_id: str, db: Session = Depends(get_db)):
             "submissions": p.total_submissions,
             "completionTime": f"{duration_s // 60}m" if duration_s is not None else "-",
         })
+    cache_set(cache_key, entries, TTL_LEADERBOARD)
     return entries
 
 
@@ -431,6 +458,7 @@ def update_contest(contest_id: str, payload: schemas.ContestIn, db: Session = De
     _apply_contest_fields(contest, payload, db)
     db.commit()
     db.refresh(contest)
+    cache_invalidate_contest(contest_id)
     return serialize_contest(contest) | {"status": compute_status(contest)}
 
 
@@ -457,6 +485,7 @@ def publish_contest(contest_id: str, db: Session = Depends(get_db), _: models.Us
     contest = get_contest_or_404(db, contest_id)
     contest.status = "scheduled"
     db.commit()
+    cache_invalidate_contest(contest_id)
     return serialize_contest(contest) | {"status": compute_status(contest)}
 
 

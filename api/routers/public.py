@@ -3,6 +3,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 import models
+from cache import cache_get, cache_set, TTL_HOME
 from database import get_db
 from routers.contests import compute_status
 
@@ -11,6 +12,10 @@ router = APIRouter(prefix="/api/public", tags=["public"])
 
 @router.get("/home")
 def home_snapshot(db: Session = Depends(get_db)):
+    cached = cache_get("public:home")
+    if cached is not None:
+        return cached
+
     contests = db.scalars(select(models.Contest)).all()
     active_or_scheduled = [c for c in contests if compute_status(c) in ("active", "scheduled")]
     active_or_scheduled.sort(key=lambda c: c.start_time)
@@ -27,7 +32,10 @@ def home_snapshot(db: Session = Depends(get_db)):
         }
 
     # Only the problem count is exposed; the problem bank itself stays private.
-    return {
+    result = {
         "contests": [contest_summary(c) for c in active_or_scheduled[:6]],
         "stats": {"totalUsers": total_users, "totalProblems": total_problems, "totalContests": total_contests},
     }
+    cache_set("public:home", result, TTL_HOME)
+    return result
+
