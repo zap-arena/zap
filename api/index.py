@@ -38,6 +38,7 @@ app.add_middleware(
 
 # Endpoints that hand work to the judge; everything else is cheap enough to leave open.
 _RATE_LIMITED_PREFIXES = ("/api/code/run", "/api/submissions")
+_RATE_LIMIT_ENABLED = os.getenv("RATE_LIMIT_ENABLED", "true").lower() != "false"
 
 
 def _rate_limit_identity(request: Request) -> str:
@@ -55,7 +56,7 @@ def _rate_limit_identity(request: Request) -> str:
 
 @app.middleware("http")
 async def rate_limit(request: Request, call_next):
-    if request.url.path.startswith(_RATE_LIMITED_PREFIXES) and request.method == "POST":
+    if _RATE_LIMIT_ENABLED and request.url.path.startswith(_RATE_LIMITED_PREFIXES) and request.method == "POST":
         identity = _rate_limit_identity(request)
         # The limiter store is synchronous, so keep it off the event loop.
         result = await run_in_threadpool(rate_limit_store.check, identity, "execute")
@@ -112,3 +113,10 @@ async def health():
 @app.get("/api")
 def root():
     return {"ok": True, "service": "CodeArena API"}
+
+try:
+    # pyrefly: ignore [missing-import]
+    from mangum import Mangum
+    handler = Mangum(app)
+except ImportError:
+    pass
