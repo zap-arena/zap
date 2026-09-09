@@ -151,11 +151,7 @@ export default function ContestsPage() {
                       size="sm"
                       className="h-8 font-semibold"
                     >
-                      {c.status === "active"
-                        ? "Enter"
-                        : c.status === "completed"
-                          ? "Practice"
-                          : "Details"}
+                      {c.status === "active" ? "Enter" : "Details"}
                     </Button>
                   </TableCell>
                 </TableRow>
