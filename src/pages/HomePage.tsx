@@ -1,13 +1,17 @@
-import { useQuery } from "@tanstack/react-query";
+// import { useQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
+  BarChart,
   BarChart2,
-  Building,
+  // Building,
   CheckCircle2,
+  Clock,
+  Code,
   Code2,
   Globe,
-  GraduationCap,
+  // GraduationCap,
   Shield,
+  ShieldCheck,
   Trophy,
   Users,
   Zap,
@@ -15,23 +19,23 @@ import {
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { Button } from "../components/ui/button";
-import { api } from "../lib/api";
+// import { api } from "../lib/api";
 import { useAuth } from "../store/auth";
 
-interface HomeSnapshot {
-  stats: { totalUsers: number; totalProblems: number; totalContests: number };
-}
+// interface HomeSnapshot {
+//   stats: { totalUsers: number; totalProblems: number; totalContests: number };
+// }
 
 export default function HomePage() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const { data } = useQuery({
-    queryKey: ["home-snapshot"],
-    queryFn: () => api.get<HomeSnapshot>("/public/home"),
-  });
+  // const { data } = useQuery({
+  //   queryKey: ["home-snapshot"],
+  //   queryFn: () => api.get<HomeSnapshot>("/public/home"),
+  // });
 
-  const stats = data?.stats;
+  // const stats = data?.stats;
 
   return (
     <div className="min-h-screen bg-background selection:bg-primary/20">
@@ -93,23 +97,20 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-border">
           {[
             {
-              value: stats
-                ? `${stats.totalProblems.toLocaleString()}+`
-                : "500+",
+              // value: stats ? `${stats.totalProblems.toLocaleString()}+` : "50+",
+              value: "150+",
               label: "Curated Problems",
               icon: Code2,
             },
             {
-              value: stats
-                ? `${stats.totalUsers.toLocaleString()}+`
-                : "10,000+",
-              label: "Active Developers",
+              // value: stats ? `${stats.totalUsers.toLocaleString()}+` : "100+",
+              value: "500+",
+              label: "Active Users",
               icon: Users,
             },
             {
-              value: stats
-                ? `${stats.totalContests.toLocaleString()}+`
-                : "100+",
+              // value: stats ? `${stats.totalContests.toLocaleString()}+` : "25+",
+              value: "25+",
               label: "Contests Hosted",
               icon: Trophy,
             },
@@ -133,33 +134,87 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Trusted By Section (Mock Partners & Universities) */}
       <section className="py-20 px-6 bg-background">
-        <div className="max-w-5xl mx-auto text-center">
-          <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-10">
-            Trusted by top tech companies & universities
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center opacity-70 grayscale hover:grayscale-0 transition-all duration-500">
-            {/* Tech Partners */}
-            <div className="flex items-center justify-center gap-2 font-bold text-xl tracking-tighter">
-              <Building size={24} /> Meta
-            </div>
-            <div className="flex items-center justify-center gap-2 font-bold text-xl tracking-tighter">
-              <Building size={24} /> Google
-            </div>
-            <div className="flex items-center justify-center gap-2 font-bold text-xl tracking-tighter">
-              <Building size={24} /> Amazon
-            </div>
-            {/* Universities */}
-            <div className="flex items-center justify-center gap-2 font-serif font-semibold text-lg">
-              <GraduationCap size={28} /> Stanford
-            </div>
-            <div className="flex items-center justify-center gap-2 font-serif font-semibold text-lg">
-              <GraduationCap size={28} /> MIT
-            </div>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-3">
+              Why colleges choose us
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+              Everything you need to run a contest
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                icon: Users,
+                title: "Simple Student Onboarding",
+                desc: "Students create an account and join any contest in a couple of clicks.",
+              },
+              {
+                icon: Code,
+                title: "Custom Problem Sets",
+                desc: "Build contest-specific problems with test cases, time limits, and difficulty tiers.",
+              },
+              {
+                icon: Trophy,
+                title: "Live Leaderboard",
+                desc: "Real-time rankings so students can track their standing as they solve.",
+              },
+              {
+                icon: Clock,
+                title: "Timed Contests",
+                desc: "Schedule contests with auto start/stop and per-student time tracking.",
+              },
+              {
+                icon: BarChart,
+                title: "Performance Analytics",
+                desc: "Detailed reports for faculty on class-wide and individual performance.",
+              },
+              {
+                icon: ShieldCheck,
+                title: "Plagiarism Detection",
+                desc: "Automated code-similarity checks to keep contests fair.",
+              },
+            ].map((f, i) => (
+              <div
+                key={i}
+                className="p-6 rounded-xl border border-border bg-card hover:shadow-md transition-shadow"
+              >
+                <f.icon size={28} className="mb-4 text-primary" />
+                <h3 className="font-semibold text-lg mb-2">{f.title}</h3>
+                <p className="text-sm text-muted-foreground">{f.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
+
+      {/* Trusted By Section (Mock Partners & Universities) */}
+      {/* <section className="py-20 px-6 bg-background">
+        <div className="max-w-5xl mx-auto text-center">
+          <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-10">
+            Trusted by leading engineering colleges
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center opacity-70 grayscale hover:grayscale-0 transition-all duration-500">
+            <div className="flex items-center justify-center gap-2 font-serif font-semibold text-lg">
+              <GraduationCap size={28} /> PSG Tech
+            </div>
+            <div className="flex items-center justify-center gap-2 font-serif font-semibold text-lg">
+              <Building size={28} /> NIT
+            </div>
+            <div className="flex items-center justify-center gap-2 font-serif font-semibold text-lg">
+              <GraduationCap size={28} /> Karunya
+            </div>
+            <div className="flex items-center justify-center gap-2 font-serif font-semibold text-lg">
+              <GraduationCap size={28} /> Karpagam
+            </div>
+            <div className="flex items-center justify-center gap-2 font-serif font-semibold text-lg">
+              <Building size={28} /> VIT
+            </div>
+          </div>
+        </div>
+      </section> */}
 
       {/* Features Showcase */}
       <section className="py-24 px-6 bg-muted/20 border-t border-border">
@@ -238,6 +293,92 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="py-20 px-6 bg-background">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-16">
+            <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-3">
+              How it works
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+              From registration to results in three steps
+            </h2>
+          </div>
+          <div className="relative grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
+            {/* Connecting line — desktop only */}
+            <div className="hidden md:block absolute top-7 left-[16.5%] right-[16.5%] h-px bg-border" />
+
+            {[
+              {
+                step: "01",
+                title: "Register",
+                desc: "Students sign up with their college ID and join the contest room.",
+              },
+              {
+                step: "02",
+                title: "Compete",
+                desc: "Solve timed problems in our built-in code editor with instant feedback.",
+              },
+              {
+                step: "03",
+                title: "Get Ranked",
+                desc: "Live leaderboard updates as submissions come in, with final results at the end.",
+              },
+            ].map((s, i) => (
+              <div key={i} className="relative text-center group">
+                <div className="relative z-10 w-14 h-14 mx-auto rounded-full bg-card border-2 border-primary/20 text-primary font-bold text-lg flex items-center justify-center mb-5 shadow-sm group-hover:border-primary/50 group-hover:shadow-md transition-all">
+                  {s.step}
+                </div>
+                <h3 className="font-semibold text-lg mb-2">{s.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
+                  {s.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 px-6 bg-background">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-14">
+            <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-3">
+              FAQ
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+              Common questions
+            </h2>
+          </div>
+          <div className="space-y-4">
+            {[
+              {
+                q: "Which languages are supported?",
+                a: "C, C++, Java, and Python, each run in isolated sandboxes with strict time and memory limits.",
+              },
+              {
+                q: "Can our college host a private contest?",
+                a: "Yes — admins can create contests scoped to a specific batch or department, with bulk CSV onboarding.",
+              },
+              {
+                q: "Is there anti-cheat during contests?",
+                a: "Fullscreen lock tracking, copy/paste prevention, and hidden test cases are enabled by default.",
+              },
+              {
+                q: "Is it free for students?",
+                a: "Yes, student accounts are free. Colleges can reach out for institution-wide setup.",
+              },
+            ].map((f, i) => (
+              <div
+                key={i}
+                className="p-6 rounded-xl border border-border bg-card"
+              >
+                <h3 className="font-semibold text-base mb-2">{f.q}</h3>
+                <p className="text-sm text-muted-foreground">{f.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-24 px-6 bg-background relative overflow-hidden">
         <div className="absolute inset-0 bg-primary/5"></div>
@@ -259,16 +400,16 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="border-t border-border bg-card py-12 px-6">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2 text-primary">
+        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-center gap-6">
+          {/* <div className="flex items-center gap-2 text-primary">
             <Code2 size={20} />
             <span className="font-bold text-lg tracking-tight">ZAP</span>
-          </div>
+          </div> */}
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} ZAP Professional Platform. All rights
             reserved.
           </p>
-          <div className="flex gap-6 text-sm font-medium text-muted-foreground">
+          {/* <div className="flex gap-6 text-sm font-medium text-muted-foreground">
             <a href="#" className="hover:text-foreground transition-colors">
               Privacy
             </a>
@@ -278,7 +419,7 @@ export default function HomePage() {
             <a href="#" className="hover:text-foreground transition-colors">
               Contact
             </a>
-          </div>
+          </div> */}
         </div>
       </footer>
     </div>
