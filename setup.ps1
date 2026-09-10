@@ -40,7 +40,7 @@ $VenvPython = Join-Path $ApiDir '.venv\Scripts\python.exe'
 $PgRoot     = Join-Path $Root '.postgres'
 $PgData     = Join-Path $PgRoot 'data'
 $EnvFile    = Join-Path $Root '.env'
-$DbName     = 'codearena'
+$DbName     = 'zap'
 
 function Write-Step($n, $text) { Write-Host "`n[$n] $text" -ForegroundColor Cyan }
 function Write-Ok($text)       { Write-Host "    $text" -ForegroundColor Green }

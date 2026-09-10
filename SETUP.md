@@ -1,6 +1,6 @@
 # Setup
 
-Getting CodeArena / ZAP running on a fresh machine. The repository ships **without a database** — everything below creates one for you.
+Getting ZAP running on a fresh machine. The repository ships **without a database** — everything below creates one for you.
 
 ---
 
@@ -43,7 +43,7 @@ The script is safe to re-run — each step is skipped or updated in place if it 
 2. `npm install`
 3. Create `api\.venv` and install `api\requirements.txt`
 4. Create `.env` from `.env.example` and generate a random `JWT_SECRET`
-5. Download and start a local PostgreSQL server under `.postgres\`, then create the `codearena` database
+5. Download and start a local PostgreSQL server under `.postgres\`, then create the `zap` database
 6. Create the schema and load seed data
 
 Then start the two dev servers in separate terminals:
@@ -162,7 +162,7 @@ $bin = (Get-ChildItem .\.postgres -Directory -Filter 'postgresql-*' | Select-Obj
 & "$bin\pg_ctl.exe" -D .\.postgres\data -l .\.postgres\server.log start   # start
 & "$bin\pg_ctl.exe" -D .\.postgres\data stop                              # stop
 & "$bin\pg_isready.exe" -h 127.0.0.1 -p 5432                              # status
-& "$bin\psql.exe" -h 127.0.0.1 -p 5432 -U postgres -d codearena           # SQL shell
+& "$bin\psql.exe" -h 127.0.0.1 -p 5432 -U postgres -d zap           # SQL shell
 ```
 
 To start completely fresh, stop the server, delete `.postgres\data`, and re-run `setup.ps1`.
