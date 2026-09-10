@@ -103,7 +103,7 @@ export default function LoginPage() {
         <div className="w-full max-w-md animate-fade-in">
           <div className="mb-8 lg:hidden flex items-center gap-2 text-primary">
             <Code2 size={20} />
-            <span className="font-bold text-lg">CodeArena</span>
+            <span className="font-bold text-lg">ZAP</span>
           </div>
           <h2 className="text-2xl font-bold mb-1">Sign in</h2>
           <p className="text-muted-foreground text-sm mb-8">

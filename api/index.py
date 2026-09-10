@@ -25,7 +25,7 @@ import rate_limit as rate_limit_store  # noqa: E402
 import security  # noqa: E402
 from routers import admin, auth, contests, problems, profile, public, submissions  # noqa: E402
 
-app = FastAPI(title="CodeArena API")
+app = FastAPI(title="ZAP API")
 
 cors_origins = [o.strip() for o in os.getenv("CORS_ORIGINS", "*").split(",") if o.strip()]
 app.add_middleware(
@@ -112,7 +112,7 @@ async def health():
 
 @app.get("/api")
 def root():
-    return {"ok": True, "service": "CodeArena API"}
+    return {"ok": True, "service": "ZAP API"}
 
 try:
     # pyrefly: ignore [missing-import]

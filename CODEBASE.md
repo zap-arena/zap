@@ -1,4 +1,4 @@
-# CodeArena / ZAP — Codebase Reference
+# ZAP — Codebase Reference
 
 A competitive-programming contest platform. **React 19 + Vite + TypeScript** frontend, **FastAPI + SQLAlchemy + PostgreSQL** backend, with code execution delegated to a self-hosted **Piston** judge. Deployed as a single Vercel project: the frontend as static assets, the backend as one Python serverless function.
 
