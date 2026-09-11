@@ -4,19 +4,24 @@ frameworkVersion: '3'
 
 provider:
   name: aws
-  runtime: python3.9
+  runtime: python3.11
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'ap-south-1'}
-  memorySize: 1024
+  memorySize: 2048
   timeout: 30
   environment:
-    # Environment variables can be defined here
-    # e.g., DATABASE_URL: ${env:DATABASE_URL}
-    STAGE: ${self:provider.stage}
+    DATABASE_URL: 
+    JWT_SECRET: 
+    PISTON_ENDPOINTS: 
+    PISTON_API_KEY: ""
+    CORS_ORIGINS: https://zap-arena.vercel.app,http://localhost:5173
+    ADMIN_EMAIL: 
+    ADMIN_PASSWORD: 
+    ENABLE_STARTUP_MIGRATION: "false"
 
 functions:
   api:
-    handler: api/handler.handler
+    handler: api.handler.handler
     events:
       - http:
           path: /
@@ -27,12 +32,10 @@ functions:
           method: ANY
           cors: true
 
-plugins:
-  - serverless-python-requirements
-
-custom:
-  pythonRequirements:
-    dockerizePip: false
-    zip: true
-    fileName: api/requirements.txt
-    pythonBin: python3
+package:
+  patterns:
+    - 'api/**'
+    - '!node_modules/**'
+    - '!.venv/**'
+    - '!**/__pycache__/**'
+    - '!.git/**'

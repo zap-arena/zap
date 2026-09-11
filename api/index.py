@@ -1,5 +1,7 @@
 import os
 import sys
+import threading
+import time
 
 from dotenv import load_dotenv
 
@@ -17,6 +19,7 @@ from fastapi import FastAPI, Request  # noqa: E402
 from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
 from fastapi.responses import JSONResponse  # noqa: E402
 from starlette.concurrency import run_in_threadpool  # noqa: E402
+from starlette.responses import Response  # noqa: E402
 
 from database import Base, SessionLocal, engine  # noqa: E402
 import models  # noqa: E402,F401 - ensures models are registered with Base metadata
@@ -38,8 +41,25 @@ app.add_middleware(
 
 # Endpoints that hand work to the judge; everything else is cheap enough to leave open.
 _RATE_LIMITED_PREFIXES = ("/api/code/run", "/api/submissions")
+_CACHE_TTL_SECONDS = 30
+_CACHE_MAX_ENTRIES = 200
+_API_CACHE = {}
+_API_CACHE_LOCK = threading.Lock()
 
 
+def _is_cacheable_get(request: Request) -> bool:
+    if request.method != "GET":
+        return False
+    if request.headers.get("authorization"):
+        return False
+    path = request.url.path
+    blocked_prefixes = ("/api/auth", "/api/profile", "/api/submissions", "/api/code")
+    if path.startswith(blocked_prefixes):
+        return False
+    return path.startswith("/api")
+
+
+load_dotenv()
 def _rate_limit_identity(request: Request) -> str:
     """Prefer the authenticated user so a limit cannot be dodged by re-logging in."""
     header = request.headers.get("authorization", "")
@@ -68,8 +88,57 @@ async def rate_limit(request: Request, call_next):
     return await call_next(request)
 
 
+@app.middleware("http")
+async def cache_public_gets(request: Request, call_next):
+    if not _is_cacheable_get(request):
+        return await call_next(request)
+
+    cache_key = f"{request.url.path}?{request.url.query}"
+    now = time.monotonic()
+    with _API_CACHE_LOCK:
+        cached = _API_CACHE.get(cache_key)
+        if cached and cached["expires_at"] > now:
+            return Response(
+                content=cached["body"],
+                status_code=cached["status_code"],
+                headers=dict(cached["headers"]),
+                media_type=cached["media_type"],
+            )
+
+    response = await call_next(request)
+    response_body = b""
+    async for chunk in response.body_iterator:
+        response_body += chunk
+
+    rebuilt = Response(
+        content=response_body,
+        status_code=response.status_code,
+        headers=dict(response.headers),
+        media_type=response.media_type,
+    )
+
+    with _API_CACHE_LOCK:
+        _API_CACHE[cache_key] = {
+            "body": response_body,
+            "status_code": response.status_code,
+            "headers": dict(response.headers),
+            "media_type": response.media_type,
+            "expires_at": now + _CACHE_TTL_SECONDS,
+        }
+        if len(_API_CACHE) > _CACHE_MAX_ENTRIES:
+            for old_key in list(_API_CACHE)[: len(_API_CACHE) - _CACHE_MAX_ENTRIES]:
+                del _API_CACHE[old_key]
+
+    return rebuilt
+
+
 @app.on_event("startup")
 def on_startup():
+    # Keep Lambda cold starts fast. Startup DB migrations are expensive and not needed
+    # on every warm/cold instance in a serverless deployment. Enable explicitly only
+    # when a dedicated migration run is desired.
+    if os.getenv("ENABLE_STARTUP_MIGRATION", "false").lower() != "true":
+        return
     if engine is not None:
         Base.metadata.create_all(bind=engine)
         _auto_migrate_schema(engine)
