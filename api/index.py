@@ -38,8 +38,8 @@ app.add_middleware(
 
 # Endpoints that hand work to the judge; everything else is cheap enough to leave open.
 _RATE_LIMITED_PREFIXES = ("/api/code/run", "/api/submissions")
-_RATE_LIMIT_ENABLED = os.getenv("RATE_LIMIT_ENABLED", "true").lower() != "false"
-
+# _RATE_LIMIT_ENABLED = os.getenv("RATE_LIMIT_ENABLED", "true").lower() != "false"
+_RATE_LIMIT_ENABLED = False
 
 def _rate_limit_identity(request: Request) -> str:
     """Prefer the authenticated user so a limit cannot be dodged by re-logging in."""
