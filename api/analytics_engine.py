@@ -227,7 +227,7 @@ async def estimate_complexity_empirical(
     for tier, tc in tiers.items():
         if not tc:
             continue
-        execution = await execute(language, code, tc.input, stage.time_limit or 5)
+        execution = await execute(language, code, tc.input, 50)
         result = execution.get("result") or {}
         run_result = result.get("run") or {}
         if execution["status"] != "COMPLETED":

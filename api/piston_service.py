@@ -5,6 +5,7 @@ import time
 from itertools import count
 from typing import Any
 
+# pyrefly: ignore [missing-import]
 import httpx
 
 FILENAMES = {"python": "main.py", "cpp": "main.cpp", "c": "main.c", "java": "Main.java"}
@@ -49,7 +50,7 @@ def normalize_output(value: Optional[str]) -> str:
     return (value or "").replace("\r\n", "\n").strip()
 
 
-async def execute(language: str, code: str, stdin: str, time_limit: int = 5) -> dict[str, Any]:
+async def execute(language: str, code: str, stdin: str, time_limit: int = 50) -> dict[str, Any]:
     """Round-robin over healthy Piston endpoints with failover on error."""
     filename = FILENAMES.get(language, "main.txt")
     payload = {
