@@ -46,3 +46,5 @@ __pycache__/
 *.zip
 .serverless/
 vendor/*
+api/vendor/*
+api/build/*
