@@ -138,7 +138,14 @@ All configuration lives in a single `.env` at the repository root (never committ
 
 | Variable | Required | Purpose |
 |---|---|---|
-| `DATABASE_URL` | yes | PostgreSQL connection string. `postgres://` and `postgresql://` are both accepted. |
+| `DATABASE_URL` | yes, unless `DB_PROVIDER=aws` | PostgreSQL connection string (e.g. Neon). `postgres://` and `postgresql://` are both accepted. |
+| `DB_PROVIDER` | no | Set to `aws` to route the backend to the AWS RDS IAM-auth engine below instead of `DATABASE_URL`. Any other value (or unset) keeps using `DATABASE_URL`. |
+| `AWS_RDS_HOST` | when `DB_PROVIDER=aws` | RDS/Aurora cluster endpoint. |
+| `AWS_RDS_PORT` | no | RDS port. Default `5432`. |
+| `AWS_RDS_DB` | no | Database name. Default `postgres`. |
+| `AWS_RDS_USER` | no | DB user with `rds_iam` granted. Default `postgres`. |
+| `AWS_RDS_REGION` | no | AWS region of the RDS instance. Default `ap-south-1`. |
+| `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | when `DB_PROVIDER=aws` | IAM credentials boto3 uses to mint RDS auth tokens (Vercel functions have no attached instance role). The IAM user/role needs `rds-db:connect` on the target RDS resource. |
 | `JWT_SECRET` | yes | Signing key for auth tokens. Login fails without it. |
 | `PISTON_ENDPOINTS` | for code execution | Comma-separated Piston base URLs. |
 | `PISTON_API_KEY` | no | Only if your Piston instance requires one. |
@@ -148,7 +155,7 @@ All configuration lives in a single `.env` at the repository root (never committ
 | `RATE_LIMIT_WINDOW_SECONDS` | no | Length of the rate limit window. Default `10`. |
 | `VITE_API_BASE_URL` | no | Frontend API base. Defaults to `/api`, which is correct for both dev and production. |
 
-On Vercel, set these in **Project Settings → Environment Variables** instead — `.env` is excluded from deploys by `.vercelignore`.
+On Vercel, set these in **Project Settings → Environment Variables** instead — `.env` is excluded from deploys by `.vercelignore`. To flip between Neon and AWS RDS per environment (e.g. keep `DATABASE_URL` pointed at Neon for Preview, and set `DB_PROVIDER=aws` only for Production), use Vercel's per-environment env var scoping (Production / Preview / Development) rather than editing code.
 
 ---
 
