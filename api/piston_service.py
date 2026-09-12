@@ -7,12 +7,11 @@ from typing import Any
 
 # pyrefly: ignore [missing-import]
 import httpx
-
 FILENAMES = {"python": "main.py", "cpp": "main.cpp", "c": "main.c", "java": "Main.java"}
 
 MAX_ATTEMPTS = 3
 RETRY_BACKOFF_SECONDS = 0.75
-DEFAULT_RUN_TIMEOUT_SECONDS = 50
+DEFAULT_RUN_TIMEOUT_SECONDS = 30
 
 _endpoint_cursor = count()
 _client = httpx.AsyncClient()
@@ -65,8 +64,8 @@ async def execute(language: str, code: str, stdin: str, time_limit: int = 50) ->
         "version": "*",
         "files": [{"name": filename, "content": code}],
         "stdin": stdin,
-        "run_timeout": min(time_limit * 1000, 3000),
-        "compile_timeout": 10000,
+        "run_timeout": run_timeout_seconds * 1000,
+        "compile_timeout": 30000,
     }
 
     last_error = "No Piston endpoint configured"
