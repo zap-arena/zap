@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
 from typing import Optional
+import logging
+import time
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
@@ -11,6 +13,8 @@ from database import get_db
 from deps import get_current_user
 from scoring import judge_submission, run_public, run_samples, compute_problem_score
 from serializers import serialize_submission
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api", tags=["submissions"])
 
@@ -130,7 +134,13 @@ async def create_submission(payload: schemas.SubmitRequest, db: Session = Depend
     if last_submission and (now_utc() - last_submission.submitted_at).total_seconds() < MIN_SUBMIT_INTERVAL_SECONDS:
         raise HTTPException(status_code=429, detail="Please wait a few seconds before submitting again")
 
+    logger.info(f"[JUDGE_START] User {user.id} - Problem {problem.id} - Language {payload.language}")
+    judge_start = time.time()
+    
     verdict = await judge_submission(problem, payload.language, payload.code, stage=stage)
+    
+    judge_time = time.time() - judge_start
+    logger.warning(f"[JUDGE_TIME] Took {judge_time:.2f}s - Status: {verdict['status']} - Tests: {verdict['passedTests']}/{verdict['totalTests']}")
     all_passed = verdict["passedTests"] == verdict["totalTests"] and verdict["status"] == "ACCEPTED"
     score = compute_problem_score(
         contest.scoring_mode if contest else "partial", contest_max_score,

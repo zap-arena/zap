@@ -34,8 +34,8 @@ def _build_aws_engine():
     aws_engine = create_engine(
         f"postgresql+psycopg2://{AWS_RDS_USER}@{AWS_RDS_HOST}:{AWS_RDS_PORT}/{AWS_RDS_DB}",
         pool_pre_ping=True,
-        pool_size=1,
-        max_overflow=2,
+        pool_size=10,
+        max_overflow=30,
         pool_recycle=280,
         connect_args={"sslmode": "require"},
     )
@@ -61,8 +61,8 @@ def _build_engine():
     return create_engine(
         _normalize(DATABASE_URL),
         pool_pre_ping=True,
-        pool_size=1,
-        max_overflow=2,
+        pool_size=10,
+        max_overflow=30,
         pool_recycle=280,
     )
 

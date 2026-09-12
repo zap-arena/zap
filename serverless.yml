@@ -2,22 +2,31 @@ service: codearena-api
 
 frameworkVersion: '3'
 
+plugins:
+  - serverless-python-requirements
+
 provider:
   name: aws
   runtime: python3.11
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'ap-south-1'}
   memorySize: 2048
-  timeout: 30
+  timeout: 90
   environment:
-    DATABASE_URL: 
-    JWT_SECRET: 
-    PISTON_ENDPOINTS: 
+    DATABASE_URL: postgresql://neondb_owner:npg_eqXGcT9Nn4pU@ep-jolly-smoke-b3jrlwlb-pooler.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+    JWT_SECRET: dJBfsX3a_A1M9RV0z98f1dfypdrTFYR0fjPz_924ntTGj6veGpj_nSz2WcSPD28qs
+    PISTON_ENDPOINTS: https://attitudes-contain-compact-thereby.trycloudflare.com/api/v2
     PISTON_API_KEY: ""
     CORS_ORIGINS: https://zap-arena.vercel.app,http://localhost:5173
-    ADMIN_EMAIL: 
-    ADMIN_PASSWORD: 
+    ADMIN_EMAIL: admin@zap.dev
+    ADMIN_PASSWORD: Z@padmin#1
     ENABLE_STARTUP_MIGRATION: "false"
+    DB_PROVIDER: ""
+    AWS_RDS_HOST: database-1-instance-1.c3y42qi0mbxj.ap-south-1.rds.amazonaws.com
+    AWS_RDS_PORT: "5432"
+    AWS_RDS_DB: postgres
+    AWS_RDS_USER: iam_user
+    AWS_RDS_REGION: ap-south-1
 
 functions:
   api:
@@ -26,11 +35,18 @@ functions:
       - http:
           path: /
           method: ANY
-          cors: true
       - http:
           path: /{proxy+}
           method: ANY
-          cors: true
+
+custom:
+  pythonRequirements:
+    dockerizePip: false
+    useStaticCache: true
+    useDownloadCache: true
+    slim: true
+    strip: false
+    layer: true
 
 package:
   patterns:

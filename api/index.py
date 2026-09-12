@@ -30,13 +30,18 @@ from routers import admin, auth, contests, problems, profile, public, submission
 
 app = FastAPI(title="CodeArena API")
 
-cors_origins = [o.strip() for o in os.getenv("CORS_ORIGINS", "*").split(",") if o.strip()]
+cors_origins = os.getenv("CORS_ORIGINS", "*").strip()
+if cors_origins == "*":
+    allow_origins = ["*"]
+else:
+    allow_origins = [o.strip() for o in cors_origins.split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=cors_origins,
+    allow_origins=allow_origins,
     allow_credentials=False,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=["*"],
 )
 
 # Endpoints that hand work to the judge; everything else is cheap enough to leave open.
@@ -71,6 +76,17 @@ def _rate_limit_identity(request: Request) -> str:
         except Exception:  # noqa: BLE001 - unauthenticated requests fall back to the client address
             pass
     return f"ip:{request.client.host if request.client else 'anon'}"
+
+
+@app.middleware("http")
+async def log_timing(request: Request, call_next):
+    import logging
+    logger = logging.getLogger()
+    start = time.time()
+    response = await call_next(request)
+    duration = time.time() - start
+    logger.info(f"[TIMING] {request.method} {request.url.path} - {duration:.2f}s")
+    return response
 
 
 @app.middleware("http")
