@@ -5,6 +5,7 @@ import time
 from itertools import count
 from typing import Any
 
+# pyrefly: ignore [missing-import]
 import httpx
 
 FILENAMES = {"python": "main.py", "cpp": "main.cpp", "c": "main.c", "java": "Main.java"}
@@ -13,6 +14,7 @@ MAX_ATTEMPTS = 3
 RETRY_BACKOFF_SECONDS = 0.75
 
 _endpoint_cursor = count()
+_client = httpx.AsyncClient()
 
 
 def piston_endpoints() -> list[str]:
@@ -36,7 +38,11 @@ def ordered_endpoints() -> list[str]:
 def result_status(result: dict[str, Any]) -> str:
     compile_result = result.get("compile") or {}
     run_result = result.get("run") or {}
-    if compile_result.get("code") not in (None, 0) or compile_result.get("stderr"):
+    if (
+        compile_result.get("code") not in (None, 0)
+        or compile_result.get("stderr")
+        or compile_result.get("signal")
+    ):
         return "COMPILATION_ERROR"
     if run_result.get("signal") == "SIGKILL":
         return "TIME_LIMIT_EXCEEDED"
@@ -49,7 +55,7 @@ def normalize_output(value: Optional[str]) -> str:
     return (value or "").replace("\r\n", "\n").strip()
 
 
-async def execute(language: str, code: str, stdin: str, time_limit: int = 5) -> dict[str, Any]:
+async def execute(language: str, code: str, stdin: str, time_limit: int = 50) -> dict[str, Any]:
     """Round-robin over healthy Piston endpoints with failover on error."""
     filename = FILENAMES.get(language, "main.txt")
     payload = {
@@ -57,34 +63,50 @@ async def execute(language: str, code: str, stdin: str, time_limit: int = 5) -> 
         "version": "*",
         "files": [{"name": filename, "content": code}],
         "stdin": stdin,
-        "run_timeout": time_limit * 1000,
+        "run_timeout": min(time_limit * 1000, 3000),
         "compile_timeout": 10000,
     }
 
     last_error = "No Piston endpoint configured"
     started_at = time.perf_counter()
+    timeout = httpx.Timeout(time_limit + 15.0)
 
-    async with httpx.AsyncClient(timeout=time_limit + 15, headers=auth_headers()) as client:
-        # A single blip would otherwise zero an entire submission, so retry the whole ring.
-        for attempt in range(MAX_ATTEMPTS):
-            if attempt:
-                await asyncio.sleep(RETRY_BACKOFF_SECONDS * attempt)
-            for endpoint in ordered_endpoints():
-                try:
-                    response = await client.post(f"{endpoint}/execute", json=payload)
+    # A single blip would otherwise zero an entire submission, so retry the whole ring.
+    for attempt in range(MAX_ATTEMPTS):
+        if attempt:
+            await asyncio.sleep(RETRY_BACKOFF_SECONDS * attempt)
+        for endpoint in ordered_endpoints():
+            try:
+                response = await _client.post(
+                    f"{endpoint}/execute", 
+                    json=payload,
+                    headers=auth_headers(),
+                    timeout=timeout
+                )
+                if response.status_code >= 500:
                     response.raise_for_status()
-                    result = response.json()
+                elif not response.is_success:
                     return {
-                        "ok": True,
+                        "ok": False,
                         "endpoint": endpoint,
                         "elapsedMs": round((time.perf_counter() - started_at) * 1000),
-                        "result": result,
-                        "status": result_status(result),
+                        "status": "JUDGE_UNAVAILABLE",
+                        "error": f"HTTP {response.status_code}: {response.text}",
+                        "result": {},
                     }
-                except Exception as error:  # noqa: BLE001 - failover to next endpoint
-                    last_error = str(error)
-            if not piston_endpoints():
-                break
+                
+                result = response.json()
+                return {
+                    "ok": True,
+                    "endpoint": endpoint,
+                    "elapsedMs": round((time.perf_counter() - started_at) * 1000),
+                    "result": result,
+                    "status": result_status(result),
+                }
+            except Exception as error:  # noqa: BLE001 - failover to next endpoint
+                last_error = str(error)
+        if not piston_endpoints():
+            break
 
     return {
         "ok": False,
@@ -98,16 +120,20 @@ async def execute(language: str, code: str, stdin: str, time_limit: int = 5) -> 
 
 async def health() -> dict[str, Any]:
     endpoints = piston_endpoints()
-    results = []
-    async with httpx.AsyncClient(timeout=5, headers=auth_headers()) as client:
-        for endpoint in endpoints:
-            try:
-                response = await client.get(f"{endpoint}/runtimes")
-                results.append({
-                    "endpoint": endpoint,
-                    "ok": response.is_success,
-                    "runtimeCount": len(response.json()) if response.is_success else 0,
-                })
-            except Exception as error:  # noqa: BLE001
-                results.append({"endpoint": endpoint, "ok": False, "error": str(error)})
+    
+    async def check_endpoint(endpoint: str) -> dict[str, Any]:
+        try:
+            response = await _client.get(f"{endpoint}/runtimes", headers=auth_headers(), timeout=5.0)
+            return {
+                "endpoint": endpoint,
+                "ok": response.is_success,
+                "runtimeCount": len(response.json()) if response.is_success else 0,
+            }
+        except Exception as error:  # noqa: BLE001
+            return {"endpoint": endpoint, "ok": False, "error": str(error)}
+
+    if not endpoints:
+        return {"ok": False, "endpoints": []}
+
+    results = await asyncio.gather(*(check_endpoint(e) for e in endpoints))
     return {"ok": any(r["ok"] for r in results), "endpoints": results}

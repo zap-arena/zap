@@ -7,7 +7,7 @@ from piston_service import execute, normalize_output
 
 async def run_public(problem: models.Problem, language: str, code: str, stdin: str, time_limit: int) -> dict[str, Any]:
     """Run with custom/sample stdin. Used for the 'Run Code' action (not scored)."""
-    execution = await execute(language, code, stdin, time_limit)
+    execution = await execute(language, code, stdin, 50)
     result = execution.get("result") or {}
     run_result = result.get("run") or {}
     compile_result = result.get("compile") or {}
