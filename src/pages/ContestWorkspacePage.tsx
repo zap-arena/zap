@@ -329,6 +329,7 @@ export default function ContestWorkspacePage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [running, setRunning] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [hasRun, setHasRun] = useState(false);
   const [runOutput, setRunOutput] = useState<RunOutput | null>(null);
   const [showFinishDialog, setShowFinishDialog] = useState(false);
   const [stdin, setStdin] = useState("");
@@ -425,11 +426,13 @@ export default function ContestWorkspacePage() {
     }
   };
 
+  const ENABLE_NOTIFICATIONS = false;
+  
   const { data: notifications = [] } = useQuery({
     queryKey: ["contest-notifications", contestId],
     queryFn: () =>
       api.get<ContestNotice[]>(`/contests/${contestId}/notifications`),
-    enabled: !!contestId && !!session?.started,
+    enabled: ENABLE_NOTIFICATIONS && !!contestId && !!session?.started,
     refetchInterval: 20000,
   });
 
@@ -529,6 +532,7 @@ export default function ContestWorkspacePage() {
   const handleLanguageChange = (lang: Language) => {
     if (selectedProblem) saveToStore(selectedProblem.id, language, code);
     setLanguage(lang);
+    setHasRun(false);
     if (selectedProblem) {
       const stored = codeStore.current[selectedProblem.id]?.[lang];
       setCode(stored ?? selectedProblem?.boilerplates[lang] ?? "");
@@ -540,6 +544,7 @@ export default function ContestWorkspacePage() {
     if (selectedProblem) saveToStore(selectedProblem.id, language, code);
     setSelectedProblem(problem);
     setRunOutput(null);
+    setHasRun(false);
     setActiveTab("problem");
     if (!contestId) return;
     try {
@@ -567,11 +572,11 @@ export default function ContestWorkspacePage() {
   const handleRun = async () => {
     if (!selectedProblem) return;
 
+    setRunning(true);
     if (!ENABLE_AUTOSAVE) {
       await saveDraft();
     }
 
-    setRunning(true);
     setRunOutput(null);
     setBottomTab("output");
     try {
@@ -603,6 +608,7 @@ export default function ContestWorkspacePage() {
         stdin: stdin.trim(),
       });
       const cases = result.testResults ?? [];
+      setHasRun(true);
       setRunOutput({
         stdout: result.stdout,
         stderr: result.stderr || result.error || "",
@@ -636,11 +642,11 @@ export default function ContestWorkspacePage() {
   const handleSubmit = async () => {
     if (!selectedProblem || !contestId) return;
 
+    setSubmitting(true);
     if (!ENABLE_AUTOSAVE) {
       await saveDraft();
     }
 
-    setSubmitting(true);
     setRunOutput(null);
     setBottomTab("output");
     try {
@@ -1296,7 +1302,7 @@ export default function ContestWorkspacePage() {
                         <Button
                           size="sm"
                           onClick={handleSubmit}
-                          disabled={running || submitting}
+                          disabled={running || submitting || !hasRun}
                           className="h-6 px-3 text-xs btn-primary gap-1"
                         >
                           {submitting ? (
@@ -1320,6 +1326,7 @@ export default function ContestWorkspacePage() {
                         }}
                         onChange={(v) => {
                           setCode(v);
+                          setHasRun(false);
                           if (selectedProblem)
                             saveToStore(selectedProblem.id, language, v);
                         }}
