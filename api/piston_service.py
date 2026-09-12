@@ -65,8 +65,8 @@ async def execute(language: str, code: str, stdin: str, time_limit: int = 50) ->
         "version": "*",
         "files": [{"name": filename, "content": code}],
         "stdin": stdin,
-        "run_timeout": run_timeout_seconds * 1000,
-        "compile_timeout": 50000,
+        "run_timeout": min(time_limit * 1000, 3000),
+        "compile_timeout": 10000,
     }
 
     last_error = "No Piston endpoint configured"
