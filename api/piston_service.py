@@ -12,6 +12,7 @@ FILENAMES = {"python": "main.py", "cpp": "main.cpp", "c": "main.c", "java": "Mai
 
 MAX_ATTEMPTS = 3
 RETRY_BACKOFF_SECONDS = 0.75
+DEFAULT_RUN_TIMEOUT_SECONDS = 50
 
 _endpoint_cursor = count()
 _client = httpx.AsyncClient()
@@ -58,18 +59,19 @@ def normalize_output(value: Optional[str]) -> str:
 async def execute(language: str, code: str, stdin: str, time_limit: int = 50) -> dict[str, Any]:
     """Round-robin over healthy Piston endpoints with failover on error."""
     filename = FILENAMES.get(language, "main.txt")
+    run_timeout_seconds = DEFAULT_RUN_TIMEOUT_SECONDS
     payload = {
         "language": language,
         "version": "*",
         "files": [{"name": filename, "content": code}],
         "stdin": stdin,
-        "run_timeout": min(time_limit * 1000, 3000),
-        "compile_timeout": 10000,
+        "run_timeout": run_timeout_seconds * 1000,
+        "compile_timeout": 50000,
     }
 
     last_error = "No Piston endpoint configured"
     started_at = time.perf_counter()
-    timeout = httpx.Timeout(time_limit + 15.0)
+    timeout = httpx.Timeout(run_timeout_seconds + 15.0)
 
     # A single blip would otherwise zero an entire submission, so retry the whole ring.
     for attempt in range(MAX_ATTEMPTS):
