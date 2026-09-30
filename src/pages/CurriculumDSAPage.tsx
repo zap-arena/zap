@@ -2,10 +2,7 @@ import type React from "react";
 import Navbar from "../components/Navbar";
 
 export default function CurriculumDSAPage() {
-  const toggleExpand = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) el.classList.toggle("visible");
-  };
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">

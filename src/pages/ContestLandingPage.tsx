@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { Button } from "../components/ui/button";
 // import { api } from "../lib/api";
-import { useAuth } from "../store/auth";
+
 
 // interface HomeSnapshot {
 //   stats: { totalUsers: number; totalProblems: number; totalContests: number };
@@ -28,7 +28,7 @@ import { useAuth } from "../store/auth";
 
 export default function ContestLandingPage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+
 
   // const { data } = useQuery({
   //   queryKey: ["home-snapshot"],

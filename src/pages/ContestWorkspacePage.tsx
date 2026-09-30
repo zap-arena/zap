@@ -417,7 +417,7 @@ export default function ContestWorkspacePage({
       : selectedProblem?.currentStageOrder;
 
   const chainCompleted = isCodeWar
-    ? computedStageOrder > chainStages.length
+    ? (computedStageOrder ?? 1) > chainStages.length
     : !!selectedProblem?.chainCompleted;
 
   const activeStage = selectedProblem?.isProgressive
@@ -950,7 +950,7 @@ export default function ContestWorkspacePage({
                     submissions: History,
                     leaderboard: Trophy,
                   };
-                  const Icon = icons[tab];
+                  const Icon = icons[tab as keyof typeof icons];
                   return (
                     <button
                       key={tab}
@@ -1462,7 +1462,7 @@ export default function ContestWorkspacePage({
                               onClick={() => {
                                 setCodeWarStageOverrides((prev) => ({
                                   ...prev,
-                                  [selectedProblem.id]: computedStageOrder + 1,
+                                  [selectedProblem.id]: (computedStageOrder ?? 1) + 1,
                                 }));
                                 toast.success("Advanced to next stage!");
                               }}

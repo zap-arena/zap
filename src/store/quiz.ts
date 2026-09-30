@@ -13,22 +13,22 @@ interface QuizState {
 
 export const useQuizStore = create<QuizState>()(
   persist(
-    (set, get) => ({
+    (set: any, get: any) => ({
       quizzes: [],
       submissions: [],
-      addQuiz: (quiz) =>
-        set((state) => ({ quizzes: [...state.quizzes, quiz] })),
-      deleteQuiz: (id) =>
-        set((state) => ({ quizzes: state.quizzes.filter((q) => q.id !== id) })),
-      addSubmission: (submission) =>
-        set((state) => ({ submissions: [...state.submissions, submission] })),
-      getSubmission: (quizId, userId) =>
+      addQuiz: (quiz: Quiz) =>
+        set((state: QuizState) => ({ quizzes: [...state.quizzes, quiz] })),
+      deleteQuiz: (id: string) =>
+        set((state: QuizState) => ({ quizzes: state.quizzes.filter((q: Quiz) => q.id !== id) })),
+      addSubmission: (submission: QuizSubmission) =>
+        set((state: QuizState) => ({ submissions: [...state.submissions, submission] })),
+      getSubmission: (quizId: string, userId: string) =>
         get().submissions.find(
-          (s) => s.quizId === quizId && s.userId === userId,
+          (s: QuizSubmission) => s.quizId === quizId && s.userId === userId,
         ),
     }),
     {
       name: "zap-quizzes",
     },
-  ),
+  ) as any,
 );

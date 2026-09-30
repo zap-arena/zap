@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuizStore } from "../store/quiz";
 import { useAuth } from "../store/auth";
@@ -128,7 +128,7 @@ export default function QuizTakingPage() {
   }
 
   const question = quiz.questions[currentQuestionIdx];
-  const hasAnsweredCurrent = answers[question?.id] !== undefined;
+
   const isLastQuestion = currentQuestionIdx === quiz.questions.length - 1;
 
   const handleSelectOption = (idx: number) => {
@@ -141,7 +141,7 @@ export default function QuizTakingPage() {
     if (isLastQuestion) {
       // Submit
       let score = 0;
-      quiz.questions.forEach((q) => {
+      quiz.questions.forEach((q: any) => {
         if (answers[q.id] === q.correctOptionIndex) score++;
       });
 
@@ -186,7 +186,7 @@ export default function QuizTakingPage() {
           <h2 className="text-2xl font-bold mb-8">{question?.text}</h2>
 
           <div className="grid gap-4">
-            {question?.options.map((opt, idx) => {
+            {question?.options.map((opt: string, idx: number) => {
               const isSelected = answers[question.id] === idx;
               const isCorrect = question.correctOptionIndex === idx;
 

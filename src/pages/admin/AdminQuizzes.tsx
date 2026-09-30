@@ -115,7 +115,7 @@ export default function AdminQuizzes() {
             </p>
           </div>
         ) : (
-          quizzes.map((quiz) => (
+          quizzes.map((quiz: any) => (
             <div
               key={quiz.id}
               className="bg-card p-6 rounded-xl border border-border flex justify-between items-center"
