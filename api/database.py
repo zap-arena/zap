@@ -15,15 +15,22 @@ def _normalize(url: str) -> str:
     return url
 
 
-engine = create_engine(
-    _normalize(DATABASE_URL) or "postgresql+psycopg://localhost/placeholder",
-    pool_pre_ping=True,
-    pool_size=1,
-    max_overflow=2,
-    pool_recycle=280,
-    connect_args={"connect_timeout": 5},
-) if DATABASE_URL else None
+def _make_engine():
+    if not DATABASE_URL:
+        return None
+    url = _normalize(DATABASE_URL)
+    is_sqlite = url.startswith("sqlite")
+    kwargs = dict(pool_pre_ping=True)
+    if is_sqlite:
+        # SQLite needs check_same_thread=False for FastAPI threading
+        kwargs["connect_args"] = {"check_same_thread": False}
+    else:
+        kwargs.update(pool_size=1, max_overflow=2, pool_recycle=280,
+                      connect_args={"connect_timeout": 5})
+    return create_engine(url, **kwargs)
 
+
+engine = _make_engine()
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False) if engine else None
 
 
