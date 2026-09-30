@@ -5,9 +5,19 @@ import ContestEntryPage from "./pages/ContestEntryPage";
 import ContestsPage from "./pages/ContestsPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import HomePage from "./pages/HomePage";
+import ContestLandingPage from "./pages/ContestLandingPage";
+import CurriculumDSAPage from "./pages/CurriculumDSAPage";
+import HashingDsaGuidePage from "./pages/guide/HashingDsaGuidePage";
+import SlidingWindowDsaGuidePage from "./pages/guide/SlidingWindowDsaGuidePage";
+import TwoPointerDsaGuidePage from "./pages/guide/TwoPointerDsaGuidePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import { useAuth } from "./store/auth";
+
+import QuizListPage from "./pages/QuizListPage";
+import QuizTakingPage from "./pages/QuizTakingPage";
+import CodeWarPage from "./pages/CodeWarPage";
+const AdminQuizzes = lazy(() => import("./pages/admin/AdminQuizzes"));
 
 // Admin screens and the Monaco-based workspace are large and rarely the entry point, so they
 // load on demand instead of inflating the initial download.
@@ -71,7 +81,21 @@ export default function App() {
         <Routes>
           {/* Public */}
           <Route path="/" element={<HomePage />} />
-          <Route path="/contests" element={<ContestsPage />} />
+          <Route path="/contests" element={<ContestLandingPage />} />
+          <Route path="/contests/list" element={<ContestsPage />} />
+          <Route path="/curriculum/dsa" element={<CurriculumDSAPage />} />
+          <Route
+            path="/curriculum/dsa/hashing"
+            element={<HashingDsaGuidePage />}
+          />
+          <Route
+            path="/curriculum/dsa/sliding-window"
+            element={<SlidingWindowDsaGuidePage />}
+          />
+          <Route
+            path="/curriculum/dsa/two-pointer"
+            element={<TwoPointerDsaGuidePage />}
+          />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -103,6 +127,10 @@ export default function App() {
             }
           />
 
+          <Route path="/quizzes" element={<QuizListPage />} />
+          <Route path="/quizzes/:id" element={<QuizTakingPage />} />
+          <Route path="/codewar" element={<CodeWarPage />} />
+
           {/* Admin */}
           <Route
             path="/admin"
@@ -117,6 +145,14 @@ export default function App() {
             element={
               <RequireAdmin>
                 <AdminProblems />
+              </RequireAdmin>
+            }
+          />
+          <Route
+            path="/admin/quizzes"
+            element={
+              <RequireAdmin>
+                <AdminQuizzes />
               </RequireAdmin>
             }
           />

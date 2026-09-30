@@ -1,3 +1,4 @@
+import { ThunderLogo } from "./ThunderLogo";
 import {
   Activity,
   BarChart3,
@@ -10,6 +11,7 @@ import {
   Send,
   Trophy,
   Users,
+  FileQuestion,
   X,
 } from "lucide-react";
 import { useState } from "react";
@@ -23,6 +25,7 @@ const NAV_ITEMS = [
   { path: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { path: "/admin/problems", label: "Problems", icon: Code2 },
   { path: "/admin/contests", label: "Contests", icon: Trophy },
+  { path: "/admin/quizzes", label: "Quizzes", icon: FileQuestion },
   { path: "/admin/code-war", label: "Code War", icon: Brain },
   { path: "/admin/participants", label: "Participants", icon: Users },
   { path: "/admin/submissions", label: "Submissions", icon: Send },
@@ -63,7 +66,7 @@ export default function AdminLayout({
         {/* Logo */}
         <div className="h-14 border-b border-border flex items-center px-4 gap-2 shrink-0">
           <div className="w-7 h-7 rounded-md bg-brand/20 border border-brand/30 flex items-center justify-center">
-            <Code2 size={14} className="text-brand" />
+            <ThunderLogo size={14} className="text-brand fill-brand" />
           </div>
           <span className="font-bold text-sm">ZAP</span>
           <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded bg-primary/15 text-primary font-semibold">

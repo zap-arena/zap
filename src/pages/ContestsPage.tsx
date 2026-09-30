@@ -19,6 +19,8 @@ import {
   TabsTrigger,
 } from "../components/ui/tabs";
 import { api } from "../lib/api";
+import { useAuth } from "../store/auth";
+import { Info, ArrowRight } from "lucide-react";
 
 interface Contest {
   id: string;
@@ -32,6 +34,7 @@ interface Contest {
 
 export default function ContestsPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const { data: contests, isLoading } = useQuery({
     queryKey: ["contests"],
@@ -175,6 +178,31 @@ export default function ContestsPage() {
             challenges, and compete with the community.
           </p>
         </div>
+
+        {!user && (
+          <div className="mb-10 p-5 rounded-2xl border border-border bg-card shadow-sm animate-fade-in flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+            <div className="flex gap-4 items-start relative z-10">
+              <div className="mt-1 p-2 bg-primary/10 rounded-full shrink-0">
+                <Info size={20} className="text-primary" />
+              </div>
+              <div>
+                <h3 className="text-base font-semibold text-foreground mb-1">Join the Competition</h3>
+                <p className="text-sm text-muted-foreground max-w-xl leading-relaxed">
+                  Unlock the full experience by creating a free account. You'll be able to participate in live contests, practice past challenges, and track your algorithmic progress against the community!
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 shrink-0 md:ml-0 relative z-10">
+              <Button variant="outline" className="border-border hover:bg-muted font-medium" onClick={() => navigate("/login")}>
+                Sign In
+              </Button>
+              <Button className="btn-primary shadow-md shadow-primary/20" onClick={() => navigate("/register")}>
+                Create Account <ArrowRight size={16} className="ml-2" />
+              </Button>
+            </div>
+          </div>
+        )}
 
         <Tabs
           defaultValue="live"
