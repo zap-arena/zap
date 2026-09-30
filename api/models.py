@@ -286,3 +286,45 @@ class ExecutionLog(Base):
     status: Mapped[str] = mapped_column(String(30))
     error_type: Mapped[str] = mapped_column(String(60), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
+
+
+class Quiz(Base):
+    __tablename__ = "quizzes"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=gen_id)
+    title: Mapped[str] = mapped_column(String(200))
+    description: Mapped[str] = mapped_column(Text, default="")
+    status: Mapped[str] = mapped_column(String(20), default="active")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
+    
+    questions: Mapped[list["QuizQuestion"]] = relationship(back_populates="quiz", cascade="all, delete-orphan")
+    submissions: Mapped[list["QuizSubmission"]] = relationship(back_populates="quiz", cascade="all, delete-orphan")
+
+
+class QuizQuestion(Base):
+    __tablename__ = "quiz_questions"
+    
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=gen_id)
+    quiz_id: Mapped[str] = mapped_column(String(32), ForeignKey("quizzes.id", ondelete="CASCADE"))
+    text: Mapped[str] = mapped_column(Text)
+    options: Mapped[list] = mapped_column(JSON, default=list)
+    correct_option_index: Mapped[int] = mapped_column(Integer)
+    explanation: Mapped[str] = mapped_column(Text, default="")
+    order: Mapped[int] = mapped_column(Integer, default=0)
+
+    quiz: Mapped["Quiz"] = relationship(back_populates="questions")
+
+
+class QuizSubmission(Base):
+    __tablename__ = "quiz_submissions"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=gen_id)
+    quiz_id: Mapped[str] = mapped_column(String(32), ForeignKey("quizzes.id", ondelete="CASCADE"))
+    user_id: Mapped[str] = mapped_column(String(32), ForeignKey("users.id", ondelete="CASCADE"))
+    answers: Mapped[dict] = mapped_column(JSON, default=dict)
+    score: Mapped[int] = mapped_column(Integer, default=0)
+    total_questions: Mapped[int] = mapped_column(Integer, default=0)
+    submitted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
+
+    quiz: Mapped["Quiz"] = relationship(back_populates="submissions")
+    user: Mapped["User"] = relationship()
