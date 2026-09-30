@@ -23,7 +23,7 @@ import models  # noqa: E402,F401 - ensures models are registered with Base metad
 import piston_service  # noqa: E402
 import rate_limit as rate_limit_store  # noqa: E402
 import security  # noqa: E402
-from routers import admin, auth, contests, problems, profile, public, submissions  # noqa: E402
+from routers import admin, auth, contests, problems, profile, public, submissions, quizzes  # noqa: E402
 
 app = FastAPI(title="ZAP API")
 
@@ -72,8 +72,11 @@ async def rate_limit(request: Request, call_next):
 @app.on_event("startup")
 def on_startup():
     if engine is not None:
-        Base.metadata.create_all(bind=engine)
-        _ensure_bootstrap_admin()
+        try:
+            Base.metadata.create_all(bind=engine)
+            _ensure_bootstrap_admin()
+        except Exception as e:
+            print(f"[startup] DB init skipped (Neon may be unreachable locally): {e.__class__.__name__}")
 
 
 
@@ -103,6 +106,7 @@ app.include_router(submissions.router)
 app.include_router(admin.router)
 app.include_router(profile.router)
 app.include_router(public.router)
+app.include_router(quizzes.router)
 
 
 @app.get("/api/health")

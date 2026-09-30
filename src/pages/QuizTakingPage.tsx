@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuizStore } from "../store/quiz";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "../lib/api";
 import { useAuth } from "../store/auth";
 import { Button } from "../components/ui/button";
 import Navbar from "../components/Navbar";
@@ -8,36 +9,92 @@ import { CheckCircle2, XCircle, ArrowRight, ArrowLeft } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 
+interface QuizQuestion {
+  id: string;
+  text: string;
+  options: string[];
+  correctOptionIndex: number;
+  explanation?: string;
+}
+
+interface QuizDetail {
+  id: string;
+  title: string;
+  description: string;
+  questions: QuizQuestion[];
+}
+
+interface Submission {
+  id: string;
+  quiz_id: string;
+  score: number;
+  total_questions: number;
+  answers: Record<string, number>;
+  submitted_at: string;
+}
+
 export default function QuizTakingPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { quizzes, getSubmission, addSubmission } = useQuizStore();
   const { user } = useAuth();
-
-  const quiz = quizzes.find((q) => q.id === id);
-  const existingSubmission =
-    user && quiz ? getSubmission(quiz.id, user.id) : null;
 
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [showAnswerForCurrent, setShowAnswerForCurrent] = useState(false);
 
+  const queryClient = useQueryClient();
+
+  const { data: quiz, isLoading: quizLoading } = useQuery<QuizDetail>({
+    queryKey: ["quiz", id],
+    queryFn: () => api.get<QuizDetail>(`/quizzes/${id}`),
+    enabled: !!id,
+  });
+
+  const { data: existingSubmission } = useQuery<Submission>({
+    queryKey: ["quiz-submission", id],
+    queryFn: () => api.get<Submission>(`/quizzes/${id}/submissions/me`),
+    enabled: !!id && !!user,
+    retry: false,
+  });
+
+  const submitMutation = useMutation({
+    mutationFn: (payload: object) =>
+      api.post<Submission>(`/quizzes/${id}/submit`, payload),
+    onSuccess: () => {
+      toast.success("Quiz completed!");
+      // Invalidate queries so the report shows without a full page reload
+      queryClient.invalidateQueries({ queryKey: ["quiz-submission", id] });
+      queryClient.invalidateQueries({ queryKey: ["quiz-submissions-me"] });
+    },
+    onError: (err: any) => {
+      if (err?.status === 409) {
+        toast.error("You have already submitted this quiz.");
+        queryClient.invalidateQueries({ queryKey: ["quiz-submission", id] });
+      } else {
+        toast.error("Failed to submit quiz. Please try again.");
+      }
+    },
+  });
+
   useEffect(() => {
     if (!user) {
       toast.error("Please login to take quizzes");
       navigate("/login");
-    } else if (!quiz) {
+    }
+  }, [user, navigate]);
+
+  useEffect(() => {
+    if (!quizLoading && !quiz) {
       toast.error("Quiz not found");
       navigate("/quizzes");
     }
-  }, [user, quiz, navigate]);
+  }, [quiz, quizLoading, navigate]);
 
-  if (!quiz || !user) return null;
+  if (!user || quizLoading) return null;
+  if (!quiz) return null;
 
-  const isCompleted = !!existingSubmission;
-
-  // If completed, just show report mode
-  if (isCompleted) {
+  // If already submitted, show report
+  if (existingSubmission) {
     const submission = existingSubmission;
     return (
       <div className="min-h-screen bg-background flex flex-col">
@@ -56,13 +113,15 @@ export default function QuizTakingPage() {
             <div className="text-5xl font-black text-primary mt-6 mb-2">
               {submission.score}{" "}
               <span className="text-3xl text-muted-foreground">
-                / {submission.totalQuestions}
+                / {submission.total_questions}
               </span>
             </div>
-            <p className="text-muted-foreground">Your Score</p>
+            <p className="text-muted-foreground">
+              {Math.round((submission.score / submission.total_questions) * 100)}% correct
+            </p>
           </div>
 
-          <div className="space-y-6">
+          <div className="grid gap-4">
             {quiz.questions.map((q, idx) => {
               const userAnswer = submission.answers[q.id];
               const isCorrect = userAnswer === q.correctOptionIndex;
@@ -71,52 +130,35 @@ export default function QuizTakingPage() {
                   key={q.id}
                   className={`p-6 rounded-xl border ${isCorrect ? "border-primary/30 bg-primary/5" : "border-destructive/30 bg-destructive/5"}`}
                 >
-                  <div className="flex gap-3 mb-4">
-                    <div className="mt-1">
-                      {isCorrect ? (
-                        <CheckCircle2 className="text-primary w-6 h-6" />
-                      ) : (
-                        <XCircle className="text-destructive w-6 h-6" />
-                      )}
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold">
-                        Q{idx + 1}. {q.text}
-                      </h3>
-                    </div>
+                  <div className="flex items-start gap-3 mb-4">
+                    {isCorrect ? (
+                      <CheckCircle2 className="text-primary mt-0.5 shrink-0" size={20} />
+                    ) : (
+                      <XCircle className="text-destructive mt-0.5 shrink-0" size={20} />
+                    )}
+                    <p className="font-semibold">
+                      {idx + 1}. {q.text}
+                    </p>
                   </div>
-
-                  <div className="grid gap-3 ml-9">
-                    {q.options.map((opt, oIdx) => {
-                      const isSelected = userAnswer === oIdx;
-                      const isActualCorrect = q.correctOptionIndex === oIdx;
-
-                      let bgClass = "bg-card border-border";
-                      if (isActualCorrect)
-                        bgClass =
-                          "bg-primary/20 border-primary text-foreground font-medium";
-                      else if (isSelected && !isCorrect)
-                        bgClass =
-                          "bg-destructive/20 border-destructive text-foreground";
-
+                  <div className="grid gap-2 ml-8">
+                    {q.options.map((opt, optIdx) => {
+                      let cls = "p-3 rounded-lg border text-sm ";
+                      if (optIdx === q.correctOptionIndex)
+                        cls += "border-primary bg-primary/10 text-primary font-semibold";
+                      else if (optIdx === userAnswer && !isCorrect)
+                        cls += "border-destructive bg-destructive/10 text-destructive";
+                      else cls += "border-border bg-card";
                       return (
-                        <div
-                          key={oIdx}
-                          className={`p-4 rounded-lg border ${bgClass}`}
-                        >
+                        <div key={optIdx} className={cls}>
                           {opt}
                         </div>
                       );
                     })}
                   </div>
-
                   {q.explanation && (
-                    <div className="mt-6 ml-9 p-4 bg-card border rounded-lg">
-                      <p className="text-sm font-semibold mb-1">Explanation:</p>
-                      <p className="text-sm text-muted-foreground">
-                        {q.explanation}
-                      </p>
-                    </div>
+                    <p className="ml-8 mt-3 text-sm text-muted-foreground italic">
+                      💡 {q.explanation}
+                    </p>
                   )}
                 </div>
               );
@@ -128,7 +170,6 @@ export default function QuizTakingPage() {
   }
 
   const question = quiz.questions[currentQuestionIdx];
-
   const isLastQuestion = currentQuestionIdx === quiz.questions.length - 1;
 
   const handleSelectOption = (idx: number) => {
@@ -139,22 +180,16 @@ export default function QuizTakingPage() {
 
   const handleNext = () => {
     if (isLastQuestion) {
-      // Submit
       let score = 0;
-      quiz.questions.forEach((q: any) => {
+      quiz.questions.forEach((q) => {
         if (answers[q.id] === q.correctOptionIndex) score++;
       });
-
-      addSubmission({
+      submitMutation.mutate({
         id: uuidv4(),
-        quizId: quiz.id,
-        userId: user.id,
         answers,
         score,
         totalQuestions: quiz.questions.length,
-        submittedAt: new Date().toISOString(),
       });
-      toast.success("Quiz completed!");
     } else {
       setCurrentQuestionIdx((prev) => prev + 1);
       setShowAnswerForCurrent(false);
@@ -198,7 +233,8 @@ export default function QuizTakingPage() {
                 else if (isSelected)
                   btnClass =
                     "border-destructive bg-destructive/10 text-destructive font-semibold";
-                else btnClass = "border-border bg-card opacity-50";
+              } else if (isSelected) {
+                btnClass = "border-primary bg-primary/10";
               }
 
               return (
@@ -206,41 +242,33 @@ export default function QuizTakingPage() {
                   key={idx}
                   onClick={() => handleSelectOption(idx)}
                   disabled={showAnswerForCurrent}
-                  className={`text-left p-5 rounded-xl border-2 transition-all duration-200 ${btnClass}`}
+                  className={`w-full p-4 rounded-xl border text-left transition-all ${btnClass}`}
                 >
-                  <div className="flex items-center justify-between">
-                    <span>{opt}</span>
-                    {showAnswerForCurrent && isCorrect && (
-                      <CheckCircle2 className="w-5 h-5" />
-                    )}
-                    {showAnswerForCurrent && isSelected && !isCorrect && (
-                      <XCircle className="w-5 h-5" />
-                    )}
-                  </div>
+                  <span className="font-medium mr-3 text-muted-foreground">
+                    {String.fromCharCode(65 + idx)}.
+                  </span>
+                  {opt}
                 </button>
               );
             })}
           </div>
 
           {showAnswerForCurrent && question?.explanation && (
-            <div className="mt-8 p-6 bg-primary/5 border border-primary/20 rounded-xl animate-in fade-in slide-in-from-bottom-4">
-              <h4 className="font-bold text-primary mb-2">Explanation</h4>
-              <p className="text-foreground/80 leading-relaxed">
-                {question.explanation}
-              </p>
+            <div className="mt-6 p-4 bg-card border border-border rounded-xl text-sm text-muted-foreground">
+              💡 <span className="font-semibold">Explanation:</span>{" "}
+              {question.explanation}
             </div>
           )}
         </div>
 
-        <div className="mt-8 pt-8 border-t flex justify-end">
+        <div className="mt-8 flex justify-end">
           <Button
-            size="lg"
-            className="w-full sm:w-auto px-12"
-            disabled={!showAnswerForCurrent}
             onClick={handleNext}
+            disabled={!showAnswerForCurrent || submitMutation.isPending}
+            className="flex items-center gap-2"
           >
-            {isLastQuestion ? "Submit Quiz" : "Next Question"}{" "}
-            <ArrowRight className="w-4 h-4 ml-2" />
+            {isLastQuestion ? "Submit Quiz" : "Next"}
+            <ArrowRight className="w-4 h-4" />
           </Button>
         </div>
       </div>

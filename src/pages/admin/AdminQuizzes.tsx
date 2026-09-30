@@ -1,12 +1,33 @@
 import React, { useState } from "react";
 import { Upload, Plus, Trash2 } from "lucide-react";
 import { Button } from "../../components/ui/button";
-import { useQuizStore } from "../../store/quiz";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "../../lib/api";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 
 export default function AdminQuizzes() {
-  const { quizzes, addQuiz, deleteQuiz } = useQuizStore();
+  const queryClient = useQueryClient();
+  const { data: quizzes = [] } = useQuery({
+    queryKey: ["quizzes"],
+    queryFn: () => api.get<any[]>("/quizzes"),
+  });
+
+  const createQuiz = useMutation({
+    mutationFn: (quiz: any) => api.post("/quizzes", quiz),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["quizzes"] }),
+    onError: () => toast.error("Failed to save quiz to database."),
+  });
+
+  const deleteQuiz = useMutation({
+    mutationFn: (id: string) => api.delete(`/quizzes/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["quizzes"] });
+      toast.success("Quiz deleted.");
+    },
+    onError: () => toast.error("Failed to delete quiz."),
+  });
+
   const [dragActive, setDragActive] = useState(false);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,15 +65,23 @@ export default function AdminQuizzes() {
               explanation: q.explanation ?? q.explain,
             })),
           };
-          addQuiz(newQuiz);
+          createQuiz.mutate(newQuiz);
         };
 
         if (Array.isArray(json)) {
-          json.forEach(processQuiz);
-          toast.success(`${json.length} quizzes imported successfully`);
+          let completed = 0;
+          json.forEach((item: any) => {
+            try {
+              processQuiz(item);
+              completed++;
+            } catch {
+              // skip invalid entries
+            }
+          });
+          toast.success(`${completed} quiz${completed !== 1 ? "es" : ""} queued for import`);
         } else {
           processQuiz(json);
-          toast.success("Quiz imported successfully");
+          toast.success("Quiz queued for import");
         }
       } catch (err) {
         toast.error("Failed to parse JSON file");
@@ -133,7 +162,7 @@ export default function AdminQuizzes() {
               <Button
                 variant="destructive"
                 size="icon"
-                onClick={() => deleteQuiz(quiz.id)}
+                onClick={() => deleteQuiz.mutate(quiz.id)}
               >
                 <Trash2 className="w-4 h-4" />
               </Button>

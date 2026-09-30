@@ -21,6 +21,7 @@ engine = create_engine(
     pool_size=1,
     max_overflow=2,
     pool_recycle=280,
+    connect_args={"connect_timeout": 5},
 ) if DATABASE_URL else None
 
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False) if engine else None
