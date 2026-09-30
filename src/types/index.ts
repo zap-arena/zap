@@ -270,3 +270,4 @@ export interface ParticipantAnalytics {
   userName: string;
   chains: ChainAnalytics[];
 }
+export * from "./quiz";

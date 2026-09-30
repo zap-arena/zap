@@ -37,6 +37,7 @@ render/
 problems/
 solutions/
 dsa-graph/
+course-materials/
 
 # Local environment configuration (contains secrets)
 .env

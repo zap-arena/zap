@@ -31,3 +31,9 @@ def home_snapshot(db: Session = Depends(get_db)):
         "contests": [contest_summary(c) for c in active_or_scheduled[:6]],
         "stats": {"totalUsers": total_users, "totalProblems": total_problems, "totalContests": total_contests},
     }
+
+@router.get("/codewar/progressive")
+def codewar_progressive(db: Session = Depends(get_db)):
+    from routers.problems import serialize_problem
+    problems = db.scalars(select(models.Problem).where(models.Problem.is_progressive == True, models.Problem.status == "active")).all()
+    return [serialize_problem(p, include_hidden=False, reveal_stages=True, include_io=True) for p in problems]

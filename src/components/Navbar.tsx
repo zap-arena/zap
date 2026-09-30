@@ -1,4 +1,5 @@
-import { Code2, LayoutDashboard, LogOut, User } from "lucide-react";
+import { ThunderLogo } from "./ThunderLogo";
+import { LayoutDashboard, LogOut, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../store/auth";
 import ThemeColorPicker from "./ThemeColorPicker";
@@ -29,7 +30,7 @@ export default function Navbar() {
         className="flex items-center gap-2 text-brand font-bold text-lg shrink-0"
       >
         <div className="w-7 h-7 rounded-md bg-brand/20 border border-brand/30 flex items-center justify-center">
-          <Code2 size={14} className="text-brand" />
+          <ThunderLogo size={14} className="text-brand fill-brand" />
         </div>
         <span className="hidden sm:block">ZAP</span>
       </Link>
@@ -42,10 +43,31 @@ export default function Navbar() {
           Home
         </Link>
         <Link
+          to="/curriculum/dsa"
+          className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+        >
+          Courses
+        </Link>
+        <Link
           to="/contests"
           className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
           Contests
+        </Link>
+        <Link
+          to="/quizzes"
+          className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+        >
+          Quizzes
+        </Link>
+        <Link
+          to="/codewar"
+          className="text-sm font-medium text-brand hover:text-brand/80 transition-colors flex items-center gap-1"
+        >
+          CodeWar{" "}
+          <span className="text-[10px] bg-brand/20 text-brand px-1.5 py-0.5 rounded-sm ml-1">
+            NEW
+          </span>
         </Link>
       </div>
 

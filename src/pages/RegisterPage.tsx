@@ -1,4 +1,5 @@
-import { ArrowLeft, Code2, Eye, EyeOff, Loader2 } from "lucide-react";
+import { ThunderLogo } from "../components/ThunderLogo";
+import { ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -66,7 +67,7 @@ export default function RegisterPage() {
         <div className="relative z-10 flex flex-col h-full p-12 text-white">
           <div className="flex items-center gap-3 text-primary">
             <div className="w-10 h-10 rounded-xl bg-primary/15 border border-primary/30 flex items-center justify-center">
-              <Code2 size={20} />
+              <ThunderLogo size={20} className="fill-current" />
             </div>
             <span className="text-xl font-bold text-white">ZAP</span>
           </div>
@@ -118,7 +119,7 @@ export default function RegisterPage() {
         </Link>
         <div className="w-full max-w-md animate-fade-in">
           <div className="mb-8 lg:hidden flex items-center gap-2 text-primary">
-            <Code2 size={20} />
+            <ThunderLogo size={20} className="fill-current" />
             <span className="font-bold text-lg text-foreground">ZAP</span>
           </div>
           <h2 className="text-2xl font-bold mb-1">Create your account</h2>
