@@ -3,11 +3,20 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 import uuid
 
+from typing import Optional
 import models
 from database import get_db
 from deps import get_current_user
 
 router = APIRouter(prefix="/api/quizzes", tags=["quizzes"])
+
+
+def _clean_id(val: Optional[str]) -> str:
+    """Strip dashes from UUID strings so they fit in String(32) columns."""
+    if val:
+        return val.replace("-", "")
+    return uuid.uuid4().hex
+
 
 
 # ─── All current user submissions (for quiz list page) ───────────────────────
@@ -74,14 +83,14 @@ def create_quiz(
         raise HTTPException(status_code=403, detail="Not authorized")
 
     quiz = models.Quiz(
-        id=payload.get("id", uuid.uuid4().hex),
+        id=_clean_id(payload.get("id")),
         title=payload["title"],
         description=payload.get("description", ""),
         status=payload.get("status", "active"),
     )
     for i, q_data in enumerate(payload.get("questions", [])):
         question = models.QuizQuestion(
-            id=q_data.get("id", uuid.uuid4().hex),
+            id=_clean_id(q_data.get("id")),
             text=q_data["text"],
             options=q_data["options"],
             correct_option_index=q_data["correctOptionIndex"],
@@ -164,7 +173,7 @@ def submit_quiz(
         raise HTTPException(status_code=409, detail="Already submitted")
 
     submission = models.QuizSubmission(
-        id=payload.get("id", uuid.uuid4().hex),
+        id=_clean_id(payload.get("id")),
         quiz_id=quiz_id,
         user_id=current_user.id,
         answers=payload.get("answers", {}),
