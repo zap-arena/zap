@@ -1,10 +1,11 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../lib/api";
 import { useAuth } from "../store/auth";
 import { Button } from "../components/ui/button";
 import Navbar from "../components/Navbar";
-import { CheckCircle2, PlayCircle, Lock } from "lucide-react";
+import { CheckCircle2, PlayCircle, Lock, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface QuizFromApi {
   id: string;
@@ -23,22 +24,31 @@ interface MySubmission {
   submitted_at: string;
 }
 
+const ITEMS_PER_PAGE = 5;
+
 export default function QuizListPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const { data: quizzes = [] } = useQuery<QuizFromApi[]>({
+  const { data: quizzes = [], isLoading: isLoadingQuizzes } = useQuery<QuizFromApi[]>({
     queryKey: ["quizzes"],
     queryFn: () => api.get<QuizFromApi[]>("/quizzes"),
   });
 
-  const { data: mySubmissions = [] } = useQuery<MySubmission[]>({
+  const { data: mySubmissions = [], isLoading: isLoadingSubmissions } = useQuery<MySubmission[]>({
     queryKey: ["quiz-submissions-me"],
     queryFn: () => api.get<MySubmission[]>("/quizzes/submissions/me"),
     enabled: !!user,
   });
 
+  const isLoading = isLoadingQuizzes || (!!user && isLoadingSubmissions);
   const submittedQuizIds = new Set(mySubmissions.map((s) => s.quiz_id));
+
+  // Pagination calculation
+  const totalPages = Math.ceil(quizzes.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedQuizzes = quizzes.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -50,14 +60,29 @@ export default function QuizListPage() {
         </p>
 
         <div className="grid gap-6">
-          {quizzes.length === 0 ? (
+          {isLoading ? (
+            // Skeleton Loader (5 cards matching 5 quizzes per page limit)
+            Array.from({ length: ITEMS_PER_PAGE }).map((_, index) => (
+              <div
+                key={index}
+                className="p-6 rounded-xl border border-border bg-card flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-pulse"
+              >
+                <div className="w-full sm:w-2/3 space-y-3">
+                  <div className="h-6 bg-muted rounded-md w-1/3"></div>
+                  <div className="h-4 bg-muted rounded-md w-3/4"></div>
+                  <div className="h-4 bg-muted rounded-md w-1/4"></div>
+                </div>
+                <div className="h-10 bg-muted rounded-lg w-28 shrink-0"></div>
+              </div>
+            ))
+          ) : quizzes.length === 0 ? (
             <div className="text-center p-12 bg-card rounded-xl border border-border">
               <p className="text-muted-foreground">
                 No quizzes available yet. Check back later!
               </p>
             </div>
           ) : (
-            quizzes.map((quiz) => {
+            paginatedQuizzes.map((quiz) => {
               const isCompleted = submittedQuizIds.has(quiz.id);
               const submission = mySubmissions.find((s) => s.quiz_id === quiz.id);
 
@@ -124,6 +149,42 @@ export default function QuizListPage() {
             })
           )}
         </div>
+
+        {/* Pagination controls */}
+        {!isLoading && totalPages > 1 && (
+          <div className="flex items-center justify-between mt-8 pt-4 border-t border-border">
+            <div className="text-sm text-muted-foreground">
+              Showing <span className="font-semibold text-foreground">{startIndex + 1}</span> to{" "}
+              <span className="font-semibold text-foreground">
+                {Math.min(startIndex + ITEMS_PER_PAGE, quizzes.length)}
+              </span>{" "}
+              of <span className="font-semibold text-foreground">{quizzes.length}</span> quizzes
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                disabled={currentPage === 1}
+                className="flex items-center gap-1"
+              >
+                <ChevronLeft size={16} /> Previous
+              </Button>
+              <div className="text-sm font-medium px-2">
+                Page {currentPage} of {totalPages}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="flex items-center gap-1"
+              >
+                Next <ChevronRight size={16} />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
