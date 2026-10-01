@@ -1,5 +1,3 @@
-import React from "react";
-
 interface FormattedTextProps {
   text: string;
   className?: string;
@@ -48,7 +46,14 @@ export function FormattedText({ text, className = "" }: FormattedTextProps) {
   if (parts.length === 1 && parts[0].type === "text") {
     const raw = parts[0].content;
     const isMultiLineCode =
-      (raw.includes("\n") && (raw.includes("{") || raw.includes(";") || raw.includes("def ") || raw.includes("function ") || raw.includes("const ") || raw.includes("let ") || raw.includes("return "))) ||
+      (raw.includes("\n") &&
+        (raw.includes("{") ||
+          raw.includes(";") ||
+          raw.includes("def ") ||
+          raw.includes("function ") ||
+          raw.includes("const ") ||
+          raw.includes("let ") ||
+          raw.includes("return "))) ||
       raw.startsWith("def ") ||
       raw.startsWith("function ") ||
       raw.startsWith("class ") ||
