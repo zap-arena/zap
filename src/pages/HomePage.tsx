@@ -48,13 +48,13 @@ export default function HomePage() {
             >
               Start Learning <ArrowRight size={18} className="ml-2" />
             </Button>
-            <Button
+            {/* <Button
               variant="outline"
               className="h-12 px-8 text-base font-semibold border-border hover:bg-muted"
               onClick={() => navigate("/contests")}
             >
-              View Platform
-            </Button>
+              Contests
+            </Button> */}
           </div>
         </div>
       </section>

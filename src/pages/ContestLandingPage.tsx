@@ -21,14 +21,12 @@ import Navbar from "../components/Navbar";
 import { Button } from "../components/ui/button";
 // import { api } from "../lib/api";
 
-
 // interface HomeSnapshot {
 //   stats: { totalUsers: number; totalProblems: number; totalContests: number };
 // }
 
 export default function ContestLandingPage() {
   const navigate = useNavigate();
-
 
   // const { data } = useQuery({
   //   queryKey: ["home-snapshot"],
@@ -94,7 +92,7 @@ export default function ContestLandingPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="border-y border-border bg-card/40 backdrop-blur-sm">
+      {/* <section className="border-y border-border bg-card/40 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-border">
           {[
             {
@@ -133,7 +131,7 @@ export default function ContestLandingPage() {
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
 
       <section className="py-20 px-6 bg-background">
         <div className="max-w-5xl mx-auto">
