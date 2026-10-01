@@ -5,6 +5,7 @@ import { api } from "../lib/api";
 import { useAuth } from "../store/auth";
 import { Button } from "../components/ui/button";
 import Navbar from "../components/Navbar";
+import { FormattedText } from "../components/FormattedText";
 import { CheckCircle2, XCircle, ArrowRight, ArrowLeft } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
@@ -136,9 +137,10 @@ export default function QuizTakingPage() {
                     ) : (
                       <XCircle className="text-destructive mt-0.5 shrink-0" size={20} />
                     )}
-                    <p className="font-semibold">
-                      {idx + 1}. {q.text}
-                    </p>
+                    <div className="font-semibold text-lg flex-1">
+                      <span className="mr-2">{idx + 1}.</span>
+                      <FormattedText text={q.text} />
+                    </div>
                   </div>
                   <div className="grid gap-2 ml-8">
                     {q.options.map((opt, optIdx) => {
@@ -150,15 +152,16 @@ export default function QuizTakingPage() {
                       else cls += "border-border bg-card";
                       return (
                         <div key={optIdx} className={cls}>
-                          {opt}
+                          <FormattedText text={opt} />
                         </div>
                       );
                     })}
                   </div>
                   {q.explanation && (
-                    <p className="ml-8 mt-3 text-sm text-muted-foreground italic">
-                      💡 {q.explanation}
-                    </p>
+                    <div className="ml-8 mt-3 text-sm text-muted-foreground italic">
+                      <span className="font-semibold not-italic">💡 Explanation:</span>
+                      <FormattedText text={q.explanation} className="mt-1" />
+                    </div>
                   )}
                 </div>
               );
@@ -218,7 +221,9 @@ export default function QuizTakingPage() {
         </div>
 
         <div className="flex-1">
-          <h2 className="text-2xl font-bold mb-8">{question?.text}</h2>
+          <div className="text-2xl font-bold mb-8">
+            <FormattedText text={question?.text || ""} />
+          </div>
 
           <div className="grid gap-4">
             {question?.options.map((opt: string, idx: number) => {
@@ -244,10 +249,14 @@ export default function QuizTakingPage() {
                   disabled={showAnswerForCurrent}
                   className={`w-full p-4 rounded-xl border text-left transition-all ${btnClass}`}
                 >
-                  <span className="font-medium mr-3 text-muted-foreground">
-                    {String.fromCharCode(65 + idx)}.
-                  </span>
-                  {opt}
+                  <div className="flex items-start gap-3">
+                    <span className="font-medium text-muted-foreground shrink-0 mt-0.5">
+                      {String.fromCharCode(65 + idx)}.
+                    </span>
+                    <div className="flex-1">
+                      <FormattedText text={opt} />
+                    </div>
+                  </div>
                 </button>
               );
             })}
@@ -255,8 +264,8 @@ export default function QuizTakingPage() {
 
           {showAnswerForCurrent && question?.explanation && (
             <div className="mt-6 p-4 bg-card border border-border rounded-xl text-sm text-muted-foreground">
-              💡 <span className="font-semibold">Explanation:</span>{" "}
-              {question.explanation}
+              <span className="font-semibold">💡 Explanation:</span>
+              <FormattedText text={question.explanation} className="mt-2" />
             </div>
           )}
         </div>
