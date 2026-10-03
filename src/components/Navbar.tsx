@@ -1,5 +1,6 @@
 import { ThunderLogo } from "./ThunderLogo";
 import { LayoutDashboard, LogOut, User } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../store/auth";
 import ThemeColorPicker from "./ThemeColorPicker";
@@ -17,6 +18,14 @@ import {
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -24,18 +33,24 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="h-14 border-b border-border bg-card/80 backdrop-blur-sm flex items-center px-4 gap-4 sticky top-0 z-50">
+    <nav
+      className={`h-20 flex items-center px-6 lg:px-10 gap-6 sticky top-0 z-50 transition-colors duration-300 ${
+        scrolled
+          ? "bg-background/80 backdrop-blur-md border-b border-border/60 shadow-sm"
+          : "bg-transparent border-b border-transparent"
+      }`}
+    >
       <Link
         to="/"
-        className="flex items-center gap-2 text-brand font-bold text-lg shrink-0"
+        className="flex items-center gap-1 font-black text-2xl tracking-tight shrink-0"
+        style={{ fontFamily: "'Playfair Display', serif" }}
       >
-        <div className="w-7 h-7 rounded-md bg-brand/20 border border-brand/30 flex items-center justify-center">
-          <ThunderLogo size={14} className="text-brand fill-brand" />
-        </div>
-        <span className="hidden sm:block">ZAP</span>
+        <span className="text-teal-600 dark:text-teal-400">Z</span>
+        <ThunderLogo className="w-6 h-6 text-amber-400 animate-pulse" />
+        <span className="text-blue-700 dark:text-blue-400">P</span>
       </Link>
 
-      <div className="flex gap-4 items-center pl-4">
+      <div className="flex-1 flex items-center justify-center gap-8">
         <Link
           to="/"
           className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
@@ -62,16 +77,14 @@ export default function Navbar() {
         </Link>
         <Link
           to="/codewar"
-          className="text-sm font-medium text-brand hover:text-brand/80 transition-colors flex items-center gap-1"
+          className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
         >
-          CodeWar{" "}
-          <span className="text-[10px] bg-brand/20 text-brand px-1.5 py-0.5 rounded-sm ml-1">
+          CodeWar
+          <span className="text-[10px] font-bold bg-emerald-400/20 text-emerald-400 px-2 py-0.5 rounded-full uppercase tracking-wide">
             NEW
           </span>
         </Link>
       </div>
-
-      <div className="flex-1" />
 
       <ThemeColorPicker />
       <ThemeToggle />
@@ -125,13 +138,18 @@ export default function Navbar() {
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/login")}>
+        <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground hover:text-foreground"
+            onClick={() => navigate("/login")}
+          >
             Login
           </Button>
           <Button
             size="sm"
-            className="btn-primary"
+            className="rounded-full px-6 font-bold bg-gradient-to-r from-emerald-400 to-sky-400 text-slate-950 border-0 hover:opacity-90"
             onClick={() => navigate("/register")}
           >
             Sign Up

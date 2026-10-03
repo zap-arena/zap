@@ -1,0 +1,298 @@
+/* Scoped theme + effects for the Zap-style homepage.
+   Everything here is namespaced under `.zap-theme` so it never
+   affects any other page or the global design tokens. */
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&display=swap");
+
+.zap-theme {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  background-image:
+    radial-gradient(ellipse at 20% 20%, hsl(158 84% 46% / 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, hsl(200 100% 60% / 0.05) 0%, transparent 50%);
+}
+
+/* Dark mode (default) palette */
+.dark .zap-theme {
+  --background: 222 28% 6%;
+  --foreground: 210 40% 96%;
+
+  --card: 222 24% 9%;
+  --card-foreground: 210 40% 96%;
+
+  --popover: 222 24% 9%;
+  --popover-foreground: 210 40% 96%;
+
+  --primary: 158 84% 46%;
+  --primary-foreground: 222 28% 6%;
+
+  --secondary: 222 20% 14%;
+  --secondary-foreground: 210 40% 96%;
+
+  --muted: 222 20% 14%;
+  --muted-foreground: 215 20% 65%;
+
+  --accent: 200 100% 60%;
+  --accent-foreground: 222 28% 6%;
+
+  --border: 222 20% 16%;
+  --input: 222 20% 14%;
+  --ring: 158 84% 46%;
+
+  --gradient-primary: linear-gradient(135deg, hsl(158, 84%, 46%), hsl(200, 100%, 50%));
+  --gradient-gold: linear-gradient(135deg, hsl(45, 95%, 55%), hsl(35, 90%, 50%));
+  --gradient-purple: linear-gradient(135deg, hsl(270, 70%, 65%), hsl(240, 80%, 60%));
+
+  --shadow-glow: 0 0 40px hsl(158 84% 46% / 0.25);
+  --shadow-card: 0 4px 32px hsl(0 0% 0% / 0.4);
+}
+
+/* Light mode palette */
+.light .zap-theme {
+  --background: 0 0% 100%;
+  --foreground: 222 28% 10%;
+
+  --card: 210 25% 98%;
+  --card-foreground: 222 28% 10%;
+
+  --popover: 210 25% 98%;
+  --popover-foreground: 222 28% 10%;
+
+  --primary: 158 70% 32%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 210 25% 94%;
+  --secondary-foreground: 222 28% 10%;
+
+  --muted: 210 25% 94%;
+  --muted-foreground: 215 15% 40%;
+
+  --accent: 200 85% 40%;
+  --accent-foreground: 0 0% 100%;
+
+  --border: 210 20% 88%;
+  --input: 210 20% 90%;
+  --ring: 158 70% 32%;
+
+  --gradient-primary: linear-gradient(135deg, hsl(158, 70%, 32%), hsl(200, 85%, 40%));
+  --gradient-gold: linear-gradient(135deg, hsl(45, 90%, 45%), hsl(35, 85%, 42%));
+  --gradient-purple: linear-gradient(135deg, hsl(270, 60%, 50%), hsl(240, 65%, 48%));
+
+  --shadow-glow: 0 0 30px hsl(158 70% 32% / 0.18);
+  --shadow-card: 0 4px 24px hsl(222 20% 20% / 0.08);
+}
+
+.zap-theme h1, .zap-theme h2, .zap-theme h3, .zap-theme h4 {
+  font-family: "Playfair Display", serif;
+}
+
+/* ── Gradient text / glow utilities ─────────────────────────── */
+.zap-theme .text-gradient-primary {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.zap-theme .text-gradient-gold {
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.zap-theme .text-gradient-purple {
+  background: var(--gradient-purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.zap-theme .shadow-glow { box-shadow: var(--shadow-glow); }
+.zap-theme .shadow-card { box-shadow: var(--shadow-card); }
+.zap-theme .border-gold { border: 1px solid hsl(45 95% 55% / 0.4); }
+
+.zap-theme .glass-card {
+  background: hsl(var(--card) / 0.8);
+  backdrop-filter: blur(16px);
+  border: 1px solid hsl(var(--border) / 0.8);
+}
+
+.zap-theme .grid-bg {
+  background-image:
+    linear-gradient(hsl(158 84% 46% / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(158 84% 46% / 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.zap-theme .feature-card {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.zap-theme .feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px hsl(0 0% 0% / 0.3), 0 0 0 1px hsl(158 84% 46% / 0.2);
+}
+
+/* ── Animations ──────────────────────────────────────────────── */
+@keyframes zap-slide-up {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.zap-theme .animate-slide-up { animation: zap-slide-up 0.6s ease-out forwards; }
+
+.zap-theme .stagger-1 { animation-delay: 0.1s; }
+.zap-theme .stagger-2 { animation-delay: 0.2s; }
+.zap-theme .stagger-3 { animation-delay: 0.3s; }
+.zap-theme .stagger-4 { animation-delay: 0.4s; }
+.zap-theme .stagger-5 { animation-delay: 0.5s; }
+
+/* ── Loading screen ──────────────────────────────────────────── */
+@keyframes zap-lightning-flicker {
+  0%, 60%, 100% { filter: drop-shadow(0 0 6px hsl(45 95% 60% / 0.5)); opacity: 0.9; }
+  8% { filter: drop-shadow(0 0 34px hsl(0 0% 100% / 1)) brightness(2.2); opacity: 1; }
+  14% { filter: drop-shadow(0 0 6px hsl(45 95% 60% / 0.4)); opacity: 0.85; }
+  20% { filter: drop-shadow(0 0 38px hsl(45 95% 70% / 1)) brightness(2.4); opacity: 1; }
+  28% { filter: drop-shadow(0 0 6px hsl(45 95% 60% / 0.5)); opacity: 0.9; }
+}
+.zap-loading-logo-wrap .zap-lightning-bolt {
+  animation: zap-lightning-flicker 0.7s ease-in-out infinite;
+}
+@keyframes zap-lightning-burst {
+  0%, 60%, 100% { opacity: 0; transform: scale(0.8); }
+  8% { opacity: 0.9; transform: scale(1.5); }
+  14% { opacity: 0; transform: scale(0.9); }
+  20% { opacity: 1; transform: scale(1.8); }
+  28% { opacity: 0; transform: scale(0.8); }
+}
+.zap-loading-strike-burst {
+  position: absolute;
+  inset: -30px;
+  border-radius: 50%;
+  background: radial-gradient(circle, hsl(0 0% 100% / 0.85) 0%, hsl(45 95% 55% / 0.35) 40%, transparent 70%);
+  pointer-events: none;
+  animation: zap-lightning-burst 0.7s ease-in-out infinite;
+}
+@keyframes zap-sky-flash {
+  0%, 60%, 100% { opacity: 0; }
+  8% { opacity: 0.35; }
+  14% { opacity: 0; }
+  20% { opacity: 0.5; }
+  28% { opacity: 0; }
+}
+.zap-loading-sky-flash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 40%, hsl(0 0% 100% / 0.9) 0%, hsl(200 100% 70% / 0.25) 45%, transparent 75%);
+  pointer-events: none;
+  animation: zap-sky-flash 0.7s ease-in-out infinite;
+}
+@keyframes zap-bolt-strike {
+  0%, 60%, 100% { opacity: 0; }
+  8% { opacity: 1; }
+  12% { opacity: 0; }
+  20% { opacity: 1; }
+  24% { opacity: 0; }
+}
+.zap-loading-bolt-strike {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 54px;
+  height: 108px;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  filter: drop-shadow(0 0 14px hsl(50 100% 75% / 0.9));
+  animation: zap-bolt-strike 0.7s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes zap-shimmer-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+@keyframes zap-flash {
+  0% { opacity: 1; }
+  60% { opacity: 1; background: hsl(158 84% 46% / 0.12); }
+  100% { opacity: 0; }
+}
+@keyframes zap-blob-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(20px, -30px) scale(1.05); }
+  66% { transform: translate(-15px, 20px) scale(0.97); }
+}
+
+.zap-loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: hsl(222 28% 6%);
+  overflow: hidden;
+}
+.zap-loading-screen.flash {
+  animation: zap-flash 0.32s ease-out forwards;
+  pointer-events: none;
+}
+.zap-loading-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+}
+.zap-loading-blob-1 {
+  width: 420px; height: 420px;
+  background: hsl(158 84% 46% / 0.12);
+  top: -80px; left: -100px;
+  animation: zap-blob-drift 8s ease-in-out infinite;
+}
+.zap-loading-blob-2 {
+  width: 320px; height: 320px;
+  background: hsl(200 100% 60% / 0.09);
+  bottom: -60px; right: -80px;
+  animation: zap-blob-drift 10s ease-in-out infinite reverse;
+}
+.zap-loading-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  z-index: 1;
+}
+.zap-loading-logo-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.zap-loading-tagline {
+  font-size: 0.8rem;
+  color: hsl(215 20% 65%);
+  margin: 0 0 24px;
+}
+.zap-loading-track {
+  position: relative;
+  width: 240px;
+  height: 6px;
+  border-radius: 999px;
+  background: hsl(222 20% 14%);
+  overflow: hidden;
+}
+.zap-loading-fill {
+  position: relative;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(135deg, hsl(158, 84%, 46%), hsl(200, 100%, 50%));
+  transition: width 0.1s linear;
+  overflow: hidden;
+}
+.zap-loading-shimmer {
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, hsl(0 0% 100% / 0.5), transparent);
+  animation: zap-shimmer-slide 1.2s linear infinite;
+}
+.zap-loading-pct {
+  margin-top: 12px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.75rem;
+  color: hsl(158 84% 55%);
+}
