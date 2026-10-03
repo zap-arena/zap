@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import RouteTransitionLoader from "./components/RouteTransitionLoader";
 import { Toaster } from "./components/ui/sonner";
 import ContestEntryPage from "./pages/ContestEntryPage";
 import ContestsPage from "./pages/ContestsPage";
@@ -76,6 +77,7 @@ function RequireAdmin({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <BrowserRouter>
+      <RouteTransitionLoader />
       <Toaster position="top-right" closeButton duration={4000} />
       <Suspense fallback={<PageFallback />}>
         <Routes>

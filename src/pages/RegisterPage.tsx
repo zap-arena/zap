@@ -1,4 +1,5 @@
-import { ThunderLogo } from "../components/ThunderLogo";
+import { Logo } from "../components/Logo";
+import { ZapWordmark } from "../components/ZapWordmark";
 import { ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -65,11 +66,11 @@ export default function RegisterPage() {
           style={{ background: "var(--gradient-glow)" }}
         />
         <div className="relative z-10 flex flex-col h-full p-12 text-white">
-          <div className="flex items-center gap-3 text-primary">
+          <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-primary/15 border border-primary/30 flex items-center justify-center">
-              <ThunderLogo size={20} className="fill-current" />
+              <Logo size={24} />
             </div>
-            <span className="text-xl font-bold text-white">ZAP</span>
+            <ZapWordmark className="text-xl font-bold text-white" />
           </div>
           <div className="flex-1 flex flex-col justify-center">
             <div className="mb-8">
@@ -118,9 +119,9 @@ export default function RegisterPage() {
           <ArrowLeft size={16} /> Home
         </Link>
         <div className="w-full max-w-md animate-fade-in">
-          <div className="mb-8 lg:hidden flex items-center gap-2 text-primary">
-            <ThunderLogo size={20} className="fill-current" />
-            <span className="font-bold text-lg text-foreground">ZAP</span>
+          <div className="mb-8 lg:hidden flex items-center gap-2">
+            <Logo size={24} />
+            <ZapWordmark className="font-bold text-lg text-foreground" />
           </div>
           <h2 className="text-2xl font-bold mb-1">Create your account</h2>
           <p className="text-muted-foreground text-sm mb-8">

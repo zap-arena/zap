@@ -1,4 +1,5 @@
-import { ThunderLogo } from "./ThunderLogo";
+import { Logo } from "./Logo";
+import { ZapWordmark } from "./ZapWordmark";
 import {
   Activity,
   BarChart3,
@@ -66,9 +67,9 @@ export default function AdminLayout({
         {/* Logo */}
         <div className="h-14 border-b border-border flex items-center px-4 gap-2 shrink-0">
           <div className="w-7 h-7 rounded-md bg-brand/20 border border-brand/30 flex items-center justify-center">
-            <ThunderLogo size={14} className="text-brand fill-brand" />
+            <Logo size={18} />
           </div>
-          <span className="font-bold text-sm">ZAP</span>
+          <ZapWordmark className="font-bold text-sm" />
           <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded bg-primary/15 text-primary font-semibold">
             ADMIN
           </span>
