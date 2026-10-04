@@ -9,6 +9,7 @@ import HomePage from "./pages/HomePage";
 import ContestLandingPage from "./pages/ContestLandingPage";
 import CurriculumDSAPage from "./pages/CurriculumDSAPage";
 import HashingDsaGuidePage from "./pages/guide/HashingDsaGuidePage";
+import RecursionDsaGuidePage from "./pages/guide/RecursionDsaGuidePage";
 import SlidingWindowDsaGuidePage from "./pages/guide/SlidingWindowDsaGuidePage";
 import TwoPointerDsaGuidePage from "./pages/guide/TwoPointerDsaGuidePage";
 import LoginPage from "./pages/LoginPage";
@@ -97,6 +98,10 @@ export default function App() {
           <Route
             path="/curriculum/dsa/two-pointer"
             element={<TwoPointerDsaGuidePage />}
+          />
+          <Route
+            path="/curriculum/dsa/recursion"
+            element={<RecursionDsaGuidePage />}
           />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />

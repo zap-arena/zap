@@ -20,11 +20,11 @@ export default function CurriculumDSAPage() {
 
           <div className="stats-grid">
             <div className="stat-card">
-              <div className="stat-val">3</div>
+              <div className="stat-val">4</div>
               <div className="stat-lbl">Core DSA Guides</div>
             </div>
             <div className="stat-card">
-              <div className="stat-val">31+</div>
+              <div className="stat-val">39+</div>
               <div className="stat-lbl">Solved Class Examples</div>
             </div>
             <div className="stat-card">
@@ -140,6 +140,39 @@ export default function CurriculumDSAPage() {
               </div>
               <a href="/curriculum/dsa/two-pointer" className="btn-open">
                 <span>Explore Two Pointers Guide</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">🔁</div>
+                  <span className="module-badge">8 Core Problems</span>
+                </div>
+                <h3 className="module-title">Recursion</h3>
+                <p className="module-desc">
+                  Master base cases, recursive cases, memoization, and
+                  in-place recursive techniques — from factorial to
+                  permutations.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">Fibonacci Number</li>
+                  <li className="topic-tag">Power(x, n)</li>
+                  <li className="topic-tag">Climbing Stairs</li>
+                  <li className="topic-tag">Subsets</li>
+                  <li className="topic-tag">Permutations</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/recursion" className="btn-open">
+                <span>Explore Recursion Guide</span>
                 <span>→</span>
               </a>
             </div>

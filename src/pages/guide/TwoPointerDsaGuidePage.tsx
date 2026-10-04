@@ -1,6 +1,22 @@
 import React from "react";
 import { useGuideLogic } from "../../hooks/useGuideLogic";
 import Navbar from "../../components/Navbar";
+import AlgoVisualizer from "../../components/guide/AlgoVisualizer";
+import { minWindowSubstringApproaches } from "../../components/guide/slidingWindowVisualizations";
+import {
+  boatsToSavePeopleApproaches,
+  containerWithMostWaterApproaches,
+  mergeSortedArrayApproaches,
+  moveZeroesApproaches,
+  removeDuplicatesApproaches,
+  reverseStringApproaches,
+  sortColorsApproaches,
+  squaresOfSortedArrayApproaches,
+  threeSumApproaches,
+  trappingRainWaterApproaches,
+  twoSumSortedApproaches,
+  validPalindromeApproaches,
+} from "../../components/guide/twoPointerVisualizations";
 
 export default function TwoPointerDsaGuidePage() {
   useGuideLogic();
@@ -96,6 +112,16 @@ export default function TwoPointerDsaGuidePage() {
                 </button>
               </div>
             </div>
+          </div>
+
+          <div className="question-nav">
+            <button type="button" id="prevQuestionBtn">
+              ← Previous
+            </button>
+            <span className="question-nav-progress" id="questionProgress" />
+            <button type="button" id="nextQuestionBtn">
+              Next →
+            </button>
           </div>
 
           <div className="content">
@@ -250,6 +276,13 @@ export default function TwoPointerDsaGuidePage() {
                 Input: s = ['h','e','l','l','o'] Output: ['o','l','l','e','h']
               </div>
 
+              <AlgoVisualizer
+                title="Reverse String"
+                approaches={reverseStringApproaches}
+                defaultInput="hello"
+                inputKind="string"
+              />
+
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q1-approach">
                   <button
@@ -349,6 +382,13 @@ export default function TwoPointerDsaGuidePage() {
                 Input: s = "A man, a plan, a canal: Panama" Output: true Input:
                 s = "race a car" Output: false
               </div>
+
+              <AlgoVisualizer
+                title="Valid Palindrome"
+                approaches={validPalindromeApproaches}
+                defaultInput="A man, a plan, a canal: Panama"
+                inputKind="string"
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q2-approach">
@@ -451,6 +491,14 @@ export default function TwoPointerDsaGuidePage() {
                 Input: numbers = [2, 7, 11, 15], target = 9 Output: [1, 2]
               </div>
 
+              <AlgoVisualizer
+                title="Two Sum II — Sorted Array"
+                approaches={twoSumSortedApproaches}
+                defaultInput={[2, 7, 11, 15]}
+                needsTarget
+                defaultTarget={9}
+              />
+
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q3-approach">
                   <button
@@ -549,6 +597,12 @@ export default function TwoPointerDsaGuidePage() {
               <div className="example">
                 Input: nums = [0, 1, 0, 3, 12] Output: [1, 3, 12, 0, 0]
               </div>
+
+              <AlgoVisualizer
+                title="Move Zeroes"
+                approaches={moveZeroesApproaches}
+                defaultInput={[0, 1, 0, 3, 12]}
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q4-approach">
@@ -649,6 +703,12 @@ export default function TwoPointerDsaGuidePage() {
                 Input: nums = [1, 1, 2, 2, 3] Output: 3 (nums becomes [1, 2, 3,
                 ...])
               </div>
+
+              <AlgoVisualizer
+                title="Remove Duplicates from Sorted Array"
+                approaches={removeDuplicatesApproaches}
+                defaultInput={[1, 1, 2, 2, 3]}
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q5-approach">
@@ -752,6 +812,12 @@ export default function TwoPointerDsaGuidePage() {
               <div className="example">
                 Input: height = [1, 8, 6, 2, 5, 4, 8, 3, 7] Output: 49
               </div>
+
+              <AlgoVisualizer
+                title="Container With Most Water"
+                approaches={containerWithMostWaterApproaches}
+                defaultInput={[1, 8, 6, 2, 5, 4, 8, 3, 7]}
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q6-approach">
@@ -857,6 +923,12 @@ export default function TwoPointerDsaGuidePage() {
                 0, 1]]
               </div>
 
+              <AlgoVisualizer
+                title="3Sum"
+                approaches={threeSumApproaches}
+                defaultInput={[-1, 0, 1, 2, -1, -4]}
+              />
+
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q7-approach">
                   <button
@@ -956,6 +1028,12 @@ export default function TwoPointerDsaGuidePage() {
               <div className="example">
                 Input: height = [0,1,0,2,1,0,1,3,2,1,2,1] Output: 6
               </div>
+
+              <AlgoVisualizer
+                title="Trapping Rain Water"
+                approaches={trappingRainWaterApproaches}
+                defaultInput={[0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]}
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q8-approach">
@@ -1065,6 +1143,12 @@ export default function TwoPointerDsaGuidePage() {
                 Input: nums = [-4, -1, 0, 3, 10] Output: [0, 1, 9, 16, 100]
               </div>
 
+              <AlgoVisualizer
+                title="Squares of a Sorted Array"
+                approaches={squaresOfSortedArrayApproaches}
+                defaultInput={[-4, -1, 0, 3, 10]}
+              />
+
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q9-approach">
                   <button
@@ -1168,6 +1252,12 @@ export default function TwoPointerDsaGuidePage() {
               <div className="example">
                 Input: nums = [2, 0, 2, 1, 1, 0] Output: [0, 0, 1, 1, 2, 2]
               </div>
+
+              <AlgoVisualizer
+                title="Sort Colors"
+                approaches={sortColorsApproaches}
+                defaultInput={[2, 0, 2, 1, 1, 0]}
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q10-approach">
@@ -1281,6 +1371,12 @@ export default function TwoPointerDsaGuidePage() {
                 3 Output: [1, 2, 2, 3, 5, 6]
               </div>
 
+              <AlgoVisualizer
+                title="Merge Sorted Array"
+                approaches={mergeSortedArrayApproaches}
+                defaultInput={[1, 2, 3, 0, 0, 0]}
+              />
+
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q11-approach">
                   <button
@@ -1380,6 +1476,14 @@ export default function TwoPointerDsaGuidePage() {
                 Input: people = [3, 2, 2, 1], limit = 3 Output: 3 ([1,2], [2],
                 [3])
               </div>
+
+              <AlgoVisualizer
+                title="Boats to Save People"
+                approaches={boatsToSavePeopleApproaches}
+                defaultInput={[3, 2, 2, 1]}
+                needsTarget
+                defaultTarget={3}
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q12-approach">
@@ -1494,6 +1598,13 @@ export default function TwoPointerDsaGuidePage() {
                 Six ways to solve this one, from slowest to fastest-in-practice.
                 Every solution uses a HashMap for the letter counts.
               </p>
+
+              <AlgoVisualizer
+                title="Minimum Window Substring"
+                approaches={minWindowSubstringApproaches}
+                defaultInput="ADOBECODEBANC,ABC"
+                inputKind="string"
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q13-approach">

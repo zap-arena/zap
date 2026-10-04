@@ -2318,3 +2318,109 @@ body[data-lang="py"] .code-split {
 .code-label {
   font-family: "JetBrains Mono", monospace !important;
 }
+
+/* ---------- focused question view (one problem at a time) ---------- */
+.content.focus-mode .question {
+  display: none;
+}
+.content.focus-mode .question.active-question {
+  display: block;
+  animation: question-fade-in 0.25s ease;
+}
+@keyframes question-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.question-nav {
+  position: sticky;
+  top: 80px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 40px;
+  background: hsl(var(--background) / 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid hsl(var(--border));
+}
+.question-nav button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: var(--radius);
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: border-color 0.15s ease;
+}
+.question-nav button:hover:not(:disabled) {
+  border-color: hsl(38 92% 50%);
+}
+.question-nav button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.question-nav-progress {
+  font-size: 13px;
+  font-weight: 600;
+  color: hsl(var(--muted-foreground));
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- guide topbar: mobile ---------- */
+@media (max-width: 860px) {
+  .question-nav {
+    top: 76px;
+  }
+}
+
+@media (max-width: 640px) {
+  .topbar {
+    flex-wrap: wrap;
+    row-gap: 10px;
+    padding: 12px 16px;
+  }
+  .brand {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+  .brand .sub {
+    display: none;
+  }
+  .top-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+  .lang-switch {
+    flex: 1;
+  }
+  .lang-switch button {
+    flex: 1;
+    padding: 8px 4px;
+    font-size: 12.5px;
+  }
+  .question-nav {
+    top: 108px;
+    padding: 10px 16px;
+    gap: 8px;
+  }
+  .question-nav button {
+    padding: 8px 12px;
+    font-size: 12.5px;
+  }
+  .intro h1 {
+    font-size: 24px;
+  }
+}

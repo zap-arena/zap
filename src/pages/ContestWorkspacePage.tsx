@@ -52,6 +52,7 @@ import {
 import { Skeleton } from "../components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "../components/ui/tabs";
 import VerdictBadge from "../components/VerdictBadge";
+import { useIsMobile } from "../hooks/use-mobile";
 import { useProctoring } from "../hooks/useProctoring";
 import { ApiError, api } from "../lib/api";
 import { CODEWAR_PROBLEMS } from "../data/codewar-problems";
@@ -281,6 +282,7 @@ export default function ContestWorkspacePage({
   const { contestId } = useParams<{ contestId: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const isMobile = useIsMobile();
 
   const [randomProblemIndex, setRandomProblemIndex] = useState(() =>
     Math.floor(Math.random() * CODEWAR_PROBLEMS.length),
@@ -366,7 +368,9 @@ export default function ContestWorkspacePage({
   const codeStore = useRef<Record<string, Record<string, string>>>({});
   const editorRef = useRef<any>(null);
   const [bottomTab, setBottomTab] = useState<"output" | "stdin">("output");
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(
+    () => typeof window === "undefined" || window.innerWidth >= 768,
+  );
   const [running, setRunning] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [hasRun, setHasRun] = useState(false);
@@ -851,8 +855,8 @@ export default function ContestWorkspacePage({
   return (
     <div className="h-screen flex flex-col bg-background overflow-hidden">
       {/* Top Bar */}
-      <div className="h-12 border-b border-border bg-card flex items-center px-4 gap-4 shrink-0">
-        <div className="flex items-center gap-2 text-primary font-semibold text-sm">
+      <div className="h-12 border-b border-border bg-card flex items-center px-2 sm:px-4 gap-2 sm:gap-4 shrink-0 overflow-x-auto">
+        <div className="flex items-center gap-1 sm:gap-2 text-primary font-semibold text-sm shrink-0">
           {isCodeWar && (
             <Button
               size="icon"
@@ -880,7 +884,7 @@ export default function ContestWorkspacePage({
           <span className="hidden sm:block capitalize">{contest.name}</span>
         </div>
         <div className="flex-1" />
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           <span className="text-xs text-muted-foreground hidden md:block">
             {saveStatus === "saved"
               ? "✓ Saved"
@@ -908,9 +912,10 @@ export default function ContestWorkspacePage({
                     Math.floor(Math.random() * CODEWAR_PROBLEMS.length),
                   );
                 }}
-                className="gap-2 h-7 text-xs btn-primary"
+                className="gap-2 h-7 text-xs btn-primary shrink-0 whitespace-nowrap"
               >
-                Generate Random
+                <span className="hidden sm:inline">Generate Random</span>
+                <span className="sm:hidden">Random</span>
               </Button>
             )
           ) : (
@@ -935,10 +940,25 @@ export default function ContestWorkspacePage({
       </div>
 
       {/* Main Layout */}
-      <div className="flex-1 flex min-h-0">
+      <div className="flex-1 flex min-h-0 relative">
+        {/* Mobile backdrop behind the overlay sidebar */}
+        {isMobile && sidebarOpen && (
+          <button
+            type="button"
+            aria-label="Close sidebar"
+            className="fixed inset-0 z-30 bg-black/50 cursor-default"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
         {/* Left sidebar: problem list */}
         {sidebarOpen && (
-          <div className="w-52 shrink-0 border-r border-border bg-card flex flex-col">
+          <div
+            className={
+              isMobile
+                ? "fixed inset-y-0 left-0 z-40 w-[80vw] max-w-72 border-r border-border bg-card flex flex-col shadow-2xl"
+                : "w-52 shrink-0 border-r border-border bg-card flex flex-col"
+            }
+          >
             <div className="p-3 border-b border-border">
               <div className="flex gap-1">
                 {(isCodeWar
@@ -1124,7 +1144,7 @@ export default function ContestWorkspacePage({
 
         {/* Main content: resizable panels */}
         <div className="flex-1 min-w-0">
-          <ResizablePanelGroup direction="horizontal" className="h-full">
+          <ResizablePanelGroup direction={isMobile ? "vertical" : "horizontal"} className="h-full">
             {/* Problem / Content panel */}
             <ResizablePanel defaultSize={38} minSize={25}>
               <div className="h-full flex flex-col bg-background overflow-hidden">
@@ -1351,10 +1371,13 @@ export default function ContestWorkspacePage({
             <ResizablePanel defaultSize={62} minSize={40}>
               <ResizablePanelGroup direction="vertical">
                 {/* Editor */}
-                <ResizablePanel defaultSize={65} minSize={30}>
+                <ResizablePanel
+                  defaultSize={isCodeWar ? 100 : 65}
+                  minSize={30}
+                >
                   <div className="h-full flex flex-col bg-background">
                     {/* Editor toolbar */}
-                    <div className="h-9 border-b border-border bg-card flex items-center px-3 gap-3 shrink-0">
+                    <div className="h-9 border-b border-border bg-card flex items-center px-3 gap-3 shrink-0 overflow-x-auto">
                       <Select
                         value={language}
                         onValueChange={(v) =>
@@ -1398,8 +1421,8 @@ export default function ContestWorkspacePage({
                           ))}
                         </SelectContent>
                       </Select>
-                      <div className="flex-1" />
-                      <div className="flex items-center gap-2">
+                      <div className="flex-1 min-w-2" />
+                      <div className="flex items-center gap-2 shrink-0">
                         {/* <Button
                           size="sm"
                           variant="ghost"
