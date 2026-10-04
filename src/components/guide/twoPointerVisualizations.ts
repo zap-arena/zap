@@ -1080,7 +1080,7 @@ export const mergeSortedArrayApproaches: Partial<Record<"brute" | "optimal", App
     label: "Brute Force",
     complexity: "Time: O((m+n) log(m+n)) \u00b7 Space: O(1) extra \u2014 append, then sort",
     code: ["for (let i = 0; i < n; i++) nums1[m + i] = nums2[i];", "nums1.sort((a, b) => a - b);"],
-    run: (input): VizStep[] => {
+    run: (): VizStep[] => {
       const nums1 = [1, 2, 3, 0, 0, 0];
       const nums2 = [2, 5, 6];
       const m = 3;
