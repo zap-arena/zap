@@ -9,8 +9,11 @@ import HomePage from "./pages/HomePage";
 import ContestLandingPage from "./pages/ContestLandingPage";
 import CurriculumDSAPage from "./pages/CurriculumDSAPage";
 import HashingDsaGuidePage from "./pages/guide/HashingDsaGuidePage";
+import LinkedListDsaGuidePage from "./pages/guide/LinkedListDsaGuidePage";
+import QueueDsaGuidePage from "./pages/guide/QueueDsaGuidePage";
 import RecursionDsaGuidePage from "./pages/guide/RecursionDsaGuidePage";
 import SlidingWindowDsaGuidePage from "./pages/guide/SlidingWindowDsaGuidePage";
+import StackDsaGuidePage from "./pages/guide/StackDsaGuidePage";
 import TwoPointerDsaGuidePage from "./pages/guide/TwoPointerDsaGuidePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -102,6 +105,12 @@ export default function App() {
           <Route
             path="/curriculum/dsa/recursion"
             element={<RecursionDsaGuidePage />}
+          />
+          <Route path="/curriculum/dsa/stack" element={<StackDsaGuidePage />} />
+          <Route path="/curriculum/dsa/queue" element={<QueueDsaGuidePage />} />
+          <Route
+            path="/curriculum/dsa/linked-list"
+            element={<LinkedListDsaGuidePage />}
           />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />

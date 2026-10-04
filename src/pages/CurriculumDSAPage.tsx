@@ -20,11 +20,11 @@ export default function CurriculumDSAPage() {
 
           <div className="stats-grid">
             <div className="stat-card">
-              <div className="stat-val">4</div>
+              <div className="stat-val">7</div>
               <div className="stat-lbl">Core DSA Guides</div>
             </div>
             <div className="stat-card">
-              <div className="stat-val">39+</div>
+              <div className="stat-val">57+</div>
               <div className="stat-lbl">Solved Class Examples</div>
             </div>
             <div className="stat-card">
@@ -173,6 +173,102 @@ export default function CurriculumDSAPage() {
               </div>
               <a href="/curriculum/dsa/recursion" className="btn-open">
                 <span>Explore Recursion Guide</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">🧱</div>
+                  <span className="module-badge">6 Core Problems</span>
+                </div>
+                <h3 className="module-title">Stack</h3>
+                <p className="module-desc">
+                  Master last-in-first-out ordering with monotonic stacks,
+                  bracket matching, and O(1) auxiliary tracking.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">Valid Parentheses</li>
+                  <li className="topic-tag">Next Greater Element</li>
+                  <li className="topic-tag">Daily Temperatures</li>
+                  <li className="topic-tag">Min Stack</li>
+                  <li className="topic-tag">Largest Rectangle</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/stack" className="btn-open">
+                <span>Explore Stack Guide</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">🚋</div>
+                  <span className="module-badge">5 Core Problems</span>
+                </div>
+                <h3 className="module-title">Queue</h3>
+                <p className="module-desc">
+                  Master first-in-first-out ordering with circular buffers,
+                  monotonic deques, and streaming frequency tracking.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">Queue using Stacks</li>
+                  <li className="topic-tag">Moving Average</li>
+                  <li className="topic-tag">First Unique Character</li>
+                  <li className="topic-tag">Sliding Window Maximum</li>
+                  <li className="topic-tag">Circular Queue</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/queue" className="btn-open">
+                <span>Explore Queue Guide</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">🔗</div>
+                  <span className="module-badge">6 Core Problems</span>
+                </div>
+                <h3 className="module-title">Linked List</h3>
+                <p className="module-desc">
+                  Master pointer manipulation with in-place reversal,
+                  slow/fast pointers, and single-pass merging.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">Reverse Linked List</li>
+                  <li className="topic-tag">Linked List Cycle</li>
+                  <li className="topic-tag">Merge Two Sorted Lists</li>
+                  <li className="topic-tag">Remove Nth From End</li>
+                  <li className="topic-tag">Palindrome Linked List</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/linked-list" className="btn-open">
+                <span>Explore Linked List Guide</span>
                 <span>→</span>
               </a>
             </div>
