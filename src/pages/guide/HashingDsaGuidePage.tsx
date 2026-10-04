@@ -1,6 +1,17 @@
 import React from "react";
 import { useGuideLogic } from "../../hooks/useGuideLogic";
 import Navbar from "../../components/Navbar";
+import AlgoVisualizer from "../../components/guide/AlgoVisualizer";
+import {
+  containsDuplicateApproaches,
+  firstUniqueCharApproaches,
+  groupAnagramsApproaches,
+  longestConsecutiveApproaches,
+  subarraySumApproaches,
+  topKFrequentApproaches,
+  twoSumApproaches,
+  validAnagramApproaches,
+} from "../../components/guide/hashingVisualizations";
 
 export default function HashingDsaGuidePage() {
   useGuideLogic();
@@ -78,6 +89,16 @@ export default function HashingDsaGuidePage() {
                 </button>
               </div>
             </div>
+          </div>
+
+          <div className="question-nav">
+            <button type="button" id="prevQuestionBtn">
+              ← Previous
+            </button>
+            <span className="question-nav-progress" id="questionProgress" />
+            <button type="button" id="nextQuestionBtn">
+              Next →
+            </button>
           </div>
 
           <div className="content">
@@ -249,6 +270,12 @@ export default function HashingDsaGuidePage() {
                 4] Output: false
               </div>
 
+              <AlgoVisualizer
+                title="Contains Duplicate"
+                approaches={containsDuplicateApproaches}
+                defaultInput={[1, 2, 3, 1]}
+              />
+
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q1-approach">
                   <button
@@ -382,6 +409,14 @@ export default function HashingDsaGuidePage() {
               <div className="example">
                 Input: nums = [2, 7, 11, 15], target = 9 Output: [0, 1]
               </div>
+
+              <AlgoVisualizer
+                title="Two Sum"
+                approaches={twoSumApproaches}
+                defaultInput={[2, 7, 11, 15]}
+                needsTarget
+                defaultTarget={9}
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q2-approach">
@@ -518,6 +553,13 @@ export default function HashingDsaGuidePage() {
                 Input: s = "anagram", t = "nagaram" Output: true Input: s =
                 "rat", t = "car" Output: false
               </div>
+
+              <AlgoVisualizer
+                title="Valid Anagram"
+                approaches={validAnagramApproaches}
+                defaultInput="anagram,nagaram"
+                inputKind="string"
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q3-approach">
@@ -657,6 +699,13 @@ export default function HashingDsaGuidePage() {
                 reaches linear time, so there's no meaningful middle tier.
               </p>
 
+              <AlgoVisualizer
+                title="First Unique Character"
+                approaches={firstUniqueCharApproaches}
+                defaultInput="leetcode"
+                inputKind="string"
+              />
+
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q4-approach">
                   <button
@@ -755,6 +804,13 @@ export default function HashingDsaGuidePage() {
                 Input: strs = ["eat","tea","tan","ate","nat","bat"] Output:
                 [["eat","tea","ate"], ["tan","nat"], ["bat"]]
               </div>
+
+              <AlgoVisualizer
+                title="Group Anagrams"
+                approaches={groupAnagramsApproaches}
+                defaultInput="eat|tea|tan|ate|nat|bat"
+                inputKind="string"
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q5-approach">
@@ -892,6 +948,14 @@ export default function HashingDsaGuidePage() {
                 Input: nums = [1,1,1,2,2,3], k = 2 Output: [1, 2]
               </div>
 
+              <AlgoVisualizer
+                title="Top K Frequent Elements"
+                approaches={topKFrequentApproaches}
+                defaultInput={[1, 1, 1, 2, 2, 3]}
+                needsTarget
+                defaultTarget={2}
+              />
+
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q6-approach">
                   <button
@@ -1025,6 +1089,14 @@ export default function HashingDsaGuidePage() {
               <div className="example">
                 Input: nums = [1, 1, 1], k = 2 Output: 2 ([1,1] appears twice)
               </div>
+
+              <AlgoVisualizer
+                title="Subarray Sum Equals K"
+                approaches={subarraySumApproaches}
+                defaultInput={[1, 1, 1]}
+                needsTarget
+                defaultTarget={2}
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q7-approach">
@@ -1161,6 +1233,12 @@ export default function HashingDsaGuidePage() {
                 Input: nums = [100, 4, 200, 1, 3, 2] Output: 4 (the sequence is
                 1, 2, 3, 4)
               </div>
+
+              <AlgoVisualizer
+                title="Longest Consecutive Sequence"
+                approaches={longestConsecutiveApproaches}
+                defaultInput={[100, 4, 200, 1, 3, 2]}
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q8-approach">

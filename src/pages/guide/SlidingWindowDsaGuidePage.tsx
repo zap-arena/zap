@@ -1,6 +1,19 @@
 import React from "react";
 import { useGuideLogic } from "../../hooks/useGuideLogic";
 import Navbar from "../../components/Navbar";
+import AlgoVisualizer from "../../components/guide/AlgoVisualizer";
+import {
+  containsDuplicateIIApproaches,
+  findAllAnagramsApproaches,
+  fruitIntoBasketsApproaches,
+  longestRepeatingCharReplacementApproaches,
+  longestSubstringKDistinctApproaches,
+  longestSubstringNoRepeatApproaches,
+  maxAverageSubarrayApproaches,
+  maxSumSubarrayApproaches,
+  minSizeSubarraySumApproaches,
+  minWindowSubstringApproaches,
+} from "../../components/guide/slidingWindowVisualizations";
 
 export default function SlidingWindowDsaGuidePage() {
   useGuideLogic();
@@ -87,6 +100,16 @@ export default function SlidingWindowDsaGuidePage() {
                 </button>
               </div>
             </div>
+          </div>
+
+          <div className="question-nav">
+            <button type="button" id="prevQuestionBtn">
+              ← Previous
+            </button>
+            <span className="question-nav-progress" id="questionProgress" />
+            <button type="button" id="nextQuestionBtn">
+              Next →
+            </button>
           </div>
 
           <div className="content">
@@ -251,6 +274,14 @@ export default function SlidingWindowDsaGuidePage() {
                 Input: nums = [2, 1, 5, 1, 3, 2], k = 3 Output: 9 ([5, 1, 3])
               </div>
 
+              <AlgoVisualizer
+                title="Maximum Sum Subarray of Size K"
+                approaches={maxSumSubarrayApproaches}
+                defaultInput={[2, 1, 5, 1, 3, 2]}
+                needsTarget
+                defaultTarget={3}
+              />
+
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q1-approach">
                   <button
@@ -355,6 +386,14 @@ export default function SlidingWindowDsaGuidePage() {
                 -5, -6, 50] -&gt; 51 / 4)
               </div>
 
+              <AlgoVisualizer
+                title="Maximum Average Subarray I"
+                approaches={maxAverageSubarrayApproaches}
+                defaultInput={[1, 12, -5, -6, 50, 3]}
+                needsTarget
+                defaultTarget={4}
+              />
+
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q2-approach">
                   <button
@@ -458,6 +497,14 @@ export default function SlidingWindowDsaGuidePage() {
                 Input: target = 7, nums = [2, 3, 1, 2, 4, 3] Output: 2 ([4, 3])
               </div>
 
+              <AlgoVisualizer
+                title="Minimum Size Subarray Sum"
+                approaches={minSizeSubarraySumApproaches}
+                defaultInput={[2, 3, 1, 2, 4, 3]}
+                needsTarget
+                defaultTarget={7}
+              />
+
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q3-approach">
                   <button
@@ -558,6 +605,13 @@ export default function SlidingWindowDsaGuidePage() {
               <div className="example">
                 Input: s = "abcabcbb" Output: 3 ("abc")
               </div>
+
+              <AlgoVisualizer
+                title="Longest Substring Without Repeating Characters"
+                approaches={longestSubstringNoRepeatApproaches}
+                defaultInput="abcabcbb"
+                inputKind="string"
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q4-approach">
@@ -661,6 +715,15 @@ export default function SlidingWindowDsaGuidePage() {
               <div className="example">
                 Input: s = "eceba", k = 2 Output: 3 ("ece")
               </div>
+
+              <AlgoVisualizer
+                title="Longest Substring with At Most K Distinct Characters"
+                approaches={longestSubstringKDistinctApproaches}
+                defaultInput="eceba"
+                inputKind="string"
+                needsTarget
+                defaultTarget={2}
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q5-approach">
@@ -769,6 +832,13 @@ export default function SlidingWindowDsaGuidePage() {
                 Input: s = "ADOBECODEBANC", t = "ABC" Output: "BANC"
               </div>
 
+              <AlgoVisualizer
+                title="Minimum Window Substring"
+                approaches={minWindowSubstringApproaches}
+                defaultInput="ADOBECODEBANC,ABC"
+                inputKind="string"
+              />
+
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q6-approach">
                   <button
@@ -876,6 +946,13 @@ export default function SlidingWindowDsaGuidePage() {
                 Input: s = "cbaebabacd", p = "abc" Output: [0, 6]
               </div>
 
+              <AlgoVisualizer
+                title="Find All Anagrams in a String"
+                approaches={findAllAnagramsApproaches}
+                defaultInput="cbaebabacd,abc"
+                inputKind="string"
+              />
+
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q7-approach">
                   <button
@@ -976,6 +1053,12 @@ export default function SlidingWindowDsaGuidePage() {
               <div className="example">
                 Input: fruits = [1, 2, 3, 2, 2] Output: 4 ([2, 3, 2, 2])
               </div>
+
+              <AlgoVisualizer
+                title="Fruit Into Baskets"
+                approaches={fruitIntoBasketsApproaches}
+                defaultInput={[1, 2, 3, 2, 2]}
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q8-approach">
@@ -1090,6 +1173,14 @@ export default function SlidingWindowDsaGuidePage() {
                 Input: nums = [1, 2, 3, 1], k = 3 Output: true
               </div>
 
+              <AlgoVisualizer
+                title="Contains Duplicate II"
+                approaches={containsDuplicateIIApproaches}
+                defaultInput={[1, 2, 3, 1]}
+                needsTarget
+                defaultTarget={3}
+              />
+
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q9-approach">
                   <button
@@ -1194,6 +1285,15 @@ export default function SlidingWindowDsaGuidePage() {
               <div className="example">
                 Input: s = "AABABBA", k = 1 Output: 4 ("AABA" -&gt; "AAAA")
               </div>
+
+              <AlgoVisualizer
+                title="Longest Repeating Character Replacement"
+                approaches={longestRepeatingCharReplacementApproaches}
+                defaultInput="AABABBA"
+                inputKind="string"
+                needsTarget
+                defaultTarget={1}
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q10-approach">
