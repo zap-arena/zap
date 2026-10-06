@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 export interface VizHighlight {
   index: number;
@@ -42,6 +42,276 @@ interface AlgoVisualizerProps<TInput = number[]> {
   inputKind?: "array" | "string";
   needsTarget?: boolean;
   defaultTarget?: number;
+  /** "list" (default) renders structure.entries as a chip strip; "stack" renders an animated push/pop container; "queue" renders a horizontal FRONT/REAR cell row */
+  structureVariant?: "list" | "stack" | "queue";
+  /** "cells" (default) renders the array as square cells; "linked-list" renders connected circular nodes with arrows and a trailing null */
+  arrayVariant?: "cells" | "linked-list";
+}
+
+const STACK_BLOCK_COLORS = ["#2f81f7", "#2ea97f", "#a371f7", "#f0883e", "#f85149", "#58a6ff", "#db61a2", "#3fb950"];
+
+function StackContainer({
+  label,
+  entries,
+}: {
+  label: string;
+  entries: (string | number)[];
+}) {
+  const prevEntriesRef = useRef<(string | number)[]>([]);
+  const [enterKey, setEnterKey] = useState<string | null>(null);
+  const [exitBlock, setExitBlock] = useState<{ value: string | number; color: string } | null>(null);
+
+  useEffect(() => {
+    const prev = prevEntriesRef.current;
+    const cur = entries;
+    let cleanup: (() => void) | undefined;
+    if (cur.length > prev.length) {
+      const key = `${cur.length - 1}-${cur[cur.length - 1]}`;
+      setEnterKey(key);
+      const t = setTimeout(() => setEnterKey(null), 450);
+      cleanup = () => clearTimeout(t);
+    } else if (cur.length < prev.length) {
+      const removedIdx = prev.length - 1;
+      setExitBlock({ value: prev[removedIdx], color: STACK_BLOCK_COLORS[removedIdx % STACK_BLOCK_COLORS.length] });
+      const t = setTimeout(() => setExitBlock(null), 450);
+      cleanup = () => clearTimeout(t);
+    }
+    prevEntriesRef.current = cur;
+    return cleanup;
+  }, [entries]);
+
+  return (
+    <div style={{ marginBottom: 16 }}>
+      <style>{`
+        @keyframes stackDropIn {
+          0% { transform: translate(34px, -46px) rotate(-22deg); opacity: 0; }
+          100% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+        }
+        @keyframes stackPopOut {
+          0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+          100% { transform: translate(34px, -46px) rotate(22deg); opacity: 0; }
+        }
+      `}</style>
+      <div style={{ fontSize: 12.5, color: "#8b949e", fontWeight: 600, marginBottom: 8, textAlign: "center" }}>
+        {label}
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <div style={{ position: "relative", width: 120, height: 50 }}>
+          {exitBlock && (
+            <div
+              style={{
+                position: "absolute",
+                left: 10,
+                top: 8,
+                width: 100,
+                height: 36,
+                borderRadius: 8,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: 700,
+                fontSize: 14,
+                color: "#06281f",
+                background: exitBlock.color,
+                animation: "stackPopOut 0.45s ease-in forwards",
+              }}
+            >
+              {String(exitBlock.value)}
+            </div>
+          )}
+        </div>
+        <div
+          style={{
+            width: 120,
+            minHeight: 50,
+            display: "flex",
+            flexDirection: "column-reverse",
+            gap: 6,
+            padding: "8px 10px",
+            border: "2px solid #30363d",
+            borderTop: "none",
+            borderBottomLeftRadius: 14,
+            borderBottomRightRadius: 14,
+            background: "#0d1117",
+          }}
+        >
+          {entries.length === 0 && (
+            <div style={{ textAlign: "center", color: "#484f58", fontSize: 12, padding: "8px 0" }}>empty</div>
+          )}
+          {entries.map((value, idx) => {
+            const key = `${idx}-${value}`;
+            const color = STACK_BLOCK_COLORS[idx % STACK_BLOCK_COLORS.length];
+            return (
+              <div
+                key={key}
+                style={{
+                  height: 36,
+                  borderRadius: 8,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: 700,
+                  fontSize: 14,
+                  color: "#06281f",
+                  background: color,
+                  animation: enterKey === key ? "stackDropIn 0.45s ease-out" : undefined,
+                }}
+              >
+                {String(value)}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const QUEUE_FRONT_COLOR = "#22d3ee";
+const QUEUE_REAR_COLOR = "#a371f7";
+
+function QueueContainer({ label, entries }: { label: string; entries: (string | number)[] }) {
+  const prevEntriesRef = useRef<(string | number)[]>([]);
+  const [enterKey, setEnterKey] = useState<string | null>(null);
+  const [exitBlock, setExitBlock] = useState<{ value: string | number } | null>(null);
+
+  useEffect(() => {
+    const prev = prevEntriesRef.current;
+    const cur = entries;
+    let cleanup: (() => void) | undefined;
+    if (cur.length > prev.length) {
+      const key = `${cur.length - 1}-${cur[cur.length - 1]}`;
+      setEnterKey(key);
+      const t = setTimeout(() => setEnterKey(null), 400);
+      cleanup = () => clearTimeout(t);
+    } else if (cur.length < prev.length) {
+      setExitBlock({ value: prev[0] });
+      const t = setTimeout(() => setExitBlock(null), 400);
+      cleanup = () => clearTimeout(t);
+    }
+    prevEntriesRef.current = cur;
+    return cleanup;
+  }, [entries]);
+
+  return (
+    <div style={{ marginBottom: 16 }}>
+      <style>{`
+        @keyframes queueEnterRight {
+          0% { transform: translateX(40px); opacity: 0; }
+          100% { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes queueExitLeft {
+          0% { transform: translateX(0); opacity: 1; }
+          100% { transform: translateX(-40px); opacity: 0; }
+        }
+      `}</style>
+      <div style={{ fontSize: 12.5, color: "#8b949e", fontWeight: 600, marginBottom: 22, textAlign: "center" }}>
+        {label}
+      </div>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ position: "relative", display: "flex", alignItems: "flex-end" }}>
+          {exitBlock && (
+            <div
+              style={{
+                position: "absolute",
+                left: -56,
+                bottom: 0,
+                width: 48,
+                height: 48,
+                borderRadius: 8,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: 700,
+                fontSize: 15,
+                color: "#bae6fd",
+                background: "#0d1f38",
+                border: `2px solid ${QUEUE_FRONT_COLOR}`,
+                animation: "queueExitLeft 0.4s ease-in forwards",
+              }}
+            >
+              {String(exitBlock.value)}
+            </div>
+          )}
+          {entries.length === 0 ? (
+            <div style={{ color: "#484f58", fontSize: 12, padding: "12px 20px" }}>empty</div>
+          ) : (
+            entries.map((value, idx) => {
+              const key = `${idx}-${value}`;
+              const isFront = idx === 0;
+              const isRear = idx === entries.length - 1;
+              const borderColor = isFront ? QUEUE_FRONT_COLOR : isRear ? QUEUE_REAR_COLOR : "#30363d";
+              return (
+                <div key={key} style={{ position: "relative", textAlign: "center" }}>
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: -22,
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      display: "flex",
+                      gap: 4,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {isFront && (
+                      <span
+                        style={{
+                          fontSize: 9,
+                          fontWeight: 700,
+                          padding: "2px 6px",
+                          borderRadius: 8,
+                          background: "#0d3a42",
+                          color: QUEUE_FRONT_COLOR,
+                          border: `1px solid ${QUEUE_FRONT_COLOR}`,
+                        }}
+                      >
+                        FRONT
+                      </span>
+                    )}
+                    {isRear && (
+                      <span
+                        style={{
+                          fontSize: 9,
+                          fontWeight: 700,
+                          padding: "2px 6px",
+                          borderRadius: 8,
+                          background: "#241a3a",
+                          color: QUEUE_REAR_COLOR,
+                          border: `1px solid ${QUEUE_REAR_COLOR}`,
+                        }}
+                      >
+                        REAR
+                      </span>
+                    )}
+                  </div>
+                  <div
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: 8,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                      fontSize: 15,
+                      color: "#e6edf3",
+                      background: "#0d1117",
+                      border: `2px solid ${borderColor}`,
+                      marginLeft: idx === 0 ? 0 : -2,
+                      animation: enterKey === key ? "queueEnterRight 0.4s ease-out" : undefined,
+                    }}
+                  >
+                    {String(value)}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 const ROLE_STYLE: Record<
@@ -74,6 +344,8 @@ export default function AlgoVisualizer<TInput = number[]>({
   inputKind = "array",
   needsTarget,
   defaultTarget,
+  structureVariant = "list",
+  arrayVariant = "cells",
 }: Readonly<AlgoVisualizerProps<TInput>>) {
   const availableApproaches = APPROACH_ORDER.filter((id) => approaches[id]);
 
@@ -371,7 +643,109 @@ export default function AlgoVisualizer<TInput = number[]>({
 
         {currentStep && (
           <>
-            {(() => {
+            {arrayVariant === "linked-list" ? (
+              <div
+                style={{
+                  display: "flex",
+                  gap: 0,
+                  flexWrap: "wrap",
+                  alignItems: "flex-end",
+                  justifyContent: "center",
+                  background: "#0d1117",
+                  border: "1px solid #21262d",
+                  borderRadius: 12,
+                  padding: "34px 18px 22px",
+                  marginBottom: 18,
+                }}
+              >
+                {currentStep.array.map((value, index) => {
+                  const hs = highlightForIndex(index);
+                  const primary = hs[0]?.role;
+                  const style = primary ? ROLE_STYLE[primary] : null;
+                  const emphasize = primary === "current" || primary === "match";
+                  const isLast = index === currentStep.array.length - 1;
+                  return (
+                    <div key={`${index}-${value}`} style={{ display: "flex", alignItems: "center" }}>
+                      <div style={{ textAlign: "center", position: "relative" }}>
+                        {style && (
+                          <span
+                            style={{
+                              position: "absolute",
+                              top: -26,
+                              left: "50%",
+                              transform: "translateX(-50%)",
+                              whiteSpace: "nowrap",
+                              fontSize: 10,
+                              fontWeight: 700,
+                              padding: "2px 8px",
+                              borderRadius: 10,
+                              background: style.bg,
+                              color: style.text,
+                              border: `1px solid ${style.border}`,
+                            }}
+                          >
+                            {style.label}
+                          </span>
+                        )}
+                        <div
+                          style={{
+                            width: 56,
+                            height: 56,
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            border: `2px solid ${style ? style.border : "#30363d"}`,
+                            background: style ? style.bg : "#161b22",
+                            color: style ? style.text : "#e6edf3",
+                            fontWeight: 700,
+                            fontSize: 17,
+                            transition: "all 0.3s ease",
+                            transform: emphasize ? "scale(1.12)" : "scale(1)",
+                            boxShadow: emphasize ? `0 0 16px ${style?.border}66` : "none",
+                          }}
+                        >
+                          {value}
+                        </div>
+                      </div>
+                      <div style={{ color: "#484f58", fontSize: 18, padding: "0 6px", marginBottom: 2 }}>→</div>
+                      {isLast && (
+                        <div
+                          style={{
+                            padding: "6px 12px",
+                            borderRadius: 8,
+                            border: "1px solid #30363d",
+                            background: "#161b22",
+                            color: "#6e7681",
+                            fontSize: 12,
+                            fontWeight: 700,
+                            marginBottom: 2,
+                          }}
+                        >
+                          null
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+                {currentStep.array.length === 0 && (
+                  <div
+                    style={{
+                      padding: "6px 12px",
+                      borderRadius: 8,
+                      border: "1px solid #30363d",
+                      background: "#161b22",
+                      color: "#6e7681",
+                      fontSize: 12,
+                      fontWeight: 700,
+                    }}
+                  >
+                    null
+                  </div>
+                )}
+              </div>
+            ) : (
+              (() => {
               const isWindowStep = currentStep.highlights.some((h) => WINDOW_ROLES.has(h.role));
               return (
                 <div
@@ -433,7 +807,8 @@ export default function AlgoVisualizer<TInput = number[]>({
                   })}
                 </div>
               );
-            })()}
+              })()
+            )}
 
             {(currentStep.headline || currentStep.tag) && (
               <div style={{ textAlign: "center", marginBottom: 18 }}>
@@ -462,7 +837,15 @@ export default function AlgoVisualizer<TInput = number[]>({
               </div>
             )}
 
-            {currentStep.structure && (
+            {currentStep.structure && structureVariant === "stack" && (
+              <StackContainer label={currentStep.structure.label} entries={currentStep.structure.entries} />
+            )}
+
+            {currentStep.structure && structureVariant === "queue" && (
+              <QueueContainer label={currentStep.structure.label} entries={currentStep.structure.entries} />
+            )}
+
+            {currentStep.structure && structureVariant === "list" && (
               <div style={{ marginBottom: 16, fontSize: 12.5 }}>
                 <span style={{ color: "#8b949e", marginRight: 8, fontWeight: 600 }}>
                   {currentStep.structure.label}:

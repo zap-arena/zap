@@ -133,6 +133,7 @@ export default function LinkedListDsaGuidePage() {
                 title="Reverse Linked List"
                 approaches={reverseLinkedListApproaches}
                 defaultInput={[1, 2, 3, 4, 5]}
+                arrayVariant="linked-list"
               />
 
               <div className="tabs-wrapper">
@@ -245,6 +246,7 @@ export default function LinkedListDsaGuidePage() {
                 title="Linked List Cycle"
                 approaches={linkedListCycleApproaches}
                 defaultInput={[1, 2, 3, 4, 5]}
+                arrayVariant="linked-list"
               />
 
               <div className="tabs-wrapper">
@@ -351,6 +353,7 @@ export default function LinkedListDsaGuidePage() {
                 title="Merge Two Sorted Lists"
                 approaches={mergeTwoSortedListsApproaches}
                 defaultInput={[1, 3, 5, 7]}
+                arrayVariant="linked-list"
               />
 
               <div className="tabs-wrapper">
@@ -465,6 +468,7 @@ export default function LinkedListDsaGuidePage() {
                 title="Remove Nth Node From End of List"
                 approaches={removeNthFromEndApproaches}
                 defaultInput={[1, 2, 3, 4, 5]}
+                arrayVariant="linked-list"
               />
 
               <div className="tabs-wrapper">
@@ -579,6 +583,7 @@ export default function LinkedListDsaGuidePage() {
                 title="Middle of the Linked List"
                 approaches={middleOfLinkedListApproaches}
                 defaultInput={[1, 2, 3, 4, 5, 6]}
+                arrayVariant="linked-list"
               />
 
               <div className="tabs-wrapper">
@@ -683,6 +688,7 @@ export default function LinkedListDsaGuidePage() {
                 title="Palindrome Linked List"
                 approaches={palindromeLinkedListApproaches}
                 defaultInput={[1, 2, 2, 1]}
+                arrayVariant="linked-list"
               />
 
               <div className="tabs-wrapper">

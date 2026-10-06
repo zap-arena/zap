@@ -8,6 +8,8 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import HomePage from "./pages/HomePage";
 import ContestLandingPage from "./pages/ContestLandingPage";
 import CurriculumDSAPage from "./pages/CurriculumDSAPage";
+import DP1DGuidePage from "./pages/guide/DP1DGuidePage";
+import DP2DGuidePage from "./pages/guide/DP2DGuidePage";
 import HashingDsaGuidePage from "./pages/guide/HashingDsaGuidePage";
 import LinkedListDsaGuidePage from "./pages/guide/LinkedListDsaGuidePage";
 import QueueDsaGuidePage from "./pages/guide/QueueDsaGuidePage";
@@ -112,6 +114,8 @@ export default function App() {
             path="/curriculum/dsa/linked-list"
             element={<LinkedListDsaGuidePage />}
           />
+          <Route path="/curriculum/dsa/dp-1d" element={<DP1DGuidePage />} />
+          <Route path="/curriculum/dsa/dp-2d" element={<DP2DGuidePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />

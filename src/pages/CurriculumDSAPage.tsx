@@ -20,11 +20,11 @@ export default function CurriculumDSAPage() {
 
           <div className="stats-grid">
             <div className="stat-card">
-              <div className="stat-val">7</div>
+              <div className="stat-val">9</div>
               <div className="stat-lbl">Core DSA Guides</div>
             </div>
             <div className="stat-card">
-              <div className="stat-val">57+</div>
+              <div className="stat-val">67+</div>
               <div className="stat-lbl">Solved Class Examples</div>
             </div>
             <div className="stat-card">
@@ -269,6 +269,71 @@ export default function CurriculumDSAPage() {
               </div>
               <a href="/curriculum/dsa/linked-list" className="btn-open">
                 <span>Explore Linked List Guide</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">📊</div>
+                  <span className="module-badge">5 Core Problems</span>
+                </div>
+                <h3 className="module-title">1D Dynamic Programming</h3>
+                <p className="module-desc">
+                  Master tabulation over a single running index — recursion
+                  with overlapping subproblems collapsed into a simple array
+                  fill.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">House Robber</li>
+                  <li className="topic-tag">Maximum Subarray</li>
+                  <li className="topic-tag">Coin Change</li>
+                  <li className="topic-tag">Longest Increasing Subsequence</li>
+                  <li className="topic-tag">Decode Ways</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/dp-1d" className="btn-open">
+                <span>Explore 1D DP Guide</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">🧮</div>
+                  <span className="module-badge">5 Core Problems</span>
+                </div>
+                <h3 className="module-title">2D Dynamic Programming</h3>
+                <p className="module-desc">
+                  Master grid-walk and sequence-pair recurrences — two
+                  indices, one table, filled once.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">Unique Paths</li>
+                  <li className="topic-tag">Minimum Path Sum</li>
+                  <li className="topic-tag">Longest Common Subsequence</li>
+                  <li className="topic-tag">Edit Distance</li>
+                  <li className="topic-tag">0/1 Knapsack</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/dp-2d" className="btn-open">
+                <span>Explore 2D DP Guide</span>
                 <span>→</span>
               </a>
             </div>

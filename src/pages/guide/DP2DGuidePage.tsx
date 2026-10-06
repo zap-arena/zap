@@ -1,16 +1,16 @@
 import React from "react";
 import { useGuideLogic } from "../../hooks/useGuideLogic";
 import Navbar from "../../components/Navbar";
-import AlgoVisualizer from "../../components/guide/AlgoVisualizer";
+import DPGridVisualizer from "../../components/guide/DPGridVisualizer";
 import {
-  circularQueueApproaches,
-  firstUniqueCharStreamApproaches,
-  movingAverageApproaches,
-  queueUsingStacksApproaches,
-  slidingWindowMaximumApproaches,
-} from "../../components/guide/queueVisualizations";
+  editDistanceApproaches,
+  knapsackApproaches,
+  longestCommonSubsequenceApproaches,
+  minimumPathSumApproaches,
+  uniquePathsApproaches,
+} from "../../components/guide/dp2DVisualizations";
 
-export default function QueueDsaGuidePage() {
+export default function DP2DGuidePage() {
   useGuideLogic();
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -18,26 +18,26 @@ export default function QueueDsaGuidePage() {
 
       <div className="layout">
         <nav className="sidebar" aria-label="Question navigation">
-          <div className="sidebar-title">Queue</div>
+          <div className="sidebar-title">2D Dynamic Programming</div>
           <div className="side-group">
             <div className="side-group-label">Basics</div>
             <a className="side-link" href="#q1">
-              01 · Implement Queue using Stacks
+              01 · Unique Paths
             </a>
             <a className="side-link" href="#q2">
-              02 · Moving Average from Data Stream
+              02 · Minimum Path Sum
             </a>
           </div>
           <div className="side-group">
             <div className="side-group-label">Medium</div>
             <a className="side-link" href="#q3">
-              03 · First Unique Character in a Stream
+              03 · Longest Common Subsequence
             </a>
             <a className="side-link" href="#q4">
-              04 · Sliding Window Maximum
+              04 · Edit Distance
             </a>
             <a className="side-link" href="#q5">
-              05 · Design Circular Queue
+              05 · 0/1 Knapsack
             </a>
           </div>
         </nav>
@@ -45,7 +45,7 @@ export default function QueueDsaGuidePage() {
         <div className="main">
           <div className="topbar">
             <div className="brand">
-              <span className="mark">Queue</span>
+              <span className="mark">2D DP</span>
               <span className="sub">DSA question bank · Java &amp; Python</span>
             </div>
             <div className="top-actions">
@@ -85,12 +85,14 @@ export default function QueueDsaGuidePage() {
 
           <div className="content">
             <div className="intro">
-              <h1>Queue, basic to medium</h1>
+              <h1>2D Dynamic Programming, basic to medium</h1>
               <p>
-                Five questions built around first-in-first-out ordering. Each
-                brute-force version redoes work on every operation; each
-                optimal version keeps a queue (or deque) so stale data leaves
-                from the front in constant time instead of being rescanned.
+                Five questions where the answer for a pair of positions{" "}
+                <code>(i, j)</code> depends on a handful of neighboring cells —
+                a grid to walk across, or two sequences to compare index by
+                index. Each brute-force version re-derives every cell through
+                plain recursion; each optimal version fills a 2D table once,
+                reusing every answer it already computed.
               </p>
               <div className="legend">
                 <span className="legend-item">
@@ -98,14 +100,14 @@ export default function QueueDsaGuidePage() {
                     className="legend-swatch"
                     style={{ background: "hsl(var(--primary))" } as React.CSSProperties}
                   ></span>
-                  Brute force (rescans / rebuilds)
+                  Brute force (naive recursion)
                 </span>
                 <span className="legend-item">
                   <span
                     className="legend-swatch"
                     style={{ background: "hsl(var(--primary))" } as React.CSSProperties}
                   ></span>
-                  Optimal (queue / deque based)
+                  Optimal (tabulation)
                 </span>
               </div>
             </div>
@@ -113,23 +115,17 @@ export default function QueueDsaGuidePage() {
             <section className="question" id="q1">
               <div className="q-head">
                 <span className="q-index">01</span>
-                <h2>Implement Queue using Stacks</h2>
+                <h2>Unique Paths</h2>
                 <span className="level-badge basic">Basic</span>
               </div>
               <p className="prompt">
-                Implement a FIFO queue using only two LIFO stacks, supporting{" "}
-                <code>enqueue</code> and <code>dequeue</code>.
+                A robot starts at the top-left corner of an <code>m × n</code>{" "}
+                grid and can only move right or down. How many unique paths
+                are there to the bottom-right corner?
               </p>
-              <div className="example">
-                Input: enqueue(1,2,3), dequeue() Output: 1
-              </div>
+              <div className="example">Input: m = 3, n = 3 Output: 6</div>
 
-              <AlgoVisualizer
-                title="Implement Queue using Stacks"
-                approaches={queueUsingStacksApproaches}
-                defaultInput={[1, 2, 3, 4]}
-                structureVariant="queue"
-              />
+              <DPGridVisualizer title="Unique Paths" approaches={uniquePathsApproaches} />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q1-approach">
@@ -142,114 +138,89 @@ export default function QueueDsaGuidePage() {
                 </div>
                 <div className="approach-panel active" id="q1-brute">
                   <div className="complexity">
-                    Time: <b>O(n)</b> per dequeue · Space: <b>O(n)</b> —
-                    reverse the whole stack through a helper every time
+                    Time: <b>O(2^(m+n))</b> · Space: <b>O(m+n)</b> call stack
+                    — try moving right or down from every cell
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
                       <div className="code-label java">Java</div>
                       <pre className="code-panel">
-                        <code>{`class MyQueue {
-    Deque<Integer> in = new ArrayDeque<>();
-    void push(int x) { in.push(x); }
-    int pop() {
-        Deque<Integer> tmp = new ArrayDeque<>();
-        while (in.size() > 1) tmp.push(in.pop());
-        int front = in.pop();
-        while (!tmp.isEmpty()) in.push(tmp.pop());
-        return front;
-    }
+                        <code>{`public int uniquePaths(int r, int c, int rows, int cols) {
+    if (r == rows - 1 && c == cols - 1) return 1;
+    if (r >= rows || c >= cols) return 0;
+    return uniquePaths(r + 1, c, rows, cols) + uniquePaths(r, c + 1, rows, cols);
 }`}</code>
                       </pre>
                     </div>
                     <div className="code-col col-py">
                       <div className="code-label py">Python</div>
                       <pre className="code-panel">
-                        <code>{`class MyQueue:
-    def __init__(self):
-        self.in_stack = []
-    def push(self, x):
-        self.in_stack.append(x)
-    def pop(self):
-        tmp = []
-        while len(self.in_stack) > 1:
-            tmp.append(self.in_stack.pop())
-        front = self.in_stack.pop()
-        while tmp:
-            self.in_stack.append(tmp.pop())
-        return front`}</code>
+                        <code>{`def unique_paths(r, c, rows, cols):
+    if r == rows - 1 and c == cols - 1:
+        return 1
+    if r >= rows or c >= cols:
+        return 0
+    return unique_paths(r + 1, c, rows, cols) + unique_paths(r, c + 1, rows, cols)`}</code>
                       </pre>
                     </div>
                   </div>
                 </div>
                 <div className="approach-panel" id="q1-opt">
                   <div className="complexity">
-                    Time: <b>O(1)</b> amortized · Space: <b>O(n)</b> — an
-                    in-stack for pushes, an out-stack for pops
+                    Time: <b>O(m×n)</b> · Space: <b>O(m×n)</b> — dp[r][c] =
+                    dp[r-1][c] + dp[r][c-1], filled row by row
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
                       <div className="code-label java">Java</div>
                       <pre className="code-panel">
-                        <code>{`class MyQueue {
-    Deque<Integer> in = new ArrayDeque<>(), out = new ArrayDeque<>();
-    void push(int x) { in.push(x); }
-    int pop() {
-        if (out.isEmpty()) while (!in.isEmpty()) out.push(in.pop());
-        return out.pop();
+                        <code>{`public int uniquePaths(int rows, int cols) {
+    int[][] dp = new int[rows][cols];
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            dp[r][c] = (r == 0 || c == 0) ? 1 : dp[r - 1][c] + dp[r][c - 1];
+        }
     }
+    return dp[rows - 1][cols - 1];
 }`}</code>
                       </pre>
                     </div>
                     <div className="code-col col-py">
                       <div className="code-label py">Python</div>
                       <pre className="code-panel">
-                        <code>{`class MyQueue:
-    def __init__(self):
-        self.in_stack = []
-        self.out_stack = []
-    def push(self, x):
-        self.in_stack.append(x)
-    def pop(self):
-        if not self.out_stack:
-            while self.in_stack:
-                self.out_stack.append(self.in_stack.pop())
-        return self.out_stack.pop()`}</code>
+                        <code>{`def unique_paths(rows, cols):
+    dp = [[1] * cols for _ in range(rows)]
+    for r in range(1, rows):
+        for c in range(1, cols):
+            dp[r][c] = dp[r - 1][c] + dp[r][c - 1]
+    return dp[rows - 1][cols - 1]`}</code>
                       </pre>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> Each element moves between
-                the stacks at most once in its lifetime — why does that make
-                the optimal version amortized O(1) even though a single
-                dequeue call can still be O(n)?
+                <strong>One step further:</strong> How would you handle
+                obstacles in the grid that the robot can't pass through?
               </div>
             </section>
 
             <section className="question" id="q2">
               <div className="q-head">
                 <span className="q-index">02</span>
-                <h2>Moving Average from Data Stream</h2>
+                <h2>Minimum Path Sum</h2>
                 <span className="level-badge basic">Basic</span>
               </div>
               <p className="prompt">
-                Given a stream of integers and a window size <code>k</code>,
-                calculate the moving average of the last <code>k</code>{" "}
-                values each time a new value arrives.
+                Given a grid filled with non-negative numbers, find a path
+                from top-left to bottom-right that minimizes the sum of all
+                numbers along it, moving only right or down.
               </p>
               <div className="example">
-                Input: readings = [1, 10, 3, 5], k = 3 Output: 1, 5.5, 4.67,
-                6.0
+                Input: grid = [[1,3,1],[1,5,1],[4,2,1]] Output: 7
               </div>
 
-              <AlgoVisualizer
-                title="Moving Average from Data Stream"
-                approaches={movingAverageApproaches}
-                defaultInput={[1, 10, 3, 5, 8]}
-                structureVariant="queue"
-              />
+              <DPGridVisualizer title="Minimum Path Sum" approaches={minimumPathSumApproaches} />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q2-approach">
@@ -262,111 +233,104 @@ export default function QueueDsaGuidePage() {
                 </div>
                 <div className="approach-panel active" id="q2-brute">
                   <div className="complexity">
-                    Time: <b>O(k)</b> per reading · Space: <b>O(n)</b> —
-                    re-sum the last k values from scratch every time
+                    Time: <b>O(2^(m+n))</b> · Space: <b>O(m+n)</b> call stack
+                    — try every right/down path, keep the cheapest
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
                       <div className="code-label java">Java</div>
                       <pre className="code-panel">
-                        <code>{`class MovingAverage {
-    List<Integer> readings = new ArrayList<>();
-    int k;
-    double next(int val) {
-        readings.add(val);
-        int from = Math.max(0, readings.size() - k);
-        List<Integer> window = readings.subList(from, readings.size());
-        return window.stream().mapToInt(Integer::intValue).average().orElse(0);
-    }
+                        <code>{`public int minPath(int[][] grid, int r, int c) {
+    int rows = grid.length, cols = grid[0].length;
+    if (r == rows - 1 && c == cols - 1) return grid[r][c];
+    if (r >= rows || c >= cols) return Integer.MAX_VALUE / 2;
+    return grid[r][c] + Math.min(minPath(grid, r + 1, c), minPath(grid, r, c + 1));
 }`}</code>
                       </pre>
                     </div>
                     <div className="code-col col-py">
                       <div className="code-label py">Python</div>
                       <pre className="code-panel">
-                        <code>{`class MovingAverage:
-    def __init__(self, k):
-        self.k = k
-        self.readings = []
-    def next(self, val):
-        self.readings.append(val)
-        window = self.readings[-self.k:]
-        return sum(window) / len(window)`}</code>
+                        <code>{`def min_path(grid, r, c):
+    rows, cols = len(grid), len(grid[0])
+    if r == rows - 1 and c == cols - 1:
+        return grid[r][c]
+    if r >= rows or c >= cols:
+        return float("inf")
+    return grid[r][c] + min(min_path(grid, r + 1, c), min_path(grid, r, c + 1))`}</code>
                       </pre>
                     </div>
                   </div>
                 </div>
                 <div className="approach-panel" id="q2-opt">
                   <div className="complexity">
-                    Time: <b>O(1)</b> per reading · Space: <b>O(k)</b> — a
-                    queue holds exactly the window, a running sum updates
-                    incrementally
+                    Time: <b>O(m×n)</b> · Space: <b>O(m×n)</b> — dp[r][c] =
+                    cost[r][c] + min(dp[r-1][c], dp[r][c-1])
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
                       <div className="code-label java">Java</div>
                       <pre className="code-panel">
-                        <code>{`class MovingAverage {
-    Queue<Integer> queue = new LinkedList<>();
-    int k; double sum = 0;
-    double next(int val) {
-        queue.add(val);
-        sum += val;
-        if (queue.size() > k) sum -= queue.poll();
-        return sum / queue.size();
+                        <code>{`public int minPathSum(int[][] grid) {
+    int rows = grid.length, cols = grid[0].length;
+    int[][] dp = new int[rows][cols];
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            if (r == 0 && c == 0) dp[r][c] = grid[r][c];
+            else if (r == 0) dp[r][c] = grid[r][c] + dp[r][c - 1];
+            else if (c == 0) dp[r][c] = grid[r][c] + dp[r - 1][c];
+            else dp[r][c] = grid[r][c] + Math.min(dp[r - 1][c], dp[r][c - 1]);
+        }
     }
+    return dp[rows - 1][cols - 1];
 }`}</code>
                       </pre>
                     </div>
                     <div className="code-col col-py">
                       <div className="code-label py">Python</div>
                       <pre className="code-panel">
-                        <code>{`from collections import deque
-
-class MovingAverage:
-    def __init__(self, k):
-        self.k = k
-        self.queue = deque()
-        self.sum = 0
-    def next(self, val):
-        self.queue.append(val)
-        self.sum += val
-        if len(self.queue) > self.k:
-            self.sum -= self.queue.popleft()
-        return self.sum / len(self.queue)`}</code>
+                        <code>{`def min_path_sum(grid):
+    rows, cols = len(grid), len(grid[0])
+    dp = [[0] * cols for _ in range(rows)]
+    for r in range(rows):
+        for c in range(cols):
+            if r == 0 and c == 0:
+                dp[r][c] = grid[r][c]
+            elif r == 0:
+                dp[r][c] = grid[r][c] + dp[r][c - 1]
+            elif c == 0:
+                dp[r][c] = grid[r][c] + dp[r - 1][c]
+            else:
+                dp[r][c] = grid[r][c] + min(dp[r - 1][c], dp[r][c - 1])
+    return dp[rows - 1][cols - 1]`}</code>
                       </pre>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> What if you needed the
-                moving <i>median</i> instead of the average — would a simple
-                queue still be enough?
+                <strong>One step further:</strong> Could you solve this with
+                only O(cols) extra space instead of a full 2D table?
               </div>
             </section>
 
             <section className="question" id="q3">
               <div className="q-head">
                 <span className="q-index">03</span>
-                <h2>First Unique Character in a Stream</h2>
+                <h2>Longest Common Subsequence</h2>
                 <span className="level-badge medium">Medium</span>
               </div>
               <p className="prompt">
-                Characters arrive one at a time. After each character, report
-                the first character seen so far that has appeared exactly
-                once, or "none" if there isn't one.
+                Given two strings, return the length of their longest common
+                subsequence (not necessarily contiguous, but in order).
               </p>
               <div className="example">
-                Input: stream = "aabc" Output: 'a', none, 'b', 'b'
+                Input: a = "ABCBDAB", b = "BDCABA" Output: 4 ("BCBA")
               </div>
 
-              <AlgoVisualizer
-                title="First Unique Character in a Stream"
-                approaches={firstUniqueCharStreamApproaches}
-                defaultInput={"aabcb"}
-                inputKind="string"
-                structureVariant="queue"
+              <DPGridVisualizer
+                title="Longest Common Subsequence"
+                approaches={longestCommonSubsequenceApproaches}
               />
 
               <div className="tabs-wrapper">
@@ -380,110 +344,96 @@ class MovingAverage:
                 </div>
                 <div className="approach-panel active" id="q3-brute">
                   <div className="complexity">
-                    Time: <b>O(n)</b> per query · Space: <b>O(n)</b> — rescan
-                    everything seen so far on every new character
+                    Time: <b>O(2^(m+n))</b> · Space: <b>O(m+n)</b> call stack
+                    — match characters or skip from either prefix
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
                       <div className="code-label java">Java</div>
                       <pre className="code-panel">
-                        <code>{`class FirstUnique {
-    StringBuilder stream = new StringBuilder();
-    Character next(char c) {
-        stream.append(c);
-        for (char ch : stream.toString().toCharArray()) {
-            if (count(stream, ch) == 1) return ch;
-        }
-        return null;
-    }
+                        <code>{`public int lcs(String a, String b, int i, int j) {
+    if (i == 0 || j == 0) return 0;
+    if (a.charAt(i - 1) == b.charAt(j - 1)) return 1 + lcs(a, b, i - 1, j - 1);
+    return Math.max(lcs(a, b, i - 1, j), lcs(a, b, i, j - 1));
 }`}</code>
                       </pre>
                     </div>
                     <div className="code-col col-py">
                       <div className="code-label py">Python</div>
                       <pre className="code-panel">
-                        <code>{`class FirstUnique:
-    def __init__(self):
-        self.stream = ""
-    def next(self, c):
-        self.stream += c
-        for ch in self.stream:
-            if self.stream.count(ch) == 1:
-                return ch
-        return None`}</code>
+                        <code>{`def lcs(a, b, i, j):
+    if i == 0 or j == 0:
+        return 0
+    if a[i - 1] == b[j - 1]:
+        return 1 + lcs(a, b, i - 1, j - 1)
+    return max(lcs(a, b, i - 1, j), lcs(a, b, i, j - 1))`}</code>
                       </pre>
                     </div>
                   </div>
                 </div>
                 <div className="approach-panel" id="q3-opt">
                   <div className="complexity">
-                    Time: <b>O(1)</b> amortized · Space: <b>O(n)</b> — a queue
-                    of candidates, stale duplicates dropped from the front
+                    Time: <b>O(m×n)</b> · Space: <b>O(m×n)</b> — dp[i][j] =
+                    LCS length of a[0:i] and b[0:j], filled top to bottom
+                    using the top, left, and diagonal cells
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
                       <div className="code-label java">Java</div>
                       <pre className="code-panel">
-                        <code>{`class FirstUnique {
-    Queue<Character> queue = new LinkedList<>();
-    Map<Character, Integer> count = new HashMap<>();
-    Character next(char c) {
-        count.merge(c, 1, Integer::sum);
-        queue.add(c);
-        while (!queue.isEmpty() && count.get(queue.peek()) > 1) queue.poll();
-        return queue.isEmpty() ? null : queue.peek();
+                        <code>{`public int lcs(String a, String b) {
+    int m = a.length(), n = b.length();
+    int[][] dp = new int[m + 1][n + 1];
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            dp[i][j] = (a.charAt(i - 1) == b.charAt(j - 1))
+                ? 1 + dp[i - 1][j - 1]   // diagonal
+                : Math.max(dp[i - 1][j], dp[i][j - 1]); // top vs left
+        }
     }
+    return dp[m][n];
 }`}</code>
                       </pre>
                     </div>
                     <div className="code-col col-py">
                       <div className="code-label py">Python</div>
                       <pre className="code-panel">
-                        <code>{`from collections import deque, Counter
-
-class FirstUnique:
-    def __init__(self):
-        self.queue = deque()
-        self.count = Counter()
-    def next(self, c):
-        self.count[c] += 1
-        self.queue.append(c)
-        while self.queue and self.count[self.queue[0]] > 1:
-            self.queue.popleft()
-        return self.queue[0] if self.queue else None`}</code>
+                        <code>{`def lcs(a, b):
+    m, n = len(a), len(b)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if a[i - 1] == b[j - 1]:
+                dp[i][j] = 1 + dp[i - 1][j - 1]       # diagonal
+            else:
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])  # top vs left
+    return dp[m][n]`}</code>
                       </pre>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> Why is it safe to only
-                ever remove from the front of the candidate queue, never from
-                the middle?
+                <strong>One step further:</strong> How would you reconstruct
+                the actual subsequence string, not just its length?
               </div>
             </section>
 
             <section className="question" id="q4">
               <div className="q-head">
                 <span className="q-index">04</span>
-                <h2>Sliding Window Maximum</h2>
+                <h2>Edit Distance</h2>
                 <span className="level-badge medium">Medium</span>
               </div>
               <p className="prompt">
-                Given an array and a window size <code>k</code>, return the
-                maximum value in each sliding window of size <code>k</code> as
-                it moves from left to right.
+                Given two strings, return the minimum number of insert,
+                delete, or replace operations to convert one into the other.
               </p>
               <div className="example">
-                Input: nums = [1, 3, -1, -3, 5, 3], k = 3 Output: [3, 3, 5, 5]
+                Input: a = "horse", b = "ros" Output: 3
               </div>
 
-              <AlgoVisualizer
-                title="Sliding Window Maximum"
-                approaches={slidingWindowMaximumApproaches}
-                defaultInput={[1, 3, -1, -3, 5, 3]}
-                structureVariant="queue"
-              />
+              <DPGridVisualizer title="Edit Distance" approaches={editDistanceApproaches} />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q4-approach">
@@ -496,112 +446,110 @@ class FirstUnique:
                 </div>
                 <div className="approach-panel active" id="q4-brute">
                   <div className="complexity">
-                    Time: <b>O(n·k)</b> · Space: <b>O(1)</b> extra — scan
-                    every window from scratch
+                    Time: <b>O(3^(m+n))</b> · Space: <b>O(m+n)</b> call stack
+                    — try insert, delete, or replace at every mismatch
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
                       <div className="code-label java">Java</div>
                       <pre className="code-panel">
-                        <code>{`public int[] maxSlidingWindow(int[] nums, int k) {
-    int n = nums.length;
-    int[] res = new int[n - k + 1];
-    for (int i = 0; i + k <= n; i++) {
-        int m = Integer.MIN_VALUE;
-        for (int j = i; j < i + k; j++) m = Math.max(m, nums[j]);
-        res[i] = m;
-    }
-    return res;
+                        <code>{`public int dist(String a, String b, int i, int j) {
+    if (i == 0) return j;
+    if (j == 0) return i;
+    if (a.charAt(i - 1) == b.charAt(j - 1)) return dist(a, b, i - 1, j - 1);
+    return 1 + Math.min(
+        Math.min(dist(a, b, i - 1, j), dist(a, b, i, j - 1)),
+        dist(a, b, i - 1, j - 1)
+    );
 }`}</code>
                       </pre>
                     </div>
                     <div className="code-col col-py">
                       <div className="code-label py">Python</div>
                       <pre className="code-panel">
-                        <code>{`def max_sliding_window(nums, k):
-    n = len(nums)
-    res = []
-    for i in range(n - k + 1):
-        res.append(max(nums[i:i + k]))
-    return res`}</code>
+                        <code>{`def dist(a, b, i, j):
+    if i == 0:
+        return j
+    if j == 0:
+        return i
+    if a[i - 1] == b[j - 1]:
+        return dist(a, b, i - 1, j - 1)
+    return 1 + min(dist(a, b, i - 1, j), dist(a, b, i, j - 1), dist(a, b, i - 1, j - 1))`}</code>
                       </pre>
                     </div>
                   </div>
                 </div>
                 <div className="approach-panel" id="q4-opt">
                   <div className="complexity">
-                    Time: <b>O(n)</b> · Space: <b>O(k)</b> — a monotonic deque
-                    of indices; the front is always the window max
+                    Time: <b>O(m×n)</b> · Space: <b>O(m×n)</b> — dp[i][j] =
+                    edits to turn a[0:i] into b[0:j], filled top to bottom
+                    using the top, left, and diagonal cells
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
                       <div className="code-label java">Java</div>
                       <pre className="code-panel">
-                        <code>{`public int[] maxSlidingWindow(int[] nums, int k) {
-    int n = nums.length;
-    int[] res = new int[n - k + 1];
-    Deque<Integer> dq = new ArrayDeque<>();
-    for (int i = 0; i < n; i++) {
-        while (!dq.isEmpty() && nums[dq.peekLast()] <= nums[i]) dq.pollLast();
-        dq.addLast(i);
-        if (dq.peekFirst() <= i - k) dq.pollFirst();
-        if (i >= k - 1) res[i - k + 1] = nums[dq.peekFirst()];
+                        <code>{`public int minDistance(String a, String b) {
+    int m = a.length(), n = b.length();
+    int[][] dp = new int[m + 1][n + 1];
+    for (int j = 0; j <= n; j++) dp[0][j] = j;
+    for (int i = 0; i <= m; i++) dp[i][0] = i;
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            dp[i][j] = (a.charAt(i - 1) == b.charAt(j - 1))
+                ? dp[i - 1][j - 1]  // diagonal, no edit
+                : 1 + Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]); // top, left, diagonal
+        }
     }
-    return res;
+    return dp[m][n];
 }`}</code>
                       </pre>
                     </div>
                     <div className="code-col col-py">
                       <div className="code-label py">Python</div>
                       <pre className="code-panel">
-                        <code>{`from collections import deque
-
-def max_sliding_window(nums, k):
-    dq = deque()  # indices, decreasing values
-    res = []
-    for i, x in enumerate(nums):
-        while dq and nums[dq[-1]] <= x:
-            dq.pop()
-        dq.append(i)
-        if dq[0] <= i - k:
-            dq.popleft()
-        if i >= k - 1:
-            res.append(nums[dq[0]])
-    return res`}</code>
+                        <code>{`def min_distance(a, b):
+    m, n = len(a), len(b)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+    for j in range(n + 1):
+        dp[0][j] = j
+    for i in range(m + 1):
+        dp[i][0] = i
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if a[i - 1] == b[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1]      # diagonal, no edit
+            else:
+                dp[i][j] = 1 + min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1])  # top, left, diagonal
+    return dp[m][n]`}</code>
                       </pre>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> The deque stores indices,
-                not values — why is that necessary for the eviction check to
-                work?
+                <strong>One step further:</strong> How would you change the
+                recurrence if insert/delete/replace each had different costs?
               </div>
             </section>
 
             <section className="question" id="q5">
               <div className="q-head">
                 <span className="q-index">05</span>
-                <h2>Design Circular Queue</h2>
+                <h2>0/1 Knapsack</h2>
                 <span className="level-badge medium">Medium</span>
               </div>
               <p className="prompt">
-                Design a fixed-capacity circular queue supporting{" "}
-                <code>enqueue</code> and <code>dequeue</code> in O(1), reusing
-                freed slots without shifting elements.
+                Given item weights and values and a knapsack capacity, choose
+                a subset of items (each used at most once) that maximizes
+                total value without exceeding the capacity.
               </p>
               <div className="example">
-                Input: capacity = 4, enqueue(1,2,3,4,5) Output: slot 0 reused
-                for 5 after dequeuing 1
+                Input: weights = [1,3,4,5], values = [1,4,5,7], capacity = 7
+                Output: 9
               </div>
 
-              <AlgoVisualizer
-                title="Design Circular Queue"
-                approaches={circularQueueApproaches}
-                defaultInput={[1, 2, 3, 4, 5, 6]}
-                structureVariant="queue"
-              />
+              <DPGridVisualizer title="0/1 Knapsack" approaches={knapsackApproaches} />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q5-approach">
@@ -614,109 +562,87 @@ def max_sliding_window(nums, k):
                 </div>
                 <div className="approach-panel active" id="q5-brute">
                   <div className="complexity">
-                    Time: <b>O(n)</b> per dequeue · Space: <b>O(n)</b> — a
-                    plain array; dequeuing shifts every remaining element
+                    Time: <b>O(2^n)</b> · Space: <b>O(n)</b> call stack — try
+                    including or excluding every item
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
                       <div className="code-label java">Java</div>
                       <pre className="code-panel">
-                        <code>{`class MyCircularQueue {
-    List<Integer> arr = new ArrayList<>();
-    int capacity;
-    boolean enqueue(int x) {
-        if (arr.size() >= capacity) return false;
-        arr.add(x);
-        return true;
-    }
-    boolean dequeue() {
-        if (arr.isEmpty()) return false;
-        arr.remove(0); // shifts every remaining element
-        return true;
-    }
+                        <code>{`public int knap(int[] w, int[] v, int i, int cap) {
+    if (i == 0 || cap == 0) return 0;
+    int item = i - 1;
+    if (w[item] > cap) return knap(w, v, i - 1, cap);
+    return Math.max(
+        knap(w, v, i - 1, cap),
+        v[item] + knap(w, v, i - 1, cap - w[item])
+    );
 }`}</code>
                       </pre>
                     </div>
                     <div className="code-col col-py">
                       <div className="code-label py">Python</div>
                       <pre className="code-panel">
-                        <code>{`class MyCircularQueue:
-    def __init__(self, capacity):
-        self.arr = []
-        self.capacity = capacity
-    def enqueue(self, x):
-        if len(self.arr) >= self.capacity:
-            return False
-        self.arr.append(x)
-        return True
-    def dequeue(self):
-        if not self.arr:
-            return False
-        self.arr.pop(0)  # O(n) shift
-        return True`}</code>
+                        <code>{`def knap(w, v, i, cap):
+    if i == 0 or cap == 0:
+        return 0
+    item = i - 1
+    if w[item] > cap:
+        return knap(w, v, i - 1, cap)
+    return max(knap(w, v, i - 1, cap), v[item] + knap(w, v, i - 1, cap - w[item]))`}</code>
                       </pre>
                     </div>
                   </div>
                 </div>
                 <div className="approach-panel" id="q5-opt">
                   <div className="complexity">
-                    Time: <b>O(1)</b> per operation · Space: <b>O(capacity)</b>{" "}
-                    — a fixed array with head/tail indices that wrap via
-                    modulo
+                    Time: <b>O(n×capacity)</b> · Space: <b>O(n×capacity)</b> —
+                    dp[i][c] = best value using the first i items within
+                    capacity c, filled top to bottom using the top and
+                    diagonal cells
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
                       <div className="code-label java">Java</div>
                       <pre className="code-panel">
-                        <code>{`class MyCircularQueue {
-    int[] buf; int head = 0, tail = 0, size = 0, capacity;
-    MyCircularQueue(int k) { capacity = k; buf = new int[k]; }
-    boolean enqueue(int x) {
-        if (size == capacity) return false;
-        buf[tail] = x;
-        tail = (tail + 1) % capacity;
-        size++;
-        return true;
+                        <code>{`public int knapsack(int[] w, int[] v, int capacity) {
+    int n = w.length;
+    int[][] dp = new int[n + 1][capacity + 1];
+    for (int i = 1; i <= n; i++) {
+        int item = i - 1;
+        for (int c = 0; c <= capacity; c++) {
+            dp[i][c] = dp[i - 1][c]; // top: exclude item
+            if (w[item] <= c) {
+                dp[i][c] = Math.max(dp[i][c], v[item] + dp[i - 1][c - w[item]]); // diagonal: include item
+            }
+        }
     }
-    boolean dequeue() {
-        if (size == 0) return false;
-        head = (head + 1) % capacity;
-        size--;
-        return true;
-    }
+    return dp[n][capacity];
 }`}</code>
                       </pre>
                     </div>
                     <div className="code-col col-py">
                       <div className="code-label py">Python</div>
                       <pre className="code-panel">
-                        <code>{`class MyCircularQueue:
-    def __init__(self, k):
-        self.buf = [0] * k
-        self.capacity = k
-        self.head = self.tail = self.size = 0
-    def enqueue(self, x):
-        if self.size == self.capacity:
-            return False
-        self.buf[self.tail] = x
-        self.tail = (self.tail + 1) % self.capacity
-        self.size += 1
-        return True
-    def dequeue(self):
-        if self.size == 0:
-            return False
-        self.head = (self.head + 1) % self.capacity
-        self.size -= 1
-        return True`}</code>
+                        <code>{`def knapsack(w, v, capacity):
+    n = len(w)
+    dp = [[0] * (capacity + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        item = i - 1
+        for c in range(capacity + 1):
+            dp[i][c] = dp[i - 1][c]  # top: exclude item
+            if w[item] <= c:
+                dp[i][c] = max(dp[i][c], v[item] + dp[i - 1][c - w[item]])  # diagonal: include item
+    return dp[n][capacity]`}</code>
                       </pre>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> How do you distinguish a
-                completely full buffer from a completely empty one when
-                head == tail, without the separate <code>size</code> counter?
+                <strong>One step further:</strong> How does the recurrence
+                change for the "unbounded knapsack" where each item can be
+                used any number of times?
               </div>
             </section>
           </div>

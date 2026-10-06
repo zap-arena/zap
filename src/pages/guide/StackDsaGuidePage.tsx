@@ -136,6 +136,7 @@ export default function StackDsaGuidePage() {
                 approaches={validParenthesesApproaches}
                 defaultInput={"{[()]}"}
                 inputKind="string"
+                structureVariant="stack"
               />
 
               <div className="tabs-wrapper">
@@ -260,6 +261,7 @@ export default function StackDsaGuidePage() {
                 title="Next Greater Element"
                 approaches={nextGreaterElementApproaches}
                 defaultInput={[2, 1, 2, 4, 3]}
+                structureVariant="stack"
               />
 
               <div className="tabs-wrapper">
@@ -376,6 +378,7 @@ export default function StackDsaGuidePage() {
                 title="Daily Temperatures"
                 approaches={dailyTemperaturesApproaches}
                 defaultInput={[73, 74, 75, 71, 69, 72]}
+                structureVariant="stack"
               />
 
               <div className="tabs-wrapper">
@@ -491,6 +494,7 @@ export default function StackDsaGuidePage() {
                 title="Min Stack"
                 approaches={minStackApproaches}
                 defaultInput={[5, 2, 7, 1, 8]}
+                structureVariant="stack"
               />
 
               <div className="tabs-wrapper">
@@ -615,6 +619,7 @@ export default function StackDsaGuidePage() {
                 approaches={evalRPNApproaches}
                 defaultInput={"2 1 + 3 *"}
                 inputKind="string"
+                structureVariant="stack"
               />
 
               <div className="tabs-wrapper">
@@ -734,6 +739,7 @@ export default function StackDsaGuidePage() {
                 title="Largest Rectangle in Histogram"
                 approaches={largestRectangleHistogramApproaches}
                 defaultInput={[2, 1, 5, 6, 2, 3]}
+                structureVariant="stack"
               />
 
               <div className="tabs-wrapper">
