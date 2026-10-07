@@ -13,6 +13,7 @@ import DP2DGuidePage from "./pages/guide/DP2DGuidePage";
 import HashingDsaGuidePage from "./pages/guide/HashingDsaGuidePage";
 import LinkedListDsaGuidePage from "./pages/guide/LinkedListDsaGuidePage";
 import OopsGuidePage from "./pages/guide/OopsGuidePage";
+import OopsVisualGuidePage from "./pages/guide/OopsVisualGuidePage";
 import QueueDsaGuidePage from "./pages/guide/QueueDsaGuidePage";
 import RecursionDsaGuidePage from "./pages/guide/RecursionDsaGuidePage";
 import SdlcGuidePage from "./pages/guide/SdlcGuidePage";
@@ -185,6 +186,14 @@ export default function App() {
             element={
               <RequireAuth>
                 <OopsGuidePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/oops-visual"
+            element={
+              <RequireAuth>
+                <OopsVisualGuidePage />
               </RequireAuth>
             }
           />

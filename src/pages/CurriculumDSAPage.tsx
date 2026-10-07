@@ -20,7 +20,7 @@ export default function CurriculumDSAPage() {
 
           <div className="stats-grid">
             <div className="stat-card">
-              <div className="stat-val">12</div>
+              <div className="stat-val">13</div>
               <div className="stat-lbl">Core DSA Guides</div>
             </div>
             <div className="stat-card">
@@ -367,6 +367,39 @@ export default function CurriculumDSAPage() {
               </div>
               <a href="/curriculum/dsa/oops" className="btn-open">
                 <span>Explore Java OOPs Guide</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">🧩</div>
+                  <span className="module-badge">6 Topics</span>
+                </div>
+                <h3 className="module-title">OOPs Visual Blueprint</h3>
+                <p className="module-desc">
+                  A diagram-first companion to Java OOPs — procedural vs
+                  OOPs, class/object blueprints, the ATM encapsulation
+                  metaphor, and all 5 inheritance types visualized.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">Class vs Object</li>
+                  <li className="topic-tag">Encapsulation</li>
+                  <li className="topic-tag">Abstraction</li>
+                  <li className="topic-tag">5 Inheritance Types</li>
+                  <li className="topic-tag">Polymorphism</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/oops-visual" className="btn-open">
+                <span>Explore OOPs Visual Guide</span>
                 <span>→</span>
               </a>
             </div>
