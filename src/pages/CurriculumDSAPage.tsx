@@ -20,11 +20,11 @@ export default function CurriculumDSAPage() {
 
           <div className="stats-grid">
             <div className="stat-card">
-              <div className="stat-val">4</div>
+              <div className="stat-val">12</div>
               <div className="stat-lbl">Core DSA Guides</div>
             </div>
             <div className="stat-card">
-              <div className="stat-val">39+</div>
+              <div className="stat-val">100+</div>
               <div className="stat-lbl">Solved Class Examples</div>
             </div>
             <div className="stat-card">
@@ -173,6 +173,265 @@ export default function CurriculumDSAPage() {
               </div>
               <a href="/curriculum/dsa/recursion" className="btn-open">
                 <span>Explore Recursion Guide</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">🧱</div>
+                  <span className="module-badge">6 Core Problems</span>
+                </div>
+                <h3 className="module-title">Stack</h3>
+                <p className="module-desc">
+                  Master last-in-first-out ordering with monotonic stacks,
+                  bracket matching, and O(1) auxiliary tracking.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">Valid Parentheses</li>
+                  <li className="topic-tag">Next Greater Element</li>
+                  <li className="topic-tag">Daily Temperatures</li>
+                  <li className="topic-tag">Min Stack</li>
+                  <li className="topic-tag">Largest Rectangle</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/stack" className="btn-open">
+                <span>Explore Stack Guide</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">🚋</div>
+                  <span className="module-badge">5 Core Problems</span>
+                </div>
+                <h3 className="module-title">Queue</h3>
+                <p className="module-desc">
+                  Master first-in-first-out ordering with circular buffers,
+                  monotonic deques, and streaming frequency tracking.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">Queue using Stacks</li>
+                  <li className="topic-tag">Moving Average</li>
+                  <li className="topic-tag">First Unique Character</li>
+                  <li className="topic-tag">Sliding Window Maximum</li>
+                  <li className="topic-tag">Circular Queue</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/queue" className="btn-open">
+                <span>Explore Queue Guide</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">🔗</div>
+                  <span className="module-badge">6 Core Problems</span>
+                </div>
+                <h3 className="module-title">Linked List</h3>
+                <p className="module-desc">
+                  Master pointer manipulation with in-place reversal,
+                  slow/fast pointers, and single-pass merging.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">Reverse Linked List</li>
+                  <li className="topic-tag">Linked List Cycle</li>
+                  <li className="topic-tag">Merge Two Sorted Lists</li>
+                  <li className="topic-tag">Remove Nth From End</li>
+                  <li className="topic-tag">Palindrome Linked List</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/linked-list" className="btn-open">
+                <span>Explore Linked List Guide</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">📊</div>
+                  <span className="module-badge">5 Core Problems</span>
+                </div>
+                <h3 className="module-title">1D Dynamic Programming</h3>
+                <p className="module-desc">
+                  Master tabulation over a single running index — recursion
+                  with overlapping subproblems collapsed into a simple array
+                  fill.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">House Robber</li>
+                  <li className="topic-tag">Maximum Subarray</li>
+                  <li className="topic-tag">Coin Change</li>
+                  <li className="topic-tag">Longest Increasing Subsequence</li>
+                  <li className="topic-tag">Decode Ways</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/dp-1d" className="btn-open">
+                <span>Explore 1D DP Guide</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">🧮</div>
+                  <span className="module-badge">5 Core Problems</span>
+                </div>
+                <h3 className="module-title">2D Dynamic Programming</h3>
+                <p className="module-desc">
+                  Master grid-walk and sequence-pair recurrences — two
+                  indices, one table, filled once.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">Unique Paths</li>
+                  <li className="topic-tag">Minimum Path Sum</li>
+                  <li className="topic-tag">Longest Common Subsequence</li>
+                  <li className="topic-tag">Edit Distance</li>
+                  <li className="topic-tag">0/1 Knapsack</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/dp-2d" className="btn-open">
+                <span>Explore 2D DP Guide</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">☕</div>
+                  <span className="module-badge">12 Topics</span>
+                </div>
+                <h3 className="module-title">Java OOPs Concepts</h3>
+                <p className="module-desc">
+                  Master classes, objects, and the four pillars —
+                  encapsulation, abstraction, inheritance, and polymorphism —
+                  with real-world analogies and diagrams.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">Encapsulation</li>
+                  <li className="topic-tag">Abstraction</li>
+                  <li className="topic-tag">Inheritance Types</li>
+                  <li className="topic-tag">Overloading vs Overriding</li>
+                  <li className="topic-tag">Access Modifiers</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/oops" className="btn-open">
+                <span>Explore Java OOPs Guide</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">🗄️</div>
+                  <span className="module-badge">15 Topics</span>
+                </div>
+                <h3 className="module-title">SQL Blueprint</h3>
+                <p className="module-desc">
+                  Master data types, ACID, normalization, joins, keys, and
+                  query execution order — everything for SQL interviews.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">ACID Properties</li>
+                  <li className="topic-tag">Normalization</li>
+                  <li className="topic-tag">SQL Joins</li>
+                  <li className="topic-tag">GROUP BY &amp; HAVING</li>
+                  <li className="topic-tag">CTEs</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/sql" className="btn-open">
+                <span>Explore SQL Guide</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">🔁</div>
+                  <span className="module-badge">6 Topics</span>
+                </div>
+                <h3 className="module-title">SDLC Blueprint</h3>
+                <p className="module-desc">
+                  Master the Software Development Life Cycle — its six
+                  phases, and the Waterfall, Agile, V-Model, and Spiral
+                  process models.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">6 SDLC Phases</li>
+                  <li className="topic-tag">Waterfall Model</li>
+                  <li className="topic-tag">Agile Methodology</li>
+                  <li className="topic-tag">V-Model</li>
+                  <li className="topic-tag">Spiral Model</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/sdlc" className="btn-open">
+                <span>Explore SDLC Guide</span>
                 <span>→</span>
               </a>
             </div>

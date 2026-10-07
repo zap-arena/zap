@@ -8,9 +8,17 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import HomePage from "./pages/HomePage";
 import ContestLandingPage from "./pages/ContestLandingPage";
 import CurriculumDSAPage from "./pages/CurriculumDSAPage";
+import DP1DGuidePage from "./pages/guide/DP1DGuidePage";
+import DP2DGuidePage from "./pages/guide/DP2DGuidePage";
 import HashingDsaGuidePage from "./pages/guide/HashingDsaGuidePage";
+import LinkedListDsaGuidePage from "./pages/guide/LinkedListDsaGuidePage";
+import OopsGuidePage from "./pages/guide/OopsGuidePage";
+import QueueDsaGuidePage from "./pages/guide/QueueDsaGuidePage";
 import RecursionDsaGuidePage from "./pages/guide/RecursionDsaGuidePage";
+import SdlcGuidePage from "./pages/guide/SdlcGuidePage";
 import SlidingWindowDsaGuidePage from "./pages/guide/SlidingWindowDsaGuidePage";
+import SqlGuidePage from "./pages/guide/SqlGuidePage";
+import StackDsaGuidePage from "./pages/guide/StackDsaGuidePage";
 import TwoPointerDsaGuidePage from "./pages/guide/TwoPointerDsaGuidePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -86,29 +94,116 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/contests" element={<ContestLandingPage />} />
           <Route path="/contests/list" element={<ContestsPage />} />
-          <Route path="/curriculum/dsa" element={<CurriculumDSAPage />} />
-          <Route
-            path="/curriculum/dsa/hashing"
-            element={<HashingDsaGuidePage />}
-          />
-          <Route
-            path="/curriculum/dsa/sliding-window"
-            element={<SlidingWindowDsaGuidePage />}
-          />
-          <Route
-            path="/curriculum/dsa/two-pointer"
-            element={<TwoPointerDsaGuidePage />}
-          />
-          <Route
-            path="/curriculum/dsa/recursion"
-            element={<RecursionDsaGuidePage />}
-          />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/contest/:slug" element={<ContestEntryPage />} />
 
           {/* Authenticated user */}
+          <Route
+            path="/curriculum/dsa"
+            element={
+              <RequireAuth>
+                <CurriculumDSAPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/hashing"
+            element={
+              <RequireAuth>
+                <HashingDsaGuidePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/sliding-window"
+            element={
+              <RequireAuth>
+                <SlidingWindowDsaGuidePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/two-pointer"
+            element={
+              <RequireAuth>
+                <TwoPointerDsaGuidePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/recursion"
+            element={
+              <RequireAuth>
+                <RecursionDsaGuidePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/stack"
+            element={
+              <RequireAuth>
+                <StackDsaGuidePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/queue"
+            element={
+              <RequireAuth>
+                <QueueDsaGuidePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/linked-list"
+            element={
+              <RequireAuth>
+                <LinkedListDsaGuidePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/dp-1d"
+            element={
+              <RequireAuth>
+                <DP1DGuidePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/dp-2d"
+            element={
+              <RequireAuth>
+                <DP2DGuidePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/oops"
+            element={
+              <RequireAuth>
+                <OopsGuidePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/sdlc"
+            element={
+              <RequireAuth>
+                <SdlcGuidePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/sql"
+            element={
+              <RequireAuth>
+                <SqlGuidePage />
+              </RequireAuth>
+            }
+          />
           <Route
             path="/profile"
             element={
