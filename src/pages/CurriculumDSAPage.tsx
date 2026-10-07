@@ -20,11 +20,11 @@ export default function CurriculumDSAPage() {
 
           <div className="stats-grid">
             <div className="stat-card">
-              <div className="stat-val">9</div>
+              <div className="stat-val">12</div>
               <div className="stat-lbl">Core DSA Guides</div>
             </div>
             <div className="stat-card">
-              <div className="stat-val">67+</div>
+              <div className="stat-val">100+</div>
               <div className="stat-lbl">Solved Class Examples</div>
             </div>
             <div className="stat-card">
@@ -334,6 +334,104 @@ export default function CurriculumDSAPage() {
               </div>
               <a href="/curriculum/dsa/dp-2d" className="btn-open">
                 <span>Explore 2D DP Guide</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">☕</div>
+                  <span className="module-badge">12 Topics</span>
+                </div>
+                <h3 className="module-title">Java OOPs Concepts</h3>
+                <p className="module-desc">
+                  Master classes, objects, and the four pillars —
+                  encapsulation, abstraction, inheritance, and polymorphism —
+                  with real-world analogies and diagrams.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">Encapsulation</li>
+                  <li className="topic-tag">Abstraction</li>
+                  <li className="topic-tag">Inheritance Types</li>
+                  <li className="topic-tag">Overloading vs Overriding</li>
+                  <li className="topic-tag">Access Modifiers</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/oops" className="btn-open">
+                <span>Explore Java OOPs Guide</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">🗄️</div>
+                  <span className="module-badge">15 Topics</span>
+                </div>
+                <h3 className="module-title">SQL Blueprint</h3>
+                <p className="module-desc">
+                  Master data types, ACID, normalization, joins, keys, and
+                  query execution order — everything for SQL interviews.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">ACID Properties</li>
+                  <li className="topic-tag">Normalization</li>
+                  <li className="topic-tag">SQL Joins</li>
+                  <li className="topic-tag">GROUP BY &amp; HAVING</li>
+                  <li className="topic-tag">CTEs</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/sql" className="btn-open">
+                <span>Explore SQL Guide</span>
+                <span>→</span>
+              </a>
+            </div>
+
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">🔁</div>
+                  <span className="module-badge">6 Topics</span>
+                </div>
+                <h3 className="module-title">SDLC Blueprint</h3>
+                <p className="module-desc">
+                  Master the Software Development Life Cycle — its six
+                  phases, and the Waterfall, Agile, V-Model, and Spiral
+                  process models.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">6 SDLC Phases</li>
+                  <li className="topic-tag">Waterfall Model</li>
+                  <li className="topic-tag">Agile Methodology</li>
+                  <li className="topic-tag">V-Model</li>
+                  <li className="topic-tag">Spiral Model</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/sdlc" className="btn-open">
+                <span>Explore SDLC Guide</span>
                 <span>→</span>
               </a>
             </div>
