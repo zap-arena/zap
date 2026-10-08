@@ -14,6 +14,7 @@ import DjangoReactGuidePage from "./pages/guide/DjangoReactGuidePage";
 import FlaskApiGuidePage from "./pages/guide/FlaskApiGuidePage";
 import DP1DGuidePage from "./pages/guide/DP1DGuidePage";
 import DP2DGuidePage from "./pages/guide/DP2DGuidePage";
+import GraphDsaGuidePage from "./pages/guide/GraphDsaGuidePage";
 import HashingDsaGuidePage from "./pages/guide/HashingDsaGuidePage";
 import LinkedListDsaGuidePage from "./pages/guide/LinkedListDsaGuidePage";
 import OopsGuidePage from "./pages/guide/OopsGuidePage";
@@ -24,6 +25,7 @@ import SdlcGuidePage from "./pages/guide/SdlcGuidePage";
 import SlidingWindowDsaGuidePage from "./pages/guide/SlidingWindowDsaGuidePage";
 import SqlGuidePage from "./pages/guide/SqlGuidePage";
 import StackDsaGuidePage from "./pages/guide/StackDsaGuidePage";
+import TreeDsaGuidePage from "./pages/guide/TreeDsaGuidePage";
 import TwoPointerDsaGuidePage from "./pages/guide/TwoPointerDsaGuidePage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
@@ -159,6 +161,22 @@ export default function App() {
             element={
               <RequireAuth>
                 <QueueDsaGuidePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/trees"
+            element={
+              <RequireAuth>
+                <TreeDsaGuidePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/graphs"
+            element={
+              <RequireAuth>
+                <GraphDsaGuidePage />
               </RequireAuth>
             }
           />

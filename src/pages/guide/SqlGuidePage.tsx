@@ -1,4 +1,5 @@
 import type React from "react";
+import JoinTypesGallery from "../../components/guide/JoinTypesGallery";
 import {
   CompareTable,
   GroupingDiagram,
@@ -8,6 +9,15 @@ import {
   VennPair,
   VerticalSteps,
 } from "../../components/guide/OopsDiagrams";
+import SqlVisualizer from "../../components/guide/SqlVisualizer";
+import {
+  aggregateExamples,
+  basicQueryExamples,
+  joinExamples,
+  labExamples,
+  subqueryExamples,
+  windowExamples,
+} from "../../components/guide/sqlExamples";
 import Navbar from "../../components/Navbar";
 import { useGuideLogic } from "../../hooks/useGuideLogic";
 
@@ -77,6 +87,30 @@ export default function SqlGuidePage() {
               15 · Views
             </a>
           </div>
+          <div className="side-group">
+            <div className="side-group-label">Hands-on · Visual</div>
+            <a className="side-link" href="#q16">
+              16 · Anatomy of a SELECT
+            </a>
+            <a className="side-link" href="#q17">
+              17 · Aggregation Visualised
+            </a>
+            <a className="side-link" href="#q18">
+              18 · Types of Join
+            </a>
+            <a className="side-link" href="#q19">
+              19 · Joins Step by Step
+            </a>
+            <a className="side-link" href="#q20">
+              20 · Window Functions
+            </a>
+            <a className="side-link" href="#q21">
+              21 · Subqueries
+            </a>
+            <a className="side-link" href="#q22">
+              22 · Query Lab
+            </a>
+          </div>
         </nav>
 
         <div className="main">
@@ -101,9 +135,10 @@ export default function SqlGuidePage() {
             <div className="intro">
               <h1>Zero to Query: The SQL Blueprint</h1>
               <p>
-                Fifteen topics covering everything from raw data types to joins
-                and views — the complete SQL foundation for placement
-                interviews, with real-world context and runnable queries.
+                Twenty-two topics covering everything from raw data types to
+                joins, window functions and subqueries — with a live SQL engine
+                built into the page so you can run every example, edit it, and
+                watch the query execute one clause at a time.
               </p>
               <div className="legend">
                 <span className="legend-item">
@@ -1004,6 +1039,596 @@ SELECT * FROM PublicEmployeeList;`}</code>
                 <strong>"Can you INSERT through a View?"</strong> Yes, but only
                 if it's an "Updatable View" (usually meaning it doesn't contain
                 GROUP BY, aggregates, or multiple joined tables).
+              </div>
+            </section>
+
+            <section className="question" id="q16">
+              <div className="q-head">
+                <span className="q-index">16</span>
+                <h2>Anatomy of a SELECT</h2>
+                <span className="level-badge basic">Basic</span>
+              </div>
+              <p className="prompt">
+                Everything below this point runs on a <b>live SQL engine</b> in
+                your browser against a small company database. Edit any query,
+                press <b>Run</b>, and step through the clauses one at a time to
+                watch rows being kept, dropped or padded.
+                <br />
+                <br />
+                The single most important idea in SQL is that{" "}
+                <b>you do not write a query in the order it executes</b>. You
+                write <code>SELECT</code> first, but the database runs it almost
+                last — which explains nearly every beginner error message.
+              </p>
+              <div className="example">
+                Written order: SELECT → FROM → WHERE → GROUP BY → HAVING → ORDER
+                BY → LIMIT · Execution order: FROM → JOIN → WHERE → GROUP BY →
+                HAVING → WINDOW → SELECT → DISTINCT → ORDER BY → LIMIT
+              </div>
+              <SqlVisualizer
+                title="SELECT · WHERE · ORDER BY · LIMIT"
+                examples={basicQueryExamples}
+              />
+              <div className="twist">
+                <strong>
+                  "Why can't I use a column alias in my WHERE clause?"
+                </strong>{" "}
+                Because <code>SELECT</code> — where the alias is created — runs{" "}
+                <em>after</em> <code>WHERE</code>. Try the last example above:
+                the engine rejects it with the same error a real database gives.{" "}
+                <code>ORDER BY</code> runs after <code>SELECT</code>, which is
+                why the alias works there.
+              </div>
+            </section>
+
+            <section className="question" id="q17">
+              <div className="q-head">
+                <span className="q-index">17</span>
+                <h2>Aggregation Visualised</h2>
+                <span className="level-badge basic">Basic</span>
+              </div>
+              <p className="prompt">
+                An aggregate turns <b>many rows into one</b>.{" "}
+                <code>GROUP BY</code> decides how many "ones" you get: without
+                it the whole table is a single group, with it you get one output
+                row per distinct key. Step to the <b>GROUP BY</b> stage in the
+                player to see eight rows physically fold into four buckets.
+              </p>
+              <div className="example">
+                WHERE filters <b>rows</b> before grouping · HAVING filters{" "}
+                <b>groups</b> after grouping · an aggregate can never appear in
+                WHERE
+              </div>
+              <SqlVisualizer
+                title="GROUP BY · HAVING · COUNT · AVG"
+                examples={aggregateExamples}
+              />
+              <div className="tabs-wrapper">
+                <div className="approach-tabs">
+                  <button
+                    type="button"
+                    className="tab-btn active"
+                    data-target="q17-count"
+                  >
+                    COUNT(*) vs COUNT(col)
+                  </button>
+                  <button
+                    type="button"
+                    className="tab-btn"
+                    data-target="q17-null"
+                  >
+                    Aggregates &amp; NULL
+                  </button>
+                </div>
+                <div className="approach-panel active" id="q17-count">
+                  <div className="code-col">
+                    <pre className="code-panel">
+                      <code>{`-- employees has 8 rows; Priya's dept_id is NULL
+
+SELECT COUNT(*)                 FROM employees;  -- 8  (counts rows)
+SELECT COUNT(dept_id)           FROM employees;  -- 7  (skips NULLs)
+SELECT COUNT(DISTINCT dept_id)  FROM employees;  -- 3  (10, 20, 30)
+
+-- The classic reporting bug:
+SELECT d.dept_name, COUNT(*) AS staff
+FROM departments d
+LEFT JOIN employees e ON d.dept_id = e.dept_id
+GROUP BY d.dept_name;
+-- Legal returns 1, not 0 — COUNT(*) counted the NULL-padded row.
+-- Fix: COUNT(e.emp_id), which ignores the NULL.`}</code>
+                    </pre>
+                  </div>
+                </div>
+                <div className="approach-panel" id="q17-null">
+                  <div className="code-col">
+                    <pre className="code-panel">
+                      <code>{`-- Every aggregate except COUNT(*) ignores NULL inputs.
+
+SELECT AVG(salary) FROM employees;
+-- Sums the 8 non-null salaries and divides by 8.
+
+-- But if 2 of 8 salaries were NULL, AVG divides by 6, not 8.
+-- "Average of the known values" is rarely what the business meant.
+SELECT AVG(COALESCE(salary, 0)) FROM employees;  -- treat unknown as 0
+
+-- SUM over zero rows is NULL, not 0 — this breaks dashboards:
+SELECT COALESCE(SUM(amount), 0) AS revenue
+FROM sales WHERE region = 'East';   -- no East rows -> 0, not NULL`}</code>
+                    </pre>
+                  </div>
+                </div>
+              </div>
+              <div className="twist">
+                <strong>"Why does my NULL group still appear?"</strong>{" "}
+                <code>GROUP BY</code> treats all NULLs as <em>equal</em> and
+                puts them in one bucket, even though <code>NULL = NULL</code>{" "}
+                evaluates to UNKNOWN. Grouping uses "is not distinct from"
+                semantics, not <code>=</code>.
+              </div>
+            </section>
+
+            <section className="question" id="q18">
+              <div className="q-head">
+                <span className="q-index">18</span>
+                <h2>Types of Join</h2>
+                <span className="level-badge medium">Medium</span>
+              </div>
+              <p className="prompt">
+                A join answers one question:{" "}
+                <b>
+                  when a row on the left has no partner on the right, what
+                  happens to it?
+                </b>{" "}
+                Every join type is just a different answer. The row counts on
+                each card are computed live by running that join against the
+                sample database.
+              </p>
+              <div className="example">
+                employees has 8 rows (Priya has no department) · departments has
+                4 rows (Legal has no employees) · the counts below are the
+                actual results
+              </div>
+              <JoinTypesGallery />
+              <div className="twist">
+                <strong>"Which join should I reach for by default?"</strong>{" "}
+                <code>LEFT JOIN</code> when the left table is the thing you are
+                reporting on and you must not lose rows; <code>INNER JOIN</code>{" "}
+                only when a missing match genuinely means the row is irrelevant.
+                If a report's row count mysteriously drops, an INNER JOIN is
+                almost always the culprit.
+              </div>
+            </section>
+
+            <section className="question" id="q19">
+              <div className="q-head">
+                <span className="q-index">19</span>
+                <h2>Joins Step by Step</h2>
+                <span className="level-badge medium">Medium</span>
+              </div>
+              <p className="prompt">
+                Now watch a join actually happen. Step to the <b>JOIN</b> stage
+                and the trace labels every row: blue rows matched the{" "}
+                <code>ON</code> condition, amber rows found no partner and were{" "}
+                <b>NULL-padded</b> to survive. Compare <code>INNER</code> (7
+                rows), <code>LEFT</code> (8), <code>RIGHT</code> (8),{" "}
+                <code>FULL</code> (9) and <code>CROSS</code> (32) on the exact
+                same data.
+              </p>
+              <div className="example">
+                Also covers the two patterns interviewers actually ask for: the{" "}
+                <b>self join</b> org chart, the <b>anti-join</b> that finds rows
+                with no match, and the <b>ON vs WHERE</b> trap that silently
+                downgrades a LEFT JOIN
+              </div>
+              <SqlVisualizer
+                title="Every join type on the same two tables"
+                examples={joinExamples}
+                badge="Join Walkthrough"
+              />
+              <div className="tabs-wrapper">
+                <div className="approach-tabs">
+                  <button
+                    type="button"
+                    className="tab-btn active"
+                    data-target="q19-onwhere"
+                  >
+                    ON vs WHERE
+                  </button>
+                  <button
+                    type="button"
+                    className="tab-btn"
+                    data-target="q19-fanout"
+                  >
+                    Join fan-out
+                  </button>
+                </div>
+                <div className="approach-panel active" id="q19-onwhere">
+                  <div className="code-col">
+                    <pre className="code-panel">
+                      <code>{`-- Filter in ON: applied BEFORE padding -> 8 rows, LEFT JOIN intact
+SELECT e.name, d.dept_name
+FROM employees e
+LEFT JOIN departments d
+  ON e.dept_id = d.dept_id AND d.city = 'Mumbai';
+
+-- Filter in WHERE: applied AFTER padding -> 3 rows
+-- The padded rows have d.city = NULL, NULL = 'Mumbai' is UNKNOWN,
+-- so WHERE drops them and the LEFT JOIN silently became an INNER JOIN.
+SELECT e.name, d.dept_name
+FROM employees e
+LEFT JOIN departments d ON e.dept_id = d.dept_id
+WHERE d.city = 'Mumbai';
+
+-- Rule of thumb:
+--   ON    = how the tables relate
+--   WHERE = which final rows you want
+-- On an INNER JOIN the two are interchangeable. On an OUTER join
+-- they are completely different queries.`}</code>
+                    </pre>
+                  </div>
+                </div>
+                <div className="approach-panel" id="q19-fanout">
+                  <div className="code-col">
+                    <pre className="code-panel">
+                      <code>{`-- A join is not "lookup", it is a filtered cartesian product.
+-- If the right side matches N times, the left row is DUPLICATED N times.
+
+SELECT e.name, SUM(e.salary)   -- WRONG
+FROM employees e
+JOIN sales s ON e.emp_id = s.emp_id
+GROUP BY e.name;
+-- Meera has 2 sales, so her salary is counted TWICE.
+
+-- Fix 1: aggregate before joining (derived table)
+SELECT e.name, e.salary, t.deals
+FROM employees e
+JOIN (SELECT emp_id, COUNT(*) AS deals
+      FROM sales GROUP BY emp_id) t
+  ON t.emp_id = e.emp_id;
+
+-- Fix 2: don't join at all, use a scalar subquery
+SELECT e.name, e.salary,
+       (SELECT COUNT(*) FROM sales s WHERE s.emp_id = e.emp_id) AS deals
+FROM employees e;`}</code>
+                    </pre>
+                  </div>
+                </div>
+              </div>
+              <div className="twist">
+                <strong>
+                  "My SUM is suddenly too big after adding a join."
+                </strong>{" "}
+                That is <b>fan-out</b>. The join duplicated your left rows
+                before the aggregate ran. Aggregate first in a derived table,
+                then join the small result — see the second tab.
+              </div>
+            </section>
+
+            <section className="question" id="q20">
+              <div className="q-head">
+                <span className="q-index">20</span>
+                <h2>Window Functions</h2>
+                <span className="level-badge hard">Hard</span>
+              </div>
+              <p className="prompt">
+                <code>GROUP BY</code> collapses rows. A <b>window function</b>{" "}
+                does the same arithmetic but <b>keeps every row</b>, attaching
+                the computed value as an extra column. That single difference is
+                what lets you show a salary and its department total side by
+                side without a self join.
+              </p>
+              <div className="example">
+                <code>FUNC(...) OVER (PARTITION BY ... ORDER BY ...)</code> ·
+                PARTITION BY = "restart per group" · ORDER BY inside OVER =
+                "running / positional"
+              </div>
+              <SqlVisualizer
+                title="ROW_NUMBER · RANK · PARTITION BY · LAG · running totals"
+                examples={windowExamples}
+                badge="Window Walkthrough"
+              />
+              <div className="tabs-wrapper">
+                <div className="approach-tabs">
+                  <button
+                    type="button"
+                    className="tab-btn active"
+                    data-target="q20-ranks"
+                  >
+                    The three ranking functions
+                  </button>
+                  <button
+                    type="button"
+                    className="tab-btn"
+                    data-target="q20-frame"
+                  >
+                    Frames: the ORDER BY trap
+                  </button>
+                  <button
+                    type="button"
+                    className="tab-btn"
+                    data-target="q20-vs"
+                  >
+                    Window vs GROUP BY
+                  </button>
+                </div>
+                <div className="approach-panel active" id="q20-ranks">
+                  <div className="code-col">
+                    <pre className="code-panel">
+                      <code>{`-- Salaries: 95000, 81000, 72000, 72000, 69000, 64000, 58000, 58000
+--                                 ^^^^^ tie          ^^^^^ tie
+
+SELECT name, salary,
+       ROW_NUMBER() OVER (ORDER BY salary DESC) AS row_num,
+       RANK()       OVER (ORDER BY salary DESC) AS rnk,
+       DENSE_RANK() OVER (ORDER BY salary DESC) AS dense_rnk
+FROM employees;
+
+--  salary | row_num | rnk | dense_rnk
+--  95000  |    1    |  1  |     1
+--  81000  |    2    |  2  |     2
+--  72000  |    3    |  3  |     3     <- tie
+--  72000  |    4    |  3  |     3     <- tie
+--  69000  |    5    |  5  |     4     <- RANK skipped 4
+--  64000  |    6    |  6  |     5
+--  58000  |    7    |  7  |     6     <- tie
+--  58000  |    8    |  7  |     6     <- tie
+
+-- ROW_NUMBER : always 1..N, ties broken arbitrarily. Use for pagination
+--              and de-duplication.
+-- RANK       : ties share a rank, then the next rank JUMPS. Use for
+--              leaderboards ("joint 3rd, nobody is 4th").
+-- DENSE_RANK : ties share a rank, next rank CONTINUES. Use for
+--              "top 3 distinct salaries".`}</code>
+                    </pre>
+                  </div>
+                </div>
+                <div className="approach-panel" id="q20-frame">
+                  <div className="code-col">
+                    <pre className="code-panel">
+                      <code>{`-- Same function. Same partition. Completely different answers.
+
+SELECT region, quarter, amount,
+       SUM(amount) OVER (PARTITION BY region)                  AS region_total,
+       SUM(amount) OVER (PARTITION BY region ORDER BY quarter) AS running_total
+FROM sales;
+
+-- No ORDER BY inside OVER:
+--   frame defaults to the WHOLE partition -> a constant group total.
+-- With ORDER BY inside OVER:
+--   frame defaults to RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+--   -> a running total.
+
+-- Adding ORDER BY to get "sorted output" silently turns your group
+-- total into a running total. This is the #1 window-function bug.
+
+-- Be explicit when it matters:
+SUM(amount) OVER (PARTITION BY region ORDER BY quarter
+                  ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+
+-- RANGE vs ROWS also differs on ties: RANGE includes all peer rows
+-- with the same ORDER BY value, ROWS counts physical rows.`}</code>
+                    </pre>
+                  </div>
+                </div>
+                <div className="approach-panel" id="q20-vs">
+                  <div className="code-col">
+                    <pre className="code-panel">
+                      <code>{`-- Goal: show each employee next to their department average.
+
+-- With GROUP BY you must aggregate, then join back:
+SELECT e.name, e.salary, a.avg_salary
+FROM employees e
+JOIN (SELECT dept_id, AVG(salary) AS avg_salary
+      FROM employees GROUP BY dept_id) a
+  ON a.dept_id = e.dept_id;
+
+-- With a window function it is one pass and no join:
+SELECT name, salary,
+       AVG(salary) OVER (PARTITION BY dept_id) AS avg_salary
+FROM employees;
+
+--   GROUP BY  : N rows -> 1 row per group   (detail is LOST)
+--   OVER (..) : N rows -> N rows            (detail is KEPT)
+
+-- You cannot filter on a window function in WHERE or HAVING,
+-- because windows are computed AFTER both. Wrap it instead:
+SELECT * FROM (
+  SELECT name, dept_id,
+         ROW_NUMBER() OVER (PARTITION BY dept_id ORDER BY salary DESC) rn
+  FROM employees
+) t WHERE rn = 1;`}</code>
+                    </pre>
+                  </div>
+                </div>
+              </div>
+              <div className="twist">
+                <strong>
+                  "Give me the highest-paid person in each department."
+                </strong>{" "}
+                This is the most-asked SQL interview question on earth. The
+                answer is{" "}
+                <code>
+                  ROW_NUMBER() OVER (PARTITION BY dept_id ORDER BY salary DESC)
+                </code>{" "}
+                in a subquery, filtered to <code>rn = 1</code>. Use{" "}
+                <code>RANK()</code> instead if ties should all be returned.
+              </div>
+            </section>
+
+            <section className="question" id="q21">
+              <div className="q-head">
+                <span className="q-index">21</span>
+                <h2>Subqueries</h2>
+                <span className="level-badge hard">Hard</span>
+              </div>
+              <p className="prompt">
+                A subquery is a <code>SELECT</code> nested inside another
+                statement. Where you put it decides what it must return: a
+                single value in <code>WHERE x &gt; (...)</code>, a set in{" "}
+                <code>IN (...)</code>, a boolean in <code>EXISTS (...)</code>,
+                or a whole table in <code>FROM (...)</code>.
+              </p>
+              <div className="example">
+                <b>Uncorrelated</b> = runs once, independent of the outer query
+                · <b>Correlated</b> = references an outer column, so it re-runs
+                for every outer row
+              </div>
+              <SqlVisualizer
+                title="Scalar · IN · EXISTS · correlated · derived tables"
+                examples={subqueryExamples}
+                badge="Subquery Walkthrough"
+              />
+              <div className="tabs-wrapper">
+                <div className="approach-tabs">
+                  <button
+                    type="button"
+                    className="tab-btn active"
+                    data-target="q21-where"
+                  >
+                    Where a subquery can go
+                  </button>
+                  <button
+                    type="button"
+                    className="tab-btn"
+                    data-target="q21-notin"
+                  >
+                    NOT IN vs NOT EXISTS
+                  </button>
+                  <button
+                    type="button"
+                    className="tab-btn"
+                    data-target="q21-cte"
+                  >
+                    Subquery vs CTE
+                  </button>
+                </div>
+                <div className="approach-panel active" id="q21-where">
+                  <div className="code-col">
+                    <pre className="code-panel">
+                      <code>{`-- 1. SELECT list -> must return exactly ONE row and ONE column
+SELECT name,
+       (SELECT dept_name FROM departments d
+        WHERE d.dept_id = e.dept_id) AS dept
+FROM employees e;
+
+-- 2. WHERE with a comparison -> scalar
+SELECT name FROM employees
+WHERE salary > (SELECT AVG(salary) FROM employees);
+
+-- 3. WHERE with IN / ANY / ALL -> one column, many rows
+SELECT name FROM employees
+WHERE dept_id IN (SELECT dept_id FROM departments WHERE city = 'Pune');
+
+-- 4. WHERE with EXISTS -> any shape, only existence matters
+SELECT name FROM employees e
+WHERE EXISTS (SELECT 1 FROM sales s WHERE s.emp_id = e.emp_id);
+
+-- 5. FROM -> a full table, and it MUST be aliased
+SELECT t.dept_id, t.headcount
+FROM (SELECT dept_id, COUNT(*) AS headcount
+      FROM employees GROUP BY dept_id) t
+WHERE t.headcount > 1;`}</code>
+                    </pre>
+                  </div>
+                </div>
+                <div className="approach-panel" id="q21-notin">
+                  <div className="code-col">
+                    <pre className="code-panel">
+                      <code>{`-- Find employees who have never made a sale.
+
+-- NOT EXISTS: correct, and the one to default to.
+SELECT name FROM employees e
+WHERE NOT EXISTS (SELECT 1 FROM sales s WHERE s.emp_id = e.emp_id);
+-- -> Asha, Arjun, Divya, Priya
+
+-- NOT IN: correct ONLY while the subquery never returns NULL.
+SELECT name FROM employees e
+WHERE e.emp_id NOT IN (SELECT emp_id FROM sales);
+-- -> same answer here, because sales.emp_id has no NULLs.
+
+-- Now imagine ONE row in sales had emp_id = NULL:
+--   emp_id NOT IN (2, 3, NULL)
+--   => emp_id <> 2 AND emp_id <> 3 AND emp_id <> NULL
+--   => TRUE AND TRUE AND UNKNOWN
+--   => UNKNOWN  -> the row is dropped
+-- Every row is dropped. The query returns ZERO rows, silently.
+
+-- NOT EXISTS uses row-existence, not value comparison,
+-- so NULLs cannot poison it. Prefer it unconditionally.`}</code>
+                    </pre>
+                  </div>
+                </div>
+                <div className="approach-panel" id="q21-cte">
+                  <div className="code-col">
+                    <pre className="code-panel">
+                      <code>{`-- A CTE is a named subquery written before the query that uses it.
+-- Same execution, far better readability — and it can be reused.
+
+-- Nested subqueries: read inside-out, each level re-stated
+SELECT d.dept_name, t.avg_salary
+FROM (SELECT dept_id, AVG(salary) AS avg_salary
+      FROM employees GROUP BY dept_id) t
+JOIN departments d ON d.dept_id = t.dept_id
+WHERE t.avg_salary > 60000;
+
+-- Same thing as a CTE: read top-down
+WITH dept_avg AS (
+    SELECT dept_id, AVG(salary) AS avg_salary
+    FROM employees
+    GROUP BY dept_id
+)
+SELECT d.dept_name, a.avg_salary
+FROM dept_avg a
+JOIN departments d ON d.dept_id = a.dept_id
+WHERE a.avg_salary > 60000;
+
+-- A derived table can only be used once. A CTE can be referenced
+-- many times in the same statement, and can be RECURSIVE.`}</code>
+                    </pre>
+                  </div>
+                </div>
+              </div>
+              <div className="twist">
+                <strong>"Correlated subquery or window function?"</strong> A
+                correlated subquery re-executes per outer row — O(N×M). The
+                window-function rewrite does one pass. Run example 3 above, then
+                compare it to{" "}
+                <code>AVG(salary) OVER (PARTITION BY dept_id)</code> in topic
+                20: same answer, one scan.
+              </div>
+            </section>
+
+            <section className="question" id="q22">
+              <div className="q-head">
+                <span className="q-index">22</span>
+                <h2>Query Lab</h2>
+                <span className="level-badge hard">Hard</span>
+              </div>
+              <p className="prompt">
+                A free-form playground on the same database. Everything you have
+                learned is available: joins, grouping, window functions and
+                subqueries can all be combined in one statement. Start from a
+                preset, then change it and press <b>Run</b>.
+              </p>
+              <div className="example">
+                Supported: SELECT · DISTINCT · aliases · all JOIN types · WHERE
+                · GROUP BY · HAVING · ORDER BY · LIMIT/OFFSET · CASE · IN /
+                BETWEEN / LIKE / IS NULL · COUNT, SUM, AVG, MIN, MAX ·
+                ROW_NUMBER, RANK, DENSE_RANK, NTILE, LAG, LEAD, FIRST_VALUE,
+                LAST_VALUE · scalar, IN, EXISTS and derived-table subqueries
+              </div>
+              <SqlVisualizer
+                title="Open playground — combine everything"
+                examples={labExamples}
+                badge="Sandbox"
+              />
+              <div className="twist">
+                <strong>The interview answer in one sentence:</strong> SQL is
+                declarative, so the only thing you ever really control is{" "}
+                <em>which rows survive which stage</em> — <code>ON</code>{" "}
+                decides how tables relate, <code>WHERE</code> filters rows,{" "}
+                <code>HAVING</code> filters groups, and window functions attach
+                values without removing anything at all.
               </div>
             </section>
           </div>
