@@ -1,5 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, ArrowRight, CheckCircle2, XCircle, Trophy, Medal } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  Medal,
+  Trophy,
+  XCircle,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -158,7 +165,7 @@ export default function QuizTakingPage() {
                         key={idx}
                         className={`flex items-center justify-between p-3 rounded-xl border transition-all duration-300 ${
                           isMe
-                            ? "bg-primary/10 border-primary shadow-[0_0_15px_rgba(var(--primary),0.2)]"
+                            ? "bg-primary/10 border-primary shadow-sm shadow-primary/20"
                             : isTop1
                               ? "bg-yellow-500/10 border-yellow-500/30"
                               : isTop2
@@ -181,7 +188,10 @@ export default function QuizTakingPage() {
                             }`}
                           >
                             {isTop1 ? (
-                              <Trophy size={16} className="fill-yellow-950/20" />
+                              <Trophy
+                                size={16}
+                                className="fill-yellow-950/20"
+                              />
                             ) : isTop2 || isTop3 ? (
                               <Medal size={16} />
                             ) : (
