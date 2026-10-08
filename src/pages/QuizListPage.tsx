@@ -30,6 +30,7 @@ export default function QuizListPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
+  const [filter, setFilter] = useState("all");
 
   const { data: quizzes = [], isLoading: isLoadingQuizzes } = useQuery<QuizFromApi[]>({
     queryKey: ["quizzes"],
@@ -45,19 +46,47 @@ export default function QuizListPage() {
   const isLoading = isLoadingQuizzes || (!!user && isLoadingSubmissions);
   const submittedQuizIds = new Set(mySubmissions.map((s) => s.quiz_id));
 
+  const filteredQuizzes = quizzes.filter((quiz) => {
+    const isCompleted = submittedQuizIds.has(quiz.id);
+    if (filter === "completed") return isCompleted;
+    if (filter === "pending") return !isCompleted;
+    return true;
+  });
+
   // Pagination calculation
-  const totalPages = Math.ceil(quizzes.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(filteredQuizzes.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedQuizzes = quizzes.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const paginatedQuizzes = filteredQuizzes.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <Navbar />
       <div className="flex-1 max-w-5xl w-full mx-auto p-8">
-        <h1 className="text-4xl font-extrabold mb-2">Daily Quizzes</h1>
-        <p className="text-muted-foreground mb-8 text-lg">
-          Test your knowledge with bite-sized daily assessments.
-        </p>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-4xl font-extrabold mb-2">Daily Quizzes</h1>
+            <p className="text-muted-foreground text-lg">
+              Test your knowledge with bite-sized daily assessments.
+            </p>
+          </div>
+          {user && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-muted-foreground">Filter:</span>
+              <select
+                className="bg-card border border-border text-foreground text-sm rounded-md focus:ring-primary focus:border-primary block p-2 outline-none"
+                value={filter}
+                onChange={(e) => {
+                  setFilter(e.target.value);
+                  setCurrentPage(1);
+                }}
+              >
+                <option value="all">All Quizzes</option>
+                <option value="completed">Completed</option>
+                <option value="pending">Not Completed</option>
+              </select>
+            </div>
+          )}
+        </div>
 
         <div className="grid gap-6">
           {isLoading ? (
@@ -75,10 +104,10 @@ export default function QuizListPage() {
                 <div className="h-10 bg-muted rounded-lg w-28 shrink-0"></div>
               </div>
             ))
-          ) : quizzes.length === 0 ? (
+          ) : filteredQuizzes.length === 0 ? (
             <div className="text-center p-12 bg-card rounded-xl border border-border">
               <p className="text-muted-foreground">
-                No quizzes available yet. Check back later!
+                No quizzes found for the selected filter.
               </p>
             </div>
           ) : (
@@ -156,9 +185,9 @@ export default function QuizListPage() {
             <div className="text-sm text-muted-foreground">
               Showing <span className="font-semibold text-foreground">{startIndex + 1}</span> to{" "}
               <span className="font-semibold text-foreground">
-                {Math.min(startIndex + ITEMS_PER_PAGE, quizzes.length)}
+                {Math.min(startIndex + ITEMS_PER_PAGE, filteredQuizzes.length)}
               </span>{" "}
-              of <span className="font-semibold text-foreground">{quizzes.length}</span> quizzes
+              of <span className="font-semibold text-foreground">{filteredQuizzes.length}</span> quizzes
             </div>
             <div className="flex items-center gap-2">
               <Button

@@ -9,6 +9,7 @@ import ContestsPage from "./pages/ContestsPage";
 import CurriculumDSAPage from "./pages/CurriculumDSAPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import AIBasicsGuidePage from "./pages/guide/AIBasicsGuidePage";
+import ApiBasicsGuidePage from "./pages/guide/ApiBasicsGuidePage";
 import DP1DGuidePage from "./pages/guide/DP1DGuidePage";
 import DP2DGuidePage from "./pages/guide/DP2DGuidePage";
 import HashingDsaGuidePage from "./pages/guide/HashingDsaGuidePage";
@@ -211,6 +212,14 @@ export default function App() {
             element={
               <RequireAuth>
                 <AIBasicsGuidePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/api-basics"
+            element={
+              <RequireAuth>
+                <ApiBasicsGuidePage />
               </RequireAuth>
             }
           />

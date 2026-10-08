@@ -1,7 +1,6 @@
-
-import { CompareTable, FlowDiagram } from "../../components/guide/OopsDiagrams";
-import Navbar from "../../components/Navbar";
 import { useGuideLogic } from "../../hooks/useGuideLogic";
+import Navbar from "../../components/Navbar";
+import { CompareTable, FlowDiagram } from "../../components/guide/OopsDiagrams";
 
 export default function AIBasicsGuidePage() {
   useGuideLogic();
@@ -19,37 +18,52 @@ export default function AIBasicsGuidePage() {
               01 · The Evolution of AI
             </a>
             <a className="side-link" href="#q2">
-              02 · What is an LLM? (LLM vs SLM)
+              02 · What is an LLM?
             </a>
             <a className="side-link" href="#q3">
-              03 · What is RAG?
+              03 · Tokens & Context Windows
             </a>
             <a className="side-link" href="#q4">
-              04 · Gen AI vs Agentic AI
+              04 · Embeddings & Vector DBs
             </a>
             <a className="side-link" href="#q5">
-              05 · AI Guardrails
+              05 · What is RAG?
+            </a>
+            <a className="side-link" href="#q6">
+              06 · Fine-Tuning vs RAG
+            </a>
+            <a className="side-link" href="#q7">
+              07 · Gen AI vs Agentic AI
+            </a>
+            <a className="side-link" href="#q8">
+              08 · AI Guardrails
             </a>
           </div>
           <div className="side-group">
             <div className="side-group-label">Interview & Real-World</div>
-            <a className="side-link" href="#q6">
-              06 · Which are you more comfortable with?
-            </a>
-            <a className="side-link" href="#q7">
-              07 · AI Limitations
-            </a>
-            <a className="side-link" href="#q8">
-              08 · Building a Full-Scale Project
-            </a>
             <a className="side-link" href="#q9">
-              09 · Managing AI Prompts
+              09 · Which are you more comfortable with?
             </a>
             <a className="side-link" href="#q10">
-              10 · Types of Prompts
+              10 · AI Limitations
             </a>
             <a className="side-link" href="#q11">
-              11 · Breaking Down Tasks
+              11 · AI Model Parameters
+            </a>
+            <a className="side-link" href="#q12">
+              12 · Building a Full-Scale Project
+            </a>
+            <a className="side-link" href="#q13">
+              13 · Managing AI Prompts
+            </a>
+            <a className="side-link" href="#q14">
+              14 · Types of Prompts
+            </a>
+            <a className="side-link" href="#q15">
+              15 · Breaking Down Tasks
+            </a>
+            <a className="side-link" href="#q16">
+              16 · Understanding AI Architecture
             </a>
           </div>
         </nav>
@@ -179,6 +193,52 @@ export default function AIBasicsGuidePage() {
             <section className="question" id="q3">
               <div className="q-head">
                 <span className="q-index">03</span>
+                <h2>Tokens & Context Windows</h2>
+                <span className="level-badge basic">Basic</span>
+              </div>
+              <p className="prompt">
+                LLMs do not read words; they process <b>Tokens</b>. A token is a
+                chunk of text (usually about 4 characters, or ¾ of a word in
+                English). The <b>Context Window</b> is the absolute maximum
+                number of tokens the model can process in a single request (both
+                your input prompt + its generated output).
+              </p>
+              <div className="example">
+                If a model has an 8,000 token context window, you cannot paste a
+                10,000-word codebase into it. It will mathematically hit its
+                limit and "forget" the beginning of your prompt. Modern models
+                like GPT-4o have a 128k context window (a 300-page book), while
+                Gemini 1.5 Pro handles up to 2 million tokens.
+              </div>
+            </section>
+
+            <section className="question" id="q4">
+              <div className="q-head">
+                <span className="q-index">04</span>
+                <h2>Embeddings & Vector Databases</h2>
+                <span className="level-badge medium">Medium</span>
+              </div>
+              <p className="prompt">
+                How does an AI search for information? It uses <b>Embeddings</b>
+                . An embedding is a way of converting text into a massive array
+                of numbers (a high-dimensional vector) that mathematically
+                captures the <i>semantic meaning</i> of the text. A{" "}
+                <b>Vector Database</b> (like Pinecone or ChromaDB) stores and
+                searches these numbers.
+              </p>
+              <div className="example">
+                Real world: "Dog" and "Puppy" are completely different letters.
+                A standard SQL database searching for "Canine" would return 0
+                matches. But in a Vector Database, the numerical arrays for
+                "Dog", "Puppy", and "Canine" point to the exact same area in
+                multi-dimensional space, so the database knows they mean the
+                same thing.
+              </div>
+            </section>
+
+            <section className="question" id="q5">
+              <div className="q-head">
+                <span className="q-index">05</span>
                 <h2>What is RAG?</h2>
                 <span className="level-badge medium">Medium</span>
               </div>
@@ -208,9 +268,53 @@ export default function AIBasicsGuidePage() {
               />
             </section>
 
-            <section className="question" id="q4">
+            <section className="question" id="q6">
               <div className="q-head">
-                <span className="q-index">04</span>
+                <span className="q-index">06</span>
+                <h2>Fine-Tuning vs RAG</h2>
+                <span className="level-badge reference">
+                  Interview Question
+                </span>
+              </div>
+              <p className="prompt">
+                A classic architectural question: When building an AI app,
+                should you Fine-Tune a model or use RAG? They solve different
+                problems.
+              </p>
+              <CompareTable
+                headers={[
+                  "Feature",
+                  "Fine-Tuning",
+                  "RAG (Retrieval-Augmented Generation)",
+                ]}
+                rows={[
+                  [
+                    "Analogy",
+                    "Baking knowledge permanently into the model's 'brain'.",
+                    "Giving the model an 'open textbook' during a test.",
+                  ],
+                  [
+                    "Best Used For",
+                    "Teaching the model a new tone, style, format, or a proprietary coding language syntax.",
+                    "Giving the model access to specific facts, changing data, or private documents.",
+                  ],
+                  [
+                    "Updating Data",
+                    "Hard: Requires retraining the model all over again.",
+                    "Easy: Just add or delete a document in your database.",
+                  ],
+                  [
+                    "Cost & Effort",
+                    "High cost, requires data science expertise.",
+                    "Low cost, straightforward engineering.",
+                  ],
+                ]}
+              />
+            </section>
+
+            <section className="question" id="q7">
+              <div className="q-head">
+                <span className="q-index">07</span>
                 <h2>Difference between Generative AI and Agentic AI</h2>
                 <span className="level-badge medium">Medium</span>
               </div>
@@ -240,9 +344,9 @@ export default function AIBasicsGuidePage() {
               />
             </section>
 
-            <section className="question" id="q5">
+            <section className="question" id="q8">
               <div className="q-head">
-                <span className="q-index">05</span>
+                <span className="q-index">08</span>
                 <h2>AI Guardrails</h2>
                 <span className="level-badge medium">Medium</span>
               </div>
@@ -280,9 +384,9 @@ export default function AIBasicsGuidePage() {
               </ul>
             </section>
 
-            <section className="question" id="q6">
+            <section className="question" id="q9">
               <div className="q-head">
-                <span className="q-index">06</span>
+                <span className="q-index">09</span>
                 <h2>
                   Which are you more comfortable with — Gen AI or Agentic AI?
                   Why?
@@ -316,9 +420,9 @@ export default function AIBasicsGuidePage() {
               </div>
             </section>
 
-            <section className="question" id="q7">
+            <section className="question" id="q10">
               <div className="q-head">
-                <span className="q-index">07</span>
+                <span className="q-index">10</span>
                 <h2>
                   Can AI be used for everything? What are its limitations?
                 </h2>
@@ -336,9 +440,8 @@ export default function AIBasicsGuidePage() {
                 </li>
                 <li>
                   <b>Context Window Limits:</b> Models can only process a
-                  certain amount of text at once (e.g., 128k or 200k tokens).
-                  You can't feed an entire enterprise codebase into a prompt
-                  easily.
+                  certain amount of text at once. You can't feed an entire
+                  enterprise codebase into a prompt easily.
                 </li>
                 <li>
                   <b>Non-Deterministic:</b> The same input might yield a
@@ -359,9 +462,37 @@ export default function AIBasicsGuidePage() {
               </ul>
             </section>
 
-            <section className="question" id="q8">
+            <section className="question" id="q11">
               <div className="q-head">
-                <span className="q-index">08</span>
+                <span className="q-index">11</span>
+                <h2>AI Model Parameters (Temperature, Top-P)</h2>
+                <span className="level-badge basic">Basic</span>
+              </div>
+              <p className="prompt">
+                When interacting with an AI API (like OpenAI or Anthropic), you
+                don't just send a prompt—you also configure parameters to
+                control the model's creativity and randomness.
+              </p>
+              <div className="tabs-wrapper">
+                <div className="approach-panel active">
+                  <div className="code-col">
+                    <pre className="code-panel">
+                      <code>{`Temperature: Controls the randomness of the output (usually 0.0 to 2.0).
+- 0.0: Highly deterministic. The model will almost always pick the most probable next word. Best for coding, math, and strict data extraction.
+- 0.7: Balanced. Good for conversational chatbots or drafting emails.
+- 1.5+: Highly creative, unpredictable, and prone to hallucinations. Best for poetry or wild brainstorming.
+
+Top-P / Top-K: 
+- Controls the pool of words the model considers. Instead of considering the entire dictionary, Top-P restricts the model to only the words that make up the top P% of probable next words.`}</code>
+                    </pre>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section className="question" id="q12">
+              <div className="q-head">
+                <span className="q-index">12</span>
                 <h2>
                   If you had to build a full-scale project using AI, how would
                   you approach it?
@@ -400,9 +531,9 @@ export default function AIBasicsGuidePage() {
               </div>
             </section>
 
-            <section className="question" id="q9">
+            <section className="question" id="q13">
               <div className="q-head">
-                <span className="q-index">09</span>
+                <span className="q-index">13</span>
                 <h2>
                   How would you manage AI prompts for a large project? Is one
                   prompt enough?
@@ -436,9 +567,9 @@ export default function AIBasicsGuidePage() {
               </ul>
             </section>
 
-            <section className="question" id="q10">
+            <section className="question" id="q14">
               <div className="q-head">
-                <span className="q-index">10</span>
+                <span className="q-index">14</span>
                 <h2>What kind of prompts would you use?</h2>
                 <span className="level-badge basic">Basic</span>
               </div>
@@ -470,9 +601,9 @@ Role-Playing Prompts:
               </div>
             </section>
 
-            <section className="question" id="q11">
+            <section className="question" id="q15">
               <div className="q-head">
-                <span className="q-index">11</span>
+                <span className="q-index">15</span>
                 <h2>
                   How would you break a large project into multiple AI-assisted
                   tasks/prompts?
@@ -487,25 +618,69 @@ Role-Playing Prompts:
               </p>
               <div className="bg-muted p-4 rounded-md border-l-4 border-primary mt-4">
                 <p>
-                  "I break the project down exactly how I would assign tickets
-                  in a Jira sprint. I wouldn't ask the AI to 'Build an
-                  E-commerce store'. Instead:
+                  "I break the project down into small, manageable pieces,
+                  almost like writing an outline for an essay. I wouldn't ask
+                  the AI to 'Build an E-commerce store'. Instead:
                   <br />
                   <br />
                   <b>Prompt 1:</b> 'Based on these requirements, generate a
-                  PostgreSQL schema.'
+                  database schema.'
                   <br />
-                  <b>Prompt 2:</b> 'Given this schema, write a Node.js Express
-                  route to handle User Authentication.'
+                  <b>Prompt 2:</b> 'Given this schema, write the backend code to
+                  handle User Login.'
                   <br />
                   <b>Prompt 3:</b> 'Write a React component for the Navigation
-                  Bar that consumes this authentication state.'
+                  Bar that shows if the user is logged in.'
                   <br />
                   <br />
                   By isolating the context, the AI doesn't get confused,
                   hallucinate variables, or hit token limits. I then stitch
                   these modular, verified pieces together."
                 </p>
+              </div>
+            </section>
+
+            <section className="question" id="q16">
+              <div className="q-head">
+                <span className="q-index">16</span>
+                <h2>
+                  How to Reverse-Engineer and Understand an AI-Generated Project
+                </h2>
+                <span className="level-badge medium">Medium</span>
+              </div>
+              <p className="prompt">
+                When AI generates a large codebase for you, it's easy to treat
+                it as a "black box." To confidently maintain, debug, or discuss
+                the project in a professional setting, you must systematically
+                reverse-engineer the architecture so you genuinely understand
+                it.
+              </p>
+
+              <div className="tabs-wrapper mt-4">
+                <div className="approach-panel active">
+                  <div className="code-col">
+                    <pre className="code-panel">
+                      <code>{`1. Map the Data Flow (The Foundation)
+- Don't start by looking at complex UI code. Start with the database.
+- Understand what data is being stored (e.g., Users, Posts, Comments). If you understand the data, the rest of the app makes sense.
+
+2. Follow the Breadcrumbs (Trace a Single Feature)
+- Pick one core feature (e.g., 'User Login' or 'Adding to Cart').
+- Trace the flow manually: What happens when the button is clicked? Which file handles the click? Which file talks to the database?
+
+3. Analyze the Folder Structure (The Map)
+- AI usually groups code into logical folders.
+- Identify where the UI components live (e.g., /components), where the pages are (/pages), and where the database logic is.
+
+4. Break the Code Intentionally (The Sandbox)
+- The fastest way to learn code you didn't write is to break it.
+- Change some text, remove a line of code, or change a variable. Watch how the app breaks, then try to fix it.
+
+5. Have the AI Explain Itself (The Tutor)
+- Pass the generated code back to the AI and prompt: "Explain how this codebase works. Which file is doing what, and how does data move between them?"`}</code>
+                    </pre>
+                  </div>
+                </div>
               </div>
             </section>
           </div>
