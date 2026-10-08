@@ -34,6 +34,14 @@ interface Submission {
   submitted_at: string;
 }
 
+interface LeaderboardEntry {
+  userId: string;
+  userName: string;
+  score: number;
+  totalQuestions: number;
+  submittedAt: string;
+}
+
 export default function QuizTakingPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -58,6 +66,12 @@ export default function QuizTakingPage() {
     retry: false,
   });
 
+  const { data: leaderboard } = useQuery<LeaderboardEntry[]>({
+    queryKey: ["quiz-leaderboard", id],
+    queryFn: () => api.get<LeaderboardEntry[]>(`/quizzes/${id}/leaderboard`),
+    enabled: !!id && !!existingSubmission,
+  });
+
   const submitMutation = useMutation({
     mutationFn: (payload: object) =>
       api.post<Submission>(`/quizzes/${id}/submit`, payload),
@@ -65,6 +79,7 @@ export default function QuizTakingPage() {
       toast.success("Quiz completed!");
       // Invalidate queries so the report shows without a full page reload
       queryClient.invalidateQueries({ queryKey: ["quiz-submission", id] });
+      queryClient.invalidateQueries({ queryKey: ["quiz-leaderboard", id] });
       queryClient.invalidateQueries({ queryKey: ["quiz-submissions-me"] });
     },
     onError: (err: any) => {
@@ -109,20 +124,61 @@ export default function QuizTakingPage() {
             <ArrowLeft className="w-4 h-4 mr-2" /> Back to Quizzes
           </Button>
 
-          <div className="bg-card border rounded-xl p-8 text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2">{quiz.title} - Report</h1>
-            <div className="text-5xl font-black text-primary mt-6 mb-2">
-              {submission.score}{" "}
-              <span className="text-3xl text-muted-foreground">
-                / {submission.total_questions}
-              </span>
+          <div className="grid md:grid-cols-3 gap-8 mb-8">
+            <div className="md:col-span-2 bg-card border rounded-xl p-8 text-center flex flex-col justify-center">
+              <h1 className="text-3xl font-bold mb-2">{quiz.title} - Report</h1>
+              <div className="text-5xl font-black text-primary mt-6 mb-2">
+                {submission.score}{" "}
+                <span className="text-3xl text-muted-foreground">
+                  / {submission.total_questions}
+                </span>
+              </div>
+              <p className="text-muted-foreground font-medium text-lg">
+                {Math.round(
+                  (submission.score / submission.total_questions) * 100,
+                )}
+                % correct
+              </p>
             </div>
-            <p className="text-muted-foreground">
-              {Math.round(
-                (submission.score / submission.total_questions) * 100,
-              )}
-              % correct
-            </p>
+
+            <div className="bg-card border rounded-xl p-6">
+              <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+                🏆 Leaderboard
+              </h3>
+              <div className="space-y-3">
+                {leaderboard?.length ? (
+                  leaderboard.map((entry, idx) => (
+                    <div
+                      key={idx}
+                      className={`flex items-center justify-between p-3 rounded-lg border ${
+                        entry.userId === user.id
+                          ? "bg-primary/10 border-primary/30"
+                          : "bg-background border-border"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="font-bold text-muted-foreground w-4 text-center">
+                          {idx + 1}
+                        </span>
+                        <span className="font-medium truncate max-w-[120px]">
+                          {entry.userId === user.id ? "You" : entry.userName}
+                        </span>
+                      </div>
+                      <div className="font-bold text-primary">
+                        {entry.score}{" "}
+                        <span className="text-muted-foreground text-xs font-normal">
+                          / {entry.totalQuestions}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-muted-foreground text-sm text-center py-4">
+                    No scores yet.
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
 
           <div className="grid gap-4">
