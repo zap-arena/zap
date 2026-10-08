@@ -1,5 +1,5 @@
-import { ArrowLeft, Server, Code, FileCode, PlayCircle, Info, BookOpen, ImageIcon } from "lucide-react";
-import React, { useEffect } from "react";
+import { ArrowLeft, Server, Code, FileCode, PlayCircle, Info, ImageIcon } from "lucide-react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import "../../../guide_styles.css";

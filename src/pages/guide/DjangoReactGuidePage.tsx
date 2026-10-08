@@ -6,6 +6,7 @@ import {
   PlayCircle,
   Info,
   BookOpen,
+  ImageIcon,
 } from "lucide-react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
