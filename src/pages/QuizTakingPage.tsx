@@ -132,20 +132,19 @@ export default function QuizTakingPage() {
           </Button>
 
           <div className="grid md:grid-cols-3 gap-8 mb-8">
-            <div className="md:col-span-2 bg-card border rounded-xl p-8 text-center flex flex-col justify-center">
-              <h1 className="text-3xl font-bold mb-2">{quiz.title} - Report</h1>
-              <div className="text-5xl font-black text-primary mt-6 mb-2">
-                {submission.score}{" "}
-                <span className="text-3xl text-muted-foreground">
-                  / {submission.total_questions}
-                </span>
+            <div className="md:col-span-2 bg-card border rounded-xl p-8 flex items-center justify-between">
+              <h1 className="text-3xl font-bold">{quiz.title} - Report</h1>
+              <div className="flex items-center gap-6">
+                <div className="text-5xl font-black text-primary">
+                  {submission.score}{" "}
+                  <span className="text-3xl text-muted-foreground">
+                    / {submission.total_questions}
+                  </span>
+                </div>
+                <div className="px-4 py-2 bg-primary/10 text-primary font-semibold rounded-lg text-lg">
+                  {Math.round((submission.score / submission.total_questions) * 100)}%
+                </div>
               </div>
-              <p className="text-muted-foreground font-medium text-lg">
-                {Math.round(
-                  (submission.score / submission.total_questions) * 100,
-                )}
-                % correct
-              </p>
             </div>
 
             <div className="bg-card border rounded-xl p-6">
@@ -210,9 +209,9 @@ export default function QuizTakingPage() {
                             </span>
                           </div>
                         </div>
-                        <div className="flex flex-col items-end">
+                        <div className="flex items-center gap-1.5">
                           <div
-                            className={`font-black text-lg leading-none ${
+                            className={`font-black text-xl leading-none ${
                               isTop1
                                 ? "text-yellow-500"
                                 : isTop2
@@ -224,7 +223,7 @@ export default function QuizTakingPage() {
                           >
                             {entry.score}
                           </div>
-                          <span className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider mt-1">
+                          <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
                             / {entry.totalQuestions} Pts
                           </span>
                         </div>
