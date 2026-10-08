@@ -1,10 +1,16 @@
 import type { ApproachRunner, VizStep } from "./AlgoVisualizer";
 
-export const reverseStringApproaches: Partial<Record<"brute" | "optimal", ApproachRunner<string>>> = {
+export const reverseStringApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner<string>>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n) \u00b7 Space: O(n) \u2014 build a reversed copy, then write it back",
-    code: ["const result = [...s].reverse();", "for (let i = 0; i < s.length; i++) s[i] = result[i];"],
+    complexity:
+      "Time: O(n) \u00b7 Space: O(n) \u2014 build a reversed copy, then write it back",
+    code: [
+      "const result = [...s].reverse();",
+      "for (let i = 0; i < s.length; i++) s[i] = result[i];",
+    ],
     run: (input): VizStep[] => {
       const s = input;
       const steps: VizStep[] = [];
@@ -36,8 +42,15 @@ export const reverseStringApproaches: Partial<Record<"brute" | "optimal", Approa
   },
   optimal: {
     label: "Two Pointer",
-    complexity: "Time: O(n) \u00b7 Space: O(1) \u2014 swap from both ends inward",
-    code: ["let left = 0, right = n - 1;", "while (left < right) {", "  [s[left], s[right]] = [s[right], s[left]];", "  left++; right--;", "}"],
+    complexity:
+      "Time: O(n) \u00b7 Space: O(1) \u2014 swap from both ends inward",
+    code: [
+      "let left = 0, right = n - 1;",
+      "while (left < right) {",
+      "  [s[left], s[right]] = [s[right], s[left]];",
+      "  left++; right--;",
+      "}",
+    ],
     run: (input): VizStep[] => {
       const array = [...input];
       const steps: VizStep[] = [];
@@ -74,10 +87,13 @@ export const reverseStringApproaches: Partial<Record<"brute" | "optimal", Approa
   },
 };
 
-export const validPalindromeApproaches: Partial<Record<"brute" | "optimal", ApproachRunner<string>>> = {
+export const validPalindromeApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner<string>>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n) \u00b7 Space: O(n) \u2014 build a cleaned copy, compare to its reverse",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(n) \u2014 build a cleaned copy, compare to its reverse",
     code: [
       "const cleaned = [...s].filter(isAlnum).map(toLower);",
       "return cleaned.join('') === cleaned.reverse().join('');",
@@ -86,7 +102,9 @@ export const validPalindromeApproaches: Partial<Record<"brute" | "optimal", Appr
       const s = input;
       const steps: VizStep[] = [];
       const array = [...s];
-      const cleaned = [...s].filter((c) => /[a-z0-9]/i.test(c)).map((c) => c.toLowerCase());
+      const cleaned = [...s]
+        .filter((c) => /[a-z0-9]/i.test(c))
+        .map((c) => c.toLowerCase());
       const reversed = [...cleaned].reverse();
       steps.push({
         description: `Cleaned: "${cleaned.join("")}"`,
@@ -100,13 +118,18 @@ export const validPalindromeApproaches: Partial<Record<"brute" | "optimal", Appr
       });
       const isPalindrome = cleaned.join("") === reversed.join("");
       steps.push({
-        description: isPalindrome ? "Cleaned string equals its reverse \u2014 palindrome!" : "Cleaned string differs from its reverse \u2014 not a palindrome",
+        description: isPalindrome
+          ? "Cleaned string equals its reverse \u2014 palindrome!"
+          : "Cleaned string differs from its reverse \u2014 not a palindrome",
         array,
         highlights: [],
         structure: { label: "cleaned", entries: cleaned },
         variables: { result: String(isPalindrome) },
         headline: isPalindrome ? "Palindrome!" : "Not a palindrome",
-        tag: { label: isPalindrome ? "Found" : "Not Found", tone: isPalindrome ? "success" : "danger" },
+        tag: {
+          label: isPalindrome ? "Found" : "Not Found",
+          tone: isPalindrome ? "success" : "danger",
+        },
         done: true,
       });
       return steps;
@@ -114,7 +137,8 @@ export const validPalindromeApproaches: Partial<Record<"brute" | "optimal", Appr
   },
   optimal: {
     label: "Two Pointer",
-    complexity: "Time: O(n) \u00b7 Space: O(1) \u2014 walk in from both ends, skipping non-alphanumerics",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(1) \u2014 walk in from both ends, skipping non-alphanumerics",
     code: [
       "let left = 0, right = n - 1;",
       "while (left < right) {",
@@ -182,11 +206,17 @@ export const validPalindromeApproaches: Partial<Record<"brute" | "optimal", Appr
   },
 };
 
-export const twoSumSortedApproaches: Partial<Record<"brute" | "optimal", ApproachRunner>> = {
+export const twoSumSortedApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner>
+> = {
   brute: {
     label: "Brute Force",
     complexity: "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 check every pair",
-    code: ["for (let i = 0; i < n; i++)", "  for (let j = i + 1; j < n; j++)", "    if (numbers[i] + numbers[j] === target) return [i + 1, j + 1];"],
+    code: [
+      "for (let i = 0; i < n; i++)",
+      "  for (let j = i + 1; j < n; j++)",
+      "    if (numbers[i] + numbers[j] === target) return [i + 1, j + 1];",
+    ],
     run: (input, target = 9): VizStep[] => {
       const steps: VizStep[] = [];
       for (let i = 0; i < input.length; i++) {
@@ -202,7 +232,9 @@ export const twoSumSortedApproaches: Partial<Record<"brute" | "optimal", Approac
             ],
             variables: { i, j, sum },
             headline: `${input[i]} + ${input[j]} = ${sum}`,
-            tag: isMatch ? { label: "Target Found", tone: "success" } : { label: "Compare", tone: "info" },
+            tag: isMatch
+              ? { label: "Target Found", tone: "success" }
+              : { label: "Compare", tone: "info" },
             codeLine: 3,
             done: isMatch,
           });
@@ -214,7 +246,8 @@ export const twoSumSortedApproaches: Partial<Record<"brute" | "optimal", Approac
   },
   optimal: {
     label: "Two Pointer",
-    complexity: "Time: O(n) \u00b7 Space: O(1) \u2014 converge from both ends using sortedness",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(1) \u2014 converge from both ends using sortedness",
     code: [
       "let left = 0, right = n - 1;",
       "while (left < right) {",
@@ -255,7 +288,10 @@ export const twoSumSortedApproaches: Partial<Record<"brute" | "optimal", Approac
           ],
           variables: { left, right, sum },
           headline: `${sum} ${sum < target ? "<" : ">"} ${target}`,
-          tag: { label: sum < target ? "Move left \u2192" : "\u2190 Move right", tone: "info" },
+          tag: {
+            label: sum < target ? "Move left \u2192" : "\u2190 Move right",
+            tone: "info",
+          },
           codeLine: sum < target ? 5 : 6,
         });
         if (sum < target) left++;
@@ -266,11 +302,20 @@ export const twoSumSortedApproaches: Partial<Record<"brute" | "optimal", Approac
   },
 };
 
-export const moveZeroesApproaches: Partial<Record<"brute" | "optimal", ApproachRunner>> = {
+export const moveZeroesApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 bubble each zero to the end one step at a time",
-    code: ["for (let i = 0; i < n; i++) {", "  if (nums[i] === 0) {", "    for (let j = i; j < n - 1; j++) [nums[j], nums[j + 1]] = [nums[j + 1], nums[j]];", "  }", "}"],
+    complexity:
+      "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 bubble each zero to the end one step at a time",
+    code: [
+      "for (let i = 0; i < n; i++) {",
+      "  if (nums[i] === 0) {",
+      "    for (let j = i; j < n - 1; j++) [nums[j], nums[j + 1]] = [nums[j + 1], nums[j]];",
+      "  }",
+      "}",
+    ],
     run: (input): VizStep[] => {
       const array = [...input];
       const steps: VizStep[] = [];
@@ -309,8 +354,17 @@ export const moveZeroesApproaches: Partial<Record<"brute" | "optimal", ApproachR
   },
   optimal: {
     label: "Two Pointer",
-    complexity: "Time: O(n) \u00b7 Space: O(1) \u2014 slow marks the next non-zero slot, fast scans",
-    code: ["let slow = 0;", "for (let fast = 0; fast < n; fast++) {", "  if (nums[fast] !== 0) {", "    [nums[slow], nums[fast]] = [nums[fast], nums[slow]];", "    slow++;", "  }", "}"],
+    complexity:
+      "Time: O(n) \u00b7 Space: O(1) \u2014 slow marks the next non-zero slot, fast scans",
+    code: [
+      "let slow = 0;",
+      "for (let fast = 0; fast < n; fast++) {",
+      "  if (nums[fast] !== 0) {",
+      "    [nums[slow], nums[fast]] = [nums[fast], nums[slow]];",
+      "    slow++;",
+      "  }",
+      "}",
+    ],
     run: (input): VizStep[] => {
       const array = [...input];
       const steps: VizStep[] = [];
@@ -357,11 +411,18 @@ export const moveZeroesApproaches: Partial<Record<"brute" | "optimal", ApproachR
   },
 };
 
-export const removeDuplicatesApproaches: Partial<Record<"brute" | "optimal", ApproachRunner>> = {
+export const removeDuplicatesApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n) \u00b7 Space: O(n) \u2014 build a deduped copy using a set",
-    code: ["const unique = [...new Set(nums)];", "for (let i = 0; i < unique.length; i++) nums[i] = unique[i];", "return unique.length;"],
+    complexity:
+      "Time: O(n) \u00b7 Space: O(n) \u2014 build a deduped copy using a set",
+    code: [
+      "const unique = [...new Set(nums)];",
+      "for (let i = 0; i < unique.length; i++) nums[i] = unique[i];",
+      "return unique.length;",
+    ],
     run: (input): VizStep[] => {
       const steps: VizStep[] = [];
       const seen = new Set<number>();
@@ -379,7 +440,9 @@ export const removeDuplicatesApproaches: Partial<Record<"brute" | "optimal", App
           structure: { label: "unique so far", entries: unique },
           variables: { i },
           headline: isNew ? "Keep" : "Skip",
-          tag: isNew ? { label: "Keep", tone: "success" } : { label: "Duplicate", tone: "info" },
+          tag: isNew
+            ? { label: "Keep", tone: "success" }
+            : { label: "Duplicate", tone: "info" },
           codeLine: 1,
         });
       }
@@ -397,8 +460,18 @@ export const removeDuplicatesApproaches: Partial<Record<"brute" | "optimal", App
   },
   optimal: {
     label: "Two Pointer",
-    complexity: "Time: O(n) \u00b7 Space: O(1) \u2014 slow marks the last unique value written, fast scans",
-    code: ["let slow = 0;", "for (let fast = 1; fast < n; fast++) {", "  if (nums[fast] !== nums[slow]) {", "    slow++;", "    nums[slow] = nums[fast];", "  }", "}", "return slow + 1;"],
+    complexity:
+      "Time: O(n) \u00b7 Space: O(1) \u2014 slow marks the last unique value written, fast scans",
+    code: [
+      "let slow = 0;",
+      "for (let fast = 1; fast < n; fast++) {",
+      "  if (nums[fast] !== nums[slow]) {",
+      "    slow++;",
+      "    nums[slow] = nums[fast];",
+      "  }",
+      "}",
+      "return slow + 1;",
+    ],
     run: (input): VizStep[] => {
       const array = [...input];
       const steps: VizStep[] = [];
@@ -450,11 +523,19 @@ export const removeDuplicatesApproaches: Partial<Record<"brute" | "optimal", App
   },
 };
 
-export const containerWithMostWaterApproaches: Partial<Record<"brute" | "optimal", ApproachRunner>> = {
+export const containerWithMostWaterApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 check every pair of lines",
-    code: ["let best = 0;", "for (let i = 0; i < n; i++)", "  for (let j = i + 1; j < n; j++)", "    best = Math.max(best, Math.min(height[i], height[j]) * (j - i));"],
+    complexity:
+      "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 check every pair of lines",
+    code: [
+      "let best = 0;",
+      "for (let i = 0; i < n; i++)",
+      "  for (let j = i + 1; j < n; j++)",
+      "    best = Math.max(best, Math.min(height[i], height[j]) * (j - i));",
+    ],
     run: (input): VizStep[] => {
       const steps: VizStep[] = [];
       let best = 0;
@@ -472,7 +553,9 @@ export const containerWithMostWaterApproaches: Partial<Record<"brute" | "optimal
             ],
             variables: { i, j, area, best },
             headline: `area = ${area}`,
-            tag: isBest ? { label: "New Best", tone: "success" } : { label: "Compare", tone: "info" },
+            tag: isBest
+              ? { label: "New Best", tone: "success" }
+              : { label: "Compare", tone: "info" },
             codeLine: 4,
           });
         }
@@ -491,7 +574,8 @@ export const containerWithMostWaterApproaches: Partial<Record<"brute" | "optimal
   },
   optimal: {
     label: "Two Pointer",
-    complexity: "Time: O(n) \u00b7 Space: O(1) \u2014 converge, always move the shorter line inward",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(1) \u2014 converge, always move the shorter line inward",
     code: [
       "let left = 0, right = n - 1, best = 0;",
       "while (left < right) {",
@@ -518,7 +602,9 @@ export const containerWithMostWaterApproaches: Partial<Record<"brute" | "optimal
           ],
           variables: { left, right, area, best },
           headline: `area = ${area}`,
-          tag: isBest ? { label: "New Best", tone: "success" } : { label: "Compare", tone: "info" },
+          tag: isBest
+            ? { label: "New Best", tone: "success" }
+            : { label: "Compare", tone: "info" },
           codeLine: 3,
         });
         if (input[left] < input[right]) left++;
@@ -538,11 +624,19 @@ export const containerWithMostWaterApproaches: Partial<Record<"brute" | "optimal
   },
 };
 
-export const threeSumApproaches: Partial<Record<"brute" | "optimal", ApproachRunner>> = {
+export const threeSumApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b3) \u00b7 Space: O(n) \u2014 check every triplet, dedupe with a set",
-    code: ["for (let i = 0; i < n; i++)", "  for (let j = i + 1; j < n; j++)", "    for (let k = j + 1; k < n; k++)", "      if (nums[i] + nums[j] + nums[k] === 0) record([nums[i], nums[j], nums[k]]);"],
+    complexity:
+      "Time: O(n\u00b3) \u00b7 Space: O(n) \u2014 check every triplet, dedupe with a set",
+    code: [
+      "for (let i = 0; i < n; i++)",
+      "  for (let j = i + 1; j < n; j++)",
+      "    for (let k = j + 1; k < n; k++)",
+      "      if (nums[i] + nums[j] + nums[k] === 0) record([nums[i], nums[j], nums[k]]);",
+    ],
     run: (input): VizStep[] => {
       const steps: VizStep[] = [];
       const triplets: string[] = [];
@@ -552,7 +646,9 @@ export const threeSumApproaches: Partial<Record<"brute" | "optimal", ApproachRun
           for (let k = j + 1; k < input.length; k++) {
             const sum = input[i] + input[j] + input[k];
             if (sum === 0) {
-              const key = [input[i], input[j], input[k]].sort((a, b) => a - b).join(",");
+              const key = [input[i], input[j], input[k]]
+                .sort((a, b) => a - b)
+                .join(",");
               const isNew = !seen.has(key);
               if (isNew) {
                 seen.add(key);
@@ -569,7 +665,9 @@ export const threeSumApproaches: Partial<Record<"brute" | "optimal", ApproachRun
                 structure: { label: "triplets", entries: triplets },
                 variables: { i, j, k },
                 headline: `${input[i]}+${input[j]}+${input[k]}=0`,
-                tag: isNew ? { label: "New Triplet", tone: "success" } : { label: "Duplicate", tone: "info" },
+                tag: isNew
+                  ? { label: "New Triplet", tone: "success" }
+                  : { label: "Duplicate", tone: "info" },
                 codeLine: 4,
               });
             }
@@ -590,7 +688,8 @@ export const threeSumApproaches: Partial<Record<"brute" | "optimal", ApproachRun
   },
   optimal: {
     label: "Two Pointer",
-    complexity: "Time: O(n\u00b2) \u00b7 Space: O(n) sorted copy \u2014 sort, fix one number, two-pointer the rest",
+    complexity:
+      "Time: O(n\u00b2) \u00b7 Space: O(n) sorted copy \u2014 sort, fix one number, two-pointer the rest",
     code: [
       "nums.sort((a, b) => a - b);",
       "for (let i = 0; i < n; i++) {",
@@ -609,7 +708,10 @@ export const threeSumApproaches: Partial<Record<"brute" | "optimal", ApproachRun
       steps.push({
         description: `Sort first: [${sorted.join(", ")}]`,
         array: sorted,
-        highlights: sorted.map((_, idx) => ({ index: idx, role: "sorted" as const })),
+        highlights: sorted.map((_, idx) => ({
+          index: idx,
+          role: "sorted" as const,
+        })),
         variables: {},
         headline: "Sort the array",
         tag: { label: "Sort First", tone: "info" },
@@ -650,7 +752,10 @@ export const threeSumApproaches: Partial<Record<"brute" | "optimal", ApproachRun
               ],
               variables: { i, left, right, sum },
               headline: `sum = ${sum}`,
-              tag: { label: sum < 0 ? "Move left \u2192" : "\u2190 Move right", tone: "info" },
+              tag: {
+                label: sum < 0 ? "Move left \u2192" : "\u2190 Move right",
+                tone: "info",
+              },
               codeLine: 7,
             });
             if (sum < 0) left++;
@@ -672,11 +777,20 @@ export const threeSumApproaches: Partial<Record<"brute" | "optimal", ApproachRun
   },
 };
 
-export const trappingRainWaterApproaches: Partial<Record<"brute" | "optimal", ApproachRunner>> = {
+export const trappingRainWaterApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 for each bar, scan left and right for the tallest wall",
-    code: ["for (let i = 0; i < n; i++) {", "  const leftMax = Math.max(...height.slice(0, i + 1));", "  const rightMax = Math.max(...height.slice(i));", "  total += Math.min(leftMax, rightMax) - height[i];", "}"],
+    complexity:
+      "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 for each bar, scan left and right for the tallest wall",
+    code: [
+      "for (let i = 0; i < n; i++) {",
+      "  const leftMax = Math.max(...height.slice(0, i + 1));",
+      "  const rightMax = Math.max(...height.slice(i));",
+      "  total += Math.min(leftMax, rightMax) - height[i];",
+      "}",
+    ],
     run: (input): VizStep[] => {
       const steps: VizStep[] = [];
       let total = 0;
@@ -691,7 +805,10 @@ export const trappingRainWaterApproaches: Partial<Record<"brute" | "optimal", Ap
           highlights: [{ index: i, role: water > 0 ? "match" : "current" }],
           variables: { i, leftMax, rightMax, water, total },
           headline: `traps ${water}`,
-          tag: water > 0 ? { label: "Traps Water", tone: "success" } : { label: "Scan", tone: "info" },
+          tag:
+            water > 0
+              ? { label: "Traps Water", tone: "success" }
+              : { label: "Scan", tone: "info" },
           codeLine: 4,
         });
       }
@@ -709,7 +826,8 @@ export const trappingRainWaterApproaches: Partial<Record<"brute" | "optimal", Ap
   },
   optimal: {
     label: "Two Pointer",
-    complexity: "Time: O(n) \u00b7 Space: O(1) \u2014 converge, always process the side with the smaller max",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(1) \u2014 converge, always process the side with the smaller max",
     code: [
       "let left = 0, right = n - 1, leftMax = 0, rightMax = 0, total = 0;",
       "while (left < right) {",
@@ -778,18 +896,27 @@ export const trappingRainWaterApproaches: Partial<Record<"brute" | "optimal", Ap
   },
 };
 
-export const squaresOfSortedArrayApproaches: Partial<Record<"brute" | "optimal", ApproachRunner>> = {
+export const squaresOfSortedArrayApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n log n) \u00b7 Space: O(n) \u2014 square everything, then sort",
-    code: ["const squares = nums.map(x => x * x);", "squares.sort((a, b) => a - b);"],
+    complexity:
+      "Time: O(n log n) \u00b7 Space: O(n) \u2014 square everything, then sort",
+    code: [
+      "const squares = nums.map(x => x * x);",
+      "squares.sort((a, b) => a - b);",
+    ],
     run: (input): VizStep[] => {
       const steps: VizStep[] = [];
       const squares = input.map((x) => x * x);
       steps.push({
         description: `Squared every element: [${squares.join(", ")}]`,
         array: squares,
-        highlights: squares.map((_, idx) => ({ index: idx, role: "current" as const })),
+        highlights: squares.map((_, idx) => ({
+          index: idx,
+          role: "current" as const,
+        })),
         variables: {},
         headline: "Square all",
         tag: { label: "Square", tone: "info" },
@@ -799,7 +926,10 @@ export const squaresOfSortedArrayApproaches: Partial<Record<"brute" | "optimal",
       steps.push({
         description: `Sorted: [${sorted.join(", ")}]`,
         array: sorted,
-        highlights: sorted.map((_, idx) => ({ index: idx, role: "sorted" as const })),
+        highlights: sorted.map((_, idx) => ({
+          index: idx,
+          role: "sorted" as const,
+        })),
         variables: { result: `[${sorted.join(", ")}]` },
         headline: `[${sorted.join(", ")}]`,
         tag: { label: "Done", tone: "success" },
@@ -811,7 +941,8 @@ export const squaresOfSortedArrayApproaches: Partial<Record<"brute" | "optimal",
   },
   optimal: {
     label: "Two Pointer",
-    complexity: "Time: O(n) \u00b7 Space: O(n) output \u2014 fill result from the back, comparing both ends",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(n) output \u2014 fill result from the back, comparing both ends",
     code: [
       "const result = new Array(n);",
       "let left = 0, right = n - 1;",
@@ -837,7 +968,10 @@ export const squaresOfSortedArrayApproaches: Partial<Record<"brute" | "optimal",
             { index: left, role: useLeft ? "match" : "lo" },
             { index: right, role: useLeft ? "hi" : "match" },
           ],
-          structure: { label: "result (back-filled)", entries: result.filter((v) => v !== undefined) },
+          structure: {
+            label: "result (back-filled)",
+            entries: result.filter((v) => v !== undefined),
+          },
           variables: { left, right, i },
           headline: `result[${i}] = ${value}`,
           tag: { label: "Fill", tone: "info" },
@@ -860,7 +994,9 @@ export const squaresOfSortedArrayApproaches: Partial<Record<"brute" | "optimal",
   },
 };
 
-export const sortColorsApproaches: Partial<Record<"brute" | "optimal", ApproachRunner>> = {
+export const sortColorsApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner>
+> = {
   brute: {
     label: "Brute Force",
     complexity: "Time: O(n log n) \u00b7 Space: O(1) \u2014 just sort it",
@@ -871,7 +1007,10 @@ export const sortColorsApproaches: Partial<Record<"brute" | "optimal", ApproachR
       steps.push({
         description: `Sorted: [${sorted.join(", ")}]`,
         array: sorted,
-        highlights: sorted.map((_, idx) => ({ index: idx, role: "sorted" as const })),
+        highlights: sorted.map((_, idx) => ({
+          index: idx,
+          role: "sorted" as const,
+        })),
         variables: { result: `[${sorted.join(", ")}]` },
         headline: `[${sorted.join(", ")}]`,
         tag: { label: "Done", tone: "success" },
@@ -883,7 +1022,8 @@ export const sortColorsApproaches: Partial<Record<"brute" | "optimal", ApproachR
   },
   optimal: {
     label: "Two Pointer",
-    complexity: "Time: O(n) \u00b7 Space: O(1) \u2014 Dutch national flag: low/mid/high pointers, one pass",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(1) \u2014 Dutch national flag: low/mid/high pointers, one pass",
     code: [
       "let low = 0, mid = 0, high = n - 1;",
       "while (mid <= high) {",
@@ -918,7 +1058,8 @@ export const sortColorsApproaches: Partial<Record<"brute" | "optimal", ApproachR
           mid++;
         } else if (array[mid] === 1) {
           steps.push({
-            description: "nums[mid]=1 \u2014 already in place, just advance mid",
+            description:
+              "nums[mid]=1 \u2014 already in place, just advance mid",
             array: [...array],
             highlights: [
               { index: low, role: "lo" },
@@ -963,11 +1104,18 @@ export const sortColorsApproaches: Partial<Record<"brute" | "optimal", ApproachR
   },
 };
 
-export const boatsToSavePeopleApproaches: Partial<Record<"brute" | "optimal", ApproachRunner>> = {
+export const boatsToSavePeopleApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b2) \u00b7 Space: O(n) \u2014 repeatedly find the heaviest unassigned person a boat fits",
-    code: ["const used = new Array(n).fill(false);", "let boats = 0;", "// for each unused heaviest, try to pair with the heaviest that still fits"],
+    complexity:
+      "Time: O(n\u00b2) \u00b7 Space: O(n) \u2014 repeatedly find the heaviest unassigned person a boat fits",
+    code: [
+      "const used = new Array(n).fill(false);",
+      "let boats = 0;",
+      "// for each unused heaviest, try to pair with the heaviest that still fits",
+    ],
     run: (input, target = 3): VizStep[] => {
       const steps: VizStep[] = [];
       const sorted = [...input].sort((a, b) => a - b);
@@ -986,13 +1134,16 @@ export const boatsToSavePeopleApproaches: Partial<Record<"brute" | "optimal", Ap
         }
         if (partner !== -1) used[partner] = true;
         steps.push({
-          description: partner !== -1
-            ? `Pair person ${sorted[i]} with person ${sorted[partner]} (sum \u2264 ${target}) \u2014 boat ${boats}`
-            : `Person ${sorted[i]} rides alone \u2014 boat ${boats}`,
+          description:
+            partner !== -1
+              ? `Pair person ${sorted[i]} with person ${sorted[partner]} (sum \u2264 ${target}) \u2014 boat ${boats}`
+              : `Person ${sorted[i]} rides alone \u2014 boat ${boats}`,
           array: sorted,
           highlights: [
             { index: i, role: "match" },
-            ...(partner !== -1 ? [{ index: partner, role: "match" as const }] : []),
+            ...(partner !== -1
+              ? [{ index: partner, role: "match" as const }]
+              : []),
           ],
           variables: { boats },
           headline: `boat ${boats}`,
@@ -1014,7 +1165,8 @@ export const boatsToSavePeopleApproaches: Partial<Record<"brute" | "optimal", Ap
   },
   optimal: {
     label: "Two Pointer",
-    complexity: "Time: O(n log n) \u00b7 Space: O(1) \u2014 sort, pair lightest with heaviest when they fit",
+    complexity:
+      "Time: O(n log n) \u00b7 Space: O(1) \u2014 sort, pair lightest with heaviest when they fit",
     code: [
       "people.sort((a, b) => a - b);",
       "let left = 0, right = n - 1, boats = 0;",
@@ -1030,7 +1182,10 @@ export const boatsToSavePeopleApproaches: Partial<Record<"brute" | "optimal", Ap
       steps.push({
         description: `Sort first: [${sorted.join(", ")}]`,
         array: sorted,
-        highlights: sorted.map((_, idx) => ({ index: idx, role: "sorted" as const })),
+        highlights: sorted.map((_, idx) => ({
+          index: idx,
+          role: "sorted" as const,
+        })),
         variables: {},
         headline: "Sort the array",
         tag: { label: "Sort First", tone: "info" },
@@ -1040,7 +1195,8 @@ export const boatsToSavePeopleApproaches: Partial<Record<"brute" | "optimal", Ap
       let right = sorted.length - 1;
       let boats = 0;
       while (left <= right) {
-        const canPair = left !== right && sorted[left] + sorted[right] <= target;
+        const canPair =
+          left !== right && sorted[left] + sorted[right] <= target;
         steps.push({
           description: canPair
             ? `${sorted[left]} + ${sorted[right]} \u2264 ${target} \u2014 pair them in one boat`
@@ -1075,11 +1231,17 @@ export const boatsToSavePeopleApproaches: Partial<Record<"brute" | "optimal", Ap
   },
 };
 
-export const mergeSortedArrayApproaches: Partial<Record<"brute" | "optimal", ApproachRunner>> = {
+export const mergeSortedArrayApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O((m+n) log(m+n)) \u00b7 Space: O(1) extra \u2014 append, then sort",
-    code: ["for (let i = 0; i < n; i++) nums1[m + i] = nums2[i];", "nums1.sort((a, b) => a - b);"],
+    complexity:
+      "Time: O((m+n) log(m+n)) \u00b7 Space: O(1) extra \u2014 append, then sort",
+    code: [
+      "for (let i = 0; i < n; i++) nums1[m + i] = nums2[i];",
+      "nums1.sort((a, b) => a - b);",
+    ],
     run: (): VizStep[] => {
       const nums1 = [1, 2, 3, 0, 0, 0];
       const nums2 = [2, 5, 6];
@@ -1089,7 +1251,10 @@ export const mergeSortedArrayApproaches: Partial<Record<"brute" | "optimal", App
       steps.push({
         description: `Append nums2 into the placeholder slots: [${nums1.join(", ")}]`,
         array: [...nums1],
-        highlights: Array.from({ length: nums2.length }, (_, idx) => ({ index: m + idx, role: "current" as const })),
+        highlights: Array.from({ length: nums2.length }, (_, idx) => ({
+          index: m + idx,
+          role: "current" as const,
+        })),
         variables: {},
         headline: "Append nums2",
         tag: { label: "Append", tone: "info" },
@@ -1099,7 +1264,10 @@ export const mergeSortedArrayApproaches: Partial<Record<"brute" | "optimal", App
       steps.push({
         description: `Sorted: [${nums1.join(", ")}]`,
         array: nums1,
-        highlights: nums1.map((_, idx) => ({ index: idx, role: "sorted" as const })),
+        highlights: nums1.map((_, idx) => ({
+          index: idx,
+          role: "sorted" as const,
+        })),
         variables: { result: `[${nums1.join(", ")}]` },
         headline: `[${nums1.join(", ")}]`,
         tag: { label: "Done", tone: "success" },
@@ -1111,7 +1279,8 @@ export const mergeSortedArrayApproaches: Partial<Record<"brute" | "optimal", App
   },
   optimal: {
     label: "Two Pointer",
-    complexity: "Time: O(m+n) \u00b7 Space: O(1) \u2014 merge from the back, largest values first",
+    complexity:
+      "Time: O(m+n) \u00b7 Space: O(1) \u2014 merge from the back, largest values first",
     code: [
       "let i = m - 1, j = n - 1, write = m + n - 1;",
       "while (j >= 0) {",

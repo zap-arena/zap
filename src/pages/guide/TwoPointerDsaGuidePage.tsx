@@ -1,6 +1,4 @@
-import React from "react";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
-import Navbar from "../../components/Navbar";
+import type React from "react";
 import AlgoVisualizer from "../../components/guide/AlgoVisualizer";
 import { minWindowSubstringApproaches } from "../../components/guide/slidingWindowVisualizations";
 import {
@@ -17,6 +15,8 @@ import {
   twoSumSortedApproaches,
   validPalindromeApproaches,
 } from "../../components/guide/twoPointerVisualizations";
+import Navbar from "../../components/Navbar";
+import { useGuideLogic } from "../../hooks/useGuideLogic";
 
 export default function TwoPointerDsaGuidePage() {
   useGuideLogic();

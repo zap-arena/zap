@@ -1,6 +1,6 @@
-import { useGuideLogic } from "../../hooks/useGuideLogic";
-import Navbar from "../../components/Navbar";
 import { CompareTable, FlowDiagram } from "../../components/guide/OopsDiagrams";
+import Navbar from "../../components/Navbar";
+import { useGuideLogic } from "../../hooks/useGuideLogic";
 
 export default function ApiBasicsGuidePage() {
   useGuideLogic();
@@ -69,7 +69,10 @@ export default function ApiBasicsGuidePage() {
             <div className="intro">
               <h1>The Ultimate API Guide</h1>
               <p>
-                APIs are the nervous system of the modern web. This guide will take you from understanding what an API is, to connecting your frontend, to advanced architectural concepts like Webhooks and GraphQL.
+                APIs are the nervous system of the modern web. This guide will
+                take you from understanding what an API is, to connecting your
+                frontend, to advanced architectural concepts like Webhooks and
+                GraphQL.
               </p>
             </div>
 
@@ -80,14 +83,30 @@ export default function ApiBasicsGuidePage() {
                 <span className="level-badge basic">Basic</span>
               </div>
               <p className="prompt">
-                An <b>API (Application Programming Interface)</b> is a set of rules that allows two pieces of software to talk to each other. It acts as a messenger that takes your request, tells a system what you want to do, and returns the response back to you.
+                An <b>API (Application Programming Interface)</b> is a set of
+                rules that allows two pieces of software to talk to each other.
+                It acts as a messenger that takes your request, tells a system
+                what you want to do, and returns the response back to you.
               </p>
-              
+
               <div className="example">
-                <b>The Restaurant Analogy:</b> Imagine you are sitting at a table in a restaurant (the Frontend UI) and the kitchen is the system that prepares the food (the Backend Database). You can't just walk into the kitchen. You need a <b>Waiter</b> (the API). You give your order (Request) to the waiter, the waiter takes it to the kitchen, and brings your food (Response) back to your table.
+                <b>The Restaurant Analogy:</b> Imagine you are sitting at a
+                table in a restaurant (the Frontend UI) and the kitchen is the
+                system that prepares the food (the Backend Database). You can't
+                just walk into the kitchen. You need a <b>Waiter</b> (the API).
+                You give your order (Request) to the waiter, the waiter takes it
+                to the kitchen, and brings your food (Response) back to your
+                table.
               </div>
-              
-              <FlowDiagram nodes={["Frontend (Client)", "API (Waiter)", "Backend (Kitchen)", "Database"]} />
+
+              <FlowDiagram
+                nodes={[
+                  "Frontend (Client)",
+                  "API (Waiter)",
+                  "Backend (Kitchen)",
+                  "Database",
+                ]}
+              />
             </section>
 
             <section className="question" id="q2">
@@ -97,16 +116,34 @@ export default function ApiBasicsGuidePage() {
                 <span className="level-badge basic">Basic</span>
               </div>
               <p className="prompt">
-                <b>REST (Representational State Transfer)</b> is the most common architectural style for APIs. It uses standard HTTP methods to perform operations on "resources" (like Users or Posts).
+                <b>REST (Representational State Transfer)</b> is the most common
+                architectural style for APIs. It uses standard HTTP methods to
+                perform operations on "resources" (like Users or Posts).
               </p>
-              
+
               <CompareTable
                 headers={["HTTP Method", "CRUD Operation", "Example Usage"]}
                 rows={[
-                  ["GET", "Read", "Fetch a list of Instagram posts: GET /api/posts"],
-                  ["POST", "Create", "Create a new user account: POST /api/users"],
-                  ["PUT / PATCH", "Update", "Update a user's profile picture: PUT /api/users/123"],
-                  ["DELETE", "Delete", "Delete a comment: DELETE /api/comments/456"],
+                  [
+                    "GET",
+                    "Read",
+                    "Fetch a list of Instagram posts: GET /api/posts",
+                  ],
+                  [
+                    "POST",
+                    "Create",
+                    "Create a new user account: POST /api/users",
+                  ],
+                  [
+                    "PUT / PATCH",
+                    "Update",
+                    "Update a user's profile picture: PUT /api/users/123",
+                  ],
+                  [
+                    "DELETE",
+                    "Delete",
+                    "Delete a comment: DELETE /api/comments/456",
+                  ],
                 ]}
               />
             </section>
@@ -118,7 +155,8 @@ export default function ApiBasicsGuidePage() {
                 <span className="level-badge medium">Medium</span>
               </div>
               <p className="prompt">
-                When your frontend talks to an API, the data is usually sent and received in <b>JSON (JavaScript Object Notation)</b> format.
+                When your frontend talks to an API, the data is usually sent and
+                received in <b>JSON (JavaScript Object Notation)</b> format.
               </p>
               <div className="tabs-wrapper">
                 <div className="approach-panel active">
@@ -154,9 +192,13 @@ https://api.github.com/users/vuelancer
                 <span className="level-badge medium">Medium</span>
               </div>
               <p className="prompt">
-                To connect to an API from your frontend, you can use the built-in <code>fetch()</code> API or libraries like <code>axios</code>. In modern React, we often use <b>TanStack Query (React Query)</b> to handle caching and loading states automatically.
+                To connect to an API from your frontend, you can use the
+                built-in <code>fetch()</code> API or libraries like{" "}
+                <code>axios</code>. In modern React, we often use{" "}
+                <b>TanStack Query (React Query)</b> to handle caching and
+                loading states automatically.
               </p>
-              
+
               <div className="tabs-wrapper">
                 <div className="approach-panel active">
                   <div className="complexity">Using standard async/await</div>
@@ -194,16 +236,35 @@ async function fetchUsers() {
                 <span className="level-badge medium">Medium</span>
               </div>
               <p className="prompt">
-                While you write your own "First-Party" API for your app's database, a <b>Third-Party API</b> is an API provided by another company. It allows you to borrow their features instead of building them from scratch.
+                While you write your own "First-Party" API for your app's
+                database, a <b>Third-Party API</b> is an API provided by another
+                company. It allows you to borrow their features instead of
+                building them from scratch.
               </p>
-              
+
               <CompareTable
                 headers={["Provider", "What their API does", "Why you use it"]}
                 rows={[
-                  ["Stripe", "Payment Processing", "So you don't have to legally handle credit card security yourself."],
-                  ["Google Maps", "Geolocation & Maps", "To display an interactive map on your 'Contact Us' page."],
-                  ["OpenAI", "Artificial Intelligence", "To add an AI chatbot to your app without training your own LLM."],
-                  ["Twilio", "SMS & Phone calls", "To send 'Forgot Password' text messages to your users."],
+                  [
+                    "Stripe",
+                    "Payment Processing",
+                    "So you don't have to legally handle credit card security yourself.",
+                  ],
+                  [
+                    "Google Maps",
+                    "Geolocation & Maps",
+                    "To display an interactive map on your 'Contact Us' page.",
+                  ],
+                  [
+                    "OpenAI",
+                    "Artificial Intelligence",
+                    "To add an AI chatbot to your app without training your own LLM.",
+                  ],
+                  [
+                    "Twilio",
+                    "SMS & Phone calls",
+                    "To send 'Forgot Password' text messages to your users.",
+                  ],
                 ]}
               />
             </section>
@@ -215,14 +276,28 @@ async function fetchUsers() {
                 <span className="level-badge hard">Advanced</span>
               </div>
               <p className="prompt">
-                When you use a Third-Party API (like Stripe or OpenAI), they give you an <b>API Key</b>. This is essentially a password that charges your credit card every time it is used. 
+                When you use a Third-Party API (like Stripe or OpenAI), they
+                give you an <b>API Key</b>. This is essentially a password that
+                charges your credit card every time it is used.
               </p>
               <div className="bg-muted p-4 rounded-md border-l-4 border-red-500 mt-4">
-                <p className="font-bold text-red-500 mb-2">NEVER PUT API KEYS IN YOUR FRONTEND CODE!</p>
+                <p className="font-bold text-red-500 mb-2">
+                  NEVER PUT API KEYS IN YOUR FRONTEND CODE!
+                </p>
                 <p>
-                  If you put your OpenAI API key in your React app (e.g., <code>fetch("https://api.openai.com", {"{ "}headers: {"{ "}Authorization: "Bearer sk-12345"{" }"} {"}"})</code>), anyone can open their browser's Network Tab, steal your key, and rack up a $10,000 bill on your account.
-                  <br/><br/>
-                  <b>The Solution:</b> The frontend should make a request to <i>your own Backend</i>. Your Backend (which is secure and hidden from the user) holds the API Key, makes the request to OpenAI, and sends the result back to the frontend.
+                  If you put your OpenAI API key in your React app (e.g.,{" "}
+                  <code>
+                    fetch("https://api.openai.com", {"{ "}headers: {"{ "}
+                    Authorization: "Bearer sk-12345"{" }"} {"}"})
+                  </code>
+                  ), anyone can open their browser's Network Tab, steal your
+                  key, and rack up a $10,000 bill on your account.
+                  <br />
+                  <br />
+                  <b>The Solution:</b> The frontend should make a request to{" "}
+                  <i>your own Backend</i>. Your Backend (which is secure and
+                  hidden from the user) holds the API Key, makes the request to
+                  OpenAI, and sends the result back to the frontend.
                 </p>
               </div>
             </section>
@@ -234,13 +309,23 @@ async function fetchUsers() {
                 <span className="level-badge hard">Advanced</span>
               </div>
               <p className="prompt">
-                How do you know when a long-running task finishes? For example, when a user pays on Stripe, how does your database know the payment succeeded?
+                How do you know when a long-running task finishes? For example,
+                when a user pays on Stripe, how does your database know the
+                payment succeeded?
               </p>
               <CompareTable
                 headers={["Approach", "How it works", "Analogy"]}
                 rows={[
-                  ["Polling (The Bad Way)", "Your frontend constantly asks the server 'Is it done yet?' every 3 seconds.", "A kid in the backseat asking 'Are we there yet?' every minute. It wastes server resources."],
-                  ["Webhooks (The Good Way)", "You give the API a URL. When the task is done, the API sends a POST request to your URL automatically.", "Giving a restaurant your phone number. They text you when your table is ready. Highly efficient."],
+                  [
+                    "Polling (The Bad Way)",
+                    "Your frontend constantly asks the server 'Is it done yet?' every 3 seconds.",
+                    "A kid in the backseat asking 'Are we there yet?' every minute. It wastes server resources.",
+                  ],
+                  [
+                    "Webhooks (The Good Way)",
+                    "You give the API a URL. When the task is done, the API sends a POST request to your URL automatically.",
+                    "Giving a restaurant your phone number. They text you when your table is ready. Highly efficient.",
+                  ],
                 ]}
               />
             </section>
@@ -252,9 +337,11 @@ async function fetchUsers() {
                 <span className="level-badge hard">Advanced</span>
               </div>
               <p className="prompt">
-                REST is the standard, but <b>GraphQL</b> is an alternative developed by Facebook to solve two massive problems: <b>Over-fetching</b> and <b>Under-fetching</b>.
+                REST is the standard, but <b>GraphQL</b> is an alternative
+                developed by Facebook to solve two massive problems:{" "}
+                <b>Over-fetching</b> and <b>Under-fetching</b>.
               </p>
-              
+
               <div className="tabs-wrapper">
                 <div className="approach-panel active">
                   <div className="code-col">
@@ -282,7 +369,6 @@ The server responds with exactly that shape. No wasted data, and only one networ
                 </div>
               </div>
             </section>
-
           </div>
         </div>
       </div>

@@ -1,10 +1,9 @@
 import type React from "react";
+import { useState } from "react";
 import Navbar from "../components/Navbar";
 
 export default function CurriculumDSAPage() {
-
-
-  return (
+  const [activeTab, setActiveTab] = useState("dsa");
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
 
@@ -42,12 +41,34 @@ export default function CurriculumDSAPage() {
           <div className="section-header">
             <h2 className="section-title">📚 Course Modules & Topic Guides</h2>
             <p className="section-desc">
-              Select a module to view complete visual explanations, step-by-step
+              Select a track below to view complete visual explanations, step-by-step
               walkthroughs, and code templates.
             </p>
           </div>
 
-          <div className="materials-grid">
+          <div className="flex flex-wrap justify-center mb-8 gap-4 px-4">
+            <button
+              className={`px-6 py-3 rounded-full font-bold transition-all text-sm sm:text-base border ${activeTab === "dsa" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-muted-foreground border-border hover:border-primary/50"}`}
+              onClick={() => setActiveTab("dsa")}
+            >
+              Data Structures & Algorithms
+            </button>
+            <button
+              className={`px-6 py-3 rounded-full font-bold transition-all text-sm sm:text-base border ${activeTab === "cs" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-muted-foreground border-border hover:border-primary/50"}`}
+              onClick={() => setActiveTab("cs")}
+            >
+              CS & Software Engineering
+            </button>
+            <button
+              className={`px-6 py-3 rounded-full font-bold transition-all text-sm sm:text-base border ${activeTab === "ai" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-muted-foreground border-border hover:border-primary/50"}`}
+              onClick={() => setActiveTab("ai")}
+            >
+              AI & Modern Tech
+            </button>
+          </div>
+
+          {activeTab === "dsa" && (
+            <div className="materials-grid">
             <div
               className="module-card"
               style={
@@ -337,7 +358,11 @@ export default function CurriculumDSAPage() {
                 <span>→</span>
               </a>
             </div>
+            </div>
+          )}
 
+          {activeTab === "cs" && (
+            <div className="materials-grid">
             <div
               className="module-card"
               style={
@@ -479,34 +504,6 @@ export default function CurriculumDSAPage() {
             >
               <div>
                 <div className="card-header">
-                  <div className="module-icon">🤖</div>
-                  <span className="module-badge">3 Topics</span>
-                </div>
-                <h3 className="module-title">AI Basics</h3>
-                <p className="module-desc">
-                  A quick primer on Artificial Intelligence, Machine Learning, and Deep Learning, including an interactive interview quiz.
-                </p>
-                <ul className="topic-list">
-                  <li className="topic-tag">What is AI?</li>
-                  <li className="topic-tag">AI vs ML vs DL</li>
-                  <li className="topic-tag">Interview Quiz</li>
-                </ul>
-              </div>
-              <a href="/curriculum/dsa/ai-basics" className="btn-open">
-                <span>Explore AI Basics</span>
-                <span>→</span>
-              </a>
-            </div>
-            <div
-              className="module-card"
-              style={
-                {
-                  "--card-accent": "hsl(var(--primary))",
-                } as React.CSSProperties
-              }
-            >
-              <div>
-                <div className="card-header">
                   <div className="module-icon">🔌</div>
                   <span className="module-badge">8 Topics</span>
                 </div>
@@ -527,7 +524,42 @@ export default function CurriculumDSAPage() {
                 <span>→</span>
               </a>
             </div>
-          </div>
+
+            </div>
+          )}
+
+          {activeTab === "ai" && (
+            <div className="materials-grid">
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">🤖</div>
+                  <span className="module-badge">3 Topics</span>
+                </div>
+                <h3 className="module-title">AI Basics</h3>
+                <p className="module-desc">
+                  A quick primer on Artificial Intelligence, Machine Learning, and Deep Learning, including an interactive interview quiz.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">What is AI?</li>
+                  <li className="topic-tag">AI vs ML vs DL</li>
+                  <li className="topic-tag">Interview Quiz</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/ai-basics" className="btn-open">
+                <span>Explore AI Basics</span>
+                <span>→</span>
+              </a>
+            </div>
+            </div>
+          )}
         </section>
 
         {/* <section id="homework" className="homework-section">

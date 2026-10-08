@@ -1,7 +1,9 @@
 import type { ApproachRunner, VizStep } from "./AlgoVisualizer";
 
 type NumApproaches = Partial<Record<"brute" | "optimal", ApproachRunner>>;
-type StrApproaches = Partial<Record<"brute" | "optimal", ApproachRunner<string>>>;
+type StrApproaches = Partial<
+  Record<"brute" | "optimal", ApproachRunner<string>>
+>;
 
 const isOpen = (c: string) => c === "(" || c === "[" || c === "{";
 const matchPair = (open: string, close: string) =>
@@ -78,7 +80,10 @@ export const validParenthesesApproaches: StrApproaches = {
         highlights: [],
         variables: { result: valid },
         headline: valid ? "Valid" : "Invalid",
-        tag: { label: valid ? "Valid" : "Invalid", tone: valid ? "success" : "danger" },
+        tag: {
+          label: valid ? "Valid" : "Invalid",
+          tone: valid ? "success" : "danger",
+        },
         codeLine: 12,
         done: true,
       });
@@ -127,7 +132,9 @@ export const validParenthesesApproaches: StrApproaches = {
             structure: { label: "stack", entries: [...stack] },
             variables: { i },
             headline: ok ? `pop() == '${top}'` : "mismatch",
-            tag: ok ? { label: "Match", tone: "success" } : { label: "Mismatch", tone: "danger" },
+            tag: ok
+              ? { label: "Match", tone: "success" }
+              : { label: "Mismatch", tone: "danger" },
             codeLine: 4,
             done: !ok,
           });
@@ -144,7 +151,10 @@ export const validParenthesesApproaches: StrApproaches = {
         structure: { label: "stack", entries: [...stack] },
         variables: { result: valid },
         headline: valid ? "Valid" : "Invalid",
-        tag: { label: valid ? "Valid" : "Invalid", tone: valid ? "success" : "danger" },
+        tag: {
+          label: valid ? "Valid" : "Invalid",
+          tone: valid ? "success" : "danger",
+        },
         codeLine: 6,
         done: true,
       });
@@ -156,7 +166,8 @@ export const validParenthesesApproaches: StrApproaches = {
 export const nextGreaterElementApproaches: NumApproaches = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b2) \u00b7 Space: O(n) \u2014 scan rightward from each index",
+    complexity:
+      "Time: O(n\u00b2) \u00b7 Space: O(n) \u2014 scan rightward from each index",
     code: [
       "for (let i = 0; i < n; i++) {",
       "  res[i] = -1;",
@@ -300,7 +311,8 @@ export const nextGreaterElementApproaches: NumApproaches = {
 export const dailyTemperaturesApproaches: NumApproaches = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b2) \u00b7 Space: O(n) \u2014 scan forward from each day",
+    complexity:
+      "Time: O(n\u00b2) \u00b7 Space: O(n) \u2014 scan forward from each day",
     code: [
       "for (let i = 0; i < n; i++) {",
       "  for (let j = i + 1; j < n; j++) {",
@@ -467,7 +479,8 @@ export const minStackApproaches: NumApproaches = {
         });
       }
       steps.push({
-        description: "Every getMin() call costs O(n) because the whole stack must be rescanned",
+        description:
+          "Every getMin() call costs O(n) because the whole stack must be rescanned",
         array: input,
         highlights: [],
         structure: { label: "stack", entries: [...stack] },
@@ -494,7 +507,9 @@ export const minStackApproaches: NumApproaches = {
       const minStack: number[] = [];
       for (let i = 0; i < input.length; i++) {
         stack.push(input[i]);
-        const prevMin = minStack.length ? minStack[minStack.length - 1] : input[i];
+        const prevMin = minStack.length
+          ? minStack[minStack.length - 1]
+          : input[i];
         const newMin = Math.min(input[i], prevMin);
         minStack.push(newMin);
         steps.push({
@@ -509,7 +524,8 @@ export const minStackApproaches: NumApproaches = {
         });
       }
       steps.push({
-        description: "getMin() is now just a peek at the top of the min stack \u2014 O(1) every time",
+        description:
+          "getMin() is now just a peek at the top of the min stack \u2014 O(1) every time",
         array: input,
         highlights: [],
         structure: { label: "min stack", entries: [...minStack] },
@@ -537,7 +553,7 @@ export const evalRPNApproaches: StrApproaches = {
     ],
     run: (input): VizStep[] => {
       const steps: VizStep[] = [];
-      let tokens = input.trim().split(/\s+/);
+      const tokens = input.trim().split(/\s+/);
       const isOp = (t: string) => ["+", "-", "*", "/"].includes(t);
       const apply = (op: string, a: number, b: number) => {
         if (op === "+") return a + b;
@@ -680,7 +696,8 @@ export const largestRectangleHistogramApproaches: NumApproaches = {
         let left = i;
         let right = i;
         while (left > 0 && input[left - 1] >= input[i]) left--;
-        while (right < input.length - 1 && input[right + 1] >= input[i]) right++;
+        while (right < input.length - 1 && input[right + 1] >= input[i])
+          right++;
         const area = input[i] * (right - left + 1);
         const isBest = area > best;
         best = Math.max(best, area);
@@ -693,7 +710,9 @@ export const largestRectangleHistogramApproaches: NumApproaches = {
           })),
           variables: { i, left, right, area, best },
           headline: `area = ${area}`,
-          tag: isBest ? { label: "New Best", tone: "success" } : { label: "Expand", tone: "info" },
+          tag: isBest
+            ? { label: "New Best", tone: "success" }
+            : { label: "Expand", tone: "info" },
           codeLine: 5,
         });
       }
@@ -746,7 +765,9 @@ export const largestRectangleHistogramApproaches: NumApproaches = {
             structure: { label: "stack (increasing)", entries: [...stack] },
             variables: { popped: top, height, width, area, best },
             headline: `area = ${area}`,
-            tag: isBest ? { label: "New Best", tone: "success" } : { label: "Pop", tone: "info" },
+            tag: isBest
+              ? { label: "New Best", tone: "success" }
+              : { label: "Pop", tone: "info" },
             codeLine: 7,
           });
         }

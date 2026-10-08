@@ -79,7 +79,10 @@ export const containsDuplicateApproaches: Partial<
       steps.push({
         description: "Sort the array first",
         array: sorted,
-        highlights: sorted.map((_, idx) => ({ index: idx, role: "sorted" as const })),
+        highlights: sorted.map((_, idx) => ({
+          index: idx,
+          role: "sorted" as const,
+        })),
         variables: {},
         headline: "Sort the array",
         tag: { label: "Sort First", tone: "info" },
@@ -273,7 +276,10 @@ export const twoSumApproaches: Partial<
       steps.push({
         description: "Sort values, keeping track of their original indices",
         array: sortedArray,
-        highlights: sortedArray.map((_, idx) => ({ index: idx, role: "sorted" as const })),
+        highlights: sortedArray.map((_, idx) => ({
+          index: idx,
+          role: "sorted" as const,
+        })),
         variables: {},
         headline: "Sort the array",
         tag: { label: "Sort First", tone: "info" },
@@ -291,7 +297,12 @@ export const twoSumApproaches: Partial<
               { index: lo, role: "match" },
               { index: hi, role: "match" },
             ],
-            variables: { lo, hi, sum, result: `[${indexed[lo].idx}, ${indexed[hi].idx}]` },
+            variables: {
+              lo,
+              hi,
+              sum,
+              result: `[${indexed[lo].idx}, ${indexed[hi].idx}]`,
+            },
             headline: `${indexed[lo].value} + ${indexed[hi].value} = ${sum}`,
             tag: { label: "Target Found", tone: "success" },
             codeLine: 5,
@@ -308,7 +319,10 @@ export const twoSumApproaches: Partial<
           ],
           variables: { lo, hi, sum },
           headline: `${sum} ${sum < target ? "<" : ">"} ${target}`,
-          tag: { label: sum < target ? "Move lo \u2192" : "\u2190 Move hi", tone: "info" },
+          tag: {
+            label: sum < target ? "Move lo \u2192" : "\u2190 Move hi",
+            tone: "info",
+          },
           codeLine: sum < target ? 6 : 7,
         });
         if (sum < target) lo++;
@@ -474,8 +488,13 @@ export const validAnagramApproaches: Partial<
   },
   sub: {
     label: "Sub-Optimal",
-    complexity: "Time: O(n log n) \u00b7 Space: O(n) \u2014 sort both strings and compare",
-    code: ["const sa = [...s].sort();", "const ta = [...t].sort();", "return sa.join('') === ta.join('');"],
+    complexity:
+      "Time: O(n log n) \u00b7 Space: O(n) \u2014 sort both strings and compare",
+    code: [
+      "const sa = [...s].sort();",
+      "const ta = [...t].sort();",
+      "return sa.join('') === ta.join('');",
+    ],
     run: (input): VizStep[] => {
       const [s, t] = input.split(",");
       const steps: VizStep[] = [];
@@ -484,7 +503,10 @@ export const validAnagramApproaches: Partial<
       steps.push({
         description: `Sort s \u2192 "${sorted.join("")}", sort t \u2192 "${sortedT}"`,
         array: sorted,
-        highlights: sorted.map((_, idx) => ({ index: idx, role: "sorted" as const })),
+        highlights: sorted.map((_, idx) => ({
+          index: idx,
+          role: "sorted" as const,
+        })),
         structure: { label: "sorted(t)", entries: [sortedT] },
         variables: {},
         headline: "Sort both strings",
@@ -497,11 +519,17 @@ export const validAnagramApproaches: Partial<
           ? "sorted(s) === sorted(t) \u2014 return true"
           : "sorted(s) !== sorted(t) \u2014 return false",
         array: sorted,
-        highlights: sorted.map((_, idx) => ({ index: idx, role: match ? ("match" as const) : ("current" as const) })),
+        highlights: sorted.map((_, idx) => ({
+          index: idx,
+          role: match ? ("match" as const) : ("current" as const),
+        })),
         structure: { label: "sorted(t)", entries: [sortedT] },
         variables: { result: String(match) },
         headline: match ? "Anagram!" : "Not an anagram",
-        tag: { label: match ? "Found" : "Not Found", tone: match ? "success" : "danger" },
+        tag: {
+          label: match ? "Found" : "Not Found",
+          tone: match ? "success" : "danger",
+        },
         codeLine: 3,
         done: true,
       });
@@ -510,7 +538,8 @@ export const validAnagramApproaches: Partial<
   },
   optimal: {
     label: "Optimal",
-    complexity: "Time: O(n) \u00b7 Space: O(k) distinct characters \u2014 one hash map counting pass",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(k) distinct characters \u2014 one hash map counting pass",
     code: [
       "const freq = new Map();",
       "for (let i = 0; i < s.length; i++) {",
@@ -560,10 +589,16 @@ export const validAnagramApproaches: Partial<
           : "Some count is non-zero \u2014 return false",
         array,
         highlights: [],
-        structure: { label: "freq", entries: [...freq.entries()].map(([k, v]) => `${k}:${v}`) },
+        structure: {
+          label: "freq",
+          entries: [...freq.entries()].map(([k, v]) => `${k}:${v}`),
+        },
         variables: { result: String(balanced) },
         headline: balanced ? "Anagram!" : "Not an anagram",
-        tag: { label: balanced ? "Found" : "Not Found", tone: balanced ? "success" : "danger" },
+        tag: {
+          label: balanced ? "Found" : "Not Found",
+          tone: balanced ? "success" : "danger",
+        },
         codeLine: 6,
         done: true,
       });
@@ -577,7 +612,8 @@ export const firstUniqueCharApproaches: Partial<
 > = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 rescan the whole string for each character",
+    complexity:
+      "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 rescan the whole string for each character",
     code: [
       "for (let i = 0; i < n; i++) {",
       "  let unique = true;",
@@ -641,7 +677,8 @@ export const firstUniqueCharApproaches: Partial<
   },
   optimal: {
     label: "Optimal",
-    complexity: "Time: O(n) \u00b7 Space: O(1) fixed alphabet \u2014 count once, scan for first count-of-1",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(1) fixed alphabet \u2014 count once, scan for first count-of-1",
     code: [
       "const freq = new Map();",
       "for (const ch of s) freq.set(ch, (freq.get(ch) ?? 0) + 1);",
@@ -661,7 +698,10 @@ export const firstUniqueCharApproaches: Partial<
           description: `Count '${s[i]}' \u2192 ${freq.get(s[i])}`,
           array,
           highlights: [{ index: i, role: "current" }],
-          structure: { label: "freq", entries: [...freq.entries()].map(([k, v]) => `${k}:${v}`) },
+          structure: {
+            label: "freq",
+            entries: [...freq.entries()].map(([k, v]) => `${k}:${v}`),
+          },
           variables: { i },
           headline: `freq['${s[i]}'] = ${freq.get(s[i])}`,
           tag: { label: "Count", tone: "info" },
@@ -674,7 +714,10 @@ export const firstUniqueCharApproaches: Partial<
             description: `s[${i}]='${s[i]}' has count 1 \u2014 return ${i}`,
             array,
             highlights: [{ index: i, role: "match" }],
-            structure: { label: "freq", entries: [...freq.entries()].map(([k, v]) => `${k}:${v}`) },
+            structure: {
+              label: "freq",
+              entries: [...freq.entries()].map(([k, v]) => `${k}:${v}`),
+            },
             variables: { i, result: i },
             headline: `'${s[i]}' is unique!`,
             tag: { label: "Found", tone: "success" },
@@ -687,7 +730,10 @@ export const firstUniqueCharApproaches: Partial<
           description: `s[${i}]='${s[i]}' has count ${freq.get(s[i])} \u2014 keep scanning`,
           array,
           highlights: [{ index: i, role: "i" }],
-          structure: { label: "freq", entries: [...freq.entries()].map(([k, v]) => `${k}:${v}`) },
+          structure: {
+            label: "freq",
+            entries: [...freq.entries()].map(([k, v]) => `${k}:${v}`),
+          },
           variables: { i },
           headline: `freq['${s[i]}'] = ${freq.get(s[i])}`,
           tag: { label: "Scan", tone: "info" },
@@ -730,7 +776,8 @@ export const groupAnagramsApproaches: Partial<
       const steps: VizStep[] = [];
       const used = new Array(words.length).fill(false);
       const groups: string[][] = [];
-      const isAnagram = (a: string, b: string) => [...a].sort().join("") === [...b].sort().join("");
+      const isAnagram = (a: string, b: string) =>
+        [...a].sort().join("") === [...b].sort().join("");
       for (let i = 0; i < words.length; i++) {
         if (used[i]) continue;
         const group = [words[i]];
@@ -770,7 +817,8 @@ export const groupAnagramsApproaches: Partial<
   },
   sub: {
     label: "Sub-Optimal",
-    complexity: "Time: O(n\u00b7k log k) \u00b7 Space: O(n\u00b7k) \u2014 hash map keyed by the sorted string",
+    complexity:
+      "Time: O(n\u00b7k log k) \u00b7 Space: O(n\u00b7k) \u2014 hash map keyed by the sorted string",
     code: [
       "const groups = new Map();",
       "for (const s of strs) {",
@@ -828,7 +876,10 @@ export const groupAnagramsApproaches: Partial<
       const signature = (w: string) => {
         const freq = new Map<string, number>();
         for (const ch of w) freq.set(ch, (freq.get(ch) ?? 0) + 1);
-        return [...freq.entries()].sort().map(([k, v]) => `${k}${v}`).join("#");
+        return [...freq.entries()]
+          .sort()
+          .map(([k, v]) => `${k}${v}`)
+          .join("#");
       };
       for (let i = 0; i < words.length; i++) {
         const key = signature(words[i]);
@@ -865,7 +916,8 @@ export const topKFrequentApproaches: Partial<
 > = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n log n) \u00b7 Space: O(n) \u2014 count, then sort all keys by frequency",
+    complexity:
+      "Time: O(n log n) \u00b7 Space: O(n) \u2014 count, then sort all keys by frequency",
     code: [
       "const freq = new Map();",
       "for (const num of nums) freq.set(num, (freq.get(num) ?? 0) + 1);",
@@ -882,22 +934,31 @@ export const topKFrequentApproaches: Partial<
           description: `Count nums[${i}] (${num}) \u2192 ${freq.get(num)}`,
           array: input,
           highlights: [{ index: i, role: "current" }],
-          structure: { label: "freq", entries: [...freq.entries()].map(([k, v]) => `${k}:${v}`) },
+          structure: {
+            label: "freq",
+            entries: [...freq.entries()].map(([k, v]) => `${k}:${v}`),
+          },
           variables: { i },
           headline: `freq[${num}] = ${freq.get(num)}`,
           tag: { label: "Count", tone: "info" },
           codeLine: 2,
         });
       }
-      const sortedKeys = [...freq.keys()].sort((a, b) => (freq.get(b) ?? 0) - (freq.get(a) ?? 0));
+      const sortedKeys = [...freq.keys()].sort(
+        (a, b) => (freq.get(b) ?? 0) - (freq.get(a) ?? 0),
+      );
       const topK = sortedKeys.slice(0, target);
       steps.push({
         description: `Sort keys by frequency, take top ${target}: [${topK.join(", ")}]`,
         array: input,
         highlights: input
-          .map((v, idx) => (topK.includes(v) ? { index: idx, role: "match" as const } : null))
+          .map((v, idx) =>
+            topK.includes(v) ? { index: idx, role: "match" as const } : null,
+          )
           .filter((h): h is { index: number; role: "match" } => h !== null)
-          .filter((h, idx, arr) => arr.findIndex((x) => x.index === h.index) === idx),
+          .filter(
+            (h, idx, arr) => arr.findIndex((x) => x.index === h.index) === idx,
+          ),
         variables: { k: target, result: `[${topK.join(", ")}]` },
         headline: `Top ${target} = [${topK.join(", ")}]`,
         tag: { label: "Found", tone: "success" },
@@ -909,7 +970,8 @@ export const topKFrequentApproaches: Partial<
   },
   sub: {
     label: "Sub-Optimal",
-    complexity: "Time: O(n log k) \u00b7 Space: O(n) \u2014 count, then keep a min-heap of size k",
+    complexity:
+      "Time: O(n log k) \u00b7 Space: O(n) \u2014 count, then keep a min-heap of size k",
     code: [
       "const freq = new Map();",
       "for (const num of nums) freq.set(num, (freq.get(num) ?? 0) + 1);",
@@ -926,7 +988,10 @@ export const topKFrequentApproaches: Partial<
           description: `Count nums[${i}] (${num}) \u2192 ${freq.get(num)}`,
           array: input,
           highlights: [{ index: i, role: "current" }],
-          structure: { label: "freq", entries: [...freq.entries()].map(([k, v]) => `${k}:${v}`) },
+          structure: {
+            label: "freq",
+            entries: [...freq.entries()].map(([k, v]) => `${k}:${v}`),
+          },
           variables: { i },
           headline: `freq[${num}] = ${freq.get(num)}`,
           tag: { label: "Count", tone: "info" },
@@ -939,9 +1004,15 @@ export const topKFrequentApproaches: Partial<
         description: `Min-heap keeps the ${target} largest-frequency keys: [${heapKept.join(", ")}]`,
         array: input,
         highlights: input
-          .map((v, idx) => (heapKept.includes(v) ? { index: idx, role: "match" as const } : null))
+          .map((v, idx) =>
+            heapKept.includes(v)
+              ? { index: idx, role: "match" as const }
+              : null,
+          )
           .filter((h): h is { index: number; role: "match" } => h !== null)
-          .filter((h, idx, arr) => arr.findIndex((x) => x.index === h.index) === idx),
+          .filter(
+            (h, idx, arr) => arr.findIndex((x) => x.index === h.index) === idx,
+          ),
         variables: { k: target, result: `[${heapKept.join(", ")}]` },
         headline: `Top ${target} = [${heapKept.join(", ")}]`,
         tag: { label: "Found", tone: "success" },
@@ -953,7 +1024,8 @@ export const topKFrequentApproaches: Partial<
   },
   optimal: {
     label: "Optimal",
-    complexity: "Time: O(n) \u00b7 Space: O(n) \u2014 bucket by frequency, no comparisons needed",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(n) \u2014 bucket by frequency, no comparisons needed",
     code: [
       "const freq = new Map();",
       "for (const num of nums) freq.set(num, (freq.get(num) ?? 0) + 1);",
@@ -971,7 +1043,10 @@ export const topKFrequentApproaches: Partial<
           description: `Count nums[${i}] (${num}) \u2192 ${freq.get(num)}`,
           array: input,
           highlights: [{ index: i, role: "current" }],
-          structure: { label: "freq", entries: [...freq.entries()].map(([k, v]) => `${k}:${v}`) },
+          structure: {
+            label: "freq",
+            entries: [...freq.entries()].map(([k, v]) => `${k}:${v}`),
+          },
           variables: { i },
           headline: `freq[${num}] = ${freq.get(num)}`,
           tag: { label: "Count", tone: "info" },
@@ -995,9 +1070,13 @@ export const topKFrequentApproaches: Partial<
         description: `Reading buckets from highest to lowest frequency: [${result.join(", ")}]`,
         array: input,
         highlights: input
-          .map((v, idx) => (result.includes(v) ? { index: idx, role: "match" as const } : null))
+          .map((v, idx) =>
+            result.includes(v) ? { index: idx, role: "match" as const } : null,
+          )
           .filter((h): h is { index: number; role: "match" } => h !== null)
-          .filter((h, idx, arr) => arr.findIndex((x) => x.index === h.index) === idx),
+          .filter(
+            (h, idx, arr) => arr.findIndex((x) => x.index === h.index) === idx,
+          ),
         variables: { k: target, result: `[${result.join(", ")}]` },
         headline: `Top ${target} = [${result.join(", ")}]`,
         tag: { label: "Found", tone: "success" },
@@ -1014,7 +1093,8 @@ export const subarraySumApproaches: Partial<
 > = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 every start index, grow the running sum",
+    complexity:
+      "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 every start index, grow the running sum",
     code: [
       "let count = 0;",
       "for (let i = 0; i < n; i++) {",
@@ -1039,11 +1119,17 @@ export const subarraySumApproaches: Partial<
             array: input,
             highlights: Array.from({ length: j - i + 1 }, (_, idx) => ({
               index: i + idx,
-              role: isMatch ? ("match" as const) : idx === j - i ? ("j" as const) : ("i" as const),
+              role: isMatch
+                ? ("match" as const)
+                : idx === j - i
+                  ? ("j" as const)
+                  : ("i" as const),
             })),
             variables: { i, j, sum, count },
             headline: `sum = ${sum}`,
-            tag: isMatch ? { label: "Match Found", tone: "success" } : { label: "Expand Window", tone: "info" },
+            tag: isMatch
+              ? { label: "Match Found", tone: "success" }
+              : { label: "Expand Window", tone: "info" },
             codeLine: isMatch ? 6 : 5,
           });
         }
@@ -1062,7 +1148,8 @@ export const subarraySumApproaches: Partial<
   },
   sub: {
     label: "Sub-Optimal",
-    complexity: "Time: O(n\u00b2) \u00b7 Space: O(n) \u2014 precompute prefix sums, check every pair of endpoints",
+    complexity:
+      "Time: O(n\u00b2) \u00b7 Space: O(n) \u2014 precompute prefix sums, check every pair of endpoints",
     code: [
       "const prefix = [0];",
       "for (const num of nums) prefix.push(prefix.at(-1) + num);",
@@ -1079,7 +1166,10 @@ export const subarraySumApproaches: Partial<
       steps.push({
         description: `Prefix sums: [${prefix.join(", ")}]`,
         array: input,
-        highlights: input.map((_, idx) => ({ index: idx, role: "sorted" as const })),
+        highlights: input.map((_, idx) => ({
+          index: idx,
+          role: "sorted" as const,
+        })),
         variables: { prefix: `[${prefix.join(", ")}]` },
         headline: "Build prefix sums",
         tag: { label: "Precompute", tone: "info" },
@@ -1096,11 +1186,17 @@ export const subarraySumApproaches: Partial<
             array: input,
             highlights: Array.from({ length: j - i }, (_, idx) => ({
               index: i + idx,
-              role: isMatch ? ("match" as const) : idx === j - i - 1 ? ("j" as const) : ("i" as const),
+              role: isMatch
+                ? ("match" as const)
+                : idx === j - i - 1
+                  ? ("j" as const)
+                  : ("i" as const),
             })),
             variables: { i, j, sum, count },
             headline: `sum = ${sum}`,
-            tag: isMatch ? { label: "Match Found", tone: "success" } : { label: "Check Range", tone: "info" },
+            tag: isMatch
+              ? { label: "Match Found", tone: "success" }
+              : { label: "Check Range", tone: "info" },
             codeLine: 6,
           });
         }
@@ -1119,7 +1215,8 @@ export const subarraySumApproaches: Partial<
   },
   optimal: {
     label: "Optimal",
-    complexity: "Time: O(n) \u00b7 Space: O(n) \u2014 running prefix sum + hash map of prefix-sum frequencies",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(n) \u2014 running prefix sum + hash map of prefix-sum frequencies",
     code: [
       "const prefixCount = new Map([[0, 1]]);",
       "let sum = 0, count = 0;",
@@ -1143,10 +1240,16 @@ export const subarraySumApproaches: Partial<
           description: `sum = ${sum}, need prefix ${need} seen ${found} time(s) \u2014 count ${found > 0 ? "+=" : "stays"} ${found > 0 ? found : ""}`,
           array: input,
           highlights: [{ index: i, role: found > 0 ? "match" : "current" }],
-          structure: { label: "prefixCount", entries: [...prefixCount.entries()].map(([k, v]) => `${k}:${v}`) },
+          structure: {
+            label: "prefixCount",
+            entries: [...prefixCount.entries()].map(([k, v]) => `${k}:${v}`),
+          },
           variables: { i, sum, count },
           headline: `sum=${sum}  need=${need}`,
-          tag: found > 0 ? { label: "Match Found", tone: "success" } : { label: "Running Sum", tone: "info" },
+          tag:
+            found > 0
+              ? { label: "Match Found", tone: "success" }
+              : { label: "Running Sum", tone: "info" },
           codeLine: 5,
         });
         prefixCount.set(sum, (prefixCount.get(sum) ?? 0) + 1);
@@ -1170,7 +1273,8 @@ export const longestConsecutiveApproaches: Partial<
 > = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b2) (with array lookups) \u00b7 Space: O(1) \u2014 extend forward from every number",
+    complexity:
+      "Time: O(n\u00b2) (with array lookups) \u00b7 Space: O(1) \u2014 extend forward from every number",
     code: [
       "let best = 0;",
       "for (const num of nums) {",
@@ -1190,10 +1294,15 @@ export const longestConsecutiveApproaches: Partial<
         steps.push({
           description: `From ${num}: run length ${length} (${num}..${num + length - 1})`,
           array: input,
-          highlights: [{ index: i, role: length === best ? "match" : "current" }],
+          highlights: [
+            { index: i, role: length === best ? "match" : "current" },
+          ],
           variables: { num, length, best },
           headline: `${num} \u2192 run of ${length}`,
-          tag: length === best ? { label: "New Best", tone: "success" } : { label: "Extend", tone: "info" },
+          tag:
+            length === best
+              ? { label: "New Best", tone: "success" }
+              : { label: "Extend", tone: "info" },
           codeLine: 4,
         });
       }
@@ -1211,7 +1320,8 @@ export const longestConsecutiveApproaches: Partial<
   },
   sub: {
     label: "Sub-Optimal",
-    complexity: "Time: O(n log n) \u00b7 Space: O(1) extra \u2014 sort, then scan for consecutive runs",
+    complexity:
+      "Time: O(n log n) \u00b7 Space: O(1) extra \u2014 sort, then scan for consecutive runs",
     code: [
       "nums.sort((a, b) => a - b);",
       "let best = 1, run = 1;",
@@ -1227,7 +1337,10 @@ export const longestConsecutiveApproaches: Partial<
       steps.push({
         description: "Sort the array first",
         array: sorted,
-        highlights: sorted.map((_, idx) => ({ index: idx, role: "sorted" as const })),
+        highlights: sorted.map((_, idx) => ({
+          index: idx,
+          role: "sorted" as const,
+        })),
         variables: {},
         headline: "Sort the array",
         tag: { label: "Sort First", tone: "info" },
@@ -1263,7 +1376,10 @@ export const longestConsecutiveApproaches: Partial<
           ],
           variables: { i, run, best },
           headline: `run = ${run}`,
-          tag: run === best ? { label: "New Best", tone: "success" } : { label: "Scan", tone: "info" },
+          tag:
+            run === best
+              ? { label: "New Best", tone: "success" }
+              : { label: "Scan", tone: "info" },
           codeLine: 4,
         });
       }
@@ -1281,7 +1397,8 @@ export const longestConsecutiveApproaches: Partial<
   },
   optimal: {
     label: "Optimal",
-    complexity: "Time: O(n) \u00b7 Space: O(n) \u2014 hash set, only start counting from run beginnings",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(n) \u2014 hash set, only start counting from run beginnings",
     code: [
       "const set = new Set(nums);",
       "let best = 0;",
@@ -1317,11 +1434,16 @@ export const longestConsecutiveApproaches: Partial<
         steps.push({
           description: `${num} starts a run of length ${length} (${num}..${num + length - 1})`,
           array: input,
-          highlights: [{ index: i, role: length === best ? "match" : "current" }],
+          highlights: [
+            { index: i, role: length === best ? "match" : "current" },
+          ],
           structure: { label: "set", entries: [...set] },
           variables: { num, length, best },
           headline: `${num} \u2192 run of ${length}`,
-          tag: length === best ? { label: "New Best", tone: "success" } : { label: "Count Run", tone: "info" },
+          tag:
+            length === best
+              ? { label: "New Best", tone: "success" }
+              : { label: "Count Run", tone: "info" },
           codeLine: 6,
         });
       }
@@ -1338,4 +1460,3 @@ export const longestConsecutiveApproaches: Partial<
     },
   },
 };
-

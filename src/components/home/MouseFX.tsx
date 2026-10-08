@@ -23,9 +23,31 @@ interface Bolt {
 }
 
 const CODE_SNIPPETS = [
-  "O(n)", "O(1)", "O(log n)", "{}", "[]", "=>",
-  "fn()", "BFS", "DFS", "dp[]", "if()", "for", "++i",
-  "&&", "||", "null", "true", "01", "10", "∑", "n!", "π", "λ", "∞", "Δ",
+  "O(n)",
+  "O(1)",
+  "O(log n)",
+  "{}",
+  "[]",
+  "=>",
+  "fn()",
+  "BFS",
+  "DFS",
+  "dp[]",
+  "if()",
+  "for",
+  "++i",
+  "&&",
+  "||",
+  "null",
+  "true",
+  "01",
+  "10",
+  "∑",
+  "n!",
+  "π",
+  "λ",
+  "∞",
+  "Δ",
 ];
 
 const MAX_TRAIL = 28;
@@ -49,12 +71,37 @@ const NODES = Array.from({ length: 18 }, (_, i) => ({
   y: 20 + Math.floor(i / 6) * 30 + (Math.random() * 6 - 3),
 }));
 const EDGES: [number, number][] = [
-  [0, 1], [1, 2], [2, 3], [3, 4], [4, 5],
-  [6, 7], [7, 8], [8, 9], [9, 10], [10, 11],
-  [12, 13], [13, 14], [14, 15], [15, 16], [16, 17],
-  [0, 6], [1, 7], [2, 8], [3, 9], [4, 10], [5, 11],
-  [6, 12], [7, 13], [8, 14], [9, 15], [10, 16], [11, 17],
-  [1, 8], [3, 10], [7, 14], [9, 16],
+  [0, 1],
+  [1, 2],
+  [2, 3],
+  [3, 4],
+  [4, 5],
+  [6, 7],
+  [7, 8],
+  [8, 9],
+  [9, 10],
+  [10, 11],
+  [12, 13],
+  [13, 14],
+  [14, 15],
+  [15, 16],
+  [16, 17],
+  [0, 6],
+  [1, 7],
+  [2, 8],
+  [3, 9],
+  [4, 10],
+  [5, 11],
+  [6, 12],
+  [7, 13],
+  [8, 14],
+  [9, 15],
+  [10, 16],
+  [11, 17],
+  [1, 8],
+  [3, 10],
+  [7, 14],
+  [9, 16],
 ];
 
 export default function HomeMouseFX({
@@ -74,10 +121,12 @@ export default function HomeMouseFX({
     const life = 60 + Math.random() * 80;
     particlesRef.current.push({
       id: pidRef.current++,
-      x, y,
+      x,
+      y,
       vx: (Math.random() - 0.5) * 1.4,
       vy: -0.6 - Math.random() * 1.2,
-      life, maxLife: life,
+      life,
+      maxLife: life,
       text: CODE_SNIPPETS[Math.floor(Math.random() * CODE_SNIPPETS.length)],
       size: 9 + Math.floor(Math.random() * 7),
     });
@@ -126,7 +175,11 @@ export default function HomeMouseFX({
       const y = e.clientY - rect.top;
       spawnBolt(x, y);
       spawnBolt(x, y);
-      for (let i = 0; i < 5; i++) spawnParticle(x + (Math.random() - 0.5) * 40, y + (Math.random() - 0.5) * 40);
+      for (let i = 0; i < 5; i++)
+        spawnParticle(
+          x + (Math.random() - 0.5) * 40,
+          y + (Math.random() - 0.5) * 40,
+        );
     };
 
     container.addEventListener("mousemove", onMove);
@@ -142,7 +195,11 @@ export default function HomeMouseFX({
       const W = canvas.width;
       const H = canvas.height;
 
-      const nodesPx = NODES.map((n) => ({ id: n.id, x: (n.x / 100) * W, y: (n.y / 100) * H }));
+      const nodesPx = NODES.map((n) => ({
+        id: n.id,
+        x: (n.x / 100) * W,
+        y: (n.y / 100) * H,
+      }));
 
       ctx.lineWidth = 0.8;
       for (const [a, b] of EDGES) {
@@ -171,7 +228,10 @@ export default function HomeMouseFX({
         const alpha = 0.1 + proximity * 0.8;
         ctx.beginPath();
         ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
-        ctx.fillStyle = proximity > 0.4 ? `hsla(158,84%,65%,${alpha})` : `hsla(200,100%,60%,${alpha})`;
+        ctx.fillStyle =
+          proximity > 0.4
+            ? `hsla(158,84%,65%,${alpha})`
+            : `hsla(200,100%,60%,${alpha})`;
         ctx.fill();
         if (proximity > 0.6) {
           ctx.shadowBlur = 12;

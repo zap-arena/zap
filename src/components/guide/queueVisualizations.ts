@@ -1,7 +1,9 @@
 import type { ApproachRunner, VizStep } from "./AlgoVisualizer";
 
 type NumApproaches = Partial<Record<"brute" | "optimal", ApproachRunner>>;
-type StrApproaches = Partial<Record<"brute" | "optimal", ApproachRunner<string>>>;
+type StrApproaches = Partial<
+  Record<"brute" | "optimal", ApproachRunner<string>>
+>;
 
 export const queueUsingStacksApproaches: NumApproaches = {
   brute: {
@@ -41,7 +43,10 @@ export const queueUsingStacksApproaches: NumApproaches = {
           description: `Dequeue: pop everything above the bottom element (${front}) into a helper stack, then pop it`,
           array: input,
           highlights: [],
-          structure: { label: "stack", entries: [...inStack, ...tmp].reverse() },
+          structure: {
+            label: "stack",
+            entries: [...inStack, ...tmp].reverse(),
+          },
           variables: { dequeued: front },
           headline: `dequeue() = ${front}`,
           tag: { label: "O(n) Dequeue", tone: "danger" },
@@ -50,7 +55,8 @@ export const queueUsingStacksApproaches: NumApproaches = {
         while (tmp.length) inStack.push(tmp.pop() as number);
       }
       steps.push({
-        description: "Every dequeue costs O(n) because the whole stack must be reversed through the helper and back",
+        description:
+          "Every dequeue costs O(n) because the whole stack must be reversed through the helper and back",
         array: input,
         highlights: [],
         structure: { label: "stack", entries: [] },
@@ -93,7 +99,8 @@ export const queueUsingStacksApproaches: NumApproaches = {
       while (inStack.length || outStack.length) {
         if (outStack.length === 0) {
           steps.push({
-            description: "out-stack is empty \u2014 flip the entire in-stack into it once (this is the only expensive step, and it happens rarely)",
+            description:
+              "out-stack is empty \u2014 flip the entire in-stack into it once (this is the only expensive step, and it happens rarely)",
             array: input,
             highlights: [],
             structure: { label: "in-stack", entries: [...inStack] },
@@ -117,7 +124,8 @@ export const queueUsingStacksApproaches: NumApproaches = {
         });
       }
       steps.push({
-        description: "Each element moves between the two stacks at most once \u2014 amortized O(1) per operation",
+        description:
+          "Each element moves between the two stacks at most once \u2014 amortized O(1) per operation",
         array: input,
         highlights: [],
         structure: { label: "out-stack", entries: [] },
@@ -165,7 +173,8 @@ export const movingAverageApproaches: NumApproaches = {
         });
       }
       steps.push({
-        description: "Every call rescans up to k readings \u2014 wasteful when k is large or calls are frequent",
+        description:
+          "Every call rescans up to k readings \u2014 wasteful when k is large or calls are frequent",
         array: input,
         highlights: [],
         variables: {},
@@ -230,7 +239,8 @@ export const movingAverageApproaches: NumApproaches = {
         });
       }
       steps.push({
-        description: "Each reading enters and leaves the queue exactly once \u2014 O(1) amortized per call",
+        description:
+          "Each reading enters and leaves the queue exactly once \u2014 O(1) amortized per call",
         array: input,
         highlights: [],
         structure: { label: "queue", entries: [...queue] },
@@ -264,7 +274,9 @@ export const firstUniqueCharStreamApproaches: StrApproaches = {
         stream += chars[i];
         let answer: string | null = null;
         for (let j = 0; j < stream.length; j++) {
-          const occurrences = stream.split("").filter((c) => c === stream[j]).length;
+          const occurrences = stream
+            .split("")
+            .filter((c) => c === stream[j]).length;
           if (occurrences === 1) {
             answer = stream[j];
             break;
@@ -281,7 +293,8 @@ export const firstUniqueCharStreamApproaches: StrApproaches = {
         });
       }
       steps.push({
-        description: "Every new character triggers a full O(n) rescan of everything seen so far",
+        description:
+          "Every new character triggers a full O(n) rescan of everything seen so far",
         array: chars,
         highlights: [],
         variables: {},
@@ -346,7 +359,8 @@ export const firstUniqueCharStreamApproaches: StrApproaches = {
         });
       }
       steps.push({
-        description: "Each character enters and leaves the queue at most once \u2014 amortized O(1) per character",
+        description:
+          "Each character enters and leaves the queue at most once \u2014 amortized O(1) per character",
         array: chars,
         highlights: [],
         structure: { label: "candidate queue", entries: [...queue] },
@@ -363,7 +377,8 @@ export const firstUniqueCharStreamApproaches: StrApproaches = {
 export const slidingWindowMaximumApproaches: NumApproaches = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b7k) \u00b7 Space: O(1) extra \u2014 scan every window from scratch",
+    complexity:
+      "Time: O(n\u00b7k) \u00b7 Space: O(1) extra \u2014 scan every window from scratch",
     code: [
       "for (let i = 0; i + k <= n; i++) {",
       "  let m = -Infinity;",
@@ -397,7 +412,10 @@ export const slidingWindowMaximumApproaches: NumApproaches = {
         steps.push({
           description: `Window [${i}..${i + k - 1}] maximum is ${max}`,
           array: input,
-          highlights: Array.from({ length: k }, (_, idx) => ({ index: i + idx, role: "match" as const })),
+          highlights: Array.from({ length: k }, (_, idx) => ({
+            index: i + idx,
+            role: "match" as const,
+          })),
           structure: { label: "results", entries: [...res] },
           variables: { i, max },
           headline: `res[${i}] = ${max}`,
@@ -480,7 +498,10 @@ export const slidingWindowMaximumApproaches: NumApproaches = {
           steps.push({
             description: `Window [${i - k + 1}..${i}] maximum is nums[${deque[0]}] = ${max} \u2014 the deque front, no rescanning needed`,
             array: input,
-            highlights: Array.from({ length: k }, (_, idx) => ({ index: i - k + 1 + idx, role: "match" as const })),
+            highlights: Array.from({ length: k }, (_, idx) => ({
+              index: i - k + 1 + idx,
+              role: "match" as const,
+            })),
             structure: { label: "results", entries: [...res] },
             variables: { max },
             headline: `res = ${max}`,
@@ -524,7 +545,10 @@ export const circularQueueApproaches: NumApproaches = {
             description: `Enqueue ${input[i]} \u2014 append to the array (${arr.length}/${capacity} full)`,
             array: input,
             highlights: [{ index: i, role: "current" }],
-            structure: { label: `queue array (cap ${capacity})`, entries: [...arr] },
+            structure: {
+              label: `queue array (cap ${capacity})`,
+              entries: [...arr],
+            },
             variables: {},
             headline: `push(${input[i]})`,
             tag: { label: "Enqueue", tone: "info" },
@@ -536,7 +560,10 @@ export const circularQueueApproaches: NumApproaches = {
             description: `Queue full \u2014 dequeue ${removed} first, shifting all ${arr.length} remaining elements left (O(n))`,
             array: input,
             highlights: [],
-            structure: { label: `queue array (cap ${capacity})`, entries: [...arr] },
+            structure: {
+              label: `queue array (cap ${capacity})`,
+              entries: [...arr],
+            },
             variables: {},
             headline: `shift() removes ${removed}`,
             tag: { label: "O(n) Shift", tone: "danger" },
@@ -547,7 +574,10 @@ export const circularQueueApproaches: NumApproaches = {
             description: `Now enqueue ${input[i]}`,
             array: input,
             highlights: [{ index: i, role: "current" }],
-            structure: { label: `queue array (cap ${capacity})`, entries: [...arr] },
+            structure: {
+              label: `queue array (cap ${capacity})`,
+              entries: [...arr],
+            },
             variables: {},
             headline: `push(${input[i]})`,
             tag: { label: "Enqueue", tone: "info" },
@@ -556,7 +586,8 @@ export const circularQueueApproaches: NumApproaches = {
         }
       }
       steps.push({
-        description: "Every dequeue costs O(n) because the remaining elements must shift to fill the gap",
+        description:
+          "Every dequeue costs O(n) because the remaining elements must shift to fill the gap",
         array: input,
         highlights: [],
         structure: { label: "queue array", entries: [...arr] },
@@ -593,7 +624,10 @@ export const circularQueueApproaches: NumApproaches = {
             description: `Buffer full \u2014 dequeue ${removed} by simply moving head to ${head} (O(1), no shifting)`,
             array: input,
             highlights: [],
-            structure: { label: `circular buffer (head=${head})`, entries: [...buf] },
+            structure: {
+              label: `circular buffer (head=${head})`,
+              entries: [...buf],
+            },
             variables: { head, tail, size },
             headline: `head \u2192 ${head}`,
             tag: { label: "O(1)", tone: "success" },
@@ -605,7 +639,10 @@ export const circularQueueApproaches: NumApproaches = {
           description: `Enqueue ${input[i]} at slot ${tail}, advance tail to ${(tail + 1) % capacity} (mod ${capacity})`,
           array: input,
           highlights: [{ index: i, role: "current" }],
-          structure: { label: `circular buffer (tail=${tail})`, entries: [...buf] },
+          structure: {
+            label: `circular buffer (tail=${tail})`,
+            entries: [...buf],
+          },
           variables: { head, tail, size: size + 1 },
           headline: `buf[${tail}] = ${input[i]}`,
           tag: { label: "O(1)", tone: "success" },
@@ -615,7 +652,8 @@ export const circularQueueApproaches: NumApproaches = {
         size++;
       }
       steps.push({
-        description: "Head and tail wrap around with modulo arithmetic \u2014 every operation stays O(1)",
+        description:
+          "Head and tail wrap around with modulo arithmetic \u2014 every operation stays O(1)",
         array: input,
         highlights: [],
         structure: { label: "circular buffer", entries: [...buf] },

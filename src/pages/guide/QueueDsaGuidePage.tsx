@@ -1,6 +1,4 @@
-import React from "react";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
-import Navbar from "../../components/Navbar";
+import type React from "react";
 import AlgoVisualizer from "../../components/guide/AlgoVisualizer";
 import {
   circularQueueApproaches,
@@ -9,6 +7,8 @@ import {
   queueUsingStacksApproaches,
   slidingWindowMaximumApproaches,
 } from "../../components/guide/queueVisualizations";
+import Navbar from "../../components/Navbar";
+import { useGuideLogic } from "../../hooks/useGuideLogic";
 
 export default function QueueDsaGuidePage() {
   useGuideLogic();
@@ -88,22 +88,30 @@ export default function QueueDsaGuidePage() {
               <h1>Queue, basic to medium</h1>
               <p>
                 Five questions built around first-in-first-out ordering. Each
-                brute-force version redoes work on every operation; each
-                optimal version keeps a queue (or deque) so stale data leaves
-                from the front in constant time instead of being rescanned.
+                brute-force version redoes work on every operation; each optimal
+                version keeps a queue (or deque) so stale data leaves from the
+                front in constant time instead of being rescanned.
               </p>
               <div className="legend">
                 <span className="legend-item">
                   <span
                     className="legend-swatch"
-                    style={{ background: "hsl(var(--primary))" } as React.CSSProperties}
+                    style={
+                      {
+                        background: "hsl(var(--primary))",
+                      } as React.CSSProperties
+                    }
                   ></span>
                   Brute force (rescans / rebuilds)
                 </span>
                 <span className="legend-item">
                   <span
                     className="legend-swatch"
-                    style={{ background: "hsl(var(--primary))" } as React.CSSProperties}
+                    style={
+                      {
+                        background: "hsl(var(--primary))",
+                      } as React.CSSProperties
+                    }
                   ></span>
                   Optimal (queue / deque based)
                 </span>
@@ -133,7 +141,10 @@ export default function QueueDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q1-approach">
-                  <button className="tab-btn brute active" data-target="q1-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q1-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q1-opt">
@@ -142,8 +153,8 @@ export default function QueueDsaGuidePage() {
                 </div>
                 <div className="approach-panel active" id="q1-brute">
                   <div className="complexity">
-                    Time: <b>O(n)</b> per dequeue · Space: <b>O(n)</b> —
-                    reverse the whole stack through a helper every time
+                    Time: <b>O(n)</b> per dequeue · Space: <b>O(n)</b> — reverse
+                    the whole stack through a helper every time
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -222,9 +233,9 @@ export default function QueueDsaGuidePage() {
               </div>
               <div className="twist">
                 <strong>One step further:</strong> Each element moves between
-                the stacks at most once in its lifetime — why does that make
-                the optimal version amortized O(1) even though a single
-                dequeue call can still be O(n)?
+                the stacks at most once in its lifetime — why does that make the
+                optimal version amortized O(1) even though a single dequeue call
+                can still be O(n)?
               </div>
             </section>
 
@@ -236,12 +247,11 @@ export default function QueueDsaGuidePage() {
               </div>
               <p className="prompt">
                 Given a stream of integers and a window size <code>k</code>,
-                calculate the moving average of the last <code>k</code>{" "}
-                values each time a new value arrives.
+                calculate the moving average of the last <code>k</code> values
+                each time a new value arrives.
               </p>
               <div className="example">
-                Input: readings = [1, 10, 3, 5], k = 3 Output: 1, 5.5, 4.67,
-                6.0
+                Input: readings = [1, 10, 3, 5], k = 3 Output: 1, 5.5, 4.67, 6.0
               </div>
 
               <AlgoVisualizer
@@ -253,7 +263,10 @@ export default function QueueDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q2-approach">
-                  <button className="tab-btn brute active" data-target="q2-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q2-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q2-opt">
@@ -262,8 +275,8 @@ export default function QueueDsaGuidePage() {
                 </div>
                 <div className="approach-panel active" id="q2-brute">
                   <div className="complexity">
-                    Time: <b>O(k)</b> per reading · Space: <b>O(n)</b> —
-                    re-sum the last k values from scratch every time
+                    Time: <b>O(k)</b> per reading · Space: <b>O(n)</b> — re-sum
+                    the last k values from scratch every time
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -298,8 +311,8 @@ export default function QueueDsaGuidePage() {
                 </div>
                 <div className="approach-panel" id="q2-opt">
                   <div className="complexity">
-                    Time: <b>O(1)</b> per reading · Space: <b>O(k)</b> — a
-                    queue holds exactly the window, a running sum updates
+                    Time: <b>O(1)</b> per reading · Space: <b>O(k)</b> — a queue
+                    holds exactly the window, a running sum updates
                     incrementally
                   </div>
                   <div className="lang-wrapper code-split">
@@ -340,9 +353,9 @@ class MovingAverage:
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> What if you needed the
-                moving <i>median</i> instead of the average — would a simple
-                queue still be enough?
+                <strong>One step further:</strong> What if you needed the moving{" "}
+                <i>median</i> instead of the average — would a simple queue
+                still be enough?
               </div>
             </section>
 
@@ -354,8 +367,8 @@ class MovingAverage:
               </div>
               <p className="prompt">
                 Characters arrive one at a time. After each character, report
-                the first character seen so far that has appeared exactly
-                once, or "none" if there isn't one.
+                the first character seen so far that has appeared exactly once,
+                or "none" if there isn't one.
               </p>
               <div className="example">
                 Input: stream = "aabc" Output: 'a', none, 'b', 'b'
@@ -371,7 +384,10 @@ class MovingAverage:
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q3-approach">
-                  <button className="tab-btn brute active" data-target="q3-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q3-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q3-opt">
@@ -457,9 +473,9 @@ class FirstUnique:
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> Why is it safe to only
-                ever remove from the front of the candidate queue, never from
-                the middle?
+                <strong>One step further:</strong> Why is it safe to only ever
+                remove from the front of the candidate queue, never from the
+                middle?
               </div>
             </section>
 
@@ -487,7 +503,10 @@ class FirstUnique:
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q4-approach">
-                  <button className="tab-btn brute active" data-target="q4-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q4-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q4-opt">
@@ -496,8 +515,8 @@ class FirstUnique:
                 </div>
                 <div className="approach-panel active" id="q4-brute">
                   <div className="complexity">
-                    Time: <b>O(n·k)</b> · Space: <b>O(1)</b> extra — scan
-                    every window from scratch
+                    Time: <b>O(n·k)</b> · Space: <b>O(1)</b> extra — scan every
+                    window from scratch
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -574,9 +593,8 @@ def max_sliding_window(nums, k):
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> The deque stores indices,
-                not values — why is that necessary for the eviction check to
-                work?
+                <strong>One step further:</strong> The deque stores indices, not
+                values — why is that necessary for the eviction check to work?
               </div>
             </section>
 
@@ -605,7 +623,10 @@ def max_sliding_window(nums, k):
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q5-approach">
-                  <button className="tab-btn brute active" data-target="q5-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q5-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q5-opt">
@@ -614,8 +635,8 @@ def max_sliding_window(nums, k):
                 </div>
                 <div className="approach-panel active" id="q5-brute">
                   <div className="complexity">
-                    Time: <b>O(n)</b> per dequeue · Space: <b>O(n)</b> — a
-                    plain array; dequeuing shifts every remaining element
+                    Time: <b>O(n)</b> per dequeue · Space: <b>O(n)</b> — a plain
+                    array; dequeuing shifts every remaining element
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -661,8 +682,7 @@ def max_sliding_window(nums, k):
                 <div className="approach-panel" id="q5-opt">
                   <div className="complexity">
                     Time: <b>O(1)</b> per operation · Space: <b>O(capacity)</b>{" "}
-                    — a fixed array with head/tail indices that wrap via
-                    modulo
+                    — a fixed array with head/tail indices that wrap via modulo
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -715,8 +735,8 @@ def max_sliding_window(nums, k):
               </div>
               <div className="twist">
                 <strong>One step further:</strong> How do you distinguish a
-                completely full buffer from a completely empty one when
-                head == tail, without the separate <code>size</code> counter?
+                completely full buffer from a completely empty one when head ==
+                tail, without the separate <code>size</code> counter?
               </div>
             </section>
           </div>

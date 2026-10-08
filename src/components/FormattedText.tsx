@@ -11,9 +11,9 @@ export function FormattedText({ text, className = "" }: FormattedTextProps) {
 
   const parts = [];
   let lastIndex = 0;
-  let match: RegExpExecArray | null;
+  let match = codeBlockRegex.exec(text);
 
-  while ((match = codeBlockRegex.exec(text)) !== null) {
+  while (match !== null) {
     // Add preceding normal text
     if (match.index > lastIndex) {
       parts.push({
@@ -32,6 +32,7 @@ export function FormattedText({ text, className = "" }: FormattedTextProps) {
     });
 
     lastIndex = match.index + match[0].length;
+    match = codeBlockRegex.exec(text);
   }
 
   // Add remaining normal text

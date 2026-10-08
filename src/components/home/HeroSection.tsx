@@ -4,13 +4,57 @@ import { ThunderLogo } from "../ThunderLogo";
 const WATERFALL_COLS = 14;
 
 const FRAGMENTS = [
-  "function", "const", "let", "return", "class", "import", "export",
-  "if(n==0)", "while(lo", "<=hi)", "for(i=0", "null", "true", "async",
-  "await", "=>", "{}", "[]", "BFS()", "DFS()", "O(n²)", "O(log n)",
-  "O(1)", "dp[i]", "memo", "stack", "queue", "graph", "tree", "node",
-  "parseInt", ".map()", ".filter", ".reduce", "&&", "||", "!==",
-  "0x1A", "0b1010", "NaN", "void", "break", "continue", "throw",
-  "try{", "}catch", "new Map", "Set()", "arr[]", "++i", "i--",
+  "function",
+  "const",
+  "let",
+  "return",
+  "class",
+  "import",
+  "export",
+  "if(n==0)",
+  "while(lo",
+  "<=hi)",
+  "for(i=0",
+  "null",
+  "true",
+  "async",
+  "await",
+  "=>",
+  "{}",
+  "[]",
+  "BFS()",
+  "DFS()",
+  "O(n²)",
+  "O(log n)",
+  "O(1)",
+  "dp[i]",
+  "memo",
+  "stack",
+  "queue",
+  "graph",
+  "tree",
+  "node",
+  "parseInt",
+  ".map()",
+  ".filter",
+  ".reduce",
+  "&&",
+  "||",
+  "!==",
+  "0x1A",
+  "0b1010",
+  "NaN",
+  "void",
+  "break",
+  "continue",
+  "throw",
+  "try{",
+  "}catch",
+  "new Map",
+  "Set()",
+  "arr[]",
+  "++i",
+  "i--",
 ];
 
 interface Column {
@@ -191,11 +235,16 @@ export default function HomeHeroSection() {
 
         <h1
           className="font-black leading-none tracking-tight mb-6 flex items-center justify-center gap-2 whitespace-nowrap"
-          style={{ fontSize: "clamp(2.2rem, 9vw, 6rem)", fontFamily: "'Playfair Display', serif" }}
+          style={{
+            fontSize: "clamp(2.2rem, 9vw, 6rem)",
+            fontFamily: "'Playfair Display', serif",
+          }}
         >
           <span className="text-foreground">We are</span>
           <span className="text-gradient-primary flex items-center ml-3">
-            Z<ThunderLogo className="w-10 h-10 sm:w-16 sm:h-16 text-amber-400 animate-pulse" />P
+            Z
+            <ThunderLogo className="w-10 h-10 sm:w-16 sm:h-16 text-amber-400 animate-pulse" />
+            P
           </span>
         </h1>
 
@@ -215,7 +264,9 @@ export default function HomeHeroSection() {
       </div>
 
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-60">
-        <span className="text-muted-foreground text-xs font-mono">scroll down</span>
+        <span className="text-muted-foreground text-xs font-mono">
+          scroll down
+        </span>
         <div className="w-5 h-8 rounded-full border border-muted-foreground/40 flex items-start justify-center p-1">
           <div className="w-1 h-2 rounded-full bg-primary animate-bounce" />
         </div>

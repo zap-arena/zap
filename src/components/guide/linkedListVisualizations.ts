@@ -40,7 +40,10 @@ export const reverseLinkedListApproaches: NumApproaches = {
       steps.push({
         description: `Build a brand-new linked list from the reversed array \u2014 original nodes are discarded`,
         array: vals,
-        highlights: vals.map((_, idx) => ({ index: idx, role: "match" as const })),
+        highlights: vals.map((_, idx) => ({
+          index: idx,
+          role: "match" as const,
+        })),
         structure: { label: "new list", entries: [...vals] },
         variables: {},
         headline: vals.join(" \u2192 "),
@@ -76,7 +79,10 @@ export const reverseLinkedListApproaches: NumApproaches = {
             { index: i, role: "current" as const },
             ...(i > 0 ? [{ index: i - 1, role: "sorted" as const }] : []),
           ],
-          structure: { label: "list so far (reversed)", entries: [...reversed] },
+          structure: {
+            label: "list so far (reversed)",
+            entries: [...reversed],
+          },
           variables: { cur: input[i] },
           headline: `prev = ${input[i]}`,
           tag: { label: "Re-point", tone: "info" },
@@ -118,7 +124,11 @@ export const linkedListCycleApproaches: NumApproaches = {
       const seen: number[] = [];
       const visitLimit = input.length + 3;
       for (let step = 0; step < visitLimit; step++) {
-        const idx = step < input.length ? step : cycleStart + ((step - input.length) % (input.length - cycleStart));
+        const idx =
+          step < input.length
+            ? step
+            : cycleStart +
+              ((step - input.length) % (input.length - cycleStart));
         if (seen.includes(idx)) {
           steps.push({
             description: `Node at index ${idx} (value ${input[idx]}) was already visited \u2014 cycle detected!`,
@@ -145,7 +155,8 @@ export const linkedListCycleApproaches: NumApproaches = {
         });
       }
       steps.push({
-        description: "Reached the end without revisiting any node \u2014 no cycle",
+        description:
+          "Reached the end without revisiting any node \u2014 no cycle",
         array: input,
         highlights: [],
         structure: { label: "visited set", entries: [...seen] },
@@ -192,14 +203,17 @@ export const linkedListCycleApproaches: NumApproaches = {
           ],
           variables: { slow: input[slow], fast: input[fast] },
           headline: met ? "slow == fast" : `${input[slow]} vs ${input[fast]}`,
-          tag: met ? { label: "Cycle", tone: "danger" } : { label: "Chase", tone: "info" },
+          tag: met
+            ? { label: "Cycle", tone: "danger" }
+            : { label: "Chase", tone: "info" },
           codeLine: 5,
           done: met,
         });
         if (met) return steps;
       }
       steps.push({
-        description: "fast reached the end without meeting slow \u2014 no cycle",
+        description:
+          "fast reached the end without meeting slow \u2014 no cycle",
         array: input,
         highlights: [],
         variables: { result: false },
@@ -241,14 +255,18 @@ export const mergeTwoSortedListsApproaches: NumApproaches = {
       steps.push({
         description: `Sort the combined array: [${sorted.join(", ")}]`,
         array: sorted,
-        highlights: sorted.map((_, idx) => ({ index: idx, role: "sorted" as const })),
+        highlights: sorted.map((_, idx) => ({
+          index: idx,
+          role: "sorted" as const,
+        })),
         variables: {},
         headline: "Sort",
         tag: { label: "Sort", tone: "info" },
         codeLine: 2,
       });
       steps.push({
-        description: "Build a new linked list from the sorted array \u2014 original two lists are discarded",
+        description:
+          "Build a new linked list from the sorted array \u2014 original two lists are discarded",
         array: sorted,
         highlights: [],
         variables: {},
@@ -315,7 +333,10 @@ export const mergeTwoSortedListsApproaches: NumApproaches = {
         steps.push({
           description: `One list is exhausted \u2014 link the remainder [${rest.join(", ")}] directly, no comparisons needed`,
           array: rest,
-          highlights: rest.map((_, idx) => ({ index: idx, role: "sorted" as const })),
+          highlights: rest.map((_, idx) => ({
+            index: idx,
+            role: "sorted" as const,
+          })),
           variables: { merged: merged.join(",") },
           headline: "Attach remainder",
           tag: { label: "Attach", tone: "success" },
@@ -325,7 +346,10 @@ export const mergeTwoSortedListsApproaches: NumApproaches = {
       steps.push({
         description: `Merged list (no sorting, single pass): [${merged.join(" \u2192 ")}]`,
         array: merged,
-        highlights: merged.map((_, idx) => ({ index: idx, role: "match" as const })),
+        highlights: merged.map((_, idx) => ({
+          index: idx,
+          role: "match" as const,
+        })),
         variables: {},
         headline: merged.join(" \u2192 "),
         tag: { label: "Done", tone: "success" },
@@ -339,7 +363,8 @@ export const mergeTwoSortedListsApproaches: NumApproaches = {
 export const removeNthFromEndApproaches: NumApproaches = {
   brute: {
     label: "Brute Force (Two-Pass)",
-    complexity: "Time: O(n) \u00b7 Space: O(1) \u2014 count the length first, then walk again to the target node",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(1) \u2014 count the length first, then walk again to the target node",
     code: [
       "let len = 0;",
       "for (let n = head; n; n = n.next) len++;",
@@ -373,7 +398,10 @@ export const removeNthFromEndApproaches: NumApproaches = {
       steps.push({
         description: `Second pass: walk to index ${targetIdx - 1} and unlink the target node. Result: [${result.join(" \u2192 ")}]`,
         array: result,
-        highlights: result.map((_, idx) => ({ index: idx, role: "sorted" as const })),
+        highlights: result.map((_, idx) => ({
+          index: idx,
+          role: "sorted" as const,
+        })),
         variables: {},
         headline: result.join(" \u2192 "),
         tag: { label: "Done", tone: "success" },
@@ -441,7 +469,10 @@ export const removeNthFromEndApproaches: NumApproaches = {
       steps.push({
         description: `Result: [${result.join(" \u2192 ")}]`,
         array: result,
-        highlights: result.map((_, idx) => ({ index: idx, role: "sorted" as const })),
+        highlights: result.map((_, idx) => ({
+          index: idx,
+          role: "sorted" as const,
+        })),
         variables: {},
         headline: result.join(" \u2192 "),
         tag: { label: "Done", tone: "success" },
@@ -455,7 +486,8 @@ export const removeNthFromEndApproaches: NumApproaches = {
 export const middleOfLinkedListApproaches: NumApproaches = {
   brute: {
     label: "Brute Force (Two-Pass)",
-    complexity: "Time: O(n) \u00b7 Space: O(1) \u2014 count the length, then walk again to length / 2",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(1) \u2014 count the length, then walk again to length / 2",
     code: [
       "let len = 0;",
       "for (let n = head; n; n = n.next) len++;",
@@ -483,7 +515,10 @@ export const middleOfLinkedListApproaches: NumApproaches = {
           highlights: [{ index: i, role: i === mid ? "match" : "current" }],
           variables: { i },
           headline: i === mid ? "Reached middle" : `step ${i}`,
-          tag: i === mid ? { label: "Middle", tone: "success" } : { label: "Walk", tone: "info" },
+          tag:
+            i === mid
+              ? { label: "Middle", tone: "success" }
+              : { label: "Walk", tone: "info" },
           done: i === mid,
         });
       }
@@ -540,7 +575,8 @@ export const middleOfLinkedListApproaches: NumApproaches = {
 export const palindromeLinkedListApproaches: NumApproaches = {
   brute: {
     label: "Brute Force (Copy to Array)",
-    complexity: "Time: O(n) \u00b7 Space: O(n) \u2014 copy every value out, then compare with two pointers",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(n) \u2014 copy every value out, then compare with two pointers",
     code: [
       "const vals = [];",
       "for (let n = head; n; n = n.next) vals.push(n.val);",
@@ -573,7 +609,9 @@ export const palindromeLinkedListApproaches: NumApproaches = {
           ],
           variables: { i, j },
           headline: `${vals[i]} vs ${vals[j]}`,
-          tag: match ? { label: "Match", tone: "success" } : { label: "Mismatch", tone: "danger" },
+          tag: match
+            ? { label: "Match", tone: "success" }
+            : { label: "Mismatch", tone: "danger" },
           codeLine: 4,
           done: !match,
         });
@@ -624,7 +662,10 @@ export const palindromeLinkedListApproaches: NumApproaches = {
       steps.push({
         description: `Reverse the second half in place: [${secondHalf.join(", ")}] \u2014 no extra array needed, just re-pointed links`,
         array: input,
-        highlights: Array.from({ length: n - mid }, (_, idx) => ({ index: mid + idx, role: "sorted" as const })),
+        highlights: Array.from({ length: n - mid }, (_, idx) => ({
+          index: mid + idx,
+          role: "sorted" as const,
+        })),
         structure: { label: "reversed second half", entries: [...secondHalf] },
         variables: {},
         headline: "Reverse 2nd half",
@@ -643,10 +684,15 @@ export const palindromeLinkedListApproaches: NumApproaches = {
             { index: i, role: match ? "match" : "current" },
             { index: mid + i, role: match ? "match" : "current" },
           ],
-          structure: { label: "reversed second half", entries: [...secondHalf] },
+          structure: {
+            label: "reversed second half",
+            entries: [...secondHalf],
+          },
           variables: { i },
           headline: `${firstHalf[i]} vs ${secondHalf[i]}`,
-          tag: match ? { label: "Match", tone: "success" } : { label: "Mismatch", tone: "danger" },
+          tag: match
+            ? { label: "Match", tone: "success" }
+            : { label: "Mismatch", tone: "danger" },
           codeLine: 5,
           done: !match,
         });
@@ -660,7 +706,10 @@ export const palindromeLinkedListApproaches: NumApproaches = {
         highlights: [],
         variables: { result: allMatch },
         headline: allMatch ? "Palindrome" : "Not a palindrome",
-        tag: { label: allMatch ? "Palindrome" : "Not Palindrome", tone: allMatch ? "success" : "danger" },
+        tag: {
+          label: allMatch ? "Palindrome" : "Not Palindrome",
+          tone: allMatch ? "success" : "danger",
+        },
         done: true,
       });
       return steps;

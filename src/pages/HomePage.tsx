@@ -1,11 +1,11 @@
 import { useRef } from "react";
-import Navbar from "../components/Navbar";
-import HomeHeroSection from "../components/home/HeroSection";
-import HomeStatsBar from "../components/home/StatsBar";
-import HomeProgramsSection from "../components/home/ProgramsSection";
-import HomeDSASection from "../components/home/DSASection";
 import HomeContactSection from "../components/home/ContactSection";
+import HomeDSASection from "../components/home/DSASection";
+import HomeHeroSection from "../components/home/HeroSection";
 import HomeMouseFX from "../components/home/MouseFX";
+import HomeProgramsSection from "../components/home/ProgramsSection";
+import HomeStatsBar from "../components/home/StatsBar";
+import Navbar from "../components/Navbar";
 import "../styles/zap-home.css";
 
 export default function HomePage() {
@@ -25,4 +25,3 @@ export default function HomePage() {
     </div>
   );
 }
-

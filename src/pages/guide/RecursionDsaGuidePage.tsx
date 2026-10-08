@@ -1,6 +1,4 @@
-import React from "react";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
-import Navbar from "../../components/Navbar";
+import type React from "react";
 import RecursionVisualizer from "../../components/guide/RecursionVisualizer";
 import {
   climbingStairsApproaches,
@@ -12,6 +10,8 @@ import {
   subsetsApproaches,
   sumOfDigitsApproaches,
 } from "../../components/guide/recursionVisualizations";
+import Navbar from "../../components/Navbar";
+import { useGuideLogic } from "../../hooks/useGuideLogic";
 
 export default function RecursionDsaGuidePage() {
   useGuideLogic();
@@ -145,9 +145,9 @@ export default function RecursionDsaGuidePage() {
               </div>
               <p className="prompt">
                 Every recursive function needs exactly two parts: a{" "}
-                <b>base case</b> that stops the recursion without calling
-                itself again, and a <b>recursive case</b> that calls itself with
-                a smaller or simpler input, moving toward that base case.
+                <b>base case</b> that stops the recursion without calling itself
+                again, and a <b>recursive case</b> that calls itself with a
+                smaller or simpler input, moving toward that base case.
               </p>
 
               <div className="tabs-wrapper">
@@ -182,9 +182,9 @@ export default function RecursionDsaGuidePage() {
 
               <div className="twist">
                 <strong>One step further:</strong> Every recursive call adds a
-                frame to the call stack. For an input of size n, how many
-                frames are alive at the deepest point — and what happens if n
-                is too large for the stack to hold?
+                frame to the call stack. For an input of size n, how many frames
+                are alive at the deepest point — and what happens if n is too
+                large for the stack to hold?
               </div>
             </section>
 
@@ -196,8 +196,7 @@ export default function RecursionDsaGuidePage() {
               </div>
               <p className="prompt">
                 Given a non-negative integer <code>n</code>, compute{" "}
-                <code>n!</code> = n × (n-1) × ... × 1, with{" "}
-                <code>0! = 1</code>.
+                <code>n!</code> = n × (n-1) × ... × 1, with <code>0! = 1</code>.
               </p>
               <div className="example">Input: n = 5 Output: 120</div>
 
@@ -209,7 +208,10 @@ export default function RecursionDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q1-approach">
-                  <button className="tab-btn brute active" data-target="q1-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q1-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q1-opt">
@@ -301,7 +303,10 @@ export default function RecursionDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q2-approach">
-                  <button className="tab-btn brute active" data-target="q2-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q2-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q2-opt">
@@ -369,9 +374,9 @@ export default function RecursionDsaGuidePage() {
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> The bottom-up table only
-                ever looks at the last two values. Can you solve this with
-                O(1) space instead of O(n)?
+                <strong>One step further:</strong> The bottom-up table only ever
+                looks at the last two values. Can you solve this with O(1) space
+                instead of O(n)?
               </div>
             </section>
 
@@ -397,7 +402,10 @@ export default function RecursionDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q3-approach">
-                  <button className="tab-btn brute active" data-target="q3-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q3-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q3-opt">
@@ -406,8 +414,8 @@ export default function RecursionDsaGuidePage() {
                 </div>
                 <div className="approach-panel active" id="q3-brute">
                   <div className="complexity">
-                    Time: <b>O(n)</b> · Space: <b>O(n)</b> call stack —
-                    multiply by x, n times
+                    Time: <b>O(n)</b> · Space: <b>O(n)</b> call stack — multiply
+                    by x, n times
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -486,7 +494,10 @@ export default function RecursionDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q4-approach">
-                  <button className="tab-btn brute active" data-target="q4-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q4-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q4-opt">
@@ -561,9 +572,7 @@ export default function RecursionDsaGuidePage() {
                 <h2>Reverse a String</h2>
                 <span className="level-badge medium">Medium</span>
               </div>
-              <p className="prompt">
-                Reverse a string using recursion.
-              </p>
+              <p className="prompt">Reverse a string using recursion.</p>
               <div className="example">Input: s = "hello" Output: "olleh"</div>
 
               <RecursionVisualizer
@@ -575,7 +584,10 @@ export default function RecursionDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q5-approach">
-                  <button className="tab-btn brute active" data-target="q5-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q5-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q5-opt">
@@ -666,7 +678,10 @@ export default function RecursionDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q6-approach">
-                  <button className="tab-btn brute active" data-target="q6-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q6-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q6-opt">
@@ -733,9 +748,8 @@ export default function RecursionDsaGuidePage() {
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> What if you could also
-                climb 3 steps at a time? Which line of the DP version needs to
-                change?
+                <strong>One step further:</strong> What if you could also climb
+                3 steps at a time? Which line of the DP version needs to change?
               </div>
             </section>
 
@@ -762,7 +776,10 @@ export default function RecursionDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q7-approach">
-                  <button className="tab-btn brute active" data-target="q7-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q7-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q7-opt">
@@ -871,7 +888,10 @@ export default function RecursionDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q8-approach">
-                  <button className="tab-btn brute active" data-target="q8-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q8-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q8-opt">

@@ -48,7 +48,16 @@ interface AlgoVisualizerProps<TInput = number[]> {
   arrayVariant?: "cells" | "linked-list";
 }
 
-const STACK_BLOCK_COLORS = ["#2f81f7", "#2ea97f", "#a371f7", "#f0883e", "#f85149", "#58a6ff", "#db61a2", "#3fb950"];
+const STACK_BLOCK_COLORS = [
+  "#2f81f7",
+  "#2ea97f",
+  "#a371f7",
+  "#f0883e",
+  "#f85149",
+  "#58a6ff",
+  "#db61a2",
+  "#3fb950",
+];
 
 function StackContainer({
   label,
@@ -59,7 +68,10 @@ function StackContainer({
 }) {
   const prevEntriesRef = useRef<(string | number)[]>([]);
   const [enterKey, setEnterKey] = useState<string | null>(null);
-  const [exitBlock, setExitBlock] = useState<{ value: string | number; color: string } | null>(null);
+  const [exitBlock, setExitBlock] = useState<{
+    value: string | number;
+    color: string;
+  } | null>(null);
 
   useEffect(() => {
     const prev = prevEntriesRef.current;
@@ -72,7 +84,10 @@ function StackContainer({
       cleanup = () => clearTimeout(t);
     } else if (cur.length < prev.length) {
       const removedIdx = prev.length - 1;
-      setExitBlock({ value: prev[removedIdx], color: STACK_BLOCK_COLORS[removedIdx % STACK_BLOCK_COLORS.length] });
+      setExitBlock({
+        value: prev[removedIdx],
+        color: STACK_BLOCK_COLORS[removedIdx % STACK_BLOCK_COLORS.length],
+      });
       const t = setTimeout(() => setExitBlock(null), 450);
       cleanup = () => clearTimeout(t);
     }
@@ -92,10 +107,24 @@ function StackContainer({
           100% { transform: translate(34px, -46px) rotate(22deg); opacity: 0; }
         }
       `}</style>
-      <div style={{ fontSize: 12.5, color: "#8b949e", fontWeight: 600, marginBottom: 8, textAlign: "center" }}>
+      <div
+        style={{
+          fontSize: 12.5,
+          color: "#8b949e",
+          fontWeight: 600,
+          marginBottom: 8,
+          textAlign: "center",
+        }}
+      >
         {label}
       </div>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
         <div style={{ position: "relative", width: 120, height: 50 }}>
           {exitBlock && (
             <div
@@ -136,7 +165,16 @@ function StackContainer({
           }}
         >
           {entries.length === 0 && (
-            <div style={{ textAlign: "center", color: "#484f58", fontSize: 12, padding: "8px 0" }}>empty</div>
+            <div
+              style={{
+                textAlign: "center",
+                color: "#484f58",
+                fontSize: 12,
+                padding: "8px 0",
+              }}
+            >
+              empty
+            </div>
           )}
           {entries.map((value, idx) => {
             const key = `${idx}-${value}`;
@@ -154,7 +192,8 @@ function StackContainer({
                   fontSize: 14,
                   color: "#06281f",
                   background: color,
-                  animation: enterKey === key ? "stackDropIn 0.45s ease-out" : undefined,
+                  animation:
+                    enterKey === key ? "stackDropIn 0.45s ease-out" : undefined,
                 }}
               >
                 {String(value)}
@@ -170,10 +209,18 @@ function StackContainer({
 const QUEUE_FRONT_COLOR = "#22d3ee";
 const QUEUE_REAR_COLOR = "#a371f7";
 
-function QueueContainer({ label, entries }: { label: string; entries: (string | number)[] }) {
+function QueueContainer({
+  label,
+  entries,
+}: {
+  label: string;
+  entries: (string | number)[];
+}) {
   const prevEntriesRef = useRef<(string | number)[]>([]);
   const [enterKey, setEnterKey] = useState<string | null>(null);
-  const [exitBlock, setExitBlock] = useState<{ value: string | number } | null>(null);
+  const [exitBlock, setExitBlock] = useState<{ value: string | number } | null>(
+    null,
+  );
 
   useEffect(() => {
     const prev = prevEntriesRef.current;
@@ -205,11 +252,25 @@ function QueueContainer({ label, entries }: { label: string; entries: (string | 
           100% { transform: translateX(-40px); opacity: 0; }
         }
       `}</style>
-      <div style={{ fontSize: 12.5, color: "#8b949e", fontWeight: 600, marginBottom: 22, textAlign: "center" }}>
+      <div
+        style={{
+          fontSize: 12.5,
+          color: "#8b949e",
+          fontWeight: 600,
+          marginBottom: 22,
+          textAlign: "center",
+        }}
+      >
         {label}
       </div>
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <div style={{ position: "relative", display: "flex", alignItems: "flex-end" }}>
+        <div
+          style={{
+            position: "relative",
+            display: "flex",
+            alignItems: "flex-end",
+          }}
+        >
           {exitBlock && (
             <div
               style={{
@@ -234,15 +295,26 @@ function QueueContainer({ label, entries }: { label: string; entries: (string | 
             </div>
           )}
           {entries.length === 0 ? (
-            <div style={{ color: "#484f58", fontSize: 12, padding: "12px 20px" }}>empty</div>
+            <div
+              style={{ color: "#484f58", fontSize: 12, padding: "12px 20px" }}
+            >
+              empty
+            </div>
           ) : (
             entries.map((value, idx) => {
               const key = `${idx}-${value}`;
               const isFront = idx === 0;
               const isRear = idx === entries.length - 1;
-              const borderColor = isFront ? QUEUE_FRONT_COLOR : isRear ? QUEUE_REAR_COLOR : "#30363d";
+              const borderColor = isFront
+                ? QUEUE_FRONT_COLOR
+                : isRear
+                  ? QUEUE_REAR_COLOR
+                  : "#30363d";
               return (
-                <div key={key} style={{ position: "relative", textAlign: "center" }}>
+                <div
+                  key={key}
+                  style={{ position: "relative", textAlign: "center" }}
+                >
                   <div
                     style={{
                       position: "absolute",
@@ -299,7 +371,10 @@ function QueueContainer({ label, entries }: { label: string; entries: (string | 
                       background: "#0d1117",
                       border: `2px solid ${borderColor}`,
                       marginLeft: idx === 0 ? 0 : -2,
-                      animation: enterKey === key ? "queueEnterRight 0.4s ease-out" : undefined,
+                      animation:
+                        enterKey === key
+                          ? "queueEnterRight 0.4s ease-out"
+                          : undefined,
                     }}
                   >
                     {String(value)}
@@ -324,7 +399,12 @@ const ROLE_STYLE: Record<
   hi: { bg: "#38120f", border: "#dc2626", text: "#fca5a5", label: "hi" },
   current: { bg: "#0d2818", border: "#059669", text: "#a7f3d0", label: "cur" },
   match: { bg: "#3a2a0d", border: "#f59e0b", text: "#fde68a", label: "found" },
-  sorted: { bg: "#0b2230", border: "#0ea5e9", text: "#bae6fd", label: "sorted" },
+  sorted: {
+    bg: "#0b2230",
+    border: "#0ea5e9",
+    text: "#bae6fd",
+    label: "sorted",
+  },
 };
 
 const TAG_STYLE: Record<VizTag["tone"], { bg: string; text: string }> = {
@@ -353,7 +433,9 @@ export default function AlgoVisualizer<TInput = number[]>({
     availableApproaches[0] ?? "brute",
   );
   const [inputText, setInputText] = useState(
-    Array.isArray(defaultInput) ? defaultInput.join(", ") : String(defaultInput),
+    Array.isArray(defaultInput)
+      ? defaultInput.join(", ")
+      : String(defaultInput),
   );
   const [parsedInput, setParsedInput] = useState<TInput>(defaultInput);
   const [targetText, setTargetText] = useState(
@@ -418,7 +500,9 @@ export default function AlgoVisualizer<TInput = number[]>({
 
   const currentStep = steps[currentStepIndex];
   const progressPct =
-    steps.length > 1 ? Math.round((currentStepIndex / (steps.length - 1)) * 100) : 0;
+    steps.length > 1
+      ? Math.round((currentStepIndex / (steps.length - 1)) * 100)
+      : 0;
 
   const rolesUsed = useMemo(() => {
     const roles = new Set<VizHighlight["role"]>();
@@ -459,8 +543,22 @@ export default function AlgoVisualizer<TInput = number[]>({
       }}
     >
       {/* Header */}
-      <div style={{ padding: "16px clamp(12px, 4vw, 22px)", borderBottom: "1px solid #21262d", background: "#161b22" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 10 }}>
+      <div
+        style={{
+          padding: "16px clamp(12px, 4vw, 22px)",
+          borderBottom: "1px solid #21262d",
+          background: "#161b22",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            flexWrap: "wrap",
+            marginBottom: 10,
+          }}
+        >
           <span style={{ fontSize: 16, fontWeight: 700 }}>⚡ {title}</span>
           <span
             style={{
@@ -488,7 +586,10 @@ export default function AlgoVisualizer<TInput = number[]>({
                 style={{
                   padding: "7px 16px",
                   borderRadius: 8,
-                  border: selectedApproach === id ? "1px solid #58a6ff" : "1px solid #30363d",
+                  border:
+                    selectedApproach === id
+                      ? "1px solid #58a6ff"
+                      : "1px solid #30363d",
                   background: selectedApproach === id ? "#1f3a6e" : "#0d1117",
                   color: selectedApproach === id ? "#58a6ff" : "#8b949e",
                   cursor: "pointer",
@@ -503,7 +604,9 @@ export default function AlgoVisualizer<TInput = number[]>({
         )}
 
         {activeRunner && (
-          <div style={{ fontSize: 12.5, color: "#8b949e", marginTop: 10 }}>{activeRunner.complexity}</div>
+          <div style={{ fontSize: 12.5, color: "#8b949e", marginTop: 10 }}>
+            {activeRunner.complexity}
+          </div>
         )}
       </div>
 
@@ -518,7 +621,15 @@ export default function AlgoVisualizer<TInput = number[]>({
           alignItems: "center",
         }}
       >
-        <label style={{ fontSize: 12, color: "#8b949e", display: "flex", alignItems: "center", gap: 6 }}>
+        <label
+          style={{
+            fontSize: 12,
+            color: "#8b949e",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+          }}
+        >
           {inputKind === "string" ? "String" : "Array"}
           <input
             type="text"
@@ -536,7 +647,15 @@ export default function AlgoVisualizer<TInput = number[]>({
           />
         </label>
         {needsTarget && (
-          <label style={{ fontSize: 12, color: "#8b949e", display: "flex", alignItems: "center", gap: 6 }}>
+          <label
+            style={{
+              fontSize: 12,
+              color: "#8b949e",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
             Target
             <input
               type="text"
@@ -554,7 +673,11 @@ export default function AlgoVisualizer<TInput = number[]>({
             />
           </label>
         )}
-        <button type="button" onClick={handleSetInput} style={pillButtonStyle("secondary")}>
+        <button
+          type="button"
+          onClick={handleSetInput}
+          style={pillButtonStyle("secondary")}
+        >
           Apply
         </button>
 
@@ -610,7 +733,15 @@ export default function AlgoVisualizer<TInput = number[]>({
 
       {/* Stage */}
       <div style={{ padding: "20px clamp(12px, 4vw, 22px)" }}>
-        <div style={{ height: 4, background: "#21262d", borderRadius: 2, overflow: "hidden", marginBottom: 18 }}>
+        <div
+          style={{
+            height: 4,
+            background: "#21262d",
+            borderRadius: 2,
+            overflow: "hidden",
+            marginBottom: 18,
+          }}
+        >
           <div
             style={{
               height: "100%",
@@ -623,9 +754,25 @@ export default function AlgoVisualizer<TInput = number[]>({
         </div>
 
         {rolesUsed.length > 0 && (
-          <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 18 }}>
+          <div
+            style={{
+              display: "flex",
+              gap: 14,
+              flexWrap: "wrap",
+              marginBottom: 18,
+            }}
+          >
             {rolesUsed.map((role) => (
-              <span key={role} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#8b949e" }}>
+              <span
+                key={role}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: 12,
+                  color: "#8b949e",
+                }}
+              >
                 <span
                   style={{
                     width: 12,
@@ -662,11 +809,17 @@ export default function AlgoVisualizer<TInput = number[]>({
                   const hs = highlightForIndex(index);
                   const primary = hs[0]?.role;
                   const style = primary ? ROLE_STYLE[primary] : null;
-                  const emphasize = primary === "current" || primary === "match";
+                  const emphasize =
+                    primary === "current" || primary === "match";
                   const isLast = index === currentStep.array.length - 1;
                   return (
-                    <div key={`${index}-${value}`} style={{ display: "flex", alignItems: "center" }}>
-                      <div style={{ textAlign: "center", position: "relative" }}>
+                    <div
+                      key={`${index}-${value}`}
+                      style={{ display: "flex", alignItems: "center" }}
+                    >
+                      <div
+                        style={{ textAlign: "center", position: "relative" }}
+                      >
                         {style && (
                           <span
                             style={{
@@ -702,13 +855,24 @@ export default function AlgoVisualizer<TInput = number[]>({
                             fontSize: 17,
                             transition: "all 0.3s ease",
                             transform: emphasize ? "scale(1.12)" : "scale(1)",
-                            boxShadow: emphasize ? `0 0 16px ${style?.border}66` : "none",
+                            boxShadow: emphasize
+                              ? `0 0 16px ${style?.border}66`
+                              : "none",
                           }}
                         >
                           {value}
                         </div>
                       </div>
-                      <div style={{ color: "#484f58", fontSize: 18, padding: "0 6px", marginBottom: 2 }}>→</div>
+                      <div
+                        style={{
+                          color: "#484f58",
+                          fontSize: 18,
+                          padding: "0 6px",
+                          marginBottom: 2,
+                        }}
+                      >
+                        →
+                      </div>
                       {isLast && (
                         <div
                           style={{
@@ -746,74 +910,124 @@ export default function AlgoVisualizer<TInput = number[]>({
               </div>
             ) : (
               (() => {
-              const isWindowStep = currentStep.highlights.some((h) => WINDOW_ROLES.has(h.role));
-              return (
-                <div
-                  style={{
-                    display: "flex",
-                    gap: 8,
-                    flexWrap: "wrap",
-                    alignItems: "flex-end",
-                    justifyContent: "center",
-                    background: "#0d1117",
-                    border: "1px solid #21262d",
-                    borderRadius: 12,
-                    padding: "28px 18px 22px",
-                    marginBottom: 18,
-                  }}
-                >
-                  {currentStep.array.map((value, index) => {
-                    const hs = highlightForIndex(index);
-                    const primary = hs[0]?.role;
-                    const style = primary ? ROLE_STYLE[primary] : null;
-                    const emphasize = primary === "current" || primary === "match";
-                    const dimmed = isWindowStep && !style;
-                    return (
-                      <div
-                        key={`${index}-${value}`}
-                        style={{ textAlign: "center", opacity: dimmed ? 0.3 : 1, transition: "opacity 0.3s ease" }}
-                      >
-                        {style ? (
-                          <div style={{ fontSize: 13, color: style.border, marginBottom: 2 }}>↑</div>
-                        ) : (
-                          <div style={{ fontSize: 13, marginBottom: 2, visibility: "hidden" }}>↑</div>
-                        )}
+                const isWindowStep = currentStep.highlights.some((h) =>
+                  WINDOW_ROLES.has(h.role),
+                );
+                return (
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 8,
+                      flexWrap: "wrap",
+                      alignItems: "flex-end",
+                      justifyContent: "center",
+                      background: "#0d1117",
+                      border: "1px solid #21262d",
+                      borderRadius: 12,
+                      padding: "28px 18px 22px",
+                      marginBottom: 18,
+                    }}
+                  >
+                    {currentStep.array.map((value, index) => {
+                      const hs = highlightForIndex(index);
+                      const primary = hs[0]?.role;
+                      const style = primary ? ROLE_STYLE[primary] : null;
+                      const emphasize =
+                        primary === "current" || primary === "match";
+                      const dimmed = isWindowStep && !style;
+                      return (
                         <div
+                          key={`${index}-${value}`}
                           style={{
-                            width: 58,
-                            height: 58,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderRadius: 10,
-                            border: `2px solid ${style ? style.border : "#30363d"}`,
-                            background: style ? style.bg : "#161b22",
-                            color: style ? style.text : "#8b949e",
-                            fontWeight: 700,
-                            fontSize: 18,
-                            transition: "all 0.3s ease",
-                            transform: emphasize ? "scale(1.14)" : "scale(1)",
-                            boxShadow: emphasize ? `0 0 16px ${style?.border}66` : "none",
+                            textAlign: "center",
+                            opacity: dimmed ? 0.3 : 1,
+                            transition: "opacity 0.3s ease",
                           }}
                         >
-                          {value}
+                          {style ? (
+                            <div
+                              style={{
+                                fontSize: 13,
+                                color: style.border,
+                                marginBottom: 2,
+                              }}
+                            >
+                              ↑
+                            </div>
+                          ) : (
+                            <div
+                              style={{
+                                fontSize: 13,
+                                marginBottom: 2,
+                                visibility: "hidden",
+                              }}
+                            >
+                              ↑
+                            </div>
+                          )}
+                          <div
+                            style={{
+                              width: 58,
+                              height: 58,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              borderRadius: 10,
+                              border: `2px solid ${style ? style.border : "#30363d"}`,
+                              background: style ? style.bg : "#161b22",
+                              color: style ? style.text : "#8b949e",
+                              fontWeight: 700,
+                              fontSize: 18,
+                              transition: "all 0.3s ease",
+                              transform: emphasize ? "scale(1.14)" : "scale(1)",
+                              boxShadow: emphasize
+                                ? `0 0 16px ${style?.border}66`
+                                : "none",
+                            }}
+                          >
+                            {value}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 10,
+                              color: "#484f58",
+                              marginTop: 6,
+                              fontWeight: 600,
+                            }}
+                          >
+                            {index}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 10,
+                              fontWeight: 700,
+                              color: style?.border ?? "transparent",
+                              minHeight: 14,
+                            }}
+                          >
+                            {hs.map((h) => h.role).join("/") || "\u00A0"}
+                          </div>
                         </div>
-                        <div style={{ fontSize: 10, color: "#484f58", marginTop: 6, fontWeight: 600 }}>{index}</div>
-                        <div style={{ fontSize: 10, fontWeight: 700, color: style?.border ?? "transparent", minHeight: 14 }}>
-                          {hs.map((h) => h.role).join("/") || "\u00A0"}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              );
+                      );
+                    })}
+                  </div>
+                );
               })()
             )}
 
             {(currentStep.headline || currentStep.tag) && (
               <div style={{ textAlign: "center", marginBottom: 18 }}>
                 {currentStep.headline && (
-                  <div style={{ fontSize: "clamp(18px, 5vw, 28px)", fontWeight: 800, color: "#f0f6fc", marginBottom: 8, letterSpacing: 0.3, wordBreak: "break-word" }}>
+                  <div
+                    style={{
+                      fontSize: "clamp(18px, 5vw, 28px)",
+                      fontWeight: 800,
+                      color: "#f0f6fc",
+                      marginBottom: 8,
+                      letterSpacing: 0.3,
+                      wordBreak: "break-word",
+                    }}
+                  >
                     {currentStep.headline}
                   </div>
                 )}
@@ -838,16 +1052,24 @@ export default function AlgoVisualizer<TInput = number[]>({
             )}
 
             {currentStep.structure && structureVariant === "stack" && (
-              <StackContainer label={currentStep.structure.label} entries={currentStep.structure.entries} />
+              <StackContainer
+                label={currentStep.structure.label}
+                entries={currentStep.structure.entries}
+              />
             )}
 
             {currentStep.structure && structureVariant === "queue" && (
-              <QueueContainer label={currentStep.structure.label} entries={currentStep.structure.entries} />
+              <QueueContainer
+                label={currentStep.structure.label}
+                entries={currentStep.structure.entries}
+              />
             )}
 
             {currentStep.structure && structureVariant === "list" && (
               <div style={{ marginBottom: 16, fontSize: 12.5 }}>
-                <span style={{ color: "#8b949e", marginRight: 8, fontWeight: 600 }}>
+                <span
+                  style={{ color: "#8b949e", marginRight: 8, fontWeight: 600 }}
+                >
                   {currentStep.structure.label}:
                 </span>
                 {currentStep.structure.entries.length === 0 ? (
@@ -875,7 +1097,14 @@ export default function AlgoVisualizer<TInput = number[]>({
             )}
 
             {Object.keys(currentStep.variables).length > 0 && (
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
+              <div
+                style={{
+                  display: "flex",
+                  gap: 8,
+                  flexWrap: "wrap",
+                  marginBottom: 16,
+                }}
+              >
                 {Object.entries(currentStep.variables).map(([key, value]) => (
                   <span
                     key={key}
@@ -887,7 +1116,8 @@ export default function AlgoVisualizer<TInput = number[]>({
                       color: "#e6edf3",
                     }}
                   >
-                    <span style={{ color: "#8b949e" }}>{key}:</span> {String(value)}
+                    <span style={{ color: "#8b949e" }}>{key}:</span>{" "}
+                    {String(value)}
                   </span>
                 ))}
               </div>
@@ -914,7 +1144,9 @@ export default function AlgoVisualizer<TInput = number[]>({
                 Step {currentStepIndex + 1}
                 {currentStep.done ? " · Done" : ""}
               </div>
-              <div style={{ fontSize: 14, lineHeight: 1.7, color: "#e6edf3" }}>{currentStep.description}</div>
+              <div style={{ fontSize: 14, lineHeight: 1.7, color: "#e6edf3" }}>
+                {currentStep.description}
+              </div>
             </div>
 
             {activeRunner && activeRunner.code.length > 0 && (
@@ -941,10 +1173,20 @@ export default function AlgoVisualizer<TInput = number[]>({
                 >
                   <span>algorithm.js</span>
                   {currentStep.tag && (
-                    <span style={{ color: TAG_STYLE[currentStep.tag.tone].text }}>{currentStep.tag.label}</span>
+                    <span
+                      style={{ color: TAG_STYLE[currentStep.tag.tone].text }}
+                    >
+                      {currentStep.tag.label}
+                    </span>
                   )}
                 </div>
-                <div style={{ fontFamily: "'JetBrains Mono', 'Courier New', monospace", fontSize: 12.5, lineHeight: 1.9 }}>
+                <div
+                  style={{
+                    fontFamily: "'JetBrains Mono', 'Courier New', monospace",
+                    fontSize: 12.5,
+                    lineHeight: 1.9,
+                  }}
+                >
                   {activeRunner.code.map((line, idx) => {
                     const lineNo = idx + 1;
                     const active = currentStep.codeLine === lineNo;
@@ -956,7 +1198,9 @@ export default function AlgoVisualizer<TInput = number[]>({
                           whiteSpace: "pre",
                           color: active ? "#e6edf3" : "#8b949e",
                           background: active ? "#15294d" : "transparent",
-                          borderLeft: active ? "3px solid #58a6ff" : "3px solid transparent",
+                          borderLeft: active
+                            ? "3px solid #58a6ff"
+                            : "3px solid transparent",
                         }}
                       >
                         {line}
@@ -990,8 +1234,21 @@ export default function AlgoVisualizer<TInput = number[]>({
           {showLog ? "▾" : "▸"} Full step-by-step trace ({steps.length} steps)
         </button>
         {showLog && (
-          <div style={{ maxHeight: 220, overflowY: "auto", overflowX: "auto", padding: "0 clamp(12px, 4vw, 22px) 16px" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+          <div
+            style={{
+              maxHeight: 220,
+              overflowY: "auto",
+              overflowX: "auto",
+              padding: "0 clamp(12px, 4vw, 22px) 16px",
+            }}
+          >
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                fontSize: 12,
+              }}
+            >
               <thead>
                 <tr style={{ textAlign: "left", color: "#8b949e" }}>
                   <th style={{ padding: "6px 8px" }}>#</th>
@@ -1009,7 +1266,8 @@ export default function AlgoVisualizer<TInput = number[]>({
                     }}
                     style={{
                       cursor: "pointer",
-                      background: idx === currentStepIndex ? "#1f3a6e" : "transparent",
+                      background:
+                        idx === currentStepIndex ? "#1f3a6e" : "transparent",
                       color: idx === currentStepIndex ? "#58a6ff" : "#c9d1d9",
                     }}
                   >
@@ -1030,4 +1288,3 @@ export default function AlgoVisualizer<TInput = number[]>({
     </div>
   );
 }
-

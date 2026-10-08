@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ArrowLeft, ArrowRight, CheckCircle2, XCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
+import { FormattedText } from "../components/FormattedText";
+import Navbar from "../components/Navbar";
+import { Button } from "../components/ui/button";
 import { api } from "../lib/api";
 import { useAuth } from "../store/auth";
-import { Button } from "../components/ui/button";
-import Navbar from "../components/Navbar";
-import { FormattedText } from "../components/FormattedText";
-import { CheckCircle2, XCircle, ArrowRight, ArrowLeft } from "lucide-react";
-import { v4 as uuidv4 } from "uuid";
-import { toast } from "sonner";
 
 interface QuizQuestion {
   id: string;
@@ -118,7 +118,10 @@ export default function QuizTakingPage() {
               </span>
             </div>
             <p className="text-muted-foreground">
-              {Math.round((submission.score / submission.total_questions) * 100)}% correct
+              {Math.round(
+                (submission.score / submission.total_questions) * 100,
+              )}
+              % correct
             </p>
           </div>
 
@@ -133,9 +136,15 @@ export default function QuizTakingPage() {
                 >
                   <div className="flex items-start gap-3 mb-4">
                     {isCorrect ? (
-                      <CheckCircle2 className="text-primary mt-0.5 shrink-0" size={20} />
+                      <CheckCircle2
+                        className="text-primary mt-0.5 shrink-0"
+                        size={20}
+                      />
                     ) : (
-                      <XCircle className="text-destructive mt-0.5 shrink-0" size={20} />
+                      <XCircle
+                        className="text-destructive mt-0.5 shrink-0"
+                        size={20}
+                      />
                     )}
                     <div className="font-semibold text-lg flex-1">
                       <span className="mr-2">{idx + 1}.</span>
@@ -146,9 +155,11 @@ export default function QuizTakingPage() {
                     {q.options.map((opt, optIdx) => {
                       let cls = "p-3 rounded-lg border text-sm ";
                       if (optIdx === q.correctOptionIndex)
-                        cls += "border-primary bg-primary/10 text-primary font-semibold";
+                        cls +=
+                          "border-primary bg-primary/10 text-primary font-semibold";
                       else if (optIdx === userAnswer && !isCorrect)
-                        cls += "border-destructive bg-destructive/10 text-destructive";
+                        cls +=
+                          "border-destructive bg-destructive/10 text-destructive";
                       else cls += "border-border bg-card";
                       return (
                         <div key={optIdx} className={cls}>
@@ -159,7 +170,9 @@ export default function QuizTakingPage() {
                   </div>
                   {q.explanation && (
                     <div className="ml-8 mt-3 text-sm text-muted-foreground italic">
-                      <span className="font-semibold not-italic">💡 Explanation:</span>
+                      <span className="font-semibold not-italic">
+                        💡 Explanation:
+                      </span>
                       <FormattedText text={q.explanation} className="mt-1" />
                     </div>
                   )}

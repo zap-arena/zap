@@ -27,6 +27,10 @@ export default function RouteTransitionLoader() {
 
   const ready = EXCLUDED_ROUTE.test(location.pathname) || isFetching === 0;
   return (
-    <LoadingScreen key={location.pathname} ready={ready} onDone={() => setLoading(false)} />
+    <LoadingScreen
+      key={location.pathname}
+      ready={ready}
+      onDone={() => setLoading(false)}
+    />
   );
 }

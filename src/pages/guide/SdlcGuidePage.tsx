@@ -1,7 +1,13 @@
-import React from "react";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
+import type React from "react";
+import {
+  CompareTable,
+  FlowDiagram,
+  InfoCards,
+  SpiralDiagram,
+  VModelDiagram,
+} from "../../components/guide/OopsDiagrams";
 import Navbar from "../../components/Navbar";
-import { CompareTable, FlowDiagram, InfoCards, SpiralDiagram, VModelDiagram } from "../../components/guide/OopsDiagrams";
+import { useGuideLogic } from "../../hooks/useGuideLogic";
 
 export default function SdlcGuidePage() {
   useGuideLogic();
@@ -69,14 +75,22 @@ export default function SdlcGuidePage() {
                 <span className="legend-item">
                   <span
                     className="legend-swatch"
-                    style={{ background: "hsl(var(--primary))" } as React.CSSProperties}
+                    style={
+                      {
+                        background: "hsl(var(--primary))",
+                      } as React.CSSProperties
+                    }
                   ></span>
                   Concept &amp; diagram
                 </span>
                 <span className="legend-item">
                   <span
                     className="legend-swatch"
-                    style={{ background: "hsl(var(--primary))" } as React.CSSProperties}
+                    style={
+                      {
+                        background: "hsl(var(--primary))",
+                      } as React.CSSProperties
+                    }
                   ></span>
                   Interview tip
                 </span>
@@ -92,18 +106,20 @@ export default function SdlcGuidePage() {
               <p className="prompt">
                 The <b>Software Development Life Cycle (SDLC)</b> is a
                 structured framework used by software engineering teams to
-                design, develop, test, and deploy high-quality software. It
-                aims to produce software that meets customer expectations,
-                within time and cost estimates.
+                design, develop, test, and deploy high-quality software. It aims
+                to produce software that meets customer expectations, within
+                time and cost estimates.
               </p>
 
-              <FlowDiagram nodes={["Raw Idea", "SDLC Process", "Final Product"]} />
+              <FlowDiagram
+                nodes={["Raw Idea", "SDLC Process", "Final Product"]}
+              />
 
               <div className="twist">
                 <strong>Interview tip:</strong> SDLC is a{" "}
-                <b>governance framework</b> — it provides a standard
-                vocabulary for the team, mitigates risks, and ensures the end
-                product aligns with the client's business goals.
+                <b>governance framework</b> — it provides a standard vocabulary
+                for the team, mitigates risks, and ensures the end product
+                aligns with the client's business goals.
               </div>
             </section>
 
@@ -114,27 +130,50 @@ export default function SdlcGuidePage() {
                 <span className="level-badge basic">Basic</span>
               </div>
               <p className="prompt">
-                While different models execute these steps in different
-                orders, virtually all software development goes through these
-                six fundamental phases.
+                While different models execute these steps in different orders,
+                virtually all software development goes through these six
+                fundamental phases.
               </p>
 
               <InfoCards
                 cards={[
-                  { title: "1 · Requirements", desc: "Gathering business needs from stakeholders, analyzing feasibility, and creating the SRS document.", color: "#3b82f6" },
-                  { title: "2 · Design", desc: "Translating requirements into technical blueprints — High-Level (architecture) and Low-Level (UI/database schemas).", color: "#a371f7" },
-                  { title: "3 · Development (Coding)", desc: "The longest phase. Developers write the actual code using chosen languages and frameworks.", color: "#059669" },
-                  { title: "4 · Testing", desc: "QA teams rigorously test against requirements to identify and fix defects, ensuring quality and security.", color: "#f85149" },
-                  { title: "5 · Deployment", desc: "Pushing the tested code into the production environment where end-users can access it.", color: "#f59e0b" },
-                  { title: "6 · Maintenance", desc: "Ongoing support, fixing latent bugs, and adding minor feature enhancements over time.", color: "#22d3ee" },
+                  {
+                    title: "1 · Requirements",
+                    desc: "Gathering business needs from stakeholders, analyzing feasibility, and creating the SRS document.",
+                    color: "#3b82f6",
+                  },
+                  {
+                    title: "2 · Design",
+                    desc: "Translating requirements into technical blueprints — High-Level (architecture) and Low-Level (UI/database schemas).",
+                    color: "#a371f7",
+                  },
+                  {
+                    title: "3 · Development (Coding)",
+                    desc: "The longest phase. Developers write the actual code using chosen languages and frameworks.",
+                    color: "#059669",
+                  },
+                  {
+                    title: "4 · Testing",
+                    desc: "QA teams rigorously test against requirements to identify and fix defects, ensuring quality and security.",
+                    color: "#f85149",
+                  },
+                  {
+                    title: "5 · Deployment",
+                    desc: "Pushing the tested code into the production environment where end-users can access it.",
+                    color: "#f59e0b",
+                  },
+                  {
+                    title: "6 · Maintenance",
+                    desc: "Ongoing support, fixing latent bugs, and adding minor feature enhancements over time.",
+                    color: "#22d3ee",
+                  },
                 ]}
               />
 
               <div className="twist">
                 <strong>Interview tip:</strong> the cost of fixing a bug
-                increases exponentially the later it is found — cheap in
-                Design, extremely expensive in Maintenance after users are
-                impacted.
+                increases exponentially the later it is found — cheap in Design,
+                extremely expensive in Maintenance after users are impacted.
               </div>
             </section>
 
@@ -145,18 +184,26 @@ export default function SdlcGuidePage() {
                 <span className="level-badge basic">Basic</span>
               </div>
               <p className="prompt">
-                The traditional, linear-sequential approach. Each phase must
-                be completely finished before the next phase begins — there
-                is no overlapping.
+                The traditional, linear-sequential approach. Each phase must be
+                completely finished before the next phase begins — there is no
+                overlapping.
               </p>
 
-              <FlowDiagram nodes={["Requirements", "System Design", "Implementation", "Testing", "Deployment"]} />
+              <FlowDiagram
+                nodes={[
+                  "Requirements",
+                  "System Design",
+                  "Implementation",
+                  "Testing",
+                  "Deployment",
+                ]}
+              />
 
               <div className="twist">
                 <strong>Interview tip:</strong> use Waterfall only when
                 requirements are strictly fixed, well understood, and highly
-                unlikely to change. Its major flaw: you cannot easily go back
-                a step if requirements change mid-way.
+                unlikely to change. Its major flaw: you cannot easily go back a
+                step if requirements change mid-way.
               </div>
             </section>
 
@@ -167,19 +214,28 @@ export default function SdlcGuidePage() {
                 <span className="level-badge basic">Basic</span>
               </div>
               <p className="prompt">
-                An iterative, flexible approach. Software is developed in
-                small, rapid cycles called <b>Sprints</b> (usually 2-4 weeks),
-                allowing teams to adapt to changing requirements
-                continuously.
+                An iterative, flexible approach. Software is developed in small,
+                rapid cycles called <b>Sprints</b> (usually 2-4 weeks), allowing
+                teams to adapt to changing requirements continuously.
               </p>
 
-              <FlowDiagram nodes={["Plan", "Design", "Build", "Test", "Review", "Launch", "Plan…"]} />
+              <FlowDiagram
+                nodes={[
+                  "Plan",
+                  "Design",
+                  "Build",
+                  "Test",
+                  "Review",
+                  "Launch",
+                  "Plan…",
+                ]}
+              />
 
               <div className="twist">
-                <strong>Interview tip:</strong> "Agile isn't an excuse for
-                zero documentation." It values working software{" "}
-                <i>over</i> comprehensive documentation, but still requires
-                essential documentation to manage technical debt.
+                <strong>Interview tip:</strong> "Agile isn't an excuse for zero
+                documentation." It values working software <i>over</i>{" "}
+                comprehensive documentation, but still requires essential
+                documentation to manage technical debt.
               </div>
             </section>
 
@@ -191,8 +247,8 @@ export default function SdlcGuidePage() {
               </div>
               <p className="prompt">
                 An extension of Waterfall. For every development phase on the
-                left side (Verification), there is a corresponding testing
-                phase mapped directly to it on the right side (Validation).
+                left side (Verification), there is a corresponding testing phase
+                mapped directly to it on the right side (Validation).
               </p>
 
               <VModelDiagram
@@ -229,10 +285,9 @@ export default function SdlcGuidePage() {
                 <span className="level-badge medium">Medium</span>
               </div>
               <p className="prompt">
-                A risk-driven model combining Waterfall and Agile. The
-                project repeatedly passes through four main phases in a
-                "spiral", building out from a small prototype to a large
-                system.
+                A risk-driven model combining Waterfall and Agile. The project
+                repeatedly passes through four main phases in a "spiral",
+                building out from a small prototype to a large system.
               </p>
 
               <SpiralDiagram
@@ -246,18 +301,33 @@ export default function SdlcGuidePage() {
 
               <InfoCards
                 cards={[
-                  { title: "1 · Objective Setting & Planning", desc: "Define objectives, alternatives, and constraints for this iteration.", color: "#3b82f6" },
-                  { title: "2 · Risk Analysis", desc: "Identify and resolve risks, often through prototyping and mitigation strategies.", color: "#f85149" },
-                  { title: "3 · Develop & Test", desc: "Build and verify the next version of the product for this iteration.", color: "#059669" },
-                  { title: "4 · Review & Evaluate", desc: "Customer evaluates the output; plan the next iteration of the spiral.", color: "#f59e0b" },
+                  {
+                    title: "1 · Objective Setting & Planning",
+                    desc: "Define objectives, alternatives, and constraints for this iteration.",
+                    color: "#3b82f6",
+                  },
+                  {
+                    title: "2 · Risk Analysis",
+                    desc: "Identify and resolve risks, often through prototyping and mitigation strategies.",
+                    color: "#f85149",
+                  },
+                  {
+                    title: "3 · Develop & Test",
+                    desc: "Build and verify the next version of the product for this iteration.",
+                    color: "#059669",
+                  },
+                  {
+                    title: "4 · Review & Evaluate",
+                    desc: "Customer evaluates the output; plan the next iteration of the spiral.",
+                    color: "#f59e0b",
+                  },
                 ]}
               />
 
               <div className="twist">
                 <strong>Interview tip:</strong> the defining feature of the
-                Spiral model is <b>Risk Analysis</b>. For a highly
-                experimental, large, or high-risk project, the Spiral Model
-                is the answer.
+                Spiral model is <b>Risk Analysis</b>. For a highly experimental,
+                large, or high-risk project, the Spiral Model is the answer.
               </div>
             </section>
           </div>

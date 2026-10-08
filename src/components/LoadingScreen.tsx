@@ -8,7 +8,10 @@ interface LoadingScreenProps {
   ready?: boolean;
 }
 
-export default function LoadingScreen({ onDone, ready = true }: LoadingScreenProps) {
+export default function LoadingScreen({
+  onDone,
+  ready = true,
+}: LoadingScreenProps) {
   const [progress, setProgress] = useState(0);
   const [flash, setFlash] = useState(false);
   const [rampDone, setRampDone] = useState(false);
@@ -64,23 +67,37 @@ export default function LoadingScreen({ onDone, ready = true }: LoadingScreenPro
       <div className="zap-loading-inner">
         <div className="zap-loading-logo-wrap">
           <span className="zap-loading-strike-burst" />
-          <svg className="zap-loading-bolt-strike" viewBox="0 0 60 120" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            <path d="M33 0 L18 50 L30 50 L15 120 L45 44 L31 44 Z" fill="hsl(50 100% 75%)" />
+          <svg
+            className="zap-loading-bolt-strike"
+            viewBox="0 0 60 120"
+            preserveAspectRatio="xMidYMid meet"
+            aria-hidden="true"
+          >
+            <path
+              d="M33 0 L18 50 L30 50 L15 120 L45 44 L31 44 Z"
+              fill="hsl(50 100% 75%)"
+            />
           </svg>
           <h1
             className="font-black tracking-tight flex items-center justify-center gap-2 whitespace-nowrap"
-            style={{ fontSize: "3rem", fontFamily: "'Playfair Display', serif" }}
+            style={{
+              fontSize: "3rem",
+              fontFamily: "'Playfair Display', serif",
+            }}
           >
             <span
               className="flex items-center"
               style={{
-                background: "linear-gradient(135deg, hsl(158, 84%, 46%), hsl(200, 100%, 50%))",
+                background:
+                  "linear-gradient(135deg, hsl(158, 84%, 46%), hsl(200, 100%, 50%))",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
               }}
             >
-              Z<ThunderLogo className="w-10 h-10 text-amber-400 zap-lightning-bolt" />P
+              Z
+              <ThunderLogo className="w-10 h-10 text-amber-400 zap-lightning-bolt" />
+              P
             </span>
           </h1>
         </div>

@@ -1,6 +1,4 @@
-import React from "react";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
-import Navbar from "../../components/Navbar";
+import type React from "react";
 import AlgoVisualizer from "../../components/guide/AlgoVisualizer";
 import {
   linkedListCycleApproaches,
@@ -10,6 +8,8 @@ import {
   removeNthFromEndApproaches,
   reverseLinkedListApproaches,
 } from "../../components/guide/linkedListVisualizations";
+import Navbar from "../../components/Navbar";
+import { useGuideLogic } from "../../hooks/useGuideLogic";
 
 export default function LinkedListDsaGuidePage() {
   useGuideLogic();
@@ -94,21 +94,29 @@ export default function LinkedListDsaGuidePage() {
                 Six questions built around pointer manipulation. Each
                 brute-force version copies values into an array (or makes a
                 second pass) to sidestep the pointer juggling; each optimal
-                version re-links nodes directly in a single pass with O(1)
-                extra space.
+                version re-links nodes directly in a single pass with O(1) extra
+                space.
               </p>
               <div className="legend">
                 <span className="legend-item">
                   <span
                     className="legend-swatch"
-                    style={{ background: "hsl(var(--primary))" } as React.CSSProperties}
+                    style={
+                      {
+                        background: "hsl(var(--primary))",
+                      } as React.CSSProperties
+                    }
                   ></span>
                   Brute force (extra space / two pass)
                 </span>
                 <span className="legend-item">
                   <span
                     className="legend-swatch"
-                    style={{ background: "hsl(var(--primary))" } as React.CSSProperties}
+                    style={
+                      {
+                        background: "hsl(var(--primary))",
+                      } as React.CSSProperties
+                    }
                   ></span>
                   Optimal (in-place / one pass)
                 </span>
@@ -138,7 +146,10 @@ export default function LinkedListDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q1-approach">
-                  <button className="tab-btn brute active" data-target="q1-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q1-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q1-opt">
@@ -147,8 +158,8 @@ export default function LinkedListDsaGuidePage() {
                 </div>
                 <div className="approach-panel active" id="q1-brute">
                   <div className="complexity">
-                    Time: <b>O(n)</b> · Space: <b>O(n)</b> — copy values into
-                    an array, build a brand-new reversed list
+                    Time: <b>O(n)</b> · Space: <b>O(n)</b> — copy values into an
+                    array, build a brand-new reversed list
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -221,9 +232,9 @@ export default function LinkedListDsaGuidePage() {
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> How would you reverse only
-                a sub-section of the list, between positions{" "}
-                <code>left</code> and <code>right</code>?
+                <strong>One step further:</strong> How would you reverse only a
+                sub-section of the list, between positions <code>left</code> and{" "}
+                <code>right</code>?
               </div>
             </section>
 
@@ -235,8 +246,7 @@ export default function LinkedListDsaGuidePage() {
               </div>
               <p className="prompt">
                 Given the head of a linked list, determine if the list has a
-                cycle (some node's next pointer loops back to an earlier
-                node).
+                cycle (some node's next pointer loops back to an earlier node).
               </p>
               <div className="example">
                 Input: 1 → 2 → 3 → 4 → (back to 3) Output: true
@@ -251,7 +261,10 @@ export default function LinkedListDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q2-approach">
-                  <button className="tab-btn brute active" data-target="q2-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q2-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q2-opt">
@@ -260,8 +273,8 @@ export default function LinkedListDsaGuidePage() {
                 </div>
                 <div className="approach-panel active" id="q2-brute">
                   <div className="complexity">
-                    Time: <b>O(n)</b> · Space: <b>O(n)</b> — remember every
-                    node visited in a set; a repeat means a cycle
+                    Time: <b>O(n)</b> · Space: <b>O(n)</b> — remember every node
+                    visited in a set; a repeat means a cycle
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -329,9 +342,9 @@ export default function LinkedListDsaGuidePage() {
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> Once a cycle is detected,
-                how would you find the exact node where the cycle begins,
-                still in O(1) space?
+                <strong>One step further:</strong> Once a cycle is detected, how
+                would you find the exact node where the cycle begins, still in
+                O(1) space?
               </div>
             </section>
 
@@ -342,8 +355,8 @@ export default function LinkedListDsaGuidePage() {
                 <span className="level-badge basic">Basic</span>
               </div>
               <p className="prompt">
-                Merge two sorted linked lists into one sorted list by
-                splicing their nodes together.
+                Merge two sorted linked lists into one sorted list by splicing
+                their nodes together.
               </p>
               <div className="example">
                 Input: l1 = 1→3→5→7, l2 = 2→4→6 Output: 1→2→3→4→5→6→7
@@ -358,7 +371,10 @@ export default function LinkedListDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q3-approach">
-                  <button className="tab-btn brute active" data-target="q3-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q3-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q3-opt">
@@ -367,8 +383,8 @@ export default function LinkedListDsaGuidePage() {
                 </div>
                 <div className="approach-panel active" id="q3-brute">
                   <div className="complexity">
-                    Time: <b>O((m+n) log(m+n))</b> · Space: <b>O(m+n)</b> —
-                    dump every value into one array and sort it
+                    Time: <b>O((m+n) log(m+n))</b> · Space: <b>O(m+n)</b> — dump
+                    every value into one array and sort it
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -457,8 +473,8 @@ export default function LinkedListDsaGuidePage() {
                 <span className="level-badge medium">Medium</span>
               </div>
               <p className="prompt">
-                Given the head of a linked list, remove the{" "}
-                <code>n</code>-th node from the end and return the head.
+                Given the head of a linked list, remove the <code>n</code>-th
+                node from the end and return the head.
               </p>
               <div className="example">
                 Input: 1→2→3→4→5, n = 2 Output: 1→2→3→5
@@ -473,7 +489,10 @@ export default function LinkedListDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q4-approach">
-                  <button className="tab-btn brute active" data-target="q4-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q4-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q4-opt">
@@ -560,8 +579,8 @@ export default function LinkedListDsaGuidePage() {
               </div>
               <div className="twist">
                 <strong>One step further:</strong> Why does starting both
-                pointers from a dummy node (before the real head) simplify
-                the edge case where the head itself is removed?
+                pointers from a dummy node (before the real head) simplify the
+                edge case where the head itself is removed?
               </div>
             </section>
 
@@ -572,12 +591,10 @@ export default function LinkedListDsaGuidePage() {
                 <span className="level-badge basic">Basic</span>
               </div>
               <p className="prompt">
-                Given the head of a singly linked list, return the middle
-                node. If there are two middle nodes, return the second one.
+                Given the head of a singly linked list, return the middle node.
+                If there are two middle nodes, return the second one.
               </p>
-              <div className="example">
-                Input: 1→2→3→4→5→6 Output: 4
-              </div>
+              <div className="example">Input: 1→2→3→4→5→6 Output: 4</div>
 
               <AlgoVisualizer
                 title="Middle of the Linked List"
@@ -588,7 +605,10 @@ export default function LinkedListDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q5-approach">
-                  <button className="tab-btn brute active" data-target="q5-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q5-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q5-opt">
@@ -664,9 +684,9 @@ export default function LinkedListDsaGuidePage() {
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> This same slow/fast
-                technique shows up in cycle detection and palindrome
-                checking — what's the common idea behind all three?
+                <strong>One step further:</strong> This same slow/fast technique
+                shows up in cycle detection and palindrome checking — what's the
+                common idea behind all three?
               </div>
             </section>
 
@@ -680,9 +700,7 @@ export default function LinkedListDsaGuidePage() {
                 Given the head of a singly linked list, determine if it reads
                 the same forward and backward.
               </p>
-              <div className="example">
-                Input: 1→2→2→1 Output: true
-              </div>
+              <div className="example">Input: 1→2→2→1 Output: true</div>
 
               <AlgoVisualizer
                 title="Palindrome Linked List"
@@ -693,7 +711,10 @@ export default function LinkedListDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q6-approach">
-                  <button className="tab-btn brute active" data-target="q6-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q6-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q6-opt">
@@ -781,9 +802,9 @@ export default function LinkedListDsaGuidePage() {
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> The optimal approach
-                mutates the list while reversing the second half — how would
-                you restore the original list afterward if that matters?
+                <strong>One step further:</strong> The optimal approach mutates
+                the list while reversing the second half — how would you restore
+                the original list afterward if that matters?
               </div>
             </section>
           </div>

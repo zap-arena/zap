@@ -23,7 +23,9 @@ const PALETTE = {
 
 export function InfoCards({
   cards,
-}: Readonly<{ cards: { title: string; desc: string; code?: string; color: string }[] }>) {
+}: Readonly<{
+  cards: { title: string; desc: string; code?: string; color: string }[];
+}>) {
   return (
     <div
       style={{
@@ -44,8 +46,21 @@ export function InfoCards({
             padding: "12px 14px",
           }}
         >
-          <div style={{ fontWeight: 700, color: PALETTE.text, fontSize: 14, marginBottom: 4 }}>{c.title}</div>
-          <div style={{ color: PALETTE.muted, fontSize: 12.5, lineHeight: 1.5 }}>{c.desc}</div>
+          <div
+            style={{
+              fontWeight: 700,
+              color: PALETTE.text,
+              fontSize: 14,
+              marginBottom: 4,
+            }}
+          >
+            {c.title}
+          </div>
+          <div
+            style={{ color: PALETTE.muted, fontSize: 12.5, lineHeight: 1.5 }}
+          >
+            {c.desc}
+          </div>
           {c.code && (
             <pre
               style={{
@@ -73,14 +88,41 @@ export function VennPair({
   rightFilled,
   overlapFilled,
   color = "#f59e0b",
-}: Readonly<{ leftFilled: boolean; rightFilled: boolean; overlapFilled: boolean; color?: string }>) {
+}: Readonly<{
+  leftFilled: boolean;
+  rightFilled: boolean;
+  overlapFilled: boolean;
+  color?: string;
+}>) {
   const r = 30;
   return (
-    <svg width="120" height="80" viewBox="0 0 120 80" style={{ display: "block", margin: "8px auto" }}>
-      <circle cx={40} cy={40} r={r} fill={leftFilled ? color : "transparent"} stroke={PALETTE.border} strokeWidth={2} />
-      <circle cx={80} cy={40} r={r} fill={rightFilled ? color : "transparent"} stroke={PALETTE.border} strokeWidth={2} />
+    <svg
+      width="120"
+      height="80"
+      viewBox="0 0 120 80"
+      style={{ display: "block", margin: "8px auto" }}
+    >
+      <circle
+        cx={40}
+        cy={40}
+        r={r}
+        fill={leftFilled ? color : "transparent"}
+        stroke={PALETTE.border}
+        strokeWidth={2}
+      />
+      <circle
+        cx={80}
+        cy={40}
+        r={r}
+        fill={rightFilled ? color : "transparent"}
+        stroke={PALETTE.border}
+        strokeWidth={2}
+      />
       {overlapFilled && (
-        <path d="M 53 16 A 30 30 0 0 0 53 64 A 30 30 0 0 0 53 16 Z" fill={color} />
+        <path
+          d="M 53 16 A 30 30 0 0 0 53 64 A 30 30 0 0 0 53 16 Z"
+          fill={color}
+        />
       )}
     </svg>
   );
@@ -102,7 +144,10 @@ export function FlowDiagram({ nodes }: Readonly<{ nodes: string[] }>) {
       }}
     >
       {nodes.map((label, idx) => (
-        <div key={label} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div
+          key={label}
+          style={{ display: "flex", alignItems: "center", gap: 8 }}
+        >
           <span
             style={{
               padding: "8px 14px",
@@ -117,7 +162,9 @@ export function FlowDiagram({ nodes }: Readonly<{ nodes: string[] }>) {
           >
             {label}
           </span>
-          {idx < nodes.length - 1 && <span style={{ color: PALETTE.muted, fontSize: 18 }}>→</span>}
+          {idx < nodes.length - 1 && (
+            <span style={{ color: PALETTE.muted, fontSize: 18 }}>→</span>
+          )}
         </div>
       ))}
     </div>
@@ -148,8 +195,21 @@ export function PillarsGrid({
             padding: "12px 14px",
           }}
         >
-          <div style={{ fontWeight: 700, color: PALETTE.text, fontSize: 14, marginBottom: 4 }}>{p.title}</div>
-          <div style={{ color: PALETTE.muted, fontSize: 12.5, lineHeight: 1.5 }}>{p.desc}</div>
+          <div
+            style={{
+              fontWeight: 700,
+              color: PALETTE.text,
+              fontSize: 14,
+              marginBottom: 4,
+            }}
+          >
+            {p.title}
+          </div>
+          <div
+            style={{ color: PALETTE.muted, fontSize: 12.5, lineHeight: 1.5 }}
+          >
+            {p.desc}
+          </div>
         </div>
       ))}
     </div>
@@ -159,7 +219,10 @@ export function PillarsGrid({
 export function OrgChart({
   root,
   children,
-}: Readonly<{ root: string; children: { label: string; grandchildren?: string[] }[] }>) {
+}: Readonly<{
+  root: string;
+  children: { label: string; grandchildren?: string[] }[];
+}>) {
   return (
     <div
       style={{
@@ -172,7 +235,14 @@ export function OrgChart({
       }}
     >
       <NodePill label={root} color={PALETTE.green} />
-      <div style={{ width: 2, height: 16, background: PALETTE.border, margin: "0 auto" }} />
+      <div
+        style={{
+          width: 2,
+          height: 16,
+          background: PALETTE.border,
+          margin: "0 auto",
+        }}
+      />
       <div
         style={{
           display: "flex",
@@ -184,12 +254,29 @@ export function OrgChart({
         }}
       >
         {children.map((child) => (
-          <div key={child.label} style={{ position: "relative", paddingTop: 0 }}>
-            <div style={{ width: 2, height: 16, background: PALETTE.border, margin: "-16px auto 0" }} />
+          <div
+            key={child.label}
+            style={{ position: "relative", paddingTop: 0 }}
+          >
+            <div
+              style={{
+                width: 2,
+                height: 16,
+                background: PALETTE.border,
+                margin: "-16px auto 0",
+              }}
+            />
             <NodePill label={child.label} color={PALETTE.amber} />
             {child.grandchildren && child.grandchildren.length > 0 && (
               <>
-                <div style={{ width: 2, height: 16, background: PALETTE.border, margin: "0 auto" }} />
+                <div
+                  style={{
+                    width: 2,
+                    height: 16,
+                    background: PALETTE.border,
+                    margin: "0 auto",
+                  }}
+                />
                 <div
                   style={{
                     display: "flex",
@@ -201,7 +288,14 @@ export function OrgChart({
                 >
                   {child.grandchildren.map((gc) => (
                     <div key={gc} style={{ position: "relative" }}>
-                      <div style={{ width: 2, height: 16, background: PALETTE.border, margin: "-16px auto 0" }} />
+                      <div
+                        style={{
+                          width: 2,
+                          height: 16,
+                          background: PALETTE.border,
+                          margin: "-16px auto 0",
+                        }}
+                      />
                       <NodePill label={gc} color={PALETTE.pink} />
                     </div>
                   ))}
@@ -243,17 +337,34 @@ export function MergeChart({
         {parents.map((p) => (
           <div key={p} style={{ position: "relative" }}>
             <NodePill label={p} color={PALETTE.purple} />
-            <div style={{ width: 2, height: 16, background: PALETTE.border, margin: "0 auto -16px" }} />
+            <div
+              style={{
+                width: 2,
+                height: 16,
+                background: PALETTE.border,
+                margin: "0 auto -16px",
+              }}
+            />
           </div>
         ))}
       </div>
-      <div style={{ width: 2, height: 16, background: PALETTE.border, margin: "0 auto" }} />
+      <div
+        style={{
+          width: 2,
+          height: 16,
+          background: PALETTE.border,
+          margin: "0 auto",
+        }}
+      />
       <NodePill label={child} color={PALETTE.green} />
     </div>
   );
 }
 
-function NodePill({ label, color }: Readonly<{ label: string; color: string }>) {
+function NodePill({
+  label,
+  color,
+}: Readonly<{ label: string; color: string }>) {
   return (
     <span
       style={{
@@ -276,8 +387,20 @@ export function Rings({
   rings,
 }: Readonly<{ rings: { label: string; color: string; size: number }[] }>) {
   return (
-    <div style={{ display: "flex", justifyContent: "center", padding: "20px 0 4px" }}>
-      <div style={{ position: "relative", width: "min(320px, 80vw)", height: "min(320px, 80vw)" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        padding: "20px 0 4px",
+      }}
+    >
+      <div
+        style={{
+          position: "relative",
+          width: "min(320px, 80vw)",
+          height: "min(320px, 80vw)",
+        }}
+      >
         {rings.map((ring, idx) => {
           const inset = (100 - ring.size) / 2;
           return (
@@ -321,10 +444,27 @@ export function Layers({
         border: `1px solid ${PALETTE.borderSoft}`,
       }}
     >
-      <div style={{ padding: "12px 16px", background: "#0d2818", color: PALETTE.greenSoft, fontWeight: 600, fontSize: 13 }}>
+      <div
+        style={{
+          padding: "12px 16px",
+          background: "#0d2818",
+          color: PALETTE.greenSoft,
+          fontWeight: 600,
+          fontSize: 13,
+        }}
+      >
         {visible}
       </div>
-      <div style={{ padding: "12px 16px", background: "#0a1020", color: "#aab9d8", fontSize: 13 }}>{hidden}</div>
+      <div
+        style={{
+          padding: "12px 16px",
+          background: "#0a1020",
+          color: "#aab9d8",
+          fontSize: 13,
+        }}
+      >
+        {hidden}
+      </div>
     </div>
   );
 }
@@ -437,15 +577,24 @@ export function SpiralDiagram({
     const colorIdx = Math.floor(angle / segAngle) % quadrants.length;
     if (colorIdx !== currentColorIdx) {
       if (currentPoints.length > 1) {
-        runs.push({ color: quadrants[currentColorIdx].color, points: currentPoints.join(" ") });
+        runs.push({
+          color: quadrants[currentColorIdx].color,
+          points: currentPoints.join(" "),
+        });
       }
       currentColorIdx = colorIdx;
-      currentPoints = currentPoints.length > 0 ? [currentPoints[currentPoints.length - 1]] : [];
+      currentPoints =
+        currentPoints.length > 0
+          ? [currentPoints[currentPoints.length - 1]]
+          : [];
     }
     currentPoints.push(`${x.toFixed(1)},${y.toFixed(1)}`);
   }
   if (currentPoints.length > 1) {
-    runs.push({ color: quadrants[currentColorIdx].color, points: currentPoints.join(" ") });
+    runs.push({
+      color: quadrants[currentColorIdx].color,
+      points: currentPoints.join(" "),
+    });
   }
 
   return (
@@ -478,8 +627,19 @@ export function SpiralDiagram({
       </svg>
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         {quadrants.map((q) => (
-          <div key={q.label} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ width: 10, height: 10, borderRadius: "50%", background: q.color, flexShrink: 0 }} />
+          <div
+            key={q.label}
+            style={{ display: "flex", alignItems: "center", gap: 8 }}
+          >
+            <span
+              style={{
+                width: 10,
+                height: 10,
+                borderRadius: "50%",
+                background: q.color,
+                flexShrink: 0,
+              }}
+            />
             <span style={{ fontSize: 12, color: PALETTE.text }}>{q.label}</span>
           </div>
         ))}
@@ -490,9 +650,23 @@ export function SpiralDiagram({
 
 export function VerticalSteps({ steps }: Readonly<{ steps: string[] }>) {
   return (
-    <div style={{ marginTop: 12, display: "flex", flexDirection: "column", alignItems: "center" }}>
+    <div
+      style={{
+        marginTop: 12,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
       {steps.map((s, idx) => (
-        <div key={s} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <div
+          key={s}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           <div
             style={{
               display: "flex",
@@ -506,10 +680,29 @@ export function VerticalSteps({ steps }: Readonly<{ steps: string[] }>) {
               justifyContent: "center",
             }}
           >
-            <span style={{ color: PALETTE.blueSoft, opacity: 0.7, fontSize: 11, fontWeight: 700 }}>{idx + 1}</span>
-            <span style={{ color: PALETTE.blueSoft, fontWeight: 700, fontSize: 13 }}>{s}</span>
+            <span
+              style={{
+                color: PALETTE.blueSoft,
+                opacity: 0.7,
+                fontSize: 11,
+                fontWeight: 700,
+              }}
+            >
+              {idx + 1}
+            </span>
+            <span
+              style={{ color: PALETTE.blueSoft, fontWeight: 700, fontSize: 13 }}
+            >
+              {s}
+            </span>
           </div>
-          {idx < steps.length - 1 && <span style={{ color: PALETTE.muted, fontSize: 16, lineHeight: 1.4 }}>↓</span>}
+          {idx < steps.length - 1 && (
+            <span
+              style={{ color: PALETTE.muted, fontSize: 16, lineHeight: 1.4 }}
+            >
+              ↓
+            </span>
+          )}
         </div>
       ))}
     </div>
@@ -573,7 +766,10 @@ export function GroupingDiagram({
               fontSize: 13,
             }}
           >
-            {g.key}: <span style={{ color: PALETTE.text, fontWeight: 400 }}>{g.agg}</span>
+            {g.key}:{" "}
+            <span style={{ color: PALETTE.text, fontWeight: 400 }}>
+              {g.agg}
+            </span>
           </div>
         ))}
       </div>
@@ -590,7 +786,10 @@ export function KeyRelationDiagram({
   tableB: { name: string; columns: { name: string; tag?: "PK" | "FK" }[] };
   relation?: string;
 }>) {
-  const renderTable = (t: { name: string; columns: { name: string; tag?: "PK" | "FK" }[] }) => (
+  const renderTable = (t: {
+    name: string;
+    columns: { name: string; tag?: "PK" | "FK" }[];
+  }) => (
     <div
       style={{
         background: PALETTE.panel,
@@ -625,7 +824,13 @@ export function KeyRelationDiagram({
         >
           <span>{c.name}</span>
           {c.tag && (
-            <span style={{ color: c.tag === "PK" ? PALETTE.amber : PALETTE.pink, fontWeight: 700, fontSize: 10.5 }}>
+            <span
+              style={{
+                color: c.tag === "PK" ? PALETTE.amber : PALETTE.pink,
+                fontWeight: 700,
+                fontSize: 10.5,
+              }}
+            >
               {c.tag}
             </span>
           )}
@@ -649,9 +854,18 @@ export function KeyRelationDiagram({
       }}
     >
       {renderTable(tableA)}
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 2,
+        }}
+      >
         <span style={{ color: PALETTE.muted, fontSize: 18 }}>⟶</span>
-        <span style={{ color: PALETTE.green, fontSize: 11, fontWeight: 700 }}>{relation}</span>
+        <span style={{ color: PALETTE.green, fontSize: 11, fontWeight: 700 }}>
+          {relation}
+        </span>
       </div>
       {renderTable(tableB)}
     </div>
@@ -664,7 +878,9 @@ export function CompareTable({
 }: Readonly<{ headers: string[]; rows: (string | React.ReactNode)[][] }>) {
   return (
     <div style={{ overflowX: "auto", marginTop: 12 }}>
-      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+      <table
+        style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}
+      >
         <thead>
           <tr>
             {headers.map((h) => (
