@@ -1,5 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, ArrowRight, CheckCircle2, XCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  Medal,
+  Trophy,
+  XCircle,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -125,20 +132,19 @@ export default function QuizTakingPage() {
           </Button>
 
           <div className="grid md:grid-cols-3 gap-8 mb-8">
-            <div className="md:col-span-2 bg-card border rounded-xl p-8 text-center flex flex-col justify-center">
-              <h1 className="text-3xl font-bold mb-2">{quiz.title} - Report</h1>
-              <div className="text-5xl font-black text-primary mt-6 mb-2">
-                {submission.score}{" "}
-                <span className="text-3xl text-muted-foreground">
-                  / {submission.total_questions}
-                </span>
+            <div className="md:col-span-2 bg-card border rounded-xl p-8 flex items-center justify-between">
+              <h1 className="text-3xl font-bold">{quiz.title} - Report</h1>
+              <div className="flex items-center gap-6">
+                <div className="text-5xl font-black text-primary">
+                  {submission.score}{" "}
+                  <span className="text-3xl text-muted-foreground">
+                    / {submission.total_questions}
+                  </span>
+                </div>
+                <div className="px-4 py-2 bg-primary/10 text-primary font-semibold rounded-lg text-lg">
+                  {Math.round((submission.score / submission.total_questions) * 100)}%
+                </div>
               </div>
-              <p className="text-muted-foreground font-medium text-lg">
-                {Math.round(
-                  (submission.score / submission.total_questions) * 100,
-                )}
-                % correct
-              </p>
             </div>
 
             <div className="bg-card border rounded-xl p-6">
@@ -147,35 +153,88 @@ export default function QuizTakingPage() {
               </h3>
               <div className="space-y-3">
                 {leaderboard?.length ? (
-                  leaderboard.map((entry, idx) => (
-                    <div
-                      key={idx}
-                      className={`flex items-center justify-between p-3 rounded-lg border ${
-                        entry.userId === user.id
-                          ? "bg-primary/10 border-primary/30"
-                          : "bg-background border-border"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="font-bold text-muted-foreground w-4 text-center">
-                          {idx + 1}
-                        </span>
-                        <span className="font-medium truncate max-w-[120px]">
-                          {entry.userId === user.id ? "You" : entry.userName}
-                        </span>
+                  leaderboard.map((entry, idx) => {
+                    const isTop1 = idx === 0;
+                    const isTop2 = idx === 1;
+                    const isTop3 = idx === 2;
+                    const isMe = entry.userId === user.id;
+
+                    return (
+                      <div
+                        key={idx}
+                        className={`flex items-center justify-between p-3 rounded-xl border transition-all duration-300 ${
+                          isMe
+                            ? "bg-primary/10 border-primary shadow-sm shadow-primary/20"
+                            : isTop1
+                              ? "bg-yellow-500/10 border-yellow-500/30"
+                              : isTop2
+                                ? "bg-slate-300/10 border-slate-300/30"
+                                : isTop3
+                                  ? "bg-amber-600/10 border-amber-600/30"
+                                  : "bg-background hover:bg-card border-border"
+                        }`}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div
+                            className={`flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm ${
+                              isTop1
+                                ? "bg-yellow-500 text-yellow-950 shadow-[0_0_10px_rgba(234,179,8,0.5)]"
+                                : isTop2
+                                  ? "bg-slate-300 text-slate-900 shadow-[0_0_10px_rgba(203,213,225,0.4)]"
+                                  : isTop3
+                                    ? "bg-amber-600 text-amber-50 shadow-[0_0_10px_rgba(217,119,6,0.4)]"
+                                    : "bg-secondary text-muted-foreground"
+                            }`}
+                          >
+                            {isTop1 ? (
+                              <Trophy
+                                size={16}
+                                className="fill-yellow-950/20"
+                              />
+                            ) : isTop2 || isTop3 ? (
+                              <Medal size={16} />
+                            ) : (
+                              idx + 1
+                            )}
+                          </div>
+
+                          <div className="flex flex-col items-start">
+                            <span
+                              className={`font-semibold truncate max-w-[140px] ${isMe ? "text-primary" : "text-foreground"}`}
+                            >
+                              {isMe ? "You" : entry.userName}
+                            </span>
+                            <span className="text-[10px] text-muted-foreground">
+                              {new Date(entry.submittedAt).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <div
+                            className={`font-black text-xl leading-none ${
+                              isTop1
+                                ? "text-yellow-500"
+                                : isTop2
+                                  ? "text-slate-300"
+                                  : isTop3
+                                    ? "text-amber-600"
+                                    : "text-primary"
+                            }`}
+                          >
+                            {entry.score}
+                          </div>
+                          <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
+                            / {entry.totalQuestions} Pts
+                          </span>
+                        </div>
                       </div>
-                      <div className="font-bold text-primary">
-                        {entry.score}{" "}
-                        <span className="text-muted-foreground text-xs font-normal">
-                          / {entry.totalQuestions}
-                        </span>
-                      </div>
-                    </div>
-                  ))
+                    );
+                  })
                 ) : (
-                  <p className="text-muted-foreground text-sm text-center py-4">
-                    No scores yet.
-                  </p>
+                  <div className="text-center py-8 text-muted-foreground flex flex-col items-center gap-2">
+                    <Trophy className="opacity-20" size={32} />
+                    <p className="text-sm">No scores yet. Be the first!</p>
+                  </div>
                 )}
               </div>
             </div>
