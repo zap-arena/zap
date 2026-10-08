@@ -215,3 +215,26 @@ def get_my_submission(
         "answers": submission.answers,
         "submitted_at": submission.submitted_at,
     }
+
+
+# ─── Leaderboard ──────────────────────────────────────────────────────────────
+@router.get("/{quiz_id}/leaderboard")
+def get_quiz_leaderboard(quiz_id: str, db: Session = Depends(get_db)):
+    submissions = db.scalars(
+        select(models.QuizSubmission)
+        .where(models.QuizSubmission.quiz_id == quiz_id)
+        .order_by(models.QuizSubmission.score.desc(), models.QuizSubmission.submitted_at.asc())
+        .limit(10)
+    ).all()
+
+    return [
+        {
+            "userId": s.user.id,
+            "userName": s.user.name,
+            "score": s.score,
+            "totalQuestions": s.total_questions,
+            "submittedAt": s.submitted_at,
+        }
+        for s in submissions
+    ]
+

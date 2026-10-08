@@ -256,8 +256,22 @@ export default function App() {
             }
           />
 
-          <Route path="/quizzes" element={<QuizListPage />} />
-          <Route path="/quizzes/:id" element={<QuizTakingPage />} />
+          <Route
+            path="/quizzes"
+            element={
+              <RequireAuth>
+                <QuizListPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/quizzes/:id"
+            element={
+              <RequireAuth>
+                <QuizTakingPage />
+              </RequireAuth>
+            }
+          />
           <Route path="/codewar" element={<CodeWarPage />} />
 
           {/* Admin */}
