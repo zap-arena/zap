@@ -1,7 +1,15 @@
-import React from "react";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
+import type React from "react";
+import {
+  CompareTable,
+  GroupingDiagram,
+  InfoCards,
+  KeyRelationDiagram,
+  MergeChart,
+  VennPair,
+  VerticalSteps,
+} from "../../components/guide/OopsDiagrams";
 import Navbar from "../../components/Navbar";
-import { CompareTable, GroupingDiagram, InfoCards, KeyRelationDiagram, MergeChart, VennPair, VerticalSteps } from "../../components/guide/OopsDiagrams";
+import { useGuideLogic } from "../../hooks/useGuideLogic";
 
 export default function SqlGuidePage() {
   useGuideLogic();
@@ -14,30 +22,60 @@ export default function SqlGuidePage() {
           <div className="sidebar-title">SQL Blueprint</div>
           <div className="side-group">
             <div className="side-group-label">Foundations</div>
-            <a className="side-link" href="#q1">01 · Data &amp; Types</a>
-            <a className="side-link" href="#q2">02 · Data Systems</a>
-            <a className="side-link" href="#q3">03 · ACID Properties</a>
+            <a className="side-link" href="#q1">
+              01 · Data &amp; Types
+            </a>
+            <a className="side-link" href="#q2">
+              02 · Data Systems
+            </a>
+            <a className="side-link" href="#q3">
+              03 · ACID Properties
+            </a>
           </div>
           <div className="side-group">
             <div className="side-group-label">Schema Design</div>
-            <a className="side-link" href="#q4">04 · Normalization</a>
-            <a className="side-link" href="#q5">05 · Denormalization</a>
-            <a className="side-link" href="#q6">06 · Distributed DBs</a>
-            <a className="side-link" href="#q13">13 · Database Keys</a>
+            <a className="side-link" href="#q4">
+              04 · Normalization
+            </a>
+            <a className="side-link" href="#q5">
+              05 · Denormalization
+            </a>
+            <a className="side-link" href="#q6">
+              06 · Distributed DBs
+            </a>
+            <a className="side-link" href="#q13">
+              13 · Database Keys
+            </a>
           </div>
           <div className="side-group">
             <div className="side-group-label">Querying</div>
-            <a className="side-link" href="#q7">07 · Sub-languages</a>
-            <a className="side-link" href="#q8">08 · Query Execution</a>
-            <a className="side-link" href="#q9">09 · WHERE &amp; Functions</a>
-            <a className="side-link" href="#q10">10 · GROUP BY &amp; HAVING</a>
-            <a className="side-link" href="#q11">11 · NULL Handling</a>
-            <a className="side-link" href="#q12">12 · CTEs</a>
+            <a className="side-link" href="#q7">
+              07 · Sub-languages
+            </a>
+            <a className="side-link" href="#q8">
+              08 · Query Execution
+            </a>
+            <a className="side-link" href="#q9">
+              09 · WHERE &amp; Functions
+            </a>
+            <a className="side-link" href="#q10">
+              10 · GROUP BY &amp; HAVING
+            </a>
+            <a className="side-link" href="#q11">
+              11 · NULL Handling
+            </a>
+            <a className="side-link" href="#q12">
+              12 · CTEs
+            </a>
           </div>
           <div className="side-group">
             <div className="side-group-label">Combining Data</div>
-            <a className="side-link" href="#q14">14 · SQL Joins</a>
-            <a className="side-link" href="#q15">15 · Views</a>
+            <a className="side-link" href="#q14">
+              14 · SQL Joins
+            </a>
+            <a className="side-link" href="#q15">
+              15 · Views
+            </a>
           </div>
         </nav>
 
@@ -50,26 +88,44 @@ export default function SqlGuidePage() {
           </div>
 
           <div className="question-nav">
-            <button type="button" id="prevQuestionBtn">← Previous</button>
+            <button type="button" id="prevQuestionBtn">
+              ← Previous
+            </button>
             <span className="question-nav-progress" id="questionProgress" />
-            <button type="button" id="nextQuestionBtn">Next →</button>
+            <button type="button" id="nextQuestionBtn">
+              Next →
+            </button>
           </div>
 
           <div className="content">
             <div className="intro">
               <h1>Zero to Query: The SQL Blueprint</h1>
               <p>
-                Fifteen topics covering everything from raw data types to
-                joins and views — the complete SQL foundation for placement
+                Fifteen topics covering everything from raw data types to joins
+                and views — the complete SQL foundation for placement
                 interviews, with real-world context and runnable queries.
               </p>
               <div className="legend">
                 <span className="legend-item">
-                  <span className="legend-swatch" style={{ background: "hsl(var(--primary))" } as React.CSSProperties}></span>
+                  <span
+                    className="legend-swatch"
+                    style={
+                      {
+                        background: "hsl(var(--primary))",
+                      } as React.CSSProperties
+                    }
+                  ></span>
                   Concept &amp; diagram
                 </span>
                 <span className="legend-item">
-                  <span className="legend-swatch" style={{ background: "hsl(var(--primary))" } as React.CSSProperties}></span>
+                  <span
+                    className="legend-swatch"
+                    style={
+                      {
+                        background: "hsl(var(--primary))",
+                      } as React.CSSProperties
+                    }
+                  ></span>
                   Query + interview tip
                 </span>
               </div>
@@ -82,20 +138,35 @@ export default function SqlGuidePage() {
                 <span className="level-badge reference">Foundation</span>
               </div>
               <p className="prompt">
-                <b>Data</b> is a collection of raw facts and figures. In
-                modern computing, data is categorized based on its structural
+                <b>Data</b> is a collection of raw facts and figures. In modern
+                computing, data is categorized based on its structural
                 organization.
               </p>
               <InfoCards
                 cards={[
-                  { title: "Structured Data", desc: "Highly organized into predefined schemas (rows and columns). Easily searchable via SQL.", code: "SQL, Tables, CSV", color: "#3fb950" },
-                  { title: "Semi-Structured", desc: "Lacks a rigid tabular structure but uses tags or keys to hierarchy data.", code: "JSON, XML, NoSQL", color: "#f59e0b" },
-                  { title: "Unstructured Data", desc: "No predefined format or organization. Hardest to query directly without processing.", code: "Images, Audio, Text", color: "#3b82f6" },
+                  {
+                    title: "Structured Data",
+                    desc: "Highly organized into predefined schemas (rows and columns). Easily searchable via SQL.",
+                    code: "SQL, Tables, CSV",
+                    color: "#3fb950",
+                  },
+                  {
+                    title: "Semi-Structured",
+                    desc: "Lacks a rigid tabular structure but uses tags or keys to hierarchy data.",
+                    code: "JSON, XML, NoSQL",
+                    color: "#f59e0b",
+                  },
+                  {
+                    title: "Unstructured Data",
+                    desc: "No predefined format or organization. Hardest to query directly without processing.",
+                    code: "Images, Audio, Text",
+                    color: "#3b82f6",
+                  },
                 ]}
               />
               <div className="twist">
-                <strong>Interview tip:</strong> if asked about unstructured
-                data in SQL, mention that modern RDBMS systems store it using{" "}
+                <strong>Interview tip:</strong> if asked about unstructured data
+                in SQL, mention that modern RDBMS systems store it using{" "}
                 <b>BLOB</b> (Binary Large Object) data types.
               </div>
             </section>
@@ -112,16 +183,36 @@ export default function SqlGuidePage() {
               </p>
               <InfoCards
                 cards={[
-                  { title: "Database & DBMS", desc: "A Database is a structured data collection. A DBMS is the software layer used to create, manage, and retrieve it.", code: "MySQL, PostgreSQL, Oracle, SQL Server", color: "#f59e0b" },
-                  { title: "Data Warehouse", desc: "A centralized repository storing historical, structured data optimized for fast querying and BI reporting (strict ETL).", code: "BigQuery, Redshift, Snowflake", color: "#f59e0b" },
-                  { title: "Data Lake", desc: "Holds vast amounts of raw, unstructured and semi-structured data in native format (Schema-on-Read).", code: "Amazon S3, Azure Data Lake, Hadoop", color: "#f59e0b" },
-                  { title: "Cloud Storage", desc: "Scalable logical pools spread across multiple physical servers, managed by a hosting company.", code: "GCS, Amazon S3, Azure Blob Storage", color: "#f59e0b" },
+                  {
+                    title: "Database & DBMS",
+                    desc: "A Database is a structured data collection. A DBMS is the software layer used to create, manage, and retrieve it.",
+                    code: "MySQL, PostgreSQL, Oracle, SQL Server",
+                    color: "#f59e0b",
+                  },
+                  {
+                    title: "Data Warehouse",
+                    desc: "A centralized repository storing historical, structured data optimized for fast querying and BI reporting (strict ETL).",
+                    code: "BigQuery, Redshift, Snowflake",
+                    color: "#f59e0b",
+                  },
+                  {
+                    title: "Data Lake",
+                    desc: "Holds vast amounts of raw, unstructured and semi-structured data in native format (Schema-on-Read).",
+                    code: "Amazon S3, Azure Data Lake, Hadoop",
+                    color: "#f59e0b",
+                  },
+                  {
+                    title: "Cloud Storage",
+                    desc: "Scalable logical pools spread across multiple physical servers, managed by a hosting company.",
+                    code: "GCS, Amazon S3, Azure Blob Storage",
+                    color: "#f59e0b",
+                  },
                 ]}
               />
               <div className="twist">
                 <strong>Interview tip:</strong> <b>Warehouse</b> = processed,
-                highly structured data ready for dashboards. <b>Lake</b> =
-                raw, unfiltered data waiting for exploration.
+                highly structured data ready for dashboards. <b>Lake</b> = raw,
+                unfiltered data waiting for exploration.
               </div>
             </section>
 
@@ -131,19 +222,38 @@ export default function SqlGuidePage() {
                 <h2>ACID Properties</h2>
                 <span className="level-badge basic">Basic</span>
               </div>
-              <p className="prompt">ACID properties guarantee reliable transaction processing in databases.</p>
+              <p className="prompt">
+                ACID properties guarantee reliable transaction processing in
+                databases.
+              </p>
               <InfoCards
                 cards={[
-                  { title: "Atomicity — \"All or Nothing\"", desc: "Transferring $100 from Alice to Bob: deduct (step 1), add (step 2). If step 2 fails, step 1 rolls back.", color: "#f59e0b" },
-                  { title: "Consistency — \"Rules Maintained\"", desc: "If balances must stay ≥ $0, withdrawing $100 from a $50 balance is blocked.", color: "#3b82f6" },
-                  { title: "Isolation — \"Invisible Concurrent Changes\"", desc: "While Alice transfers $100, Bob checking his balance won't see it until the transaction fully commits.", color: "#a371f7" },
-                  { title: "Durability — \"Permanent Saves\"", desc: "Alice sees \"Transfer Successful\", power goes out — the committed transaction survives on disk.", color: "#059669" },
+                  {
+                    title: 'Atomicity — "All or Nothing"',
+                    desc: "Transferring $100 from Alice to Bob: deduct (step 1), add (step 2). If step 2 fails, step 1 rolls back.",
+                    color: "#f59e0b",
+                  },
+                  {
+                    title: 'Consistency — "Rules Maintained"',
+                    desc: "If balances must stay ≥ $0, withdrawing $100 from a $50 balance is blocked.",
+                    color: "#3b82f6",
+                  },
+                  {
+                    title: 'Isolation — "Invisible Concurrent Changes"',
+                    desc: "While Alice transfers $100, Bob checking his balance won't see it until the transaction fully commits.",
+                    color: "#a371f7",
+                  },
+                  {
+                    title: 'Durability — "Permanent Saves"',
+                    desc: 'Alice sees "Transfer Successful", power goes out — the committed transaction survives on disk.',
+                    color: "#059669",
+                  },
                 ]}
               />
               <div className="twist">
                 <strong>Interview tip:</strong> "Can a transaction be durable
-                but not atomic?" No — ACID works together. If it fails
-                mid-way, it rolls back; nothing is durably saved.
+                but not atomic?" No — ACID works together. If it fails mid-way,
+                it rolls back; nothing is durably saved.
               </div>
             </section>
 
@@ -154,33 +264,62 @@ export default function SqlGuidePage() {
                 <span className="level-badge medium">Medium</span>
               </div>
               <p className="prompt">
-                Normalization organizes data to reduce redundancy and
-                eliminate Insertion, Update, and Deletion Anomalies.
+                Normalization organizes data to reduce redundancy and eliminate
+                Insertion, Update, and Deletion Anomalies.
               </p>
 
               <h3 style={{ marginTop: 16 }}>1NF — Atomic Values</h3>
-              <p className="prompt">Each column contains a single value — no repeating groups.</p>
+              <p className="prompt">
+                Each column contains a single value — no repeating groups.
+              </p>
               <CompareTable
-                headers={["✕ Violation (Phones: \"555-12, 555-98\")", "✓ Compliant (one row per phone)"]}
-                rows={[["ID 1, Name John, Phones 555-12, 555-98", "ID 1 John 555-12 / ID 1 John 555-98"]]}
+                headers={[
+                  '✕ Violation (Phones: "555-12, 555-98")',
+                  "✓ Compliant (one row per phone)",
+                ]}
+                rows={[
+                  [
+                    "ID 1, Name John, Phones 555-12, 555-98",
+                    "ID 1 John 555-12 / ID 1 John 555-98",
+                  ],
+                ]}
               />
 
               <h3 style={{ marginTop: 16 }}>2NF — No Partial Dependencies</h3>
               <CompareTable
                 headers={["Violation", "Solution"]}
-                rows={[["PK (StudentID, CourseID) → CourseFee only depends on CourseID", "Split: Enrollment(StudentID, CourseID) & CourseDetails(CourseID, CourseFee)"]]}
+                rows={[
+                  [
+                    "PK (StudentID, CourseID) → CourseFee only depends on CourseID",
+                    "Split: Enrollment(StudentID, CourseID) & CourseDetails(CourseID, CourseFee)",
+                  ],
+                ]}
               />
 
-              <h3 style={{ marginTop: 16 }}>3NF — No Transitive Dependencies</h3>
+              <h3 style={{ marginTop: 16 }}>
+                3NF — No Transitive Dependencies
+              </h3>
               <CompareTable
                 headers={["Violation", "Solution"]}
-                rows={[["StudentID → ZipCode → City", "Split: Student(StudentID, ZipCode) & Location(ZipCode, City)"]]}
+                rows={[
+                  [
+                    "StudentID → ZipCode → City",
+                    "Split: Student(StudentID, ZipCode) & Location(ZipCode, City)",
+                  ],
+                ]}
               />
 
-              <h3 style={{ marginTop: 16 }}>BCNF — Every Determinant Is a Superkey</h3>
+              <h3 style={{ marginTop: 16 }}>
+                BCNF — Every Determinant Is a Superkey
+              </h3>
               <CompareTable
                 headers={["Violation", "Solution"]}
-                rows={[["(StudentID, Course) → Teacher, and Teacher → Course (Teacher isn't a superkey)", "Split: Student_Teacher(StudentID, Teacher) & Teacher_Course(Teacher, Course)"]]}
+                rows={[
+                  [
+                    "(StudentID, Course) → Teacher, and Teacher → Course (Teacher isn't a superkey)",
+                    "Split: Student_Teacher(StudentID, Teacher) & Teacher_Course(Teacher, Course)",
+                  ],
+                ]}
               />
             </section>
 
@@ -192,14 +331,19 @@ export default function SqlGuidePage() {
               </div>
               <p className="prompt">
                 <b>Denormalization</b> is the strategic addition of redundancy
-                to a normalized database to improve read performance by
-                avoiding expensive multi-table JOINs.
+                to a normalized database to improve read performance by avoiding
+                expensive multi-table JOINs.
               </p>
               <div className="tabs-wrapper">
                 <div className="approach-panel active" id="q5-ref">
-                  <div className="lang-wrapper code-split" style={{ gridTemplateColumns: "1fr 1fr" }}>
+                  <div
+                    className="lang-wrapper code-split"
+                    style={{ gridTemplateColumns: "1fr 1fr" }}
+                  >
                     <div className="code-col">
-                      <div className="code-label java">Normalized (slower reads)</div>
+                      <div className="code-label java">
+                        Normalized (slower reads)
+                      </div>
                       <pre className="code-panel">
                         <code>{`-- Expensive aggregate JOIN
 SELECT u.name, COUNT(o.id)
@@ -208,7 +352,9 @@ GROUP BY u.name;`}</code>
                       </pre>
                     </div>
                     <div className="code-col">
-                      <div className="code-label py">Denormalized (faster reads)</div>
+                      <div className="code-label py">
+                        Denormalized (faster reads)
+                      </div>
                       <pre className="code-panel">
                         <code>{`-- total_orders stored directly on Users
 -- Instantaneous read, no JOIN
@@ -234,32 +380,68 @@ FROM Users;`}</code>
               </div>
               <p className="prompt">
                 A <b>Distributed Database System (DDBMS)</b> is spread over
-                multiple sites but appears as a single logical database to
-                the user.
+                multiple sites but appears as a single logical database to the
+                user.
               </p>
               <InfoCards
                 cards={[
-                  { title: "Homogeneous DDBMS", desc: "All sites use the exact same DBMS software and OS. Easier to design.", color: "#3b82f6" },
-                  { title: "Heterogeneous DDBMS", desc: "Sites run different DBMS software (e.g. Oracle and SQL Server). Requires complex translation.", color: "#f59e0b" },
-                  { title: "Client-Server DDBMS", desc: "A central server manages processing and fulfills requests from distributed clients.", color: "#a371f7" },
-                  { title: "Peer-to-Peer DDBMS", desc: "No central server. Each node has equal capabilities, sharing data directly with other nodes.", color: "#059669" },
-                  { title: "Multi-Database Systems", desc: "Integrates multiple independent, pre-existing databases into one system without modifying them.", color: "#ec4899" },
+                  {
+                    title: "Homogeneous DDBMS",
+                    desc: "All sites use the exact same DBMS software and OS. Easier to design.",
+                    color: "#3b82f6",
+                  },
+                  {
+                    title: "Heterogeneous DDBMS",
+                    desc: "Sites run different DBMS software (e.g. Oracle and SQL Server). Requires complex translation.",
+                    color: "#f59e0b",
+                  },
+                  {
+                    title: "Client-Server DDBMS",
+                    desc: "A central server manages processing and fulfills requests from distributed clients.",
+                    color: "#a371f7",
+                  },
+                  {
+                    title: "Peer-to-Peer DDBMS",
+                    desc: "No central server. Each node has equal capabilities, sharing data directly with other nodes.",
+                    color: "#059669",
+                  },
+                  {
+                    title: "Multi-Database Systems",
+                    desc: "Integrates multiple independent, pre-existing databases into one system without modifying them.",
+                    color: "#ec4899",
+                  },
                 ]}
               />
-              <p className="prompt" style={{ marginTop: 16 }}><b>Real-world examples:</b></p>
+              <p className="prompt" style={{ marginTop: 16 }}>
+                <b>Real-world examples:</b>
+              </p>
               <InfoCards
                 cards={[
-                  { title: "Cassandra", desc: "Masterless architecture handling massive data across servers with no single point of failure.", color: "#059669" },
-                  { title: "Cloud Spanner", desc: "Google's fully managed relational database offering global distribution and strong consistency.", color: "#3b82f6" },
-                  { title: "DynamoDB", desc: "Amazon's fast, flexible NoSQL distributed DB for single-digit millisecond performance.", color: "#f59e0b" },
+                  {
+                    title: "Cassandra",
+                    desc: "Masterless architecture handling massive data across servers with no single point of failure.",
+                    color: "#059669",
+                  },
+                  {
+                    title: "Cloud Spanner",
+                    desc: "Google's fully managed relational database offering global distribution and strong consistency.",
+                    color: "#3b82f6",
+                  },
+                  {
+                    title: "DynamoDB",
+                    desc: "Amazon's fast, flexible NoSQL distributed DB for single-digit millisecond performance.",
+                    color: "#f59e0b",
+                  },
                 ]}
               />
-              <MergeChart parents={["Site A", "Site B", "Site C"]} child="Single Logical Database" />
+              <MergeChart
+                parents={["Site A", "Site B", "Site C"]}
+                child="Single Logical Database"
+              />
               <div className="twist">
-                <strong>Interview tip:</strong> mention the{" "}
-                <b>CAP Theorem</b> (Consistency, Availability, Partition
-                Tolerance) — a distributed system can only guarantee two of
-                the three at any time.
+                <strong>Interview tip:</strong> mention the <b>CAP Theorem</b>{" "}
+                (Consistency, Availability, Partition Tolerance) — a distributed
+                system can only guarantee two of the three at any time.
               </div>
             </section>
 
@@ -271,7 +453,10 @@ FROM Users;`}</code>
               </div>
               <div className="tabs-wrapper">
                 <div className="approach-panel active" id="q7-ddl">
-                  <div className="complexity">DDL (Data Definition Language) — defines schemas, auto-committed (cannot be rolled back)</div>
+                  <div className="complexity">
+                    DDL (Data Definition Language) — defines schemas,
+                    auto-committed (cannot be rolled back)
+                  </div>
                   <div className="code-col">
                     <pre className="code-panel">
                       <code>{`-- Creates a brand new table
@@ -288,7 +473,10 @@ DROP TABLE Users;`}</code>
               </div>
               <div className="tabs-wrapper" style={{ marginTop: 16 }}>
                 <div className="approach-panel active" id="q7-dml">
-                  <div className="complexity">DML (Data Manipulation Language) — manipulates data, not auto-committed (can be rolled back)</div>
+                  <div className="complexity">
+                    DML (Data Manipulation Language) — manipulates data, not
+                    auto-committed (can be rolled back)
+                  </div>
                   <div className="code-col">
                     <pre className="code-panel">
                       <code>{`-- Adds a new record
@@ -303,22 +491,31 @@ DELETE FROM Users WHERE id = 1;`}</code>
                   </div>
                 </div>
               </div>
-              <div className="lang-wrapper code-split" style={{ gridTemplateColumns: "1fr 1fr 1fr", marginTop: 16 }}>
+              <div
+                className="lang-wrapper code-split"
+                style={{ gridTemplateColumns: "1fr 1fr 1fr", marginTop: 16 }}
+              >
                 <div className="code-col">
                   <div className="code-label java">DQL (Query)</div>
-                  <pre className="code-panel"><code>{`-- Fetches data
-SELECT * FROM Users;`}</code></pre>
+                  <pre className="code-panel">
+                    <code>{`-- Fetches data
+SELECT * FROM Users;`}</code>
+                  </pre>
                 </div>
                 <div className="code-col">
                   <div className="code-label py">DCL (Control)</div>
-                  <pre className="code-panel"><code>{`-- Manage permissions
-GRANT SELECT ON Users TO read_user;`}</code></pre>
+                  <pre className="code-panel">
+                    <code>{`-- Manage permissions
+GRANT SELECT ON Users TO read_user;`}</code>
+                  </pre>
                 </div>
                 <div className="code-col">
                   <div className="code-label java">TCL (Transaction)</div>
-                  <pre className="code-panel"><code>{`-- Save or undo
+                  <pre className="code-panel">
+                    <code>{`-- Save or undo
 COMMIT;
-ROLLBACK;`}</code></pre>
+ROLLBACK;`}</code>
+                  </pre>
                 </div>
               </div>
               <div className="twist">
@@ -347,13 +544,20 @@ ROLLBACK;`}</code></pre>
                 ]}
               />
               <VerticalSteps
-                steps={["FROM / JOIN", "WHERE", "GROUP BY", "HAVING", "SELECT", "ORDER BY", "LIMIT"]}
+                steps={[
+                  "FROM / JOIN",
+                  "WHERE",
+                  "GROUP BY",
+                  "HAVING",
+                  "SELECT",
+                  "ORDER BY",
+                  "LIMIT",
+                ]}
               />
               <div className="twist">
-                <strong>Interview tip:</strong> because <code>SELECT</code>{" "}
-                is evaluated late (step 5), you <b>cannot</b> use column
-                aliases defined in SELECT inside your WHERE or GROUP BY
-                clauses.
+                <strong>Interview tip:</strong> because <code>SELECT</code> is
+                evaluated late (step 5), you <b>cannot</b> use column aliases
+                defined in SELECT inside your WHERE or GROUP BY clauses.
               </div>
             </section>
 
@@ -363,7 +567,10 @@ ROLLBACK;`}</code></pre>
                 <h2>WHERE Clause &amp; Functions</h2>
                 <span className="level-badge basic">Basic</span>
               </div>
-              <div className="lang-wrapper code-split" style={{ gridTemplateColumns: "1fr 1fr" }}>
+              <div
+                className="lang-wrapper code-split"
+                style={{ gridTemplateColumns: "1fr 1fr" }}
+              >
                 <div className="code-col">
                   <div className="code-label java">Filtering Operators</div>
                   <pre className="code-panel">
@@ -387,8 +594,7 @@ WHERE YEAR(hire_date) = 2023`}</code>
               </div>
               <div className="twist">
                 In <code>LIKE</code>, <code>%</code> matches zero or more
-                characters. <code>_</code> matches exactly <b>one</b>{" "}
-                character.
+                characters. <code>_</code> matches exactly <b>one</b> character.
               </div>
             </section>
 
@@ -428,9 +634,9 @@ HAVING COUNT(*) > 5;`}</code>
                 ]}
               />
               <div className="twist">
-                <strong>WHERE vs HAVING?</strong> WHERE filters raw data.
-                HAVING filters aggregated data. You cannot use aggregate
-                functions (SUM, COUNT) inside a WHERE clause.
+                <strong>WHERE vs HAVING?</strong> WHERE filters raw data. HAVING
+                filters aggregated data. You cannot use aggregate functions
+                (SUM, COUNT) inside a WHERE clause.
               </div>
             </section>
 
@@ -440,7 +646,10 @@ HAVING COUNT(*) > 5;`}</code>
                 <h2>NULL in SQL</h2>
                 <span className="level-badge basic">Basic</span>
               </div>
-              <div className="lang-wrapper code-split" style={{ gridTemplateColumns: "1fr 1fr" }}>
+              <div
+                className="lang-wrapper code-split"
+                style={{ gridTemplateColumns: "1fr 1fr" }}
+              >
                 <div className="code-col">
                   <div className="code-label java">Checking for NULL</div>
                   <pre className="code-panel">
@@ -459,9 +668,9 @@ SELECT COALESCE(bonus, 0) FROM Emp;`}</code>
                 </div>
               </div>
               <div className="twist">
-                Arithmetic on NULL (<code>10 + NULL</code>) equals NULL.
-                Always wrap nullable columns in <code>COALESCE()</code>{" "}
-                before doing math.
+                Arithmetic on NULL (<code>10 + NULL</code>) equals NULL. Always
+                wrap nullable columns in <code>COALESCE()</code> before doing
+                math.
               </div>
             </section>
 
@@ -499,11 +708,36 @@ SELECT department, COUNT(*) FROM HighEarners GROUP BY department;`}</code>
               </div>
               <InfoCards
                 cards={[
-                  { title: "Primary Key", desc: "Uniquely identifies rows. Cannot be NULL, must be UNIQUE. One per table.", code: "CREATE TABLE Users (UserID INT PRIMARY KEY);", color: "#3b82f6" },
-                  { title: "Composite Key", desc: "A Primary Key made up of two or more columns.", code: "CREATE TABLE OrderItems (OrderID INT, ProductID INT, PRIMARY KEY (OrderID, ProductID));", color: "#a371f7" },
-                  { title: "Unique Key", desc: "Ensures distinct values. Multiple allowed per table. Can contain ONE NULL.", code: "Email VARCHAR(100) UNIQUE", color: "#059669" },
-                  { title: "Foreign Key", desc: "References the PK of another table. Enforces Referential Integrity.", code: "FOREIGN KEY (CustID) REFERENCES Customers(CustID)", color: "#f59e0b" },
-                  { title: "Candidate Key", desc: "A minimal set of attributes that uniquely identifies a row. The DBA chooses one to be the PK.", code: "e.g. EmployeeID and SSN are both Candidate Keys", color: "#8b949e" },
+                  {
+                    title: "Primary Key",
+                    desc: "Uniquely identifies rows. Cannot be NULL, must be UNIQUE. One per table.",
+                    code: "CREATE TABLE Users (UserID INT PRIMARY KEY);",
+                    color: "#3b82f6",
+                  },
+                  {
+                    title: "Composite Key",
+                    desc: "A Primary Key made up of two or more columns.",
+                    code: "CREATE TABLE OrderItems (OrderID INT, ProductID INT, PRIMARY KEY (OrderID, ProductID));",
+                    color: "#a371f7",
+                  },
+                  {
+                    title: "Unique Key",
+                    desc: "Ensures distinct values. Multiple allowed per table. Can contain ONE NULL.",
+                    code: "Email VARCHAR(100) UNIQUE",
+                    color: "#059669",
+                  },
+                  {
+                    title: "Foreign Key",
+                    desc: "References the PK of another table. Enforces Referential Integrity.",
+                    code: "FOREIGN KEY (CustID) REFERENCES Customers(CustID)",
+                    color: "#f59e0b",
+                  },
+                  {
+                    title: "Candidate Key",
+                    desc: "A minimal set of attributes that uniquely identifies a row. The DBA chooses one to be the PK.",
+                    code: "e.g. EmployeeID and SSN are both Candidate Keys",
+                    color: "#8b949e",
+                  },
                 ]}
               />
               <KeyRelationDiagram
@@ -537,50 +771,204 @@ SELECT department, COUNT(*) FROM HighEarners GROUP BY department;`}</code>
                 <h2>SQL Joins</h2>
                 <span className="level-badge medium">Medium</span>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12, marginTop: 12 }}>
-                <div style={{ textAlign: "center", background: "#161b22", border: "1px solid #21262d", borderRadius: 10, padding: 14 }}>
-                  <div style={{ fontWeight: 700, color: "#e6edf3", marginBottom: 4 }}>INNER JOIN</div>
-                  <div style={{ fontSize: 11.5, color: "#8b949e", marginBottom: 6 }}>Records matching in both tables</div>
-                  <VennPair leftFilled={false} rightFilled={false} overlapFilled={true} color="#ea580c" />
-                  <pre className="code-panel" style={{ textAlign: "left", fontSize: 11 }}><code>{`SELECT * FROM A INNER JOIN B ON A.id = B.id;`}</code></pre>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                  gap: 12,
+                  marginTop: 12,
+                }}
+              >
+                <div
+                  style={{
+                    textAlign: "center",
+                    background: "#161b22",
+                    border: "1px solid #21262d",
+                    borderRadius: 10,
+                    padding: 14,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontWeight: 700,
+                      color: "#e6edf3",
+                      marginBottom: 4,
+                    }}
+                  >
+                    INNER JOIN
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11.5,
+                      color: "#8b949e",
+                      marginBottom: 6,
+                    }}
+                  >
+                    Records matching in both tables
+                  </div>
+                  <VennPair
+                    leftFilled={false}
+                    rightFilled={false}
+                    overlapFilled={true}
+                    color="#ea580c"
+                  />
+                  <pre
+                    className="code-panel"
+                    style={{ textAlign: "left", fontSize: 11 }}
+                  >
+                    <code>{`SELECT * FROM A INNER JOIN B ON A.id = B.id;`}</code>
+                  </pre>
                 </div>
-                <div style={{ textAlign: "center", background: "#161b22", border: "1px solid #21262d", borderRadius: 10, padding: 14 }}>
-                  <div style={{ fontWeight: 700, color: "#e6edf3", marginBottom: 4 }}>LEFT JOIN</div>
-                  <div style={{ fontSize: 11.5, color: "#8b949e", marginBottom: 6 }}>All Left records, matched Right</div>
-                  <VennPair leftFilled={true} rightFilled={false} overlapFilled={true} color="#facc15" />
-                  <pre className="code-panel" style={{ textAlign: "left", fontSize: 11 }}><code>{`SELECT * FROM A LEFT JOIN B ON A.id = B.id;`}</code></pre>
+                <div
+                  style={{
+                    textAlign: "center",
+                    background: "#161b22",
+                    border: "1px solid #21262d",
+                    borderRadius: 10,
+                    padding: 14,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontWeight: 700,
+                      color: "#e6edf3",
+                      marginBottom: 4,
+                    }}
+                  >
+                    LEFT JOIN
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11.5,
+                      color: "#8b949e",
+                      marginBottom: 6,
+                    }}
+                  >
+                    All Left records, matched Right
+                  </div>
+                  <VennPair
+                    leftFilled={true}
+                    rightFilled={false}
+                    overlapFilled={true}
+                    color="#facc15"
+                  />
+                  <pre
+                    className="code-panel"
+                    style={{ textAlign: "left", fontSize: 11 }}
+                  >
+                    <code>{`SELECT * FROM A LEFT JOIN B ON A.id = B.id;`}</code>
+                  </pre>
                 </div>
-                <div style={{ textAlign: "center", background: "#161b22", border: "1px solid #21262d", borderRadius: 10, padding: 14 }}>
-                  <div style={{ fontWeight: 700, color: "#e6edf3", marginBottom: 4 }}>RIGHT JOIN</div>
-                  <div style={{ fontSize: 11.5, color: "#8b949e", marginBottom: 6 }}>All Right records, matched Left</div>
-                  <VennPair leftFilled={false} rightFilled={true} overlapFilled={true} color="#facc15" />
-                  <pre className="code-panel" style={{ textAlign: "left", fontSize: 11 }}><code>{`SELECT * FROM A RIGHT JOIN B ON A.id = B.id;`}</code></pre>
+                <div
+                  style={{
+                    textAlign: "center",
+                    background: "#161b22",
+                    border: "1px solid #21262d",
+                    borderRadius: 10,
+                    padding: 14,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontWeight: 700,
+                      color: "#e6edf3",
+                      marginBottom: 4,
+                    }}
+                  >
+                    RIGHT JOIN
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11.5,
+                      color: "#8b949e",
+                      marginBottom: 6,
+                    }}
+                  >
+                    All Right records, matched Left
+                  </div>
+                  <VennPair
+                    leftFilled={false}
+                    rightFilled={true}
+                    overlapFilled={true}
+                    color="#facc15"
+                  />
+                  <pre
+                    className="code-panel"
+                    style={{ textAlign: "left", fontSize: 11 }}
+                  >
+                    <code>{`SELECT * FROM A RIGHT JOIN B ON A.id = B.id;`}</code>
+                  </pre>
                 </div>
-                <div style={{ textAlign: "center", background: "#161b22", border: "1px solid #21262d", borderRadius: 10, padding: 14 }}>
-                  <div style={{ fontWeight: 700, color: "#e6edf3", marginBottom: 4 }}>FULL OUTER JOIN</div>
-                  <div style={{ fontSize: 11.5, color: "#8b949e", marginBottom: 6 }}>All records from either table</div>
-                  <VennPair leftFilled={true} rightFilled={true} overlapFilled={false} color="#f59e0b" />
-                  <pre className="code-panel" style={{ textAlign: "left", fontSize: 11 }}><code>{`SELECT * FROM A FULL JOIN B ON A.id = B.id;`}</code></pre>
+                <div
+                  style={{
+                    textAlign: "center",
+                    background: "#161b22",
+                    border: "1px solid #21262d",
+                    borderRadius: 10,
+                    padding: 14,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontWeight: 700,
+                      color: "#e6edf3",
+                      marginBottom: 4,
+                    }}
+                  >
+                    FULL OUTER JOIN
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11.5,
+                      color: "#8b949e",
+                      marginBottom: 6,
+                    }}
+                  >
+                    All records from either table
+                  </div>
+                  <VennPair
+                    leftFilled={true}
+                    rightFilled={true}
+                    overlapFilled={false}
+                    color="#f59e0b"
+                  />
+                  <pre
+                    className="code-panel"
+                    style={{ textAlign: "left", fontSize: 11 }}
+                  >
+                    <code>{`SELECT * FROM A FULL JOIN B ON A.id = B.id;`}</code>
+                  </pre>
                 </div>
               </div>
 
-              <div className="lang-wrapper code-split" style={{ gridTemplateColumns: "1fr 1fr", marginTop: 16 }}>
+              <div
+                className="lang-wrapper code-split"
+                style={{ gridTemplateColumns: "1fr 1fr", marginTop: 16 }}
+              >
                 <div className="code-col">
-                  <div className="code-label java">CROSS JOIN — Cartesian product</div>
-                  <pre className="code-panel"><code>{`-- 10x5 = 50 rows (pairs every row)
-SELECT * FROM A CROSS JOIN B;`}</code></pre>
+                  <div className="code-label java">
+                    CROSS JOIN — Cartesian product
+                  </div>
+                  <pre className="code-panel">
+                    <code>{`-- 10x5 = 50 rows (pairs every row)
+SELECT * FROM A CROSS JOIN B;`}</code>
+                  </pre>
                 </div>
                 <div className="code-col">
-                  <div className="code-label py">SELF JOIN — table joined with itself</div>
-                  <pre className="code-panel"><code>{`-- Find managers for employees
+                  <div className="code-label py">
+                    SELF JOIN — table joined with itself
+                  </div>
+                  <pre className="code-panel">
+                    <code>{`-- Find managers for employees
 SELECT E1.name, E2.name
-FROM Emp E1 JOIN Emp E2 ON E1.mgr = E2.id;`}</code></pre>
+FROM Emp E1 JOIN Emp E2 ON E1.mgr = E2.id;`}</code>
+                  </pre>
                 </div>
               </div>
 
               <div className="twist">
-                Find records in Table A but NOT in B? Use a{" "}
-                <b>LEFT JOIN</b> and add <code>WHERE B.id IS NULL</code>.
+                Find records in Table A but NOT in B? Use a <b>LEFT JOIN</b> and
+                add <code>WHERE B.id IS NULL</code>.
               </div>
             </section>
 
@@ -613,9 +1001,9 @@ SELECT * FROM PublicEmployeeList;`}</code>
                 </div>
               </div>
               <div className="twist">
-                <strong>"Can you INSERT through a View?"</strong> Yes, but
-                only if it's an "Updatable View" (usually meaning it doesn't
-                contain GROUP BY, aggregates, or multiple joined tables).
+                <strong>"Can you INSERT through a View?"</strong> Yes, but only
+                if it's an "Updatable View" (usually meaning it doesn't contain
+                GROUP BY, aggregates, or multiple joined tables).
               </div>
             </section>
           </div>

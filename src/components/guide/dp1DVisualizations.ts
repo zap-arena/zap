@@ -1,12 +1,15 @@
 import type { ApproachRunner, VizStep } from "./AlgoVisualizer";
 
 type NumApproaches = Partial<Record<"brute" | "optimal", ApproachRunner>>;
-type StrApproaches = Partial<Record<"brute" | "optimal", ApproachRunner<string>>>;
+type StrApproaches = Partial<
+  Record<"brute" | "optimal", ApproachRunner<string>>
+>;
 
 export const houseRobberApproaches: NumApproaches = {
   brute: {
     label: "Brute Force (Recursion)",
-    complexity: "Time: O(2^n) \u00b7 Space: O(n) call stack \u2014 try both choices at every house, no memory of past answers",
+    complexity:
+      "Time: O(2^n) \u00b7 Space: O(n) call stack \u2014 try both choices at every house, no memory of past answers",
     code: [
       "function rob(i) {",
       "  if (i < 0) return 0;",
@@ -58,7 +61,8 @@ export const houseRobberApproaches: NumApproaches = {
   },
   optimal: {
     label: "Optimal (Tabulation)",
-    complexity: "Time: O(n) \u00b7 Space: O(n) \u2014 fill dp[i] left to right, each house computed exactly once",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(n) \u2014 fill dp[i] left to right, each house computed exactly once",
     code: [
       "dp[0] = nums[0]; dp[1] = Math.max(nums[0], nums[1]);",
       "for (let i = 2; i < n; i++) {",
@@ -125,7 +129,8 @@ export const houseRobberApproaches: NumApproaches = {
 export const coinChangeApproaches: NumApproaches = {
   brute: {
     label: "Brute Force (Recursion)",
-    complexity: "Time: O(coins^amount) \u00b7 Space: O(amount) call stack \u2014 try every coin at every remaining amount",
+    complexity:
+      "Time: O(coins^amount) \u00b7 Space: O(amount) call stack \u2014 try every coin at every remaining amount",
     code: [
       "function coinChange(amount) {",
       "  if (amount === 0) return 0;",
@@ -158,7 +163,10 @@ export const coinChangeApproaches: NumApproaches = {
         steps.push({
           description: `coinChange(${remaining}): try each coin [${coins.join(", ")}]`,
           array: coins,
-          highlights: coins.map((_, idx) => ({ index: idx, role: "current" as const })),
+          highlights: coins.map((_, idx) => ({
+            index: idx,
+            role: "current" as const,
+          })),
           variables: { remaining },
           headline: `coinChange(${remaining})`,
           tag: { label: "Recurse", tone: "info" },
@@ -186,7 +194,8 @@ export const coinChangeApproaches: NumApproaches = {
   },
   optimal: {
     label: "Optimal (Tabulation)",
-    complexity: "Time: O(amount \u00d7 coins) \u00b7 Space: O(amount) \u2014 fill dp[0..amount] once, bottom-up",
+    complexity:
+      "Time: O(amount \u00d7 coins) \u00b7 Space: O(amount) \u2014 fill dp[0..amount] once, bottom-up",
     code: [
       "dp[0] = 0;",
       "for (let a = 1; a <= amount; a++) {",
@@ -248,7 +257,8 @@ export const coinChangeApproaches: NumApproaches = {
 export const longestIncreasingSubsequenceApproaches: NumApproaches = {
   brute: {
     label: "Brute Force (Recursion)",
-    complexity: "Time: O(2^n) \u00b7 Space: O(n) call stack \u2014 every element either extends the subsequence or is skipped",
+    complexity:
+      "Time: O(2^n) \u00b7 Space: O(n) call stack \u2014 every element either extends the subsequence or is skipped",
     code: [
       "function lis(i, prev) {",
       "  if (i === n) return 0;",
@@ -298,7 +308,8 @@ export const longestIncreasingSubsequenceApproaches: NumApproaches = {
   },
   optimal: {
     label: "Optimal (Tabulation)",
-    complexity: "Time: O(n\u00b2) \u00b7 Space: O(n) \u2014 dp[i] = length of the longest increasing subsequence ending at i",
+    complexity:
+      "Time: O(n\u00b2) \u00b7 Space: O(n) \u2014 dp[i] = length of the longest increasing subsequence ending at i",
     code: [
       "dp.fill(1);",
       "for (let i = 1; i < n; i++) {",
@@ -313,9 +324,13 @@ export const longestIncreasingSubsequenceApproaches: NumApproaches = {
       const n = input.length;
       const dp: number[] = new Array(n).fill(1);
       steps.push({
-        description: "Every index starts with dp[i] = 1 (the element alone is a subsequence of length 1)",
+        description:
+          "Every index starts with dp[i] = 1 (the element alone is a subsequence of length 1)",
         array: [...dp],
-        highlights: dp.map((_, idx) => ({ index: idx, role: "sorted" as const })),
+        highlights: dp.map((_, idx) => ({
+          index: idx,
+          role: "sorted" as const,
+        })),
         variables: {},
         headline: "Initialize dp = [1, 1, ...]",
         tag: { label: "Init", tone: "info" },
@@ -336,7 +351,9 @@ export const longestIncreasingSubsequenceApproaches: NumApproaches = {
               ],
               variables: { i, j, "dp[i]": dp[i] },
               headline: `dp[${i}] = ${dp[i]}`,
-              tag: improved ? { label: "Improve", tone: "success" } : { label: "Check", tone: "info" },
+              tag: improved
+                ? { label: "Improve", tone: "success" }
+                : { label: "Check", tone: "info" },
               codeLine: 4,
             });
           }
@@ -346,7 +363,11 @@ export const longestIncreasingSubsequenceApproaches: NumApproaches = {
       steps.push({
         description: `Longest increasing subsequence length: ${best}`,
         array: dp,
-        highlights: dp.map((v, idx) => (v === best ? { index: idx, role: "match" as const } : null)).filter(Boolean) as VizStep["highlights"],
+        highlights: dp
+          .map((v, idx) =>
+            v === best ? { index: idx, role: "match" as const } : null,
+          )
+          .filter(Boolean) as VizStep["highlights"],
         variables: { result: best },
         headline: `Answer = ${best}`,
         tag: { label: "Done", tone: "success" },
@@ -360,7 +381,8 @@ export const longestIncreasingSubsequenceApproaches: NumApproaches = {
 export const maximumSubarrayApproaches: NumApproaches = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 sum every possible subarray",
+    complexity:
+      "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 sum every possible subarray",
     code: [
       "let best = -Infinity;",
       "for (let i = 0; i < n; i++) {",
@@ -389,7 +411,9 @@ export const maximumSubarrayApproaches: NumApproaches = {
             })),
             variables: { i, j, sum, best },
             headline: `sum = ${sum}`,
-            tag: isBest ? { label: "New Best", tone: "success" } : { label: "Scan", tone: "info" },
+            tag: isBest
+              ? { label: "New Best", tone: "success" }
+              : { label: "Scan", tone: "info" },
             codeLine: 6,
           });
         }
@@ -408,7 +432,8 @@ export const maximumSubarrayApproaches: NumApproaches = {
   },
   optimal: {
     label: "Optimal (Kadane's Algorithm)",
-    complexity: "Time: O(n) \u00b7 Space: O(1) \u2014 dp[i] = best subarray ending at i, carried in a single running variable",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(1) \u2014 dp[i] = best subarray ending at i, carried in a single running variable",
     code: [
       "let cur = nums[0], best = nums[0];",
       "for (let i = 1; i < n; i++) {",
@@ -440,10 +465,15 @@ export const maximumSubarrayApproaches: NumApproaches = {
             ? `Previous running sum was dragging it down \u2014 restart fresh at nums[${i}] = ${cur}`
             : `Extend the previous run: cur = ${cur}`,
           array: input,
-          highlights: [{ index: i, role: "current" }, { index: i - 1, role: "i" }],
+          highlights: [
+            { index: i, role: "current" },
+            { index: i - 1, role: "i" },
+          ],
           variables: { i, cur, best },
           headline: `cur = ${cur}`,
-          tag: didRestart ? { label: "Restart", tone: "danger" } : { label: "Extend", tone: "success" },
+          tag: didRestart
+            ? { label: "Restart", tone: "danger" }
+            : { label: "Extend", tone: "success" },
           codeLine: 3,
         });
       }
@@ -464,7 +494,8 @@ export const maximumSubarrayApproaches: NumApproaches = {
 export const decodeWaysApproaches: StrApproaches = {
   brute: {
     label: "Brute Force (Recursion)",
-    complexity: "Time: O(2^n) \u00b7 Space: O(n) call stack \u2014 branch on every 1-digit or 2-digit decode choice",
+    complexity:
+      "Time: O(2^n) \u00b7 Space: O(n) call stack \u2014 branch on every 1-digit or 2-digit decode choice",
     code: [
       "function decode(i) {",
       "  if (i === n) return 1;",
@@ -482,7 +513,8 @@ export const decodeWaysApproaches: StrApproaches = {
       const decode = (i: number): number => {
         if (i === n) {
           steps.push({
-            description: "Reached the end of the string \u2014 this is one valid decoding",
+            description:
+              "Reached the end of the string \u2014 this is one valid decoding",
             array: chars,
             highlights: [],
             variables: { i },
@@ -534,7 +566,8 @@ export const decodeWaysApproaches: StrApproaches = {
   },
   optimal: {
     label: "Optimal (Tabulation)",
-    complexity: "Time: O(n) \u00b7 Space: O(n) \u2014 dp[i] = number of ways to decode the first i characters",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(n) \u2014 dp[i] = number of ways to decode the first i characters",
     code: [
       "dp[0] = 1; dp[1] = s[0] !== '0' ? 1 : 0;",
       "for (let i = 2; i <= n; i++) {",
@@ -568,7 +601,11 @@ export const decodeWaysApproaches: StrApproaches = {
         steps.push({
           description: `dp[${i}]: one-digit '${s[i - 1]}' ${s[i - 1] !== "0" ? `adds dp[${i - 1}]=${dp[i - 1]}` : "invalid"}; two-digit '${s.slice(i - 2, i)}' ${twoDigit >= 10 && twoDigit <= 26 ? `adds dp[${i - 2}]=${dp[i - 2]}` : "out of range"} \u2192 dp[${i}] = ${dp[i]}`,
           array: [...dp],
-          highlights: [{ index: i, role: "current" }, { index: i - 1, role: "i" }, { index: i - 2, role: "j" }],
+          highlights: [
+            { index: i, role: "current" },
+            { index: i - 1, role: "i" },
+            { index: i - 2, role: "j" },
+          ],
           variables: { i, "dp[i]": dp[i] },
           headline: `dp[${i}] = ${dp[i]}`,
           tag: { label: "Fill", tone: "success" },

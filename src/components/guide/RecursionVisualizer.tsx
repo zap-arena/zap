@@ -44,7 +44,9 @@ export interface RecursionApproachRunner<TInput = number[]> {
 
 interface RecursionVisualizerProps<TInput = number[]> {
   title: string;
-  approaches: Partial<Record<RecursionApproachId, RecursionApproachRunner<TInput>>>;
+  approaches: Partial<
+    Record<RecursionApproachId, RecursionApproachRunner<TInput>>
+  >;
   defaultInput: TInput;
   inputKind?: "array" | "string";
   needsTarget?: boolean;
@@ -57,7 +59,10 @@ const TAG_STYLE: Record<RecursionTag["tone"], { bg: string; text: string }> = {
   danger: { bg: "#3a2a1f", text: "#f0883e" },
 };
 
-const NODE_STYLE: Record<TreeNode["status"], { border: string; bg: string; text: string }> = {
+const NODE_STYLE: Record<
+  TreeNode["status"],
+  { border: string; bg: string; text: string }
+> = {
   active: { border: "#58a6ff", bg: "#0d1f38", text: "#93c5fd" },
   resolved: { border: "#3fb950", bg: "#0d2818", text: "#a7f3d0" },
   cached: { border: "#58a6ff", bg: "#0d1f38", text: "#93c5fd" },
@@ -79,7 +84,9 @@ export default function RecursionVisualizer<TInput = number[]>({
     availableApproaches[0] ?? "brute",
   );
   const [inputText, setInputText] = useState(
-    Array.isArray(defaultInput) ? defaultInput.join(", ") : String(defaultInput),
+    Array.isArray(defaultInput)
+      ? defaultInput.join(", ")
+      : String(defaultInput),
   );
   const [parsedInput, setParsedInput] = useState<TInput>(defaultInput);
   const [targetText, setTargetText] = useState(
@@ -144,7 +151,9 @@ export default function RecursionVisualizer<TInput = number[]>({
 
   const currentStep = steps[currentStepIndex];
   const progressPct =
-    steps.length > 1 ? Math.round((currentStepIndex / (steps.length - 1)) * 100) : 0;
+    steps.length > 1
+      ? Math.round((currentStepIndex / (steps.length - 1)) * 100)
+      : 0;
 
   const pillButtonStyle = (
     variant: "primary" | "secondary",
@@ -174,8 +183,22 @@ export default function RecursionVisualizer<TInput = number[]>({
       }}
     >
       {/* Header */}
-      <div style={{ padding: "16px clamp(12px, 4vw, 22px)", borderBottom: "1px solid #21262d", background: "#161b22" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 10 }}>
+      <div
+        style={{
+          padding: "16px clamp(12px, 4vw, 22px)",
+          borderBottom: "1px solid #21262d",
+          background: "#161b22",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            flexWrap: "wrap",
+            marginBottom: 10,
+          }}
+        >
           <span style={{ fontSize: 16, fontWeight: 700 }}>🌳 {title}</span>
           <span
             style={{
@@ -203,7 +226,10 @@ export default function RecursionVisualizer<TInput = number[]>({
                 style={{
                   padding: "7px 16px",
                   borderRadius: 8,
-                  border: selectedApproach === id ? "1px solid #58a6ff" : "1px solid #30363d",
+                  border:
+                    selectedApproach === id
+                      ? "1px solid #58a6ff"
+                      : "1px solid #30363d",
                   background: selectedApproach === id ? "#1f3a6e" : "#0d1117",
                   color: selectedApproach === id ? "#58a6ff" : "#8b949e",
                   cursor: "pointer",
@@ -218,7 +244,9 @@ export default function RecursionVisualizer<TInput = number[]>({
         )}
 
         {activeRunner && (
-          <div style={{ fontSize: 12.5, color: "#8b949e", marginTop: 10 }}>{activeRunner.complexity}</div>
+          <div style={{ fontSize: 12.5, color: "#8b949e", marginTop: 10 }}>
+            {activeRunner.complexity}
+          </div>
         )}
       </div>
 
@@ -233,7 +261,15 @@ export default function RecursionVisualizer<TInput = number[]>({
           alignItems: "center",
         }}
       >
-        <label style={{ fontSize: 12, color: "#8b949e", display: "flex", alignItems: "center", gap: 6 }}>
+        <label
+          style={{
+            fontSize: 12,
+            color: "#8b949e",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+          }}
+        >
           {inputKind === "string" ? "Input" : "Array"}
           <input
             type="text"
@@ -251,7 +287,15 @@ export default function RecursionVisualizer<TInput = number[]>({
           />
         </label>
         {needsTarget && (
-          <label style={{ fontSize: 12, color: "#8b949e", display: "flex", alignItems: "center", gap: 6 }}>
+          <label
+            style={{
+              fontSize: 12,
+              color: "#8b949e",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
             n
             <input
               type="text"
@@ -269,7 +313,11 @@ export default function RecursionVisualizer<TInput = number[]>({
             />
           </label>
         )}
-        <button type="button" onClick={handleSetInput} style={pillButtonStyle("secondary")}>
+        <button
+          type="button"
+          onClick={handleSetInput}
+          style={pillButtonStyle("secondary")}
+        >
           Apply
         </button>
 
@@ -325,7 +373,15 @@ export default function RecursionVisualizer<TInput = number[]>({
 
       {/* Stage */}
       <div style={{ padding: "20px clamp(12px, 4vw, 22px)" }}>
-        <div style={{ height: 4, background: "#21262d", borderRadius: 2, overflow: "hidden", marginBottom: 18 }}>
+        <div
+          style={{
+            height: 4,
+            background: "#21262d",
+            borderRadius: 2,
+            overflow: "hidden",
+            marginBottom: 18,
+          }}
+        >
           <div
             style={{
               height: "100%",
@@ -338,9 +394,25 @@ export default function RecursionVisualizer<TInput = number[]>({
         </div>
 
         {/* legend */}
-        <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 18 }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 14,
+            flexWrap: "wrap",
+            marginBottom: 18,
+          }}
+        >
           {(["active", "resolved", "cached"] as const).map((status) => (
-            <span key={status} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#8b949e" }}>
+            <span
+              key={status}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                fontSize: 12,
+                color: "#8b949e",
+              }}
+            >
               <span
                 style={{
                   width: 12,
@@ -351,7 +423,11 @@ export default function RecursionVisualizer<TInput = number[]>({
                   display: "inline-block",
                 }}
               />
-              {status === "active" ? "in progress" : status === "resolved" ? "computed" : "cache hit"}
+              {status === "active"
+                ? "in progress"
+                : status === "resolved"
+                  ? "computed"
+                  : "cache hit"}
             </span>
           ))}
         </div>
@@ -374,7 +450,9 @@ export default function RecursionVisualizer<TInput = number[]>({
               {(() => {
                 const maxY = Math.max(40, ...currentStep.nodes.map((n) => n.y));
                 const viewHeight = maxY + 70;
-                const nodeById = new Map(currentStep.nodes.map((n) => [n.id, n]));
+                const nodeById = new Map(
+                  currentStep.nodes.map((n) => [n.id, n]),
+                );
 
                 // size nodes so the widest row never overlaps, regardless of tree depth
                 const rowGroups = new Map<number, number[]>();
@@ -390,7 +468,9 @@ export default function RecursionVisualizer<TInput = number[]>({
                     minGap = Math.min(minGap, sorted[i] - sorted[i - 1]);
                   }
                 }
-                const radius = Number.isFinite(minGap) ? Math.max(9, Math.min(26, minGap / 2 - 3)) : 26;
+                const radius = Number.isFinite(minGap)
+                  ? Math.max(9, Math.min(26, minGap / 2 - 3))
+                  : 26;
                 const fontSize = Math.max(9, Math.min(16, radius * 0.6));
 
                 return (
@@ -416,7 +496,8 @@ export default function RecursionVisualizer<TInput = number[]>({
                     })}
                     {currentStep.nodes.map((node) => {
                       const style = NODE_STYLE[node.status];
-                      const isUnresolved = node.status === "active" && node.value === undefined;
+                      const isUnresolved =
+                        node.status === "active" && node.value === undefined;
                       return (
                         <g key={node.id}>
                           {isUnresolved ? (
@@ -462,8 +543,24 @@ export default function RecursionVisualizer<TInput = number[]>({
             </div>
 
             {currentStep.memo && (
-              <div style={{ display: "flex", alignItems: "flex-end", gap: 6, marginBottom: 18, flexWrap: "wrap" }}>
-                <span style={{ fontSize: 11, color: "#8b949e", marginRight: 4, textTransform: "uppercase", letterSpacing: 0.5 }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-end",
+                  gap: 6,
+                  marginBottom: 18,
+                  flexWrap: "wrap",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 11,
+                    color: "#8b949e",
+                    marginRight: 4,
+                    textTransform: "uppercase",
+                    letterSpacing: 0.5,
+                  }}
+                >
                   memo
                 </span>
                 {currentStep.memo.map((value, idx) => (
@@ -485,7 +582,11 @@ export default function RecursionVisualizer<TInput = number[]>({
                     >
                       {value ?? ""}
                     </div>
-                    <div style={{ fontSize: 9, color: "#484f58", marginTop: 2 }}>{idx}</div>
+                    <div
+                      style={{ fontSize: 9, color: "#484f58", marginTop: 2 }}
+                    >
+                      {idx}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -494,7 +595,16 @@ export default function RecursionVisualizer<TInput = number[]>({
             {(currentStep.headline || currentStep.tag) && (
               <div style={{ textAlign: "center", marginBottom: 18 }}>
                 {currentStep.headline && (
-                  <div style={{ fontSize: "clamp(18px, 5vw, 26px)", fontWeight: 800, color: "#f0f6fc", marginBottom: 8, letterSpacing: 0.3, wordBreak: "break-word" }}>
+                  <div
+                    style={{
+                      fontSize: "clamp(18px, 5vw, 26px)",
+                      fontWeight: 800,
+                      color: "#f0f6fc",
+                      marginBottom: 8,
+                      letterSpacing: 0.3,
+                      wordBreak: "break-word",
+                    }}
+                  >
                     {currentStep.headline}
                   </div>
                 )}
@@ -519,7 +629,14 @@ export default function RecursionVisualizer<TInput = number[]>({
             )}
 
             {Object.keys(currentStep.variables).length > 0 && (
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
+              <div
+                style={{
+                  display: "flex",
+                  gap: 8,
+                  flexWrap: "wrap",
+                  marginBottom: 16,
+                }}
+              >
                 {Object.entries(currentStep.variables).map(([key, value]) => (
                   <span
                     key={key}
@@ -531,7 +648,8 @@ export default function RecursionVisualizer<TInput = number[]>({
                       color: "#e6edf3",
                     }}
                   >
-                    <span style={{ color: "#8b949e" }}>{key}:</span> {String(value)}
+                    <span style={{ color: "#8b949e" }}>{key}:</span>{" "}
+                    {String(value)}
                   </span>
                 ))}
               </div>
@@ -558,7 +676,9 @@ export default function RecursionVisualizer<TInput = number[]>({
                 Step {currentStepIndex + 1}
                 {currentStep.done ? " \u00b7 Done" : ""}
               </div>
-              <div style={{ fontSize: 14, lineHeight: 1.7, color: "#e6edf3" }}>{currentStep.description}</div>
+              <div style={{ fontSize: 14, lineHeight: 1.7, color: "#e6edf3" }}>
+                {currentStep.description}
+              </div>
             </div>
 
             {activeRunner && activeRunner.code.length > 0 && (
@@ -585,10 +705,20 @@ export default function RecursionVisualizer<TInput = number[]>({
                 >
                   <span>algorithm.js</span>
                   {currentStep.tag && (
-                    <span style={{ color: TAG_STYLE[currentStep.tag.tone].text }}>{currentStep.tag.label}</span>
+                    <span
+                      style={{ color: TAG_STYLE[currentStep.tag.tone].text }}
+                    >
+                      {currentStep.tag.label}
+                    </span>
                   )}
                 </div>
-                <div style={{ fontFamily: "'JetBrains Mono', 'Courier New', monospace", fontSize: 12.5, lineHeight: 1.9 }}>
+                <div
+                  style={{
+                    fontFamily: "'JetBrains Mono', 'Courier New', monospace",
+                    fontSize: 12.5,
+                    lineHeight: 1.9,
+                  }}
+                >
                   {activeRunner.code.map((line, idx) => {
                     const lineNo = idx + 1;
                     const active = currentStep.codeLine === lineNo;
@@ -600,7 +730,9 @@ export default function RecursionVisualizer<TInput = number[]>({
                           whiteSpace: "pre",
                           color: active ? "#e6edf3" : "#8b949e",
                           background: active ? "#15294d" : "transparent",
-                          borderLeft: active ? "3px solid #58a6ff" : "3px solid transparent",
+                          borderLeft: active
+                            ? "3px solid #58a6ff"
+                            : "3px solid transparent",
                         }}
                       >
                         {line}
@@ -631,11 +763,25 @@ export default function RecursionVisualizer<TInput = number[]>({
             cursor: "pointer",
           }}
         >
-          {showLog ? "\u25be" : "\u25b8"} Full step-by-step trace ({steps.length} steps)
+          {showLog ? "\u25be" : "\u25b8"} Full step-by-step trace (
+          {steps.length} steps)
         </button>
         {showLog && (
-          <div style={{ maxHeight: 220, overflowY: "auto", overflowX: "auto", padding: "0 clamp(12px, 4vw, 22px) 16px" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+          <div
+            style={{
+              maxHeight: 220,
+              overflowY: "auto",
+              overflowX: "auto",
+              padding: "0 clamp(12px, 4vw, 22px) 16px",
+            }}
+          >
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                fontSize: 12,
+              }}
+            >
               <thead>
                 <tr style={{ textAlign: "left", color: "#8b949e" }}>
                   <th style={{ padding: "6px 8px" }}>#</th>
@@ -652,7 +798,8 @@ export default function RecursionVisualizer<TInput = number[]>({
                     }}
                     style={{
                       cursor: "pointer",
-                      background: idx === currentStepIndex ? "#1f3a6e" : "transparent",
+                      background:
+                        idx === currentStepIndex ? "#1f3a6e" : "transparent",
                       color: idx === currentStepIndex ? "#58a6ff" : "#c9d1d9",
                     }}
                   >

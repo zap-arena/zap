@@ -1,9 +1,12 @@
 import type { ApproachRunner, VizStep } from "./AlgoVisualizer";
 
-export const maxSumSubarrayApproaches: Partial<Record<"brute" | "optimal", ApproachRunner>> = {
+export const maxSumSubarrayApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b7k) \u00b7 Space: O(1) \u2014 re-sum all k elements at every start",
+    complexity:
+      "Time: O(n\u00b7k) \u00b7 Space: O(1) \u2014 re-sum all k elements at every start",
     code: [
       "let maxSum = -Infinity;",
       "for (let i = 0; i <= n - k; i++) {",
@@ -29,7 +32,9 @@ export const maxSumSubarrayApproaches: Partial<Record<"brute" | "optimal", Appro
           })),
           variables: { i, sum, maxSum },
           headline: `sum = ${sum}`,
-          tag: isBest ? { label: "New Best", tone: "success" } : { label: "Rescan", tone: "info" },
+          tag: isBest
+            ? { label: "New Best", tone: "success" }
+            : { label: "Rescan", tone: "info" },
           codeLine: 4,
         });
       }
@@ -47,7 +52,8 @@ export const maxSumSubarrayApproaches: Partial<Record<"brute" | "optimal", Appro
   },
   optimal: {
     label: "Sliding Window",
-    complexity: "Time: O(n) \u00b7 Space: O(1) \u2014 build the first window, then slide",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(1) \u2014 build the first window, then slide",
     code: [
       "let windowSum = sum(nums[0..k-1]);",
       "let maxSum = windowSum;",
@@ -64,7 +70,10 @@ export const maxSumSubarrayApproaches: Partial<Record<"brute" | "optimal", Appro
       steps.push({
         description: `Build first window [0..${target - 1}]: sum = ${windowSum}`,
         array: input,
-        highlights: Array.from({ length: target }, (_, idx) => ({ index: idx, role: "current" as const })),
+        highlights: Array.from({ length: target }, (_, idx) => ({
+          index: idx,
+          role: "current" as const,
+        })),
         variables: { windowSum, maxSum },
         headline: `sum = ${windowSum}`,
         tag: { label: "Build Window", tone: "info" },
@@ -83,7 +92,9 @@ export const maxSumSubarrayApproaches: Partial<Record<"brute" | "optimal", Appro
           ],
           variables: { i, windowSum, maxSum },
           headline: `sum = ${windowSum}`,
-          tag: isBest ? { label: "New Best", tone: "success" } : { label: "Slide", tone: "info" },
+          tag: isBest
+            ? { label: "New Best", tone: "success" }
+            : { label: "Slide", tone: "info" },
           codeLine: 4,
         });
       }
@@ -101,10 +112,13 @@ export const maxSumSubarrayApproaches: Partial<Record<"brute" | "optimal", Appro
   },
 };
 
-export const maxAverageSubarrayApproaches: Partial<Record<"brute" | "optimal", ApproachRunner>> = {
+export const maxAverageSubarrayApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b7k) \u00b7 Space: O(1) \u2014 re-sum all k elements, then divide",
+    complexity:
+      "Time: O(n\u00b7k) \u00b7 Space: O(1) \u2014 re-sum all k elements, then divide",
     code: [
       "let maxAvg = -Infinity;",
       "for (let i = 0; i <= n - k; i++) {",
@@ -130,7 +144,9 @@ export const maxAverageSubarrayApproaches: Partial<Record<"brute" | "optimal", A
           })),
           variables: { i, sum, avg: (sum / target).toFixed(2) },
           headline: `avg = ${(sum / target).toFixed(2)}`,
-          tag: isBest ? { label: "New Best", tone: "success" } : { label: "Rescan", tone: "info" },
+          tag: isBest
+            ? { label: "New Best", tone: "success" }
+            : { label: "Rescan", tone: "info" },
           codeLine: 4,
         });
       }
@@ -148,7 +164,8 @@ export const maxAverageSubarrayApproaches: Partial<Record<"brute" | "optimal", A
   },
   optimal: {
     label: "Sliding Window",
-    complexity: "Time: O(n) \u00b7 Space: O(1) \u2014 track running sum, divide once at the end",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(1) \u2014 track running sum, divide once at the end",
     code: [
       "let windowSum = sum(nums[0..k-1]);",
       "let maxSum = windowSum;",
@@ -166,7 +183,10 @@ export const maxAverageSubarrayApproaches: Partial<Record<"brute" | "optimal", A
       steps.push({
         description: `Build first window [0..${target - 1}]: sum = ${windowSum}`,
         array: input,
-        highlights: Array.from({ length: target }, (_, idx) => ({ index: idx, role: "current" as const })),
+        highlights: Array.from({ length: target }, (_, idx) => ({
+          index: idx,
+          role: "current" as const,
+        })),
         variables: { windowSum },
         headline: `sum = ${windowSum}`,
         tag: { label: "Build Window", tone: "info" },
@@ -185,7 +205,9 @@ export const maxAverageSubarrayApproaches: Partial<Record<"brute" | "optimal", A
           ],
           variables: { i, windowSum },
           headline: `sum = ${windowSum}`,
-          tag: isBest ? { label: "New Best", tone: "success" } : { label: "Slide", tone: "info" },
+          tag: isBest
+            ? { label: "New Best", tone: "success" }
+            : { label: "Slide", tone: "info" },
           codeLine: 4,
         });
       }
@@ -203,10 +225,13 @@ export const maxAverageSubarrayApproaches: Partial<Record<"brute" | "optimal", A
   },
 };
 
-export const minSizeSubarraySumApproaches: Partial<Record<"brute" | "optimal", ApproachRunner>> = {
+export const minSizeSubarraySumApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 from every start, expand until the sum reaches target",
+    complexity:
+      "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 from every start, expand until the sum reaches target",
     code: [
       "let best = Infinity;",
       "for (let i = 0; i < n; i++) {",
@@ -245,7 +270,10 @@ export const minSizeSubarraySumApproaches: Partial<Record<"brute" | "optimal", A
           steps.push({
             description: `Window [${i}..${j}] sum = ${sum} < target (${target}), keep expanding`,
             array: input,
-            highlights: Array.from({ length: len }, (_, idx) => ({ index: i + idx, role: "i" as const })),
+            highlights: Array.from({ length: len }, (_, idx) => ({
+              index: i + idx,
+              role: "i" as const,
+            })),
             variables: { i, j, sum },
             headline: `sum = ${sum}`,
             tag: { label: "Expand", tone: "info" },
@@ -254,11 +282,17 @@ export const minSizeSubarraySumApproaches: Partial<Record<"brute" | "optimal", A
         }
       }
       steps.push({
-        description: best === Number.POSITIVE_INFINITY ? "No valid subarray found, return 0" : `Shortest length: ${best}`,
+        description:
+          best === Number.POSITIVE_INFINITY
+            ? "No valid subarray found, return 0"
+            : `Shortest length: ${best}`,
         array: input,
         highlights: [],
         variables: { result: best === Number.POSITIVE_INFINITY ? 0 : best },
-        headline: best === Number.POSITIVE_INFINITY ? "No subarray" : `Min length = ${best}`,
+        headline:
+          best === Number.POSITIVE_INFINITY
+            ? "No subarray"
+            : `Min length = ${best}`,
         tag: { label: "Done", tone: "success" },
         done: true,
       });
@@ -267,7 +301,8 @@ export const minSizeSubarraySumApproaches: Partial<Record<"brute" | "optimal", A
   },
   optimal: {
     label: "Sliding Window",
-    complexity: "Time: O(n) \u00b7 Space: O(1) \u2014 grow right, shrink left whenever sum \u2265 target",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(1) \u2014 grow right, shrink left whenever sum \u2265 target",
     code: [
       "let left = 0, sum = 0, best = Infinity;",
       "for (let right = 0; right < n; right++) {",
@@ -292,7 +327,12 @@ export const minSizeSubarraySumApproaches: Partial<Record<"brute" | "optimal", A
             { index: left, role: "lo" },
             { index: right, role: "hi" },
           ],
-          variables: { left, right, sum, best: best === Number.POSITIVE_INFINITY ? "-" : best },
+          variables: {
+            left,
+            right,
+            sum,
+            best: best === Number.POSITIVE_INFINITY ? "-" : best,
+          },
           headline: `sum = ${sum}`,
           tag: { label: "Expand", tone: "info" },
           codeLine: 3,
@@ -318,11 +358,17 @@ export const minSizeSubarraySumApproaches: Partial<Record<"brute" | "optimal", A
         }
       }
       steps.push({
-        description: best === Number.POSITIVE_INFINITY ? "No valid subarray found, return 0" : `Shortest length: ${best}`,
+        description:
+          best === Number.POSITIVE_INFINITY
+            ? "No valid subarray found, return 0"
+            : `Shortest length: ${best}`,
         array: input,
         highlights: [],
         variables: { result: best === Number.POSITIVE_INFINITY ? 0 : best },
-        headline: best === Number.POSITIVE_INFINITY ? "No subarray" : `Min length = ${best}`,
+        headline:
+          best === Number.POSITIVE_INFINITY
+            ? "No subarray"
+            : `Min length = ${best}`,
         tag: { label: "Done", tone: "success" },
         done: true,
       });
@@ -331,10 +377,13 @@ export const minSizeSubarraySumApproaches: Partial<Record<"brute" | "optimal", A
   },
 };
 
-export const longestSubstringNoRepeatApproaches: Partial<Record<"brute" | "optimal", ApproachRunner<string>>> = {
+export const longestSubstringNoRepeatApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner<string>>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b2) \u00b7 Space: O(n) \u2014 check every substring for repeated characters",
+    complexity:
+      "Time: O(n\u00b2) \u00b7 Space: O(n) \u2014 check every substring for repeated characters",
     code: [
       "let best = 0;",
       "for (let i = 0; i < n; i++) {",
@@ -381,7 +430,9 @@ export const longestSubstringNoRepeatApproaches: Partial<Record<"brute" | "optim
             structure: { label: "window chars", entries: [...seen] },
             variables: { i, j, best },
             headline: `len = ${len}`,
-            tag: isBest ? { label: "New Best", tone: "success" } : { label: "Expand", tone: "info" },
+            tag: isBest
+              ? { label: "New Best", tone: "success" }
+              : { label: "Expand", tone: "info" },
             codeLine: 7,
           });
         }
@@ -400,7 +451,8 @@ export const longestSubstringNoRepeatApproaches: Partial<Record<"brute" | "optim
   },
   optimal: {
     label: "Sliding Window",
-    complexity: "Time: O(n) \u00b7 Space: O(k) \u2014 map of last seen index, jump left past the repeat",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(k) \u2014 map of last seen index, jump left past the repeat",
     code: [
       "const lastSeen = new Map();",
       "let left = 0, best = 0;",
@@ -430,7 +482,10 @@ export const longestSubstringNoRepeatApproaches: Partial<Record<"brute" | "optim
               { index: left, role: "lo" },
               { index: right, role: "current" },
             ],
-            structure: { label: "lastSeen", entries: [...lastSeen.entries()].map(([k, v]) => `${k}:${v}`) },
+            structure: {
+              label: "lastSeen",
+              entries: [...lastSeen.entries()].map(([k, v]) => `${k}:${v}`),
+            },
             variables: { left, right },
             headline: `jump left \u2192 ${left}`,
             tag: { label: "Jump", tone: "info" },
@@ -448,10 +503,15 @@ export const longestSubstringNoRepeatApproaches: Partial<Record<"brute" | "optim
             index: left + idx,
             role: isBest ? ("match" as const) : ("hi" as const),
           })),
-          structure: { label: "lastSeen", entries: [...lastSeen.entries()].map(([k, v]) => `${k}:${v}`) },
+          structure: {
+            label: "lastSeen",
+            entries: [...lastSeen.entries()].map(([k, v]) => `${k}:${v}`),
+          },
           variables: { left, right, best },
           headline: `len = ${len}`,
-          tag: isBest ? { label: "New Best", tone: "success" } : { label: "Expand", tone: "info" },
+          tag: isBest
+            ? { label: "New Best", tone: "success" }
+            : { label: "Expand", tone: "info" },
           codeLine: 8,
         });
       }
@@ -469,10 +529,13 @@ export const longestSubstringNoRepeatApproaches: Partial<Record<"brute" | "optim
   },
 };
 
-export const longestSubstringKDistinctApproaches: Partial<Record<"brute" | "optimal", ApproachRunner<string>>> = {
+export const longestSubstringKDistinctApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner<string>>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b2) \u00b7 Space: O(n) \u2014 expand while distinct count stays \u2264 k",
+    complexity:
+      "Time: O(n\u00b2) \u00b7 Space: O(n) \u2014 expand while distinct count stays \u2264 k",
     code: [
       "let best = 0;",
       "for (let i = 0; i < n; i++) {",
@@ -498,7 +561,10 @@ export const longestSubstringKDistinctApproaches: Partial<Record<"brute" | "opti
               description: `Adding '${s[j]}' makes ${count.size} distinct chars (> k=${target}) \u2014 stop`,
               array,
               highlights: [{ index: j, role: "current" }],
-              structure: { label: "count", entries: [...count.entries()].map(([k, v]) => `${k}:${v}`) },
+              structure: {
+                label: "count",
+                entries: [...count.entries()].map(([k, v]) => `${k}:${v}`),
+              },
               variables: { i, j },
               headline: `${count.size} distinct > ${target}`,
               tag: { label: "Too Many", tone: "danger" },
@@ -516,10 +582,15 @@ export const longestSubstringKDistinctApproaches: Partial<Record<"brute" | "opti
               index: i + idx,
               role: isBest ? ("match" as const) : ("i" as const),
             })),
-            structure: { label: "count", entries: [...count.entries()].map(([k, v]) => `${k}:${v}`) },
+            structure: {
+              label: "count",
+              entries: [...count.entries()].map(([k, v]) => `${k}:${v}`),
+            },
             variables: { i, j, best },
             headline: `len = ${len}`,
-            tag: isBest ? { label: "New Best", tone: "success" } : { label: "Expand", tone: "info" },
+            tag: isBest
+              ? { label: "New Best", tone: "success" }
+              : { label: "Expand", tone: "info" },
             codeLine: 7,
           });
         }
@@ -538,7 +609,8 @@ export const longestSubstringKDistinctApproaches: Partial<Record<"brute" | "opti
   },
   optimal: {
     label: "Sliding Window",
-    complexity: "Time: O(n) \u00b7 Space: O(k) \u2014 shrink left whenever distinct count exceeds k",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(k) \u2014 shrink left whenever distinct count exceeds k",
     code: [
       "const count = new Map();",
       "let left = 0, best = 0;",
@@ -568,7 +640,10 @@ export const longestSubstringKDistinctApproaches: Partial<Record<"brute" | "opti
             { index: left, role: "lo" },
             { index: right, role: "hi" },
           ],
-          structure: { label: "count", entries: [...count.entries()].map(([k, v]) => `${k}:${v}`) },
+          structure: {
+            label: "count",
+            entries: [...count.entries()].map(([k, v]) => `${k}:${v}`),
+          },
           variables: { left, right },
           headline: `${count.size} distinct`,
           tag: { label: "Expand", tone: "info" },
@@ -582,7 +657,10 @@ export const longestSubstringKDistinctApproaches: Partial<Record<"brute" | "opti
             description: `${count.size + 1} distinct > k=${target} \u2014 shrink: remove '${leftCh}' at ${left}`,
             array,
             highlights: [{ index: left, role: "current" }],
-            structure: { label: "count", entries: [...count.entries()].map(([k, v]) => `${k}:${v}`) },
+            structure: {
+              label: "count",
+              entries: [...count.entries()].map(([k, v]) => `${k}:${v}`),
+            },
             variables: { left, right },
             headline: "Shrink window",
             tag: { label: "Shrink", tone: "danger" },
@@ -597,8 +675,14 @@ export const longestSubstringKDistinctApproaches: Partial<Record<"brute" | "opti
           steps.push({
             description: `Window [${left}..${right}] length ${len} \u2014 new best`,
             array,
-            highlights: Array.from({ length: len }, (_, idx) => ({ index: left + idx, role: "match" as const })),
-            structure: { label: "count", entries: [...count.entries()].map(([k, v]) => `${k}:${v}`) },
+            highlights: Array.from({ length: len }, (_, idx) => ({
+              index: left + idx,
+              role: "match" as const,
+            })),
+            structure: {
+              label: "count",
+              entries: [...count.entries()].map(([k, v]) => `${k}:${v}`),
+            },
             variables: { left, right, best },
             headline: `len = ${len}`,
             tag: { label: "New Best", tone: "success" },
@@ -620,10 +704,13 @@ export const longestSubstringKDistinctApproaches: Partial<Record<"brute" | "opti
   },
 };
 
-export const minWindowSubstringApproaches: Partial<Record<"brute" | "optimal", ApproachRunner<string>>> = {
+export const minWindowSubstringApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner<string>>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b2) \u00b7 Space: O(k) \u2014 expand from every start until all of t is covered",
+    complexity:
+      "Time: O(n\u00b2) \u00b7 Space: O(k) \u2014 expand from every start until all of t is covered",
     code: [
       "let best = '';",
       "for (let i = 0; i < n; i++) {",
@@ -670,7 +757,10 @@ export const minWindowSubstringApproaches: Partial<Record<"brute" | "optimal", A
           steps.push({
             description: `Window [${i}..${j}] still missing ${remaining} character(s) of "${t}"`,
             array,
-            highlights: Array.from({ length: len }, (_, idx) => ({ index: i + idx, role: "i" as const })),
+            highlights: Array.from({ length: len }, (_, idx) => ({
+              index: i + idx,
+              role: "i" as const,
+            })),
             variables: { i, j, remaining },
             headline: `missing ${remaining}`,
             tag: { label: "Expand", tone: "info" },
@@ -679,7 +769,9 @@ export const minWindowSubstringApproaches: Partial<Record<"brute" | "optimal", A
         }
       }
       steps.push({
-        description: best ? `Shortest covering substring: "${best}"` : "No covering substring exists",
+        description: best
+          ? `Shortest covering substring: "${best}"`
+          : "No covering substring exists",
         array,
         highlights: [],
         variables: { result: best || '""' },
@@ -692,7 +784,8 @@ export const minWindowSubstringApproaches: Partial<Record<"brute" | "optimal", A
   },
   optimal: {
     label: "Sliding Window",
-    complexity: "Time: O(n) \u00b7 Space: O(k) \u2014 need/have maps, shrink left whenever the window is valid",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(k) \u2014 need/have maps, shrink left whenever the window is valid",
     code: [
       "const need = countOf(t); let have = 0, required = need.size;",
       "let left = 0, best = '';",
@@ -726,7 +819,10 @@ export const minWindowSubstringApproaches: Partial<Record<"brute" | "optimal", A
             { index: left, role: "lo" },
             { index: right, role: "hi" },
           ],
-          structure: { label: "window", entries: [...window.entries()].map(([k, v]) => `${k}:${v}`) },
+          structure: {
+            label: "window",
+            entries: [...window.entries()].map(([k, v]) => `${k}:${v}`),
+          },
           variables: { left, right, have, required },
           headline: `${have}/${required} satisfied`,
           tag: { label: "Expand", tone: "info" },
@@ -749,13 +845,16 @@ export const minWindowSubstringApproaches: Partial<Record<"brute" | "optimal", A
             codeLine: 6,
           });
           const leftCh = s[left];
-          if (need.has(leftCh) && window.get(leftCh) === need.get(leftCh)) have--;
+          if (need.has(leftCh) && window.get(leftCh) === need.get(leftCh))
+            have--;
           window.set(leftCh, (window.get(leftCh) ?? 0) - 1);
           left++;
         }
       }
       steps.push({
-        description: best ? `Shortest covering substring: "${best}"` : "No covering substring exists",
+        description: best
+          ? `Shortest covering substring: "${best}"`
+          : "No covering substring exists",
         array,
         highlights: [],
         variables: { result: best || '""' },
@@ -768,10 +867,13 @@ export const minWindowSubstringApproaches: Partial<Record<"brute" | "optimal", A
   },
 };
 
-export const findAllAnagramsApproaches: Partial<Record<"brute" | "optimal", ApproachRunner<string>>> = {
+export const findAllAnagramsApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner<string>>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b7k log k) \u00b7 Space: O(k) \u2014 sort every window of length |p| and compare",
+    complexity:
+      "Time: O(n\u00b7k log k) \u00b7 Space: O(k) \u2014 sort every window of length |p| and compare",
     code: [
       "const target = [...p].sort().join('');",
       "const result = [];",
@@ -800,7 +902,9 @@ export const findAllAnagramsApproaches: Partial<Record<"brute" | "optimal", Appr
           })),
           variables: { i, found: result.length },
           headline: `"${windowStr}"`,
-          tag: isMatch ? { label: "Anagram Found", tone: "success" } : { label: "Check", tone: "info" },
+          tag: isMatch
+            ? { label: "Anagram Found", tone: "success" }
+            : { label: "Check", tone: "info" },
           codeLine: 4,
         });
       }
@@ -818,7 +922,8 @@ export const findAllAnagramsApproaches: Partial<Record<"brute" | "optimal", Appr
   },
   optimal: {
     label: "Sliding Window",
-    complexity: "Time: O(n) \u00b7 Space: O(k) \u2014 fixed-size window, compare frequency maps as you slide",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(k) \u2014 fixed-size window, compare frequency maps as you slide",
     code: [
       "const need = countOf(p);",
       "const window = new Map();",
@@ -861,10 +966,15 @@ export const findAllAnagramsApproaches: Partial<Record<"brute" | "optimal", Appr
               index: start + idx,
               role: isMatch ? ("match" as const) : ("hi" as const),
             })),
-            structure: { label: "window", entries: [...window.entries()].map(([k, v]) => `${k}:${v}`) },
+            structure: {
+              label: "window",
+              entries: [...window.entries()].map(([k, v]) => `${k}:${v}`),
+            },
             variables: { start, i, found: result.length },
             headline: `"${s.slice(start, i + 1)}"`,
-            tag: isMatch ? { label: "Anagram Found", tone: "success" } : { label: "Slide", tone: "info" },
+            tag: isMatch
+              ? { label: "Anagram Found", tone: "success" }
+              : { label: "Slide", tone: "info" },
             codeLine: 7,
           });
         } else {
@@ -872,7 +982,10 @@ export const findAllAnagramsApproaches: Partial<Record<"brute" | "optimal", Appr
             description: `Building first window: added '${s[i]}'`,
             array,
             highlights: [{ index: i, role: "current" }],
-            structure: { label: "window", entries: [...window.entries()].map(([k, v]) => `${k}:${v}`) },
+            structure: {
+              label: "window",
+              entries: [...window.entries()].map(([k, v]) => `${k}:${v}`),
+            },
             variables: { i },
             headline: "Build window",
             tag: { label: "Build", tone: "info" },
@@ -894,10 +1007,13 @@ export const findAllAnagramsApproaches: Partial<Record<"brute" | "optimal", Appr
   },
 };
 
-export const fruitIntoBasketsApproaches: Partial<Record<"brute" | "optimal", ApproachRunner>> = {
+export const fruitIntoBasketsApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 expand from every start while \u2264 2 distinct types",
+    complexity:
+      "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 expand from every start while \u2264 2 distinct types",
     code: [
       "let best = 0;",
       "for (let i = 0; i < n; i++) {",
@@ -942,7 +1058,9 @@ export const fruitIntoBasketsApproaches: Partial<Record<"brute" | "optimal", App
             structure: { label: "basket types", entries: [...types] },
             variables: { i, j, best },
             headline: `len = ${len}`,
-            tag: isBest ? { label: "New Best", tone: "success" } : { label: "Expand", tone: "info" },
+            tag: isBest
+              ? { label: "New Best", tone: "success" }
+              : { label: "Expand", tone: "info" },
             codeLine: 6,
           });
         }
@@ -961,7 +1079,8 @@ export const fruitIntoBasketsApproaches: Partial<Record<"brute" | "optimal", App
   },
   optimal: {
     label: "Sliding Window",
-    complexity: "Time: O(n) \u00b7 Space: O(1) \u2014 shrink left whenever basket types exceed 2",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(1) \u2014 shrink left whenever basket types exceed 2",
     code: [
       "const count = new Map();",
       "let left = 0, best = 0;",
@@ -987,7 +1106,10 @@ export const fruitIntoBasketsApproaches: Partial<Record<"brute" | "optimal", App
             { index: left, role: "lo" },
             { index: right, role: "hi" },
           ],
-          structure: { label: "basket counts", entries: [...count.entries()].map(([k, v]) => `${k}:${v}`) },
+          structure: {
+            label: "basket counts",
+            entries: [...count.entries()].map(([k, v]) => `${k}:${v}`),
+          },
           variables: { left, right },
           headline: `${count.size} types`,
           tag: { label: "Expand", tone: "info" },
@@ -1002,7 +1124,10 @@ export const fruitIntoBasketsApproaches: Partial<Record<"brute" | "optimal", App
             description: `More than 2 types \u2014 shrink: remove fruit ${leftType} at ${left}`,
             array: input,
             highlights: [{ index: left, role: "current" }],
-            structure: { label: "basket counts", entries: [...count.entries()].map(([k, v]) => `${k}:${v}`) },
+            structure: {
+              label: "basket counts",
+              entries: [...count.entries()].map(([k, v]) => `${k}:${v}`),
+            },
             variables: { left, right },
             headline: "Shrink window",
             tag: { label: "Shrink", tone: "danger" },
@@ -1017,8 +1142,14 @@ export const fruitIntoBasketsApproaches: Partial<Record<"brute" | "optimal", App
           steps.push({
             description: `Window [${left}..${right}] length ${len} \u2014 new best`,
             array: input,
-            highlights: Array.from({ length: len }, (_, idx) => ({ index: left + idx, role: "match" as const })),
-            structure: { label: "basket counts", entries: [...count.entries()].map(([k, v]) => `${k}:${v}`) },
+            highlights: Array.from({ length: len }, (_, idx) => ({
+              index: left + idx,
+              role: "match" as const,
+            })),
+            structure: {
+              label: "basket counts",
+              entries: [...count.entries()].map(([k, v]) => `${k}:${v}`),
+            },
             variables: { left, right, best },
             headline: `len = ${len}`,
             tag: { label: "New Best", tone: "success" },
@@ -1040,10 +1171,13 @@ export const fruitIntoBasketsApproaches: Partial<Record<"brute" | "optimal", App
   },
 };
 
-export const containsDuplicateIIApproaches: Partial<Record<"brute" | "optimal", ApproachRunner>> = {
+export const containsDuplicateIIApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 check every pair within distance k",
+    complexity:
+      "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 check every pair within distance k",
     code: [
       "for (let i = 0; i < n; i++) {",
       "  for (let j = i + 1; j <= Math.min(i + k, n - 1); j++) {",
@@ -1066,7 +1200,9 @@ export const containsDuplicateIIApproaches: Partial<Record<"brute" | "optimal", 
             ],
             variables: { i, j },
             headline: `${input[i]} vs ${input[j]}`,
-            tag: isMatch ? { label: "Duplicate Found", tone: "success" } : { label: "Compare", tone: "info" },
+            tag: isMatch
+              ? { label: "Duplicate Found", tone: "success" }
+              : { label: "Compare", tone: "info" },
             codeLine: 3,
             done: isMatch,
           });
@@ -1087,7 +1223,8 @@ export const containsDuplicateIIApproaches: Partial<Record<"brute" | "optimal", 
   },
   optimal: {
     label: "Sliding Window",
-    complexity: "Time: O(n) \u00b7 Space: O(k) \u2014 keep a set of the last k elements, slide it",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(k) \u2014 keep a set of the last k elements, slide it",
     code: [
       "const window = new Set();",
       "for (let i = 0; i < n; i++) {",
@@ -1142,10 +1279,13 @@ export const containsDuplicateIIApproaches: Partial<Record<"brute" | "optimal", 
   },
 };
 
-export const longestRepeatingCharReplacementApproaches: Partial<Record<"brute" | "optimal", ApproachRunner<string>>> = {
+export const longestRepeatingCharReplacementApproaches: Partial<
+  Record<"brute" | "optimal", ApproachRunner<string>>
+> = {
   brute: {
     label: "Brute Force",
-    complexity: "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 for every window, check if \u2264 k replacements make it uniform",
+    complexity:
+      "Time: O(n\u00b2) \u00b7 Space: O(1) \u2014 for every window, check if \u2264 k replacements make it uniform",
     code: [
       "let best = 0;",
       "for (let i = 0; i < n; i++) {",
@@ -1184,14 +1324,19 @@ export const longestRepeatingCharReplacementApproaches: Partial<Record<"brute" |
               })),
               variables: { i, j, maxFreq, best },
               headline: `needs ${replacementsNeeded} swap(s)`,
-              tag: isBest ? { label: "New Best", tone: "success" } : { label: "Valid", tone: "info" },
+              tag: isBest
+                ? { label: "New Best", tone: "success" }
+                : { label: "Valid", tone: "info" },
               codeLine: 8,
             });
           } else {
             steps.push({
               description: `Window [${i}..${j}] needs ${replacementsNeeded} replacements (> k=${target}) \u2014 stop`,
               array,
-              highlights: Array.from({ length: len }, (_, idx) => ({ index: i + idx, role: "current" as const })),
+              highlights: Array.from({ length: len }, (_, idx) => ({
+                index: i + idx,
+                role: "current" as const,
+              })),
               variables: { i, j, maxFreq },
               headline: `needs ${replacementsNeeded} swap(s)`,
               tag: { label: "Too Many", tone: "danger" },
@@ -1215,7 +1360,8 @@ export const longestRepeatingCharReplacementApproaches: Partial<Record<"brute" |
   },
   optimal: {
     label: "Sliding Window",
-    complexity: "Time: O(n) \u00b7 Space: O(1) \u2014 track the max frequency seen, slide without ever un-counting it",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(1) \u2014 track the max frequency seen, slide without ever un-counting it",
     code: [
       "const count = new Map();",
       "let left = 0, maxFreq = 0, best = 0;",
@@ -1247,7 +1393,10 @@ export const longestRepeatingCharReplacementApproaches: Partial<Record<"brute" |
             description: `Window needs more than k=${target} replacements \u2014 shrink: drop '${leftCh}' at ${left}`,
             array,
             highlights: [{ index: left, role: "current" }],
-            structure: { label: "count", entries: [...count.entries()].map(([k, v]) => `${k}:${v}`) },
+            structure: {
+              label: "count",
+              entries: [...count.entries()].map(([k, v]) => `${k}:${v}`),
+            },
             variables: { left, right, maxFreq },
             headline: "Shrink window",
             tag: { label: "Shrink", tone: "danger" },
@@ -1265,10 +1414,15 @@ export const longestRepeatingCharReplacementApproaches: Partial<Record<"brute" |
             index: left + idx,
             role: isBest ? ("match" as const) : ("hi" as const),
           })),
-          structure: { label: "count", entries: [...count.entries()].map(([k, v]) => `${k}:${v}`) },
+          structure: {
+            label: "count",
+            entries: [...count.entries()].map(([k, v]) => `${k}:${v}`),
+          },
           variables: { left, right, maxFreq, best },
           headline: `len = ${len}`,
-          tag: isBest ? { label: "New Best", tone: "success" } : { label: "Slide", tone: "info" },
+          tag: isBest
+            ? { label: "New Best", tone: "success" }
+            : { label: "Slide", tone: "info" },
           codeLine: 9,
         });
       }

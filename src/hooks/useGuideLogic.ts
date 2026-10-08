@@ -21,7 +21,8 @@ function setupFocusMode() {
     if (prevBtn) prevBtn.disabled = idx <= 0;
     if (nextBtn) nextBtn.disabled = idx === -1 || idx >= questionIds.length - 1;
     if (progress) {
-      progress.textContent = idx >= 0 ? `${idx + 1} / ${questionIds.length}` : "";
+      progress.textContent =
+        idx >= 0 ? `${idx + 1} / ${questionIds.length}` : "";
     }
   };
 
@@ -63,7 +64,9 @@ export function useGuideLogic() {
       const target = e.target as HTMLElement;
 
       // Question sidebar navigation (focus mode — show one question at a time)
-      const sideLink = target.closest<HTMLAnchorElement>(".side-link[href^='#']");
+      const sideLink = target.closest<HTMLAnchorElement>(
+        ".side-link[href^='#']",
+      );
       if (sideLink && focusMode) {
         const id = sideLink.getAttribute("href")?.slice(1);
         if (id && focusMode.questionIds.includes(id)) {

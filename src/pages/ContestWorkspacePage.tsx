@@ -52,10 +52,10 @@ import {
 import { Skeleton } from "../components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "../components/ui/tabs";
 import VerdictBadge from "../components/VerdictBadge";
+import { CODEWAR_PROBLEMS } from "../data/codewar-problems";
 import { useIsMobile } from "../hooks/use-mobile";
 import { useProctoring } from "../hooks/useProctoring";
 import { ApiError, api } from "../lib/api";
-import { CODEWAR_PROBLEMS } from "../data/codewar-problems";
 import { EDITOR_THEME_OPTIONS, MONACO_THEMES } from "../lib/monaco-themes";
 import { useAuth } from "../store/auth";
 import { accentHex, useAccent } from "../store/theme";
@@ -1144,7 +1144,10 @@ export default function ContestWorkspacePage({
 
         {/* Main content: resizable panels */}
         <div className="flex-1 min-w-0">
-          <ResizablePanelGroup direction={isMobile ? "vertical" : "horizontal"} className="h-full">
+          <ResizablePanelGroup
+            direction={isMobile ? "vertical" : "horizontal"}
+            className="h-full"
+          >
             {/* Problem / Content panel */}
             <ResizablePanel defaultSize={38} minSize={25}>
               <div className="h-full flex flex-col bg-background overflow-hidden">
@@ -1371,10 +1374,7 @@ export default function ContestWorkspacePage({
             <ResizablePanel defaultSize={62} minSize={40}>
               <ResizablePanelGroup direction="vertical">
                 {/* Editor */}
-                <ResizablePanel
-                  defaultSize={isCodeWar ? 100 : 65}
-                  minSize={30}
-                >
+                <ResizablePanel defaultSize={isCodeWar ? 100 : 65} minSize={30}>
                   <div className="h-full flex flex-col bg-background">
                     {/* Editor toolbar */}
                     <div className="h-9 border-b border-border bg-card flex items-center px-3 gap-3 shrink-0 overflow-x-auto">
@@ -1485,7 +1485,8 @@ export default function ContestWorkspacePage({
                               onClick={() => {
                                 setCodeWarStageOverrides((prev) => ({
                                   ...prev,
-                                  [selectedProblem.id]: (computedStageOrder ?? 1) + 1,
+                                  [selectedProblem.id]:
+                                    (computedStageOrder ?? 1) + 1,
                                 }));
                                 toast.success("Advanced to next stage!");
                               }}

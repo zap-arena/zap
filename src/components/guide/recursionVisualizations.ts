@@ -1,4 +1,8 @@
-import type { RecursionApproachRunner, RecursionStep, TreeNode } from "./RecursionVisualizer";
+import type {
+  RecursionApproachRunner,
+  RecursionStep,
+  TreeNode,
+} from "./RecursionVisualizer";
 import { ROW_HEIGHT, VIEW_WIDTH } from "./RecursionVisualizer";
 
 /** clamp helper to keep recursive-call simulations bounded (avoid runaway step counts) */
@@ -23,20 +27,39 @@ class TreeTracer {
   }
 
   /** compute the i-th child's slot out of `count` total children */
-  childSlot(parent: { x: number; y: number; width: number }, index: number, count: number) {
+  childSlot(
+    parent: { x: number; y: number; width: number },
+    index: number,
+    count: number,
+  ) {
     const childWidth = parent.width / count;
     const x = parent.x - parent.width / 2 + childWidth * (index + 0.5);
     const y = parent.y + ROW_HEIGHT;
     return { x, y, width: childWidth };
   }
 
-  addCall(label: string, parentId: string | null, slot: { x: number; y: number }): string {
+  addCall(
+    label: string,
+    parentId: string | null,
+    slot: { x: number; y: number },
+  ): string {
     const id = `n${this.idCounter++}`;
-    this.nodes.push({ id, parentId, x: slot.x, y: slot.y, label, status: "active" });
+    this.nodes.push({
+      id,
+      parentId,
+      x: slot.x,
+      y: slot.y,
+      label,
+      status: "active",
+    });
     return id;
   }
 
-  resolve(id: string, value: string | number, status: "resolved" | "cached" = "resolved") {
+  resolve(
+    id: string,
+    value: string | number,
+    status: "resolved" | "cached" = "resolved",
+  ) {
     const node = this.nodes.find((n) => n.id === id);
     if (node) {
       node.status = status;
@@ -68,15 +91,27 @@ class TreeTracer {
   }
 }
 
-export const factorialApproaches: Partial<Record<"brute" | "optimal", RecursionApproachRunner>> = {
+export const factorialApproaches: Partial<
+  Record<"brute" | "optimal", RecursionApproachRunner>
+> = {
   brute: {
     label: "Brute Force (Recursion)",
-    complexity: "Time: O(n) \u00b7 Space: O(n) call stack \u2014 descend to the base case, then multiply back up",
-    code: ["function factorial(n) {", "  if (n <= 1) return 1;", "  return n * factorial(n - 1);", "}"],
+    complexity:
+      "Time: O(n) \u00b7 Space: O(n) call stack \u2014 descend to the base case, then multiply back up",
+    code: [
+      "function factorial(n) {",
+      "  if (n <= 1) return 1;",
+      "  return n * factorial(n - 1);",
+      "}",
+    ],
     run: (input): RecursionStep[] => {
       const n = clamp(input.length > 0 ? input[input.length - 1] : 5, 10);
       const tracer = new TreeTracer();
-      function call(k: number, slot: { x: number; y: number; width: number }, parentId: string | null): number {
+      function call(
+        k: number,
+        slot: { x: number; y: number; width: number },
+        parentId: string | null,
+      ): number {
         const id = tracer.addCall(`factorial(${k})`, parentId, slot);
         tracer.snapshot(`Call factorial(${k})`, {
           variables: { k },
@@ -98,12 +133,15 @@ export const factorialApproaches: Partial<Record<"brute" | "optimal", RecursionA
         const sub = call(k - 1, childSlot, id);
         const result = k * sub;
         tracer.resolve(id, result);
-        tracer.snapshot(`factorial(${k}) = ${k} \u00d7 factorial(${k - 1}) = ${result}`, {
-          variables: { k, result },
-          headline: `factorial(${k}) = ${result}`,
-          tag: { label: "Return", tone: "success" },
-          codeLine: 3,
-        });
+        tracer.snapshot(
+          `factorial(${k}) = ${k} \u00d7 factorial(${k - 1}) = ${result}`,
+          {
+            variables: { k, result },
+            headline: `factorial(${k}) = ${result}`,
+            tag: { label: "Return", tone: "success" },
+            codeLine: 3,
+          },
+        );
         return result;
       }
       const result = call(n, tracer.rootSlot(), null);
@@ -118,8 +156,13 @@ export const factorialApproaches: Partial<Record<"brute" | "optimal", RecursionA
   },
   optimal: {
     label: "Optimal (Iterative)",
-    complexity: "Time: O(n) \u00b7 Space: O(1) \u2014 no call stack, just a running product",
-    code: ["let result = 1;", "for (let i = 1; i <= n; i++) result *= i;", "return result;"],
+    complexity:
+      "Time: O(n) \u00b7 Space: O(1) \u2014 no call stack, just a running product",
+    code: [
+      "let result = 1;",
+      "for (let i = 1; i <= n; i++) result *= i;",
+      "return result;",
+    ],
     run: (input): RecursionStep[] => {
       const n = clamp(input.length > 0 ? input[input.length - 1] : 5, 20);
       const tracer = new TreeTracer();
@@ -150,16 +193,28 @@ export const factorialApproaches: Partial<Record<"brute" | "optimal", RecursionA
   },
 };
 
-export const fibonacciApproaches: Partial<Record<"brute" | "optimal", RecursionApproachRunner>> = {
+export const fibonacciApproaches: Partial<
+  Record<"brute" | "optimal", RecursionApproachRunner>
+> = {
   brute: {
     label: "Brute Force (Naive Recursion)",
-    complexity: "Time: O(2^n) \u00b7 Space: O(n) call stack \u2014 recomputes the same sub-calls over and over",
-    code: ["function fib(n) {", "  if (n <= 1) return n;", "  return fib(n - 1) + fib(n - 2);", "}"],
+    complexity:
+      "Time: O(2^n) \u00b7 Space: O(n) call stack \u2014 recomputes the same sub-calls over and over",
+    code: [
+      "function fib(n) {",
+      "  if (n <= 1) return n;",
+      "  return fib(n - 1) + fib(n - 2);",
+      "}",
+    ],
     run: (input): RecursionStep[] => {
       const n = clamp(input.length > 0 ? input[input.length - 1] : 5, 6);
       const tracer = new TreeTracer();
       let totalCalls = 0;
-      function fib(k: number, slot: { x: number; y: number; width: number }, parentId: string | null): number {
+      function fib(
+        k: number,
+        slot: { x: number; y: number; width: number },
+        parentId: string | null,
+      ): number {
         totalCalls++;
         const id = tracer.addCall(`fib(${k})`, parentId, slot);
         tracer.snapshot(`Call fib(${k})`, {
@@ -184,27 +239,34 @@ export const fibonacciApproaches: Partial<Record<"brute" | "optimal", RecursionA
         const right = fib(k - 2, rightSlot, id);
         const result = left + right;
         tracer.resolve(id, result);
-        tracer.snapshot(`fib(${k}) = fib(${k - 1}) + fib(${k - 2}) = ${result}`, {
-          variables: { k, result },
-          headline: `fib(${k}) = ${result}`,
-          tag: { label: "Return", tone: "success" },
-          codeLine: 3,
-        });
+        tracer.snapshot(
+          `fib(${k}) = fib(${k - 1}) + fib(${k - 2}) = ${result}`,
+          {
+            variables: { k, result },
+            headline: `fib(${k}) = ${result}`,
+            tag: { label: "Return", tone: "success" },
+            codeLine: 3,
+          },
+        );
         return result;
       }
       const result = fib(n, tracer.rootSlot(), null);
-      tracer.snapshot(`fib(${n}) = ${result} (took ${totalCalls} total calls \u2014 lots of repeated branches!)`, {
-        variables: { result, totalCalls },
-        headline: `fib(${n}) = ${result}`,
-        tag: { label: "Done", tone: "success" },
-        done: true,
-      });
+      tracer.snapshot(
+        `fib(${n}) = ${result} (took ${totalCalls} total calls \u2014 lots of repeated branches!)`,
+        {
+          variables: { result, totalCalls },
+          headline: `fib(${n}) = ${result}`,
+          tag: { label: "Done", tone: "success" },
+          done: true,
+        },
+      );
       return tracer.steps;
     },
   },
   optimal: {
     label: "Optimal (Memoized)",
-    complexity: "Time: O(n) \u00b7 Space: O(n) \u2014 cache each fib(k) the first time it's computed, reuse afterward",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(n) \u2014 cache each fib(k) the first time it's computed, reuse afterward",
     code: [
       "const memo = new Map();",
       "function fib(n) {",
@@ -219,19 +281,27 @@ export const fibonacciApproaches: Partial<Record<"brute" | "optimal", RecursionA
       const n = clamp(input.length > 0 ? input[input.length - 1] : 5, 8);
       const tracer = new TreeTracer();
       const memo = new Map<number, number>();
-      const memoSnapshot = () => Array.from({ length: n + 1 }, (_, i) => memo.get(i) ?? null);
-      function fib(k: number, slot: { x: number; y: number; width: number }, parentId: string | null): number {
+      const memoSnapshot = () =>
+        Array.from({ length: n + 1 }, (_, i) => memo.get(i) ?? null);
+      function fib(
+        k: number,
+        slot: { x: number; y: number; width: number },
+        parentId: string | null,
+      ): number {
         if (memo.has(k)) {
           const cached = memo.get(k) as number;
           const id = tracer.addCall(`fib(${k})`, parentId, slot);
           tracer.resolve(id, cached, "cached");
-          tracer.snapshot(`fib(${k}) already cached \u2014 return ${cached} instantly`, {
-            variables: { k, cached },
-            headline: `fib(${k}) = ${cached}`,
-            tag: { label: "Cache Hit", tone: "success" },
-            codeLine: 4,
-            memo: memoSnapshot(),
-          });
+          tracer.snapshot(
+            `fib(${k}) already cached \u2014 return ${cached} instantly`,
+            {
+              variables: { k, cached },
+              headline: `fib(${k}) = ${cached}`,
+              tag: { label: "Cache Hit", tone: "success" },
+              codeLine: 4,
+              memo: memoSnapshot(),
+            },
+          );
           return cached;
         }
         const id = tracer.addCall(`fib(${k})`, parentId, slot);
@@ -270,28 +340,43 @@ export const fibonacciApproaches: Partial<Record<"brute" | "optimal", RecursionA
         return result;
       }
       const result = fib(n, tracer.rootSlot(), null);
-      tracer.snapshot(`fib(${n}) = ${result} (each value computed once, then reused)`, {
-        variables: { result },
-        headline: `fib(${n}) = ${result}`,
-        tag: { label: "Done", tone: "success" },
-        memo: memoSnapshot(),
-        done: true,
-      });
+      tracer.snapshot(
+        `fib(${n}) = ${result} (each value computed once, then reused)`,
+        {
+          variables: { result },
+          headline: `fib(${n}) = ${result}`,
+          tag: { label: "Done", tone: "success" },
+          memo: memoSnapshot(),
+          done: true,
+        },
+      );
       return tracer.steps;
     },
   },
 };
 
-export const powerApproaches: Partial<Record<"brute" | "optimal", RecursionApproachRunner>> = {
+export const powerApproaches: Partial<
+  Record<"brute" | "optimal", RecursionApproachRunner>
+> = {
   brute: {
     label: "Brute Force (Recursion)",
-    complexity: "Time: O(n) \u00b7 Space: O(n) call stack \u2014 multiply by x, n times",
-    code: ["function power(x, n) {", "  if (n === 0) return 1;", "  return x * power(x, n - 1);", "}"],
+    complexity:
+      "Time: O(n) \u00b7 Space: O(n) call stack \u2014 multiply by x, n times",
+    code: [
+      "function power(x, n) {",
+      "  if (n === 0) return 1;",
+      "  return x * power(x, n - 1);",
+      "}",
+    ],
     run: (input, target = 10): RecursionStep[] => {
       const x = input[0] ?? 2;
       const n = clamp(target, 10);
       const tracer = new TreeTracer();
-      function call(k: number, slot: { x: number; y: number; width: number }, parentId: string | null): number {
+      function call(
+        k: number,
+        slot: { x: number; y: number; width: number },
+        parentId: string | null,
+      ): number {
         const id = tracer.addCall(`power(${x},${k})`, parentId, slot);
         tracer.snapshot(`Call power(${x}, ${k})`, {
           variables: { k },
@@ -313,12 +398,15 @@ export const powerApproaches: Partial<Record<"brute" | "optimal", RecursionAppro
         const sub = call(k - 1, childSlot, id);
         const result = x * sub;
         tracer.resolve(id, result);
-        tracer.snapshot(`power(${x}, ${k}) = ${x} \u00d7 power(${x}, ${k - 1}) = ${result}`, {
-          variables: { k, result },
-          headline: `${x}^${k} = ${result}`,
-          tag: { label: "Return", tone: "success" },
-          codeLine: 3,
-        });
+        tracer.snapshot(
+          `power(${x}, ${k}) = ${x} \u00d7 power(${x}, ${k - 1}) = ${result}`,
+          {
+            variables: { k, result },
+            headline: `${x}^${k} = ${result}`,
+            tag: { label: "Return", tone: "success" },
+            codeLine: 3,
+          },
+        );
         return result;
       }
       const result = call(n, tracer.rootSlot(), null);
@@ -333,7 +421,8 @@ export const powerApproaches: Partial<Record<"brute" | "optimal", RecursionAppro
   },
   optimal: {
     label: "Optimal (Fast Power)",
-    complexity: "Time: O(log n) \u00b7 Space: O(log n) \u2014 square the base, halve the exponent",
+    complexity:
+      "Time: O(log n) \u00b7 Space: O(log n) \u2014 square the base, halve the exponent",
     code: [
       "function power(x, n) {",
       "  if (n === 0) return 1;",
@@ -345,7 +434,11 @@ export const powerApproaches: Partial<Record<"brute" | "optimal", RecursionAppro
       const x = input[0] ?? 2;
       const n = clamp(target, 1_000_000);
       const tracer = new TreeTracer();
-      function call(k: number, slot: { x: number; y: number; width: number }, parentId: string | null): number {
+      function call(
+        k: number,
+        slot: { x: number; y: number; width: number },
+        parentId: string | null,
+      ): number {
         const id = tracer.addCall(`power(${x},${k})`, parentId, slot);
         tracer.snapshot(`Call power(${x}, ${k})`, {
           variables: { k },
@@ -367,7 +460,8 @@ export const powerApproaches: Partial<Record<"brute" | "optimal", RecursionAppro
         const half = call(Math.floor(k / 2), childSlot, id);
         const result = k % 2 === 0 ? half * half : half * half * x;
         tracer.resolve(id, result);
-        const combineText = k % 2 === 0 ? `${half}\u00b2` : `${half}\u00b2 \u00d7 ${x}`;
+        const combineText =
+          k % 2 === 0 ? `${half}\u00b2` : `${half}\u00b2 \u00d7 ${x}`;
         tracer.snapshot(`power(${x}, ${k}) = ${combineText} = ${result}`, {
           variables: { k, half, result },
           headline: `power(${x},${k}) = ${result}`,
@@ -388,15 +482,27 @@ export const powerApproaches: Partial<Record<"brute" | "optimal", RecursionAppro
   },
 };
 
-export const sumOfDigitsApproaches: Partial<Record<"brute" | "optimal", RecursionApproachRunner<string>>> = {
+export const sumOfDigitsApproaches: Partial<
+  Record<"brute" | "optimal", RecursionApproachRunner<string>>
+> = {
   brute: {
     label: "Brute Force (Recursion)",
-    complexity: "Time: O(d) digits \u00b7 Space: O(d) call stack \u2014 peel the last digit, recurse on the rest",
-    code: ["function sumDigits(s) {", "  if (s.length === 0) return 0;", "  return Number(s[s.length - 1]) + sumDigits(s.slice(0, -1));", "}"],
+    complexity:
+      "Time: O(d) digits \u00b7 Space: O(d) call stack \u2014 peel the last digit, recurse on the rest",
+    code: [
+      "function sumDigits(s) {",
+      "  if (s.length === 0) return 0;",
+      "  return Number(s[s.length - 1]) + sumDigits(s.slice(0, -1));",
+      "}",
+    ],
     run: (input): RecursionStep[] => {
       const digits = [...input].slice(0, 8);
       const tracer = new TreeTracer();
-      function call(s: string, slot: { x: number; y: number; width: number }, parentId: string | null): number {
+      function call(
+        s: string,
+        slot: { x: number; y: number; width: number },
+        parentId: string | null,
+      ): number {
         const id = tracer.addCall(`sum("${s}")`, parentId, slot);
         tracer.snapshot(`Call sumDigits("${s}")`, {
           variables: { s },
@@ -419,12 +525,15 @@ export const sumOfDigitsApproaches: Partial<Record<"brute" | "optimal", Recursio
         const sub = call(s.slice(0, -1), childSlot, id);
         const result = last + sub;
         tracer.resolve(id, result);
-        tracer.snapshot(`${last} + sumDigits("${s.slice(0, -1)}") = ${result}`, {
-          variables: { result },
-          headline: `+ ${last} \u2192 ${result}`,
-          tag: { label: "Return", tone: "success" },
-          codeLine: 3,
-        });
+        tracer.snapshot(
+          `${last} + sumDigits("${s.slice(0, -1)}") = ${result}`,
+          {
+            variables: { result },
+            headline: `+ ${last} \u2192 ${result}`,
+            tag: { label: "Return", tone: "success" },
+            codeLine: 3,
+          },
+        );
         return result;
       }
       const result = call(digits.join(""), tracer.rootSlot(), null);
@@ -440,7 +549,11 @@ export const sumOfDigitsApproaches: Partial<Record<"brute" | "optimal", Recursio
   optimal: {
     label: "Optimal (Iterative)",
     complexity: "Time: O(d) \u00b7 Space: O(1) \u2014 same work, no call stack",
-    code: ["let sum = 0;", "for (const ch of s) sum += Number(ch);", "return sum;"],
+    code: [
+      "let sum = 0;",
+      "for (const ch of s) sum += Number(ch);",
+      "return sum;",
+    ],
     run: (input): RecursionStep[] => {
       const digits = [...input];
       const tracer = new TreeTracer();
@@ -471,15 +584,27 @@ export const sumOfDigitsApproaches: Partial<Record<"brute" | "optimal", Recursio
   },
 };
 
-export const reverseStringRecursiveApproaches: Partial<Record<"brute" | "optimal", RecursionApproachRunner<string>>> = {
+export const reverseStringRecursiveApproaches: Partial<
+  Record<"brute" | "optimal", RecursionApproachRunner<string>>
+> = {
   brute: {
     label: "Brute Force (Recursion, Extra Space)",
-    complexity: "Time: O(n) \u00b7 Space: O(n) \u2014 build a brand-new reversed string on the way back up",
-    code: ["function reverse(s) {", "  if (s.length === 0) return '';", "  return reverse(s.slice(1)) + s[0];", "}"],
+    complexity:
+      "Time: O(n) \u00b7 Space: O(n) \u2014 build a brand-new reversed string on the way back up",
+    code: [
+      "function reverse(s) {",
+      "  if (s.length === 0) return '';",
+      "  return reverse(s.slice(1)) + s[0];",
+      "}",
+    ],
     run: (input): RecursionStep[] => {
       const s = input.slice(0, 8);
       const tracer = new TreeTracer();
-      function call(str: string, slot: { x: number; y: number; width: number }, parentId: string | null): string {
+      function call(
+        str: string,
+        slot: { x: number; y: number; width: number },
+        parentId: string | null,
+      ): string {
         const id = tracer.addCall(`rev("${str}")`, parentId, slot);
         tracer.snapshot(`Call reverse("${str}")`, {
           variables: {},
@@ -501,12 +626,15 @@ export const reverseStringRecursiveApproaches: Partial<Record<"brute" | "optimal
         const sub = call(str.slice(1), childSlot, id);
         const result = sub + str[0];
         tracer.resolve(id, `"${result}"`);
-        tracer.snapshot(`reverse("${str.slice(1)}") + "${str[0]}" = "${result}"`, {
-          variables: { built: result },
-          headline: `"${result}"`,
-          tag: { label: "Build", tone: "success" },
-          codeLine: 3,
-        });
+        tracer.snapshot(
+          `reverse("${str.slice(1)}") + "${str[0]}" = "${result}"`,
+          {
+            variables: { built: result },
+            headline: `"${result}"`,
+            tag: { label: "Build", tone: "success" },
+            codeLine: 3,
+          },
+        );
         return result;
       }
       const result = call(s, tracer.rootSlot(), null);
@@ -521,7 +649,8 @@ export const reverseStringRecursiveApproaches: Partial<Record<"brute" | "optimal
   },
   optimal: {
     label: "Optimal (In-Place Recursive Swap)",
-    complexity: "Time: O(n) \u00b7 Space: O(n) call stack, O(1) extra data \u2014 swap ends, recurse inward",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(n) call stack, O(1) extra data \u2014 swap ends, recurse inward",
     code: [
       "function reverse(s, left, right) {",
       "  if (left >= right) return;",
@@ -532,7 +661,12 @@ export const reverseStringRecursiveApproaches: Partial<Record<"brute" | "optimal
     run: (input): RecursionStep[] => {
       const array = [...input];
       const tracer = new TreeTracer();
-      function call(left: number, right: number, slot: { x: number; y: number; width: number }, parentId: string | null) {
+      function call(
+        left: number,
+        right: number,
+        slot: { x: number; y: number; width: number },
+        parentId: string | null,
+      ) {
         const id = tracer.addCall(`rev(${left},${right})`, parentId, slot);
         tracer.snapshot(`Call reverse(left=${left}, right=${right})`, {
           variables: { left, right },
@@ -542,22 +676,28 @@ export const reverseStringRecursiveApproaches: Partial<Record<"brute" | "optimal
         });
         if (left >= right) {
           tracer.resolve(id, "stop");
-          tracer.snapshot(`left (${left}) >= right (${right}) \u2014 base case, stop`, {
-            variables: { left, right },
-            headline: "Base case",
-            tag: { label: "Base Case", tone: "success" },
-            codeLine: 2,
-          });
+          tracer.snapshot(
+            `left (${left}) >= right (${right}) \u2014 base case, stop`,
+            {
+              variables: { left, right },
+              headline: "Base case",
+              tag: { label: "Base Case", tone: "success" },
+              codeLine: 2,
+            },
+          );
           return;
         }
         [array[left], array[right]] = [array[right], array[left]];
         tracer.resolve(id, `${left}\u2194${right}`);
-        tracer.snapshot(`Swap positions ${left} and ${right} \u2014 "${array.join("")}"`, {
-          variables: { left, right, current: array.join("") },
-          headline: `swap ${left} \u2194 ${right}`,
-          tag: { label: "Swap", tone: "success" },
-          codeLine: 3,
-        });
+        tracer.snapshot(
+          `Swap positions ${left} and ${right} \u2014 "${array.join("")}"`,
+          {
+            variables: { left, right, current: array.join("") },
+            headline: `swap ${left} \u2194 ${right}`,
+            tag: { label: "Swap", tone: "success" },
+            codeLine: 3,
+          },
+        );
         const childSlot = tracer.childSlot(slot, 0, 1);
         call(left + 1, right - 1, childSlot, id);
       }
@@ -573,15 +713,27 @@ export const reverseStringRecursiveApproaches: Partial<Record<"brute" | "optimal
   },
 };
 
-export const climbingStairsApproaches: Partial<Record<"brute" | "optimal", RecursionApproachRunner>> = {
+export const climbingStairsApproaches: Partial<
+  Record<"brute" | "optimal", RecursionApproachRunner>
+> = {
   brute: {
     label: "Brute Force (Naive Recursion)",
-    complexity: "Time: O(2^n) \u00b7 Space: O(n) call stack \u2014 recomputes ways(k) many times",
-    code: ["function ways(n) {", "  if (n <= 1) return 1;", "  return ways(n - 1) + ways(n - 2);", "}"],
+    complexity:
+      "Time: O(2^n) \u00b7 Space: O(n) call stack \u2014 recomputes ways(k) many times",
+    code: [
+      "function ways(n) {",
+      "  if (n <= 1) return 1;",
+      "  return ways(n - 1) + ways(n - 2);",
+      "}",
+    ],
     run: (input): RecursionStep[] => {
       const n = clamp(input.length > 0 ? input[input.length - 1] : 5, 6);
       const tracer = new TreeTracer();
-      function call(k: number, slot: { x: number; y: number; width: number }, parentId: string | null): number {
+      function call(
+        k: number,
+        slot: { x: number; y: number; width: number },
+        parentId: string | null,
+      ): number {
         const id = tracer.addCall(`ways(${k})`, parentId, slot);
         tracer.snapshot(`Call ways(${k})`, {
           variables: { k },
@@ -605,12 +757,15 @@ export const climbingStairsApproaches: Partial<Record<"brute" | "optimal", Recur
         const right = call(k - 2, rightSlot, id);
         const result = left + right;
         tracer.resolve(id, result);
-        tracer.snapshot(`ways(${k}) = ways(${k - 1}) + ways(${k - 2}) = ${result}`, {
-          variables: { k, result },
-          headline: `ways(${k}) = ${result}`,
-          tag: { label: "Return", tone: "success" },
-          codeLine: 3,
-        });
+        tracer.snapshot(
+          `ways(${k}) = ways(${k - 1}) + ways(${k - 2}) = ${result}`,
+          {
+            variables: { k, result },
+            headline: `ways(${k}) = ${result}`,
+            tag: { label: "Return", tone: "success" },
+            codeLine: 3,
+          },
+        );
         return result;
       }
       const result = call(n, tracer.rootSlot(), null);
@@ -625,7 +780,8 @@ export const climbingStairsApproaches: Partial<Record<"brute" | "optimal", Recur
   },
   optimal: {
     label: "Optimal (Memoized)",
-    complexity: "Time: O(n) \u00b7 Space: O(n) \u2014 cache each ways(k) the first time it's computed",
+    complexity:
+      "Time: O(n) \u00b7 Space: O(n) \u2014 cache each ways(k) the first time it's computed",
     code: [
       "const memo = new Map();",
       "function ways(n) {",
@@ -640,19 +796,27 @@ export const climbingStairsApproaches: Partial<Record<"brute" | "optimal", Recur
       const n = clamp(input.length > 0 ? input[input.length - 1] : 5, 8);
       const tracer = new TreeTracer();
       const memo = new Map<number, number>();
-      const memoSnapshot = () => Array.from({ length: n + 1 }, (_, i) => memo.get(i) ?? null);
-      function call(k: number, slot: { x: number; y: number; width: number }, parentId: string | null): number {
+      const memoSnapshot = () =>
+        Array.from({ length: n + 1 }, (_, i) => memo.get(i) ?? null);
+      function call(
+        k: number,
+        slot: { x: number; y: number; width: number },
+        parentId: string | null,
+      ): number {
         if (memo.has(k)) {
           const cached = memo.get(k) as number;
           const id = tracer.addCall(`ways(${k})`, parentId, slot);
           tracer.resolve(id, cached, "cached");
-          tracer.snapshot(`ways(${k}) cached \u2014 return ${cached} instantly`, {
-            variables: { k, cached },
-            headline: `ways(${k}) = ${cached}`,
-            tag: { label: "Cache Hit", tone: "success" },
-            codeLine: 4,
-            memo: memoSnapshot(),
-          });
+          tracer.snapshot(
+            `ways(${k}) cached \u2014 return ${cached} instantly`,
+            {
+              variables: { k, cached },
+              headline: `ways(${k}) = ${cached}`,
+              tag: { label: "Cache Hit", tone: "success" },
+              codeLine: 4,
+              memo: memoSnapshot(),
+            },
+          );
           return cached;
         }
         const id = tracer.addCall(`ways(${k})`, parentId, slot);
@@ -681,13 +845,16 @@ export const climbingStairsApproaches: Partial<Record<"brute" | "optimal", Recur
         const result = left + right;
         memo.set(k, result);
         tracer.resolve(id, result);
-        tracer.snapshot(`ways(${k}) = ${result} \u2014 cache it for next time`, {
-          variables: { k, result },
-          headline: `ways(${k}) = ${result}`,
-          tag: { label: "Cache & Return", tone: "success" },
-          codeLine: 6,
-          memo: memoSnapshot(),
-        });
+        tracer.snapshot(
+          `ways(${k}) = ${result} \u2014 cache it for next time`,
+          {
+            variables: { k, result },
+            headline: `ways(${k}) = ${result}`,
+            tag: { label: "Cache & Return", tone: "success" },
+            codeLine: 6,
+            memo: memoSnapshot(),
+          },
+        );
         return result;
       }
       const result = call(n, tracer.rootSlot(), null);
@@ -703,10 +870,13 @@ export const climbingStairsApproaches: Partial<Record<"brute" | "optimal", Recur
   },
 };
 
-export const subsetsApproaches: Partial<Record<"brute" | "optimal", RecursionApproachRunner>> = {
+export const subsetsApproaches: Partial<
+  Record<"brute" | "optimal", RecursionApproachRunner>
+> = {
   brute: {
     label: "Brute Force (Recursive Include/Exclude)",
-    complexity: "Time: O(n \u00b7 2^n) \u00b7 Space: O(n) call stack \u2014 branch on including or excluding each element",
+    complexity:
+      "Time: O(n \u00b7 2^n) \u00b7 Space: O(n) call stack \u2014 branch on including or excluding each element",
     code: [
       "function subsets(nums, i, path, result) {",
       "  if (i === nums.length) { result.push([...path]); return; }",
@@ -719,25 +889,40 @@ export const subsetsApproaches: Partial<Record<"brute" | "optimal", RecursionApp
       const nums = input.slice(0, n);
       const tracer = new TreeTracer();
       const result: string[] = [];
-      function go(i: number, path: number[], slot: { x: number; y: number; width: number }, parentId: string | null) {
-        const id = tracer.addCall(i === nums.length ? `[${path.join(",")}]` : `i=${i}`, parentId, slot);
+      function go(
+        i: number,
+        path: number[],
+        slot: { x: number; y: number; width: number },
+        parentId: string | null,
+      ) {
+        const id = tracer.addCall(
+          i === nums.length ? `[${path.join(",")}]` : `i=${i}`,
+          parentId,
+          slot,
+        );
         if (i === nums.length) {
           result.push(`[${path.join(",")}]`);
           tracer.resolve(id, `[${path.join(",")}]`);
-          tracer.snapshot(`Reached the end \u2014 record subset [${path.join(", ")}]`, {
-            variables: { count: result.length },
-            headline: `[${path.join(", ")}]`,
-            tag: { label: "Record", tone: "success" },
-            codeLine: 2,
-          });
+          tracer.snapshot(
+            `Reached the end \u2014 record subset [${path.join(", ")}]`,
+            {
+              variables: { count: result.length },
+              headline: `[${path.join(", ")}]`,
+              tag: { label: "Record", tone: "success" },
+              codeLine: 2,
+            },
+          );
           return;
         }
-        tracer.snapshot(`At index ${i}, decide: exclude or include nums[${i}] (${nums[i]})`, {
-          variables: { i },
-          headline: `decide nums[${i}]`,
-          tag: { label: "Branch", tone: "info" },
-          codeLine: 3,
-        });
+        tracer.snapshot(
+          `At index ${i}, decide: exclude or include nums[${i}] (${nums[i]})`,
+          {
+            variables: { i },
+            headline: `decide nums[${i}]`,
+            tag: { label: "Branch", tone: "info" },
+            codeLine: 3,
+          },
+        );
         const excludeSlot = tracer.childSlot(slot, 0, 2);
         const includeSlot = tracer.childSlot(slot, 1, 2);
         go(i + 1, path, excludeSlot, id);
@@ -756,7 +941,8 @@ export const subsetsApproaches: Partial<Record<"brute" | "optimal", RecursionApp
   },
   optimal: {
     label: "Optimal (Iterative Bitmask)",
-    complexity: "Time: O(n \u00b7 2^n) \u00b7 Space: O(1) extra per subset \u2014 no recursion, one mask per subset",
+    complexity:
+      "Time: O(n \u00b7 2^n) \u00b7 Space: O(1) extra per subset \u2014 no recursion, one mask per subset",
     code: [
       "const result = [];",
       "for (let mask = 0; mask < (1 << n); mask++) {",
@@ -779,12 +965,15 @@ export const subsetsApproaches: Partial<Record<"brute" | "optimal", RecursionApp
         result.push(`[${subset.join(",")}]`);
         const id = tracer.addCall(`[${subset.join(",")}]`, parentId, slot);
         tracer.resolve(id, `[${subset.join(",")}]`);
-        tracer.snapshot(`mask = ${mask.toString(2).padStart(n, "0")} \u2192 subset [${subset.join(", ")}]`, {
-          variables: { mask: mask.toString(2).padStart(n, "0") },
-          headline: `[${subset.join(", ")}]`,
-          tag: { label: "Build", tone: "info" },
-          codeLine: 3,
-        });
+        tracer.snapshot(
+          `mask = ${mask.toString(2).padStart(n, "0")} \u2192 subset [${subset.join(", ")}]`,
+          {
+            variables: { mask: mask.toString(2).padStart(n, "0") },
+            headline: `[${subset.join(", ")}]`,
+            tag: { label: "Build", tone: "info" },
+            codeLine: 3,
+          },
+        );
         parentId = id;
         slot = tracer.childSlot(slot, 0, 1);
       }
@@ -799,10 +988,13 @@ export const subsetsApproaches: Partial<Record<"brute" | "optimal", RecursionApp
   },
 };
 
-export const permutationsApproaches: Partial<Record<"brute" | "optimal", RecursionApproachRunner>> = {
+export const permutationsApproaches: Partial<
+  Record<"brute" | "optimal", RecursionApproachRunner>
+> = {
   brute: {
     label: "Brute Force (Remaining List)",
-    complexity: "Time: O(n \u00b7 n!) \u00b7 Space: O(n) per call \u2014 copies the remaining list at every level",
+    complexity:
+      "Time: O(n \u00b7 n!) \u00b7 Space: O(n) per call \u2014 copies the remaining list at every level",
     code: [
       "function permute(remaining, path, result) {",
       "  if (remaining.length === 0) { result.push([...path]); return; }",
@@ -817,8 +1009,19 @@ export const permutationsApproaches: Partial<Record<"brute" | "optimal", Recursi
       const nums = input.slice(0, n);
       const tracer = new TreeTracer();
       const result: string[] = [];
-      function go(remaining: number[], path: number[], slot: { x: number; y: number; width: number }, parentId: string | null) {
-        const id = tracer.addCall(remaining.length === 0 ? `[${path.join(",")}]` : `[${path.join(",")}]+`, parentId, slot);
+      function go(
+        remaining: number[],
+        path: number[],
+        slot: { x: number; y: number; width: number },
+        parentId: string | null,
+      ) {
+        const id = tracer.addCall(
+          remaining.length === 0
+            ? `[${path.join(",")}]`
+            : `[${path.join(",")}]+`,
+          parentId,
+          slot,
+        );
         if (remaining.length === 0) {
           result.push(`[${path.join(",")}]`);
           tracer.resolve(id, `[${path.join(",")}]`);
@@ -833,12 +1036,15 @@ export const permutationsApproaches: Partial<Record<"brute" | "optimal", Recursi
         for (let i = 0; i < remaining.length; i++) {
           const rest = [...remaining.slice(0, i), ...remaining.slice(i + 1)];
           const childSlot = tracer.childSlot(slot, i, remaining.length);
-          tracer.snapshot(`Choose ${remaining[i]} next \u2014 path so far [${[...path, remaining[i]].join(", ")}]`, {
-            variables: {},
-            headline: `pick ${remaining[i]}`,
-            tag: { label: "Choose", tone: "info" },
-            codeLine: 5,
-          });
+          tracer.snapshot(
+            `Choose ${remaining[i]} next \u2014 path so far [${[...path, remaining[i]].join(", ")}]`,
+            {
+              variables: {},
+              headline: `pick ${remaining[i]}`,
+              tag: { label: "Choose", tone: "info" },
+              codeLine: 5,
+            },
+          );
           go(rest, [...path, remaining[i]], childSlot, id);
         }
         tracer.resolve(id, "\u2713");
@@ -855,7 +1061,8 @@ export const permutationsApproaches: Partial<Record<"brute" | "optimal", Recursi
   },
   optimal: {
     label: "Optimal (In-Place Swap)",
-    complexity: "Time: O(n \u00b7 n!) \u00b7 Space: O(n) call stack only \u2014 swaps in place, no extra lists per call",
+    complexity:
+      "Time: O(n \u00b7 n!) \u00b7 Space: O(n) call stack only \u2014 swaps in place, no extra lists per call",
     code: [
       "function permute(nums, k, result) {",
       "  if (k === nums.length) { result.push([...nums]); return; }",
@@ -871,8 +1078,16 @@ export const permutationsApproaches: Partial<Record<"brute" | "optimal", Recursi
       const nums = input.slice(0, n);
       const tracer = new TreeTracer();
       const result: string[] = [];
-      function go(k: number, slot: { x: number; y: number; width: number }, parentId: string | null) {
-        const id = tracer.addCall(k === nums.length ? `[${nums.join(",")}]` : `k=${k}`, parentId, slot);
+      function go(
+        k: number,
+        slot: { x: number; y: number; width: number },
+        parentId: string | null,
+      ) {
+        const id = tracer.addCall(
+          k === nums.length ? `[${nums.join(",")}]` : `k=${k}`,
+          parentId,
+          slot,
+        );
         if (k === nums.length) {
           result.push(`[${nums.join(",")}]`);
           tracer.resolve(id, `[${nums.join(",")}]`);
@@ -888,12 +1103,15 @@ export const permutationsApproaches: Partial<Record<"brute" | "optimal", Recursi
         for (let i = k; i < nums.length; i++) {
           [nums[k], nums[i]] = [nums[i], nums[k]];
           const childSlot = tracer.childSlot(slot, i - k, childCount);
-          tracer.snapshot(`Swap positions ${k} and ${i} \u2014 fix ${nums[k]} at position ${k}`, {
-            variables: { k, i },
-            headline: `swap ${k} \u2194 ${i}`,
-            tag: { label: "Swap", tone: "info" },
-            codeLine: 4,
-          });
+          tracer.snapshot(
+            `Swap positions ${k} and ${i} \u2014 fix ${nums[k]} at position ${k}`,
+            {
+              variables: { k, i },
+              headline: `swap ${k} \u2194 ${i}`,
+              tag: { label: "Swap", tone: "info" },
+              codeLine: 4,
+            },
+          );
           go(k + 1, childSlot, id);
           [nums[k], nums[i]] = [nums[i], nums[k]];
         }

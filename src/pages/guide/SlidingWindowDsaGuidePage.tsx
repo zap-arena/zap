@@ -1,6 +1,4 @@
-import React from "react";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
-import Navbar from "../../components/Navbar";
+import type React from "react";
 import AlgoVisualizer from "../../components/guide/AlgoVisualizer";
 import {
   containsDuplicateIIApproaches,
@@ -14,6 +12,8 @@ import {
   minSizeSubarraySumApproaches,
   minWindowSubstringApproaches,
 } from "../../components/guide/slidingWindowVisualizations";
+import Navbar from "../../components/Navbar";
+import { useGuideLogic } from "../../hooks/useGuideLogic";
 
 export default function SlidingWindowDsaGuidePage() {
   useGuideLogic();

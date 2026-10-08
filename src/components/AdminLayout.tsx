@@ -1,26 +1,26 @@
-import { Logo } from "./Logo";
-import { ZapWordmark } from "./ZapWordmark";
 import {
   Activity,
   BarChart3,
   Brain,
   ChevronRight,
   Code2,
+  FileQuestion,
   LayoutDashboard,
   LogOut,
   Menu,
   Send,
   Trophy,
   Users,
-  FileQuestion,
   X,
 } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "../store/auth";
+import { Logo } from "./Logo";
 import ThemeColorPicker from "./ThemeColorPicker";
 import ThemeToggle from "./ThemeToggle";
+import { ZapWordmark } from "./ZapWordmark";
 
 const NAV_ITEMS = [
   { path: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },

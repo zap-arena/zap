@@ -1,5 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { Calendar, CheckCircle, Clock, Trophy } from "lucide-react";
+import {
+  ArrowRight,
+  Calendar,
+  CheckCircle,
+  Clock,
+  Info,
+  Trophy,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { Button } from "../components/ui/button";
@@ -20,7 +27,6 @@ import {
 } from "../components/ui/tabs";
 import { api } from "../lib/api";
 import { useAuth } from "../store/auth";
-import { Info, ArrowRight } from "lucide-react";
 
 interface Contest {
   id: string;
@@ -187,17 +193,29 @@ export default function ContestsPage() {
                 <Info size={20} className="text-primary" />
               </div>
               <div>
-                <h3 className="text-base font-semibold text-foreground mb-1">Join the Competition</h3>
+                <h3 className="text-base font-semibold text-foreground mb-1">
+                  Join the Competition
+                </h3>
                 <p className="text-sm text-muted-foreground max-w-xl leading-relaxed">
-                  Unlock the full experience by creating a free account. You'll be able to participate in live contests, practice past challenges, and track your algorithmic progress against the community!
+                  Unlock the full experience by creating a free account. You'll
+                  be able to participate in live contests, practice past
+                  challenges, and track your algorithmic progress against the
+                  community!
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-3 shrink-0 md:ml-0 relative z-10">
-              <Button variant="outline" className="border-border hover:bg-muted font-medium" onClick={() => navigate("/login")}>
+              <Button
+                variant="outline"
+                className="border-border hover:bg-muted font-medium"
+                onClick={() => navigate("/login")}
+              >
                 Sign In
               </Button>
-              <Button className="btn-primary shadow-md shadow-primary/20" onClick={() => navigate("/register")}>
+              <Button
+                className="btn-primary shadow-md shadow-primary/20"
+                onClick={() => navigate("/register")}
+              >
                 Create Account <ArrowRight size={16} className="ml-2" />
               </Button>
             </div>

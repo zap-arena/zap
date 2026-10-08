@@ -1,12 +1,12 @@
-import { Logo } from "../components/Logo";
-import { ZapWordmark } from "../components/ZapWordmark";
 import { ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
+import { Logo } from "../components/Logo";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import { ZapWordmark } from "../components/ZapWordmark";
 import { useAuth } from "../store/auth";
 
 export default function LoginPage() {

@@ -5,8 +5,18 @@ const topics = [
   { name: "Trees & BST", problems: 55, icon: "🌳", level: "Intermediate" },
   { name: "Graphs & BFS/DFS", problems: 60, icon: "🗺️", level: "Advanced" },
   { name: "Dynamic Programming", problems: 70, icon: "🧩", level: "Advanced" },
-  { name: "Recursion & Backtracking", problems: 40, icon: "🔄", level: "Advanced" },
-  { name: "Sorting & Searching", problems: 35, icon: "🔍", level: "Intermediate" },
+  {
+    name: "Recursion & Backtracking",
+    problems: 40,
+    icon: "🔄",
+    level: "Advanced",
+  },
+  {
+    name: "Sorting & Searching",
+    problems: 35,
+    icon: "🔍",
+    level: "Intermediate",
+  },
 ];
 
 const levelColors: Record<string, string> = {
@@ -24,7 +34,9 @@ export default function HomeDSASection() {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 mb-6">
-              <span className="text-primary text-xs font-mono font-medium tracking-wider uppercase">🧠 DSA Curriculum</span>
+              <span className="text-primary text-xs font-mono font-medium tracking-wider uppercase">
+                🧠 DSA Curriculum
+              </span>
             </div>
             <h2 className="font-display text-4xl lg:text-5xl font-black text-foreground mb-6 leading-tight">
               300+ Problems.
@@ -32,7 +44,9 @@ export default function HomeDSASection() {
               <span className="text-gradient-primary">Zero Gaps.</span>
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed mb-8">
-              Our curriculum covers every topic tested in top company interviews. From basics to advanced — structured, curated, and mentor-guided.
+              Our curriculum covers every topic tested in top company
+              interviews. From basics to advanced — structured, curated, and
+              mentor-guided.
             </p>
 
             <div className="rounded-2xl overflow-hidden border border-primary/20 shadow-glow grid-bg h-52 flex items-center justify-center bg-gradient-to-br from-primary/15 via-accent/10 to-transparent">
@@ -51,14 +65,24 @@ export default function HomeDSASection() {
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-xl">{t.icon}</span>
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-mono ${levelColors[t.level]}`}>{t.level}</span>
+                    <span
+                      className={`text-xs px-2 py-0.5 rounded-full font-mono ${levelColors[t.level]}`}
+                    >
+                      {t.level}
+                    </span>
                   </div>
-                  <div className="font-display font-bold text-foreground text-sm mb-1">{t.name}</div>
-                  <div className="text-primary text-xs font-mono">{t.problems} Problems</div>
+                  <div className="font-display font-bold text-foreground text-sm mb-1">
+                    {t.name}
+                  </div>
+                  <div className="text-primary text-xs font-mono">
+                    {t.problems} Problems
+                  </div>
                   <div className="mt-2 h-1 rounded-full bg-secondary overflow-hidden">
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-primary to-accent"
-                      style={{ width: `${Math.min((t.problems / 70) * 100, 100)}%` }}
+                      style={{
+                        width: `${Math.min((t.problems / 70) * 100, 100)}%`,
+                      }}
                     />
                   </div>
                 </div>
@@ -66,7 +90,9 @@ export default function HomeDSASection() {
             </div>
             <div className="mt-4 text-center">
               <span className="text-muted-foreground text-sm">
-                Total: <span className="text-primary font-bold">363 Problems</span> across 8 core topics
+                Total:{" "}
+                <span className="text-primary font-bold">363 Problems</span>{" "}
+                across 8 core topics
               </span>
             </div>
           </div>

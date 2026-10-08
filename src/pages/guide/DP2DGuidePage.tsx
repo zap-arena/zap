@@ -1,6 +1,4 @@
-import React from "react";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
-import Navbar from "../../components/Navbar";
+import type React from "react";
 import DPGridVisualizer from "../../components/guide/DPGridVisualizer";
 import {
   editDistanceApproaches,
@@ -9,6 +7,8 @@ import {
   minimumPathSumApproaches,
   uniquePathsApproaches,
 } from "../../components/guide/dp2DVisualizations";
+import Navbar from "../../components/Navbar";
+import { useGuideLogic } from "../../hooks/useGuideLogic";
 
 export default function DP2DGuidePage() {
   useGuideLogic();
@@ -98,14 +98,22 @@ export default function DP2DGuidePage() {
                 <span className="legend-item">
                   <span
                     className="legend-swatch"
-                    style={{ background: "hsl(var(--primary))" } as React.CSSProperties}
+                    style={
+                      {
+                        background: "hsl(var(--primary))",
+                      } as React.CSSProperties
+                    }
                   ></span>
                   Brute force (naive recursion)
                 </span>
                 <span className="legend-item">
                   <span
                     className="legend-swatch"
-                    style={{ background: "hsl(var(--primary))" } as React.CSSProperties}
+                    style={
+                      {
+                        background: "hsl(var(--primary))",
+                      } as React.CSSProperties
+                    }
                   ></span>
                   Optimal (tabulation)
                 </span>
@@ -120,16 +128,22 @@ export default function DP2DGuidePage() {
               </div>
               <p className="prompt">
                 A robot starts at the top-left corner of an <code>m × n</code>{" "}
-                grid and can only move right or down. How many unique paths
-                are there to the bottom-right corner?
+                grid and can only move right or down. How many unique paths are
+                there to the bottom-right corner?
               </p>
               <div className="example">Input: m = 3, n = 3 Output: 6</div>
 
-              <DPGridVisualizer title="Unique Paths" approaches={uniquePathsApproaches} />
+              <DPGridVisualizer
+                title="Unique Paths"
+                approaches={uniquePathsApproaches}
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q1-approach">
-                  <button className="tab-btn brute active" data-target="q1-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q1-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q1-opt">
@@ -138,8 +152,8 @@ export default function DP2DGuidePage() {
                 </div>
                 <div className="approach-panel active" id="q1-brute">
                   <div className="complexity">
-                    Time: <b>O(2^(m+n))</b> · Space: <b>O(m+n)</b> call stack
-                    — try moving right or down from every cell
+                    Time: <b>O(2^(m+n))</b> · Space: <b>O(m+n)</b> call stack —
+                    try moving right or down from every cell
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -212,19 +226,25 @@ export default function DP2DGuidePage() {
                 <span className="level-badge basic">Basic</span>
               </div>
               <p className="prompt">
-                Given a grid filled with non-negative numbers, find a path
-                from top-left to bottom-right that minimizes the sum of all
-                numbers along it, moving only right or down.
+                Given a grid filled with non-negative numbers, find a path from
+                top-left to bottom-right that minimizes the sum of all numbers
+                along it, moving only right or down.
               </p>
               <div className="example">
                 Input: grid = [[1,3,1],[1,5,1],[4,2,1]] Output: 7
               </div>
 
-              <DPGridVisualizer title="Minimum Path Sum" approaches={minimumPathSumApproaches} />
+              <DPGridVisualizer
+                title="Minimum Path Sum"
+                approaches={minimumPathSumApproaches}
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q2-approach">
-                  <button className="tab-btn brute active" data-target="q2-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q2-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q2-opt">
@@ -233,8 +253,8 @@ export default function DP2DGuidePage() {
                 </div>
                 <div className="approach-panel active" id="q2-brute">
                   <div className="complexity">
-                    Time: <b>O(2^(m+n))</b> · Space: <b>O(m+n)</b> call stack
-                    — try every right/down path, keep the cheapest
+                    Time: <b>O(2^(m+n))</b> · Space: <b>O(m+n)</b> call stack —
+                    try every right/down path, keep the cheapest
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -335,7 +355,10 @@ export default function DP2DGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q3-approach">
-                  <button className="tab-btn brute active" data-target="q3-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q3-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q3-opt">
@@ -344,8 +367,8 @@ export default function DP2DGuidePage() {
                 </div>
                 <div className="approach-panel active" id="q3-brute">
                   <div className="complexity">
-                    Time: <b>O(2^(m+n))</b> · Space: <b>O(m+n)</b> call stack
-                    — match characters or skip from either prefix
+                    Time: <b>O(2^(m+n))</b> · Space: <b>O(m+n)</b> call stack —
+                    match characters or skip from either prefix
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -373,9 +396,9 @@ export default function DP2DGuidePage() {
                 </div>
                 <div className="approach-panel" id="q3-opt">
                   <div className="complexity">
-                    Time: <b>O(m×n)</b> · Space: <b>O(m×n)</b> — dp[i][j] =
-                    LCS length of a[0:i] and b[0:j], filled top to bottom
-                    using the top, left, and diagonal cells
+                    Time: <b>O(m×n)</b> · Space: <b>O(m×n)</b> — dp[i][j] = LCS
+                    length of a[0:i] and b[0:j], filled top to bottom using the
+                    top, left, and diagonal cells
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -414,8 +437,8 @@ export default function DP2DGuidePage() {
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> How would you reconstruct
-                the actual subsequence string, not just its length?
+                <strong>One step further:</strong> How would you reconstruct the
+                actual subsequence string, not just its length?
               </div>
             </section>
 
@@ -426,18 +449,24 @@ export default function DP2DGuidePage() {
                 <span className="level-badge medium">Medium</span>
               </div>
               <p className="prompt">
-                Given two strings, return the minimum number of insert,
-                delete, or replace operations to convert one into the other.
+                Given two strings, return the minimum number of insert, delete,
+                or replace operations to convert one into the other.
               </p>
               <div className="example">
                 Input: a = "horse", b = "ros" Output: 3
               </div>
 
-              <DPGridVisualizer title="Edit Distance" approaches={editDistanceApproaches} />
+              <DPGridVisualizer
+                title="Edit Distance"
+                approaches={editDistanceApproaches}
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q4-approach">
-                  <button className="tab-btn brute active" data-target="q4-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q4-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q4-opt">
@@ -446,8 +475,8 @@ export default function DP2DGuidePage() {
                 </div>
                 <div className="approach-panel active" id="q4-brute">
                   <div className="complexity">
-                    Time: <b>O(3^(m+n))</b> · Space: <b>O(m+n)</b> call stack
-                    — try insert, delete, or replace at every mismatch
+                    Time: <b>O(3^(m+n))</b> · Space: <b>O(m+n)</b> call stack —
+                    try insert, delete, or replace at every mismatch
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -482,8 +511,8 @@ export default function DP2DGuidePage() {
                 <div className="approach-panel" id="q4-opt">
                   <div className="complexity">
                     Time: <b>O(m×n)</b> · Space: <b>O(m×n)</b> — dp[i][j] =
-                    edits to turn a[0:i] into b[0:j], filled top to bottom
-                    using the top, left, and diagonal cells
+                    edits to turn a[0:i] into b[0:j], filled top to bottom using
+                    the top, left, and diagonal cells
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -540,20 +569,26 @@ export default function DP2DGuidePage() {
                 <span className="level-badge medium">Medium</span>
               </div>
               <p className="prompt">
-                Given item weights and values and a knapsack capacity, choose
-                a subset of items (each used at most once) that maximizes
-                total value without exceeding the capacity.
+                Given item weights and values and a knapsack capacity, choose a
+                subset of items (each used at most once) that maximizes total
+                value without exceeding the capacity.
               </p>
               <div className="example">
                 Input: weights = [1,3,4,5], values = [1,4,5,7], capacity = 7
                 Output: 9
               </div>
 
-              <DPGridVisualizer title="0/1 Knapsack" approaches={knapsackApproaches} />
+              <DPGridVisualizer
+                title="0/1 Knapsack"
+                approaches={knapsackApproaches}
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q5-approach">
-                  <button className="tab-btn brute active" data-target="q5-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q5-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q5-opt">
@@ -598,8 +633,8 @@ export default function DP2DGuidePage() {
                   <div className="complexity">
                     Time: <b>O(n×capacity)</b> · Space: <b>O(n×capacity)</b> —
                     dp[i][c] = best value using the first i items within
-                    capacity c, filled top to bottom using the top and
-                    diagonal cells
+                    capacity c, filled top to bottom using the top and diagonal
+                    cells
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -641,8 +676,8 @@ export default function DP2DGuidePage() {
               </div>
               <div className="twist">
                 <strong>One step further:</strong> How does the recurrence
-                change for the "unbounded knapsack" where each item can be
-                used any number of times?
+                change for the "unbounded knapsack" where each item can be used
+                any number of times?
               </div>
             </section>
           </div>

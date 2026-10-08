@@ -18,8 +18,12 @@ export default function HomeStatsBar() {
               className={`flex flex-col items-center text-center gap-2 animate-slide-up stagger-${Math.min(i + 1, 5)}`}
             >
               <div className="text-2xl">{s.icon}</div>
-              <div className="font-display font-black text-2xl text-gradient-primary">{s.value}</div>
-              <div className="text-muted-foreground text-xs font-medium leading-tight">{s.label}</div>
+              <div className="font-display font-black text-2xl text-gradient-primary">
+                {s.value}
+              </div>
+              <div className="text-muted-foreground text-xs font-medium leading-tight">
+                {s.label}
+              </div>
             </div>
           ))}
         </div>

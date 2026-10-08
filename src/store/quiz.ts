@@ -19,9 +19,13 @@ export const useQuizStore = create<QuizState>()(
       addQuiz: (quiz: Quiz) =>
         set((state: QuizState) => ({ quizzes: [...state.quizzes, quiz] })),
       deleteQuiz: (id: string) =>
-        set((state: QuizState) => ({ quizzes: state.quizzes.filter((q: Quiz) => q.id !== id) })),
+        set((state: QuizState) => ({
+          quizzes: state.quizzes.filter((q: Quiz) => q.id !== id),
+        })),
       addSubmission: (submission: QuizSubmission) =>
-        set((state: QuizState) => ({ submissions: [...state.submissions, submission] })),
+        set((state: QuizState) => ({
+          submissions: [...state.submissions, submission],
+        })),
       getSubmission: (quizId: string, userId: string) =>
         get().submissions.find(
           (s: QuizSubmission) => s.quizId === quizId && s.userId === userId,

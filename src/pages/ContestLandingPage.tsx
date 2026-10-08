@@ -1,4 +1,3 @@
-import { ThunderLogo } from "../components/ThunderLogo";
 // import { useQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
@@ -18,6 +17,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { ThunderLogo } from "../components/ThunderLogo";
 import { Button } from "../components/ui/button";
 // import { api } from "../lib/api";
 

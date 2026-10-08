@@ -1,6 +1,6 @@
-import { useGuideLogic } from "../../hooks/useGuideLogic";
-import Navbar from "../../components/Navbar";
 import { CompareTable, FlowDiagram } from "../../components/guide/OopsDiagrams";
+import Navbar from "../../components/Navbar";
+import { useGuideLogic } from "../../hooks/useGuideLogic";
 
 export default function AIBasicsGuidePage() {
   useGuideLogic();

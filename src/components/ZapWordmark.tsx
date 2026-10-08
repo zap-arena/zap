@@ -7,10 +7,16 @@ export interface ZapWordmarkProps {
 }
 
 /** Renders "ZAP" with the bolt from the brand mark standing in for the "A". */
-export function ZapWordmark({ className, boltClassName }: Readonly<ZapWordmarkProps>) {
+export function ZapWordmark({
+  className,
+  boltClassName,
+}: Readonly<ZapWordmarkProps>) {
   return (
     <span
-      className={cn("inline-flex items-center text-foreground font-black tracking-tight", className)}
+      className={cn(
+        "inline-flex items-center text-foreground font-black tracking-tight",
+        className,
+      )}
       style={{ fontFamily: "'Playfair Display', serif" }}
     >
       Z

@@ -1,12 +1,12 @@
+import { useQuery } from "@tanstack/react-query";
+import { BookOpen, Layers, Shuffle } from "lucide-react";
 import { useState } from "react";
-import ContestWorkspacePage from "./ContestWorkspacePage";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import Navbar from "../components/Navbar";
 import { Button } from "../components/ui/button";
-import { useNavigate } from "react-router-dom";
 import { api } from "../lib/api";
-import { useQuery } from "@tanstack/react-query";
-import { Shuffle, BookOpen, Layers } from "lucide-react";
-import { toast } from "sonner";
+import ContestWorkspacePage from "./ContestWorkspacePage";
 
 export default function CodeWarPage() {
   const [mode, setMode] = useState<"landing" | "random" | "progressive">(

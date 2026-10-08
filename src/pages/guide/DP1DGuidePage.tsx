@@ -1,6 +1,4 @@
-import React from "react";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
-import Navbar from "../../components/Navbar";
+import type React from "react";
 import AlgoVisualizer from "../../components/guide/AlgoVisualizer";
 import {
   coinChangeApproaches,
@@ -9,6 +7,8 @@ import {
   longestIncreasingSubsequenceApproaches,
   maximumSubarrayApproaches,
 } from "../../components/guide/dp1DVisualizations";
+import Navbar from "../../components/Navbar";
+import { useGuideLogic } from "../../hooks/useGuideLogic";
 
 export default function DP1DGuidePage() {
   useGuideLogic();
@@ -97,14 +97,22 @@ export default function DP1DGuidePage() {
                 <span className="legend-item">
                   <span
                     className="legend-swatch"
-                    style={{ background: "hsl(var(--primary))" } as React.CSSProperties}
+                    style={
+                      {
+                        background: "hsl(var(--primary))",
+                      } as React.CSSProperties
+                    }
                   ></span>
                   Brute force (naive recursion)
                 </span>
                 <span className="legend-item">
                   <span
                     className="legend-swatch"
-                    style={{ background: "hsl(var(--primary))" } as React.CSSProperties}
+                    style={
+                      {
+                        background: "hsl(var(--primary))",
+                      } as React.CSSProperties
+                    }
                   ></span>
                   Optimal (tabulation)
                 </span>
@@ -134,7 +142,10 @@ export default function DP1DGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q1-approach">
-                  <button className="tab-btn brute active" data-target="q1-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q1-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q1-opt">
@@ -224,8 +235,8 @@ export default function DP1DGuidePage() {
                 length, at least one element) with the largest sum.
               </p>
               <div className="example">
-                Input: nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4] Output: 6 ([4,
-                -1, 2, 1])
+                Input: nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4] Output: 6 ([4, -1,
+                2, 1])
               </div>
 
               <AlgoVisualizer
@@ -236,7 +247,10 @@ export default function DP1DGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q2-approach">
-                  <button className="tab-btn brute active" data-target="q2-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q2-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q2-opt">
@@ -245,8 +259,8 @@ export default function DP1DGuidePage() {
                 </div>
                 <div className="approach-panel active" id="q2-brute">
                   <div className="complexity">
-                    Time: <b>O(n²)</b> · Space: <b>O(1)</b> — sum every
-                    possible subarray
+                    Time: <b>O(n²)</b> · Space: <b>O(1)</b> — sum every possible
+                    subarray
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -282,8 +296,8 @@ export default function DP1DGuidePage() {
                 </div>
                 <div className="approach-panel" id="q2-opt">
                   <div className="complexity">
-                    Time: <b>O(n)</b> · Space: <b>O(1)</b> — Kadane's
-                    algorithm, one running best-ending-here value
+                    Time: <b>O(n)</b> · Space: <b>O(1)</b> — Kadane's algorithm,
+                    one running best-ending-here value
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -314,9 +328,8 @@ export default function DP1DGuidePage() {
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> How would you also return
-                the start and end indices of the best subarray, not just its
-                sum?
+                <strong>One step further:</strong> How would you also return the
+                start and end indices of the best subarray, not just its sum?
               </div>
             </section>
 
@@ -327,9 +340,9 @@ export default function DP1DGuidePage() {
                 <span className="level-badge medium">Medium</span>
               </div>
               <p className="prompt">
-                Given coin denominations and a target amount, return the
-                fewest number of coins needed to make that amount, or{" "}
-                <code>-1</code> if it's impossible.
+                Given coin denominations and a target amount, return the fewest
+                number of coins needed to make that amount, or <code>-1</code>{" "}
+                if it's impossible.
               </p>
               <div className="example">
                 Input: coins = [1, 2, 5], amount = 11 Output: 3 (5 + 5 + 1)
@@ -343,7 +356,10 @@ export default function DP1DGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q3-approach">
-                  <button className="tab-btn brute active" data-target="q3-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q3-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q3-opt">
@@ -352,8 +368,8 @@ export default function DP1DGuidePage() {
                 </div>
                 <div className="approach-panel active" id="q3-brute">
                   <div className="complexity">
-                    Time: <b>O(coins^amount)</b> · Space: <b>O(amount)</b>{" "}
-                    call stack — try every coin at every remaining amount
+                    Time: <b>O(coins^amount)</b> · Space: <b>O(amount)</b> call
+                    stack — try every coin at every remaining amount
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -421,9 +437,9 @@ export default function DP1DGuidePage() {
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> How would you change this
-                to count the <i>number of distinct ways</i> to make the
-                amount, instead of the minimum coins?
+                <strong>One step further:</strong> How would you change this to
+                count the <i>number of distinct ways</i> to make the amount,
+                instead of the minimum coins?
               </div>
             </section>
 
@@ -450,7 +466,10 @@ export default function DP1DGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q4-approach">
-                  <button className="tab-btn brute active" data-target="q4-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q4-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q4-opt">
@@ -459,9 +478,8 @@ export default function DP1DGuidePage() {
                 </div>
                 <div className="approach-panel active" id="q4-brute">
                   <div className="complexity">
-                    Time: <b>O(2^n)</b> · Space: <b>O(n)</b> call stack —
-                    every element either extends the subsequence or is
-                    skipped
+                    Time: <b>O(2^n)</b> · Space: <b>O(n)</b> call stack — every
+                    element either extends the subsequence or is skipped
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -495,8 +513,8 @@ export default function DP1DGuidePage() {
                 </div>
                 <div className="approach-panel" id="q4-opt">
                   <div className="complexity">
-                    Time: <b>O(n²)</b> · Space: <b>O(n)</b> — dp[i] = length
-                    of the longest increasing subsequence ending at i
+                    Time: <b>O(n²)</b> · Space: <b>O(n)</b> — dp[i] = length of
+                    the longest increasing subsequence ending at i
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -534,9 +552,9 @@ export default function DP1DGuidePage() {
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> This O(n²) can be improved
-                to O(n log n) using binary search on a "tails" array — why
-                does that trick work?
+                <strong>One step further:</strong> This O(n²) can be improved to
+                O(n log n) using binary search on a "tails" array — why does
+                that trick work?
               </div>
             </section>
 
@@ -564,7 +582,10 @@ export default function DP1DGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q5-approach">
-                  <button className="tab-btn brute active" data-target="q5-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q5-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q5-opt">
@@ -573,8 +594,8 @@ export default function DP1DGuidePage() {
                 </div>
                 <div className="approach-panel active" id="q5-brute">
                   <div className="complexity">
-                    Time: <b>O(2^n)</b> · Space: <b>O(n)</b> call stack —
-                    branch on every 1-digit or 2-digit decode choice
+                    Time: <b>O(2^n)</b> · Space: <b>O(n)</b> call stack — branch
+                    on every 1-digit or 2-digit decode choice
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -652,8 +673,8 @@ export default function DP1DGuidePage() {
               </div>
               <div className="twist">
                 <strong>One step further:</strong> How would the recurrence
-                change if the string could also contain the wildcard
-                character <code>*</code> (meaning any digit 1-9)?
+                change if the string could also contain the wildcard character{" "}
+                <code>*</code> (meaning any digit 1-9)?
               </div>
             </section>
           </div>

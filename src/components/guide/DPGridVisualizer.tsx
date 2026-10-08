@@ -36,12 +36,30 @@ interface DPGridVisualizerProps {
   approaches: Partial<Record<GridApproachId, GridApproachRunner>>;
 }
 
-const GRID_ROLE_STYLE: Record<GridHighlight["role"], { bg: string; border: string; text: string; label: string }> = {
-  current: { bg: "#0d2818", border: "#059669", text: "#a7f3d0", label: "computing" },
+const GRID_ROLE_STYLE: Record<
+  GridHighlight["role"],
+  { bg: string; border: string; text: string; label: string }
+> = {
+  current: {
+    bg: "#0d2818",
+    border: "#059669",
+    text: "#a7f3d0",
+    label: "computing",
+  },
   top: { bg: "#0d1f38", border: "#3b82f6", text: "#93c5fd", label: "top" },
   left: { bg: "#2d1230", border: "#ec4899", text: "#fbcfe8", label: "left" },
-  diag: { bg: "#241a3a", border: "#a371f7", text: "#ddd6fe", label: "diagonal" },
-  base: { bg: "#1f1538", border: "#7c3aed", text: "#ddd6fe", label: "base case" },
+  diag: {
+    bg: "#241a3a",
+    border: "#a371f7",
+    text: "#ddd6fe",
+    label: "diagonal",
+  },
+  base: {
+    bg: "#1f1538",
+    border: "#7c3aed",
+    text: "#ddd6fe",
+    label: "base case",
+  },
   match: { bg: "#3a2a0d", border: "#f59e0b", text: "#fde68a", label: "result" },
 };
 
@@ -53,9 +71,14 @@ const TAG_STYLE: Record<GridTag["tone"], { bg: string; text: string }> = {
 
 const APPROACH_ORDER: GridApproachId[] = ["brute", "optimal"];
 
-export default function DPGridVisualizer({ title, approaches }: Readonly<DPGridVisualizerProps>) {
+export default function DPGridVisualizer({
+  title,
+  approaches,
+}: Readonly<DPGridVisualizerProps>) {
   const availableApproaches = APPROACH_ORDER.filter((id) => approaches[id]);
-  const [selectedApproach, setSelectedApproach] = useState<GridApproachId>(availableApproaches[0] ?? "brute");
+  const [selectedApproach, setSelectedApproach] = useState<GridApproachId>(
+    availableApproaches[0] ?? "brute",
+  );
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showLog, setShowLog] = useState(false);
@@ -87,12 +110,18 @@ export default function DPGridVisualizer({ title, approaches }: Readonly<DPGridV
   }, [isPlaying, currentStepIndex, steps.length]);
 
   const currentStep = steps[currentStepIndex];
-  const progressPct = steps.length > 1 ? Math.round((currentStepIndex / (steps.length - 1)) * 100) : 0;
+  const progressPct =
+    steps.length > 1
+      ? Math.round((currentStepIndex / (steps.length - 1)) * 100)
+      : 0;
 
   const highlightFor = (row: number, col: number): GridHighlight | undefined =>
     currentStep?.highlights.find((h) => h.row === row && h.col === col);
 
-  const pillButtonStyle = (variant: "primary" | "secondary", disabled?: boolean): React.CSSProperties => ({
+  const pillButtonStyle = (
+    variant: "primary" | "secondary",
+    disabled?: boolean,
+  ): React.CSSProperties => ({
     padding: "8px 18px",
     borderRadius: 8,
     border: variant === "secondary" ? "1px solid #30363d" : "none",
@@ -116,8 +145,22 @@ export default function DPGridVisualizer({ title, approaches }: Readonly<DPGridV
         overflow: "hidden",
       }}
     >
-      <div style={{ padding: "16px clamp(12px, 4vw, 22px)", borderBottom: "1px solid #21262d", background: "#161b22" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 10 }}>
+      <div
+        style={{
+          padding: "16px clamp(12px, 4vw, 22px)",
+          borderBottom: "1px solid #21262d",
+          background: "#161b22",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            flexWrap: "wrap",
+            marginBottom: 10,
+          }}
+        >
           <span style={{ fontSize: 16, fontWeight: 700 }}>⚡ {title}</span>
           <span
             style={{
@@ -144,7 +187,10 @@ export default function DPGridVisualizer({ title, approaches }: Readonly<DPGridV
                 style={{
                   padding: "7px 16px",
                   borderRadius: 8,
-                  border: selectedApproach === id ? "1px solid #58a6ff" : "1px solid #30363d",
+                  border:
+                    selectedApproach === id
+                      ? "1px solid #58a6ff"
+                      : "1px solid #30363d",
                   background: selectedApproach === id ? "#1f3a6e" : "#0d1117",
                   color: selectedApproach === id ? "#58a6ff" : "#8b949e",
                   cursor: "pointer",
@@ -158,7 +204,9 @@ export default function DPGridVisualizer({ title, approaches }: Readonly<DPGridV
           </div>
         )}
         {activeRunner && (
-          <div style={{ fontSize: 12.5, color: "#8b949e", marginTop: 10 }}>{activeRunner.complexity}</div>
+          <div style={{ fontSize: 12.5, color: "#8b949e", marginTop: 10 }}>
+            {activeRunner.complexity}
+          </div>
         )}
       </div>
 
@@ -198,7 +246,10 @@ export default function DPGridVisualizer({ title, approaches }: Readonly<DPGridV
             setCurrentStepIndex((i) => Math.min(steps.length - 1, i + 1));
           }}
           disabled={steps.length === 0 || currentStepIndex >= steps.length - 1}
-          style={pillButtonStyle("secondary", steps.length === 0 || currentStepIndex >= steps.length - 1)}
+          style={pillButtonStyle(
+            "secondary",
+            steps.length === 0 || currentStepIndex >= steps.length - 1,
+          )}
         >
           Next ▶
         </button>
@@ -218,7 +269,15 @@ export default function DPGridVisualizer({ title, approaches }: Readonly<DPGridV
       </div>
 
       <div style={{ padding: "20px clamp(12px, 4vw, 22px)" }}>
-        <div style={{ height: 4, background: "#21262d", borderRadius: 2, overflow: "hidden", marginBottom: 18 }}>
+        <div
+          style={{
+            height: 4,
+            background: "#21262d",
+            borderRadius: 2,
+            overflow: "hidden",
+            marginBottom: 18,
+          }}
+        >
           <div
             style={{
               height: "100%",
@@ -230,21 +289,39 @@ export default function DPGridVisualizer({ title, approaches }: Readonly<DPGridV
           />
         </div>
 
-        <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 18 }}>
-          {(["current", "top", "left", "diag", "base", "match"] as const).map((role) => (
-            <span key={role} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#8b949e" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 14,
+            flexWrap: "wrap",
+            marginBottom: 18,
+          }}
+        >
+          {(["current", "top", "left", "diag", "base", "match"] as const).map(
+            (role) => (
               <span
+                key={role}
                 style={{
-                  width: 12,
-                  height: 12,
-                  borderRadius: 4,
-                  background: GRID_ROLE_STYLE[role].border,
-                  display: "inline-block",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: 12,
+                  color: "#8b949e",
                 }}
-              />
-              {GRID_ROLE_STYLE[role].label}
-            </span>
-          ))}
+              >
+                <span
+                  style={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: 4,
+                    background: GRID_ROLE_STYLE[role].border,
+                    display: "inline-block",
+                  }}
+                />
+                {GRID_ROLE_STYLE[role].label}
+              </span>
+            ),
+          )}
         </div>
 
         {currentStep && (
@@ -285,7 +362,9 @@ export default function DPGridVisualizer({ title, approaches }: Readonly<DPGridV
                           fontWeight: 700,
                           fontSize: 13,
                           transition: "all 0.25s ease",
-                          boxShadow: style ? `0 0 12px ${style.border}55` : "none",
+                          boxShadow: style
+                            ? `0 0 12px ${style.border}55`
+                            : "none",
                         }}
                       >
                         {value === "" ? "\u00b7" : value}
@@ -333,13 +412,27 @@ export default function DPGridVisualizer({ title, approaches }: Readonly<DPGridV
             )}
 
             {Object.keys(currentStep.variables).length > 0 && (
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
+              <div
+                style={{
+                  display: "flex",
+                  gap: 8,
+                  flexWrap: "wrap",
+                  marginBottom: 16,
+                }}
+              >
                 {Object.entries(currentStep.variables).map(([key, value]) => (
                   <span
                     key={key}
-                    style={{ padding: "4px 10px", borderRadius: 7, background: "#21262d", fontSize: 12, color: "#e6edf3" }}
+                    style={{
+                      padding: "4px 10px",
+                      borderRadius: 7,
+                      background: "#21262d",
+                      fontSize: 12,
+                      color: "#e6edf3",
+                    }}
                   >
-                    <span style={{ color: "#8b949e" }}>{key}:</span> {String(value)}
+                    <span style={{ color: "#8b949e" }}>{key}:</span>{" "}
+                    {String(value)}
                   </span>
                 ))}
               </div>
@@ -366,11 +459,21 @@ export default function DPGridVisualizer({ title, approaches }: Readonly<DPGridV
                 Step {currentStepIndex + 1}
                 {currentStep.done ? " · Done" : ""}
               </div>
-              <div style={{ fontSize: 14, lineHeight: 1.7, color: "#e6edf3" }}>{currentStep.description}</div>
+              <div style={{ fontSize: 14, lineHeight: 1.7, color: "#e6edf3" }}>
+                {currentStep.description}
+              </div>
             </div>
 
             {activeRunner && activeRunner.code.length > 0 && (
-              <div style={{ background: "#0d1117", border: "1px solid #21262d", borderRadius: 10, overflow: "hidden", marginTop: 16 }}>
+              <div
+                style={{
+                  background: "#0d1117",
+                  border: "1px solid #21262d",
+                  borderRadius: 10,
+                  overflow: "hidden",
+                  marginTop: 16,
+                }}
+              >
                 <div
                   style={{
                     padding: "8px 16px",
@@ -384,7 +487,13 @@ export default function DPGridVisualizer({ title, approaches }: Readonly<DPGridV
                   }}
                 >
                   <span>algorithm.js</span>
-                  {currentStep.tag && <span style={{ color: TAG_STYLE[currentStep.tag.tone].text }}>{currentStep.tag.label}</span>}
+                  {currentStep.tag && (
+                    <span
+                      style={{ color: TAG_STYLE[currentStep.tag.tone].text }}
+                    >
+                      {currentStep.tag.label}
+                    </span>
+                  )}
                 </div>
                 <div style={{ padding: "12px 0" }}>
                   {activeRunner.code.map((line, idx) => (
@@ -394,8 +503,14 @@ export default function DPGridVisualizer({ title, approaches }: Readonly<DPGridV
                         padding: "2px 16px",
                         fontSize: 12.5,
                         fontFamily: "monospace",
-                        color: currentStep.codeLine === idx + 1 ? "#f0f6fc" : "#6e7681",
-                        background: currentStep.codeLine === idx + 1 ? "#1f3a6e55" : "transparent",
+                        color:
+                          currentStep.codeLine === idx + 1
+                            ? "#f0f6fc"
+                            : "#6e7681",
+                        background:
+                          currentStep.codeLine === idx + 1
+                            ? "#1f3a6e55"
+                            : "transparent",
                         whiteSpace: "pre",
                       }}
                     >
@@ -412,13 +527,29 @@ export default function DPGridVisualizer({ title, approaches }: Readonly<DPGridV
           <button
             type="button"
             onClick={() => setShowLog((v) => !v)}
-            style={{ marginTop: 16, background: "none", border: "none", color: "#58a6ff", fontSize: 12.5, cursor: "pointer", padding: 0 }}
+            style={{
+              marginTop: 16,
+              background: "none",
+              border: "none",
+              color: "#58a6ff",
+              fontSize: 12.5,
+              cursor: "pointer",
+              padding: 0,
+            }}
           >
             {showLog ? "▾" : "▸"} Full step-by-step trace ({steps.length} steps)
           </button>
         )}
         {showLog && (
-          <div style={{ marginTop: 10, maxHeight: 220, overflowY: "auto", border: "1px solid #21262d", borderRadius: 8 }}>
+          <div
+            style={{
+              marginTop: 10,
+              maxHeight: 220,
+              overflowY: "auto",
+              border: "1px solid #21262d",
+              borderRadius: 8,
+            }}
+          >
             {steps.map((step, idx) => (
               <div
                 key={`trace-${idx}-${step.description}`}
@@ -426,7 +557,8 @@ export default function DPGridVisualizer({ title, approaches }: Readonly<DPGridV
                   padding: "8px 14px",
                   fontSize: 12.5,
                   borderBottom: "1px solid #161b22",
-                  background: idx === currentStepIndex ? "#161b22" : "transparent",
+                  background:
+                    idx === currentStepIndex ? "#161b22" : "transparent",
                   color: idx === currentStepIndex ? "#e6edf3" : "#8b949e",
                   cursor: "pointer",
                 }}

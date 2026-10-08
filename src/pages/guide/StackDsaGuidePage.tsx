@@ -1,6 +1,4 @@
-import React from "react";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
-import Navbar from "../../components/Navbar";
+import type React from "react";
 import AlgoVisualizer from "../../components/guide/AlgoVisualizer";
 import {
   dailyTemperaturesApproaches,
@@ -10,6 +8,8 @@ import {
   nextGreaterElementApproaches,
   validParenthesesApproaches,
 } from "../../components/guide/stackVisualizations";
+import Navbar from "../../components/Navbar";
+import { useGuideLogic } from "../../hooks/useGuideLogic";
 
 export default function StackDsaGuidePage() {
   useGuideLogic();
@@ -92,22 +92,30 @@ export default function StackDsaGuidePage() {
               <h1>Stack, basic to medium</h1>
               <p>
                 Six questions built around last-in-first-out ordering. Each
-                brute-force version re-scans data it has already looked at;
-                each optimal version keeps a stack of "still relevant"
-                candidates so every element is pushed and popped at most once.
+                brute-force version re-scans data it has already looked at; each
+                optimal version keeps a stack of "still relevant" candidates so
+                every element is pushed and popped at most once.
               </p>
               <div className="legend">
                 <span className="legend-item">
                   <span
                     className="legend-swatch"
-                    style={{ background: "hsl(var(--primary))" } as React.CSSProperties}
+                    style={
+                      {
+                        background: "hsl(var(--primary))",
+                      } as React.CSSProperties
+                    }
                   ></span>
                   Brute force (no stack)
                 </span>
                 <span className="legend-item">
                   <span
                     className="legend-swatch"
-                    style={{ background: "hsl(var(--primary))" } as React.CSSProperties}
+                    style={
+                      {
+                        background: "hsl(var(--primary))",
+                      } as React.CSSProperties
+                    }
                   ></span>
                   Optimal (stack-based)
                 </span>
@@ -121,11 +129,10 @@ export default function StackDsaGuidePage() {
                 <span className="level-badge basic">Basic</span>
               </div>
               <p className="prompt">
-                Given a string containing just the characters{" "}
-                <code>(</code>, <code>)</code>, <code>{"{"}</code>,{" "}
-                <code>{"}"}</code>, <code>[</code>, and <code>]</code>,
-                determine whether every bracket is closed in the correct
-                order.
+                Given a string containing just the characters <code>(</code>,{" "}
+                <code>)</code>, <code>{"{"}</code>, <code>{"}"}</code>,{" "}
+                <code>[</code>, and <code>]</code>, determine whether every
+                bracket is closed in the correct order.
               </p>
               <div className="example">
                 Input: s = "{"{[()]}"}" Output: true
@@ -141,7 +148,10 @@ export default function StackDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q1-approach">
-                  <button className="tab-btn brute active" data-target="q1-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q1-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q1-opt">
@@ -266,7 +276,10 @@ export default function StackDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q2-approach">
-                  <button className="tab-btn brute active" data-target="q2-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q2-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q2-opt">
@@ -313,8 +326,8 @@ export default function StackDsaGuidePage() {
                 </div>
                 <div className="approach-panel" id="q2-opt">
                   <div className="complexity">
-                    Time: <b>O(n)</b> · Space: <b>O(n)</b> — walk right to
-                    left with a decreasing monotonic stack
+                    Time: <b>O(n)</b> · Space: <b>O(n)</b> — walk right to left
+                    with a decreasing monotonic stack
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -352,9 +365,8 @@ export default function StackDsaGuidePage() {
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> What changes if the array
-                is circular (the last element can see wrap-around to the
-                first)?
+                <strong>One step further:</strong> What changes if the array is
+                circular (the last element can see wrap-around to the first)?
               </div>
             </section>
 
@@ -366,8 +378,8 @@ export default function StackDsaGuidePage() {
               </div>
               <p className="prompt">
                 Given a list of daily temperatures, return an array where{" "}
-                <code>answer[i]</code> is the number of days you'd have to
-                wait after day <code>i</code> for a warmer temperature.
+                <code>answer[i]</code> is the number of days you'd have to wait
+                after day <code>i</code> for a warmer temperature.
               </p>
               <div className="example">
                 Input: temps = [73, 74, 75, 71, 69, 72] Output: [1, 1, 3, 2, 1,
@@ -383,7 +395,10 @@ export default function StackDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q3-approach">
-                  <button className="tab-btn brute active" data-target="q3-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q3-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q3-opt">
@@ -392,8 +407,8 @@ export default function StackDsaGuidePage() {
                 </div>
                 <div className="approach-panel active" id="q3-brute">
                   <div className="complexity">
-                    Time: <b>O(n²)</b> · Space: <b>O(n)</b> — scan forward
-                    from every day
+                    Time: <b>O(n²)</b> · Space: <b>O(n)</b> — scan forward from
+                    every day
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -429,8 +444,8 @@ export default function StackDsaGuidePage() {
                 </div>
                 <div className="approach-panel" id="q3-opt">
                   <div className="complexity">
-                    Time: <b>O(n)</b> · Space: <b>O(n)</b> — a stack of
-                    indices still waiting for a warmer day
+                    Time: <b>O(n)</b> · Space: <b>O(n)</b> — a stack of indices
+                    still waiting for a warmer day
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -471,8 +486,8 @@ export default function StackDsaGuidePage() {
               </div>
               <div className="twist">
                 <strong>One step further:</strong> This is the same pattern as
-                Next Greater Element — what's different about what gets
-                stored in the stack?
+                Next Greater Element — what's different about what gets stored
+                in the stack?
               </div>
             </section>
 
@@ -483,8 +498,8 @@ export default function StackDsaGuidePage() {
                 <span className="level-badge medium">Medium</span>
               </div>
               <p className="prompt">
-                Design a stack that supports push, pop, top, and retrieving
-                the minimum element — all in <code>O(1)</code> time.
+                Design a stack that supports push, pop, top, and retrieving the
+                minimum element — all in <code>O(1)</code> time.
               </p>
               <div className="example">
                 Input: push(5), push(2), push(7), getMin() Output: 2
@@ -499,7 +514,10 @@ export default function StackDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q4-approach">
-                  <button className="tab-btn brute active" data-target="q4-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q4-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q4-opt">
@@ -508,8 +526,8 @@ export default function StackDsaGuidePage() {
                 </div>
                 <div className="approach-panel active" id="q4-brute">
                   <div className="complexity">
-                    Time: <b>O(n)</b> per getMin() · Space: <b>O(n)</b> —
-                    rescan the whole stack every time
+                    Time: <b>O(n)</b> per getMin() · Space: <b>O(n)</b> — rescan
+                    the whole stack every time
                   </div>
                   <div className="lang-wrapper code-split">
                     <div className="code-col col-java">
@@ -624,7 +642,10 @@ export default function StackDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q5-approach">
-                  <button className="tab-btn brute active" data-target="q5-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q5-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q5-opt">
@@ -715,8 +736,7 @@ export default function StackDsaGuidePage() {
               <div className="twist">
                 <strong>One step further:</strong> Integer division in RPN
                 truncates toward zero — how does that differ from Python's{" "}
-                <code>//</code> for negative numbers, and what would you
-                change?
+                <code>//</code> for negative numbers, and what would you change?
               </div>
             </section>
 
@@ -727,9 +747,8 @@ export default function StackDsaGuidePage() {
                 <span className="level-badge medium">Medium</span>
               </div>
               <p className="prompt">
-                Given an array of bar heights forming a histogram, find the
-                area of the largest rectangle that fits entirely under the
-                skyline.
+                Given an array of bar heights forming a histogram, find the area
+                of the largest rectangle that fits entirely under the skyline.
               </p>
               <div className="example">
                 Input: heights = [2, 1, 5, 6, 2, 3] Output: 10
@@ -744,7 +763,10 @@ export default function StackDsaGuidePage() {
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q6-approach">
-                  <button className="tab-btn brute active" data-target="q6-brute">
+                  <button
+                    className="tab-btn brute active"
+                    data-target="q6-brute"
+                  >
                     Brute Force
                   </button>
                   <button className="tab-btn optimal" data-target="q6-opt">
@@ -836,9 +858,9 @@ export default function StackDsaGuidePage() {
                 </div>
               </div>
               <div className="twist">
-                <strong>One step further:</strong> How would you extend this
-                to find the largest rectangle in a 2D binary matrix (the
-                "Maximal Rectangle" problem)?
+                <strong>One step further:</strong> How would you extend this to
+                find the largest rectangle in a 2D binary matrix (the "Maximal
+                Rectangle" problem)?
               </div>
             </section>
           </div>

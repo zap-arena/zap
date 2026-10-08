@@ -1,10 +1,10 @@
-import { ThunderLogo } from "./ThunderLogo";
 import { LayoutDashboard, LogOut, Menu, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../store/auth";
 import ThemeColorPicker from "./ThemeColorPicker";
 import ThemeToggle from "./ThemeToggle";
+import { ThunderLogo } from "./ThunderLogo";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Button } from "./ui/button";
 import {
@@ -170,7 +170,10 @@ export default function Navbar() {
               <Menu className="w-5 h-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-[280px] bg-card border-border flex flex-col gap-6 overflow-y-auto">
+          <SheetContent
+            side="right"
+            className="w-[280px] bg-card border-border flex flex-col gap-6 overflow-y-auto"
+          >
             <div className="flex flex-col gap-1 mt-8">
               {NAV_LINKS.map((link) => (
                 <SheetClose asChild key={link.to}>
@@ -255,4 +258,3 @@ export default function Navbar() {
     </nav>
   );
 }
-

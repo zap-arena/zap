@@ -1,6 +1,4 @@
-import React from "react";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
-import Navbar from "../../components/Navbar";
+import type React from "react";
 import {
   CompareTable,
   FlowDiagram,
@@ -10,6 +8,8 @@ import {
   PillarsGrid,
   Rings,
 } from "../../components/guide/OopsDiagrams";
+import Navbar from "../../components/Navbar";
+import { useGuideLogic } from "../../hooks/useGuideLogic";
 
 export default function OopsGuidePage() {
   useGuideLogic();
@@ -89,8 +89,8 @@ export default function OopsGuidePage() {
             <div className="intro">
               <h1>Java OOPs Concepts</h1>
               <p>
-                Twelve topics covering everything Object-Oriented Programming
-                in Java, from the basics of classes and objects to the four
+                Twelve topics covering everything Object-Oriented Programming in
+                Java, from the basics of classes and objects to the four
                 pillars, overloading vs overriding, access modifiers, and
                 constructors — each with a definition, a real-world analogy,
                 runnable code, and a visual diagram.
@@ -99,14 +99,22 @@ export default function OopsGuidePage() {
                 <span className="legend-item">
                   <span
                     className="legend-swatch"
-                    style={{ background: "hsl(var(--primary))" } as React.CSSProperties}
+                    style={
+                      {
+                        background: "hsl(var(--primary))",
+                      } as React.CSSProperties
+                    }
                   ></span>
                   Definition &amp; real-world example
                 </span>
                 <span className="legend-item">
                   <span
                     className="legend-swatch"
-                    style={{ background: "hsl(var(--primary))" } as React.CSSProperties}
+                    style={
+                      {
+                        background: "hsl(var(--primary))",
+                      } as React.CSSProperties
+                    }
                   ></span>
                   Code + visualization
                 </span>
@@ -127,19 +135,31 @@ export default function OopsGuidePage() {
                 or Vehicle.
               </p>
               <div className="example">
-                Real world: your college ERP doesn't store "names" and
-                "marks" as separate floating lists — it stores each Student as
-                one unit owning its own name, roll number, marks, and the
-                actions that can be done on them.
+                Real world: your college ERP doesn't store "names" and "marks"
+                as separate floating lists — it stores each Student as one unit
+                owning its own name, roll number, marks, and the actions that
+                can be done on them.
               </div>
 
               <CompareTable
-                headers={["Procedural Programming", "Object-Oriented Programming"]}
+                headers={[
+                  "Procedural Programming",
+                  "Object-Oriented Programming",
+                ]}
                 rows={[
                   ["Focuses on functions", "Focuses on objects"],
-                  ["Data and functions are separate", "Data and methods live together inside the object"],
-                  ["Less secure (data is freely accessible)", "More secure, thanks to encapsulation"],
-                  ["Better for small, simple programs", "Better for large, evolving applications"],
+                  [
+                    "Data and functions are separate",
+                    "Data and methods live together inside the object",
+                  ],
+                  [
+                    "Less secure (data is freely accessible)",
+                    "More secure, thanks to encapsulation",
+                  ],
+                  [
+                    "Better for small, simple programs",
+                    "Better for large, evolving applications",
+                  ],
                   ["Example: C", "Example: Java, C++, Python"],
                 ]}
               />
@@ -147,7 +167,10 @@ export default function OopsGuidePage() {
               <div className="tabs-wrapper">
                 <div className="approach-panel active" id="q1-ref">
                   <div className="complexity">Advantages vs Limitations</div>
-                  <div className="lang-wrapper code-split" style={{ gridTemplateColumns: "1fr 1fr" }}>
+                  <div
+                    className="lang-wrapper code-split"
+                    style={{ gridTemplateColumns: "1fr 1fr" }}
+                  >
                     <div className="code-col">
                       <div className="code-label java">Advantages</div>
                       <pre className="code-panel">
@@ -180,10 +203,10 @@ Slightly higher memory/time cost`}</code>
               </div>
               <p className="prompt">
                 A <b>class</b> is a user-defined blueprint that defines the
-                properties and behaviours its objects will have — no memory
-                is used just by writing one. An <b>object</b> is an instance
-                of a class, created with <code>new</code>, that actually
-                occupies memory and has state, behaviour, and identity.
+                properties and behaviours its objects will have — no memory is
+                used just by writing one. An <b>object</b> is an instance of a
+                class, created with <code>new</code>, that actually occupies
+                memory and has state, behaviour, and identity.
               </p>
               <div className="example">
                 Real world: an admission form <b>template</b> defines which
@@ -192,11 +215,15 @@ Slightly higher memory/time cost`}</code>
                 Priya's — is an object of that same "Student" class.
               </div>
 
-              <FlowDiagram nodes={["Class: Student", "Object: rahul", "Object: priya"]} />
+              <FlowDiagram
+                nodes={["Class: Student", "Object: rahul", "Object: priya"]}
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-panel active" id="q2-ref">
-                  <div className="complexity">One class, many objects, each with its own data</div>
+                  <div className="complexity">
+                    One class, many objects, each with its own data
+                  </div>
                   <div className="code-col">
                     <div className="code-label java">Java</div>
                     <pre className="code-panel">
@@ -229,8 +256,8 @@ public class PlacementPortal {
               </div>
               <div className="twist">
                 <strong>Interview note:</strong> How much memory does a class
-                occupy? None by itself — memory is only allocated when
-                objects are created from it.
+                occupy? None by itself — memory is only allocated when objects
+                are created from it.
               </div>
             </section>
 
@@ -241,15 +268,31 @@ public class PlacementPortal {
                 <span className="level-badge reference">Overview</span>
               </div>
               <p className="prompt">
-                These four principles are the heart of every OOPs interview
-                and every well-designed Java application.
+                These four principles are the heart of every OOPs interview and
+                every well-designed Java application.
               </p>
               <PillarsGrid
                 pillars={[
-                  { title: "Encapsulation", desc: "Protect data, expose controlled access.", color: "#059669" },
-                  { title: "Abstraction", desc: "Show what to do, hide how it is done.", color: "#e76f51" },
-                  { title: "Inheritance", desc: "Reuse and extend existing class behaviour.", color: "#f4a261" },
-                  { title: "Polymorphism", desc: "Same call, different behaviour by context.", color: "#3b82f6" },
+                  {
+                    title: "Encapsulation",
+                    desc: "Protect data, expose controlled access.",
+                    color: "#059669",
+                  },
+                  {
+                    title: "Abstraction",
+                    desc: "Show what to do, hide how it is done.",
+                    color: "#e76f51",
+                  },
+                  {
+                    title: "Inheritance",
+                    desc: "Reuse and extend existing class behaviour.",
+                    color: "#f4a261",
+                  },
+                  {
+                    title: "Polymorphism",
+                    desc: "Same call, different behaviour by context.",
+                    color: "#3b82f6",
+                  },
                 ]}
               />
             </section>
@@ -261,23 +304,32 @@ public class PlacementPortal {
                 <span className="level-badge basic">Basic</span>
               </div>
               <p className="prompt">
-                Encapsulation means binding data and the methods that act on
-                it into a single unit, and restricting direct access to that
-                data — in Java, by marking fields <code>private</code> and
-                exposing controlled getter/setter methods.
+                Encapsulation means binding data and the methods that act on it
+                into a single unit, and restricting direct access to that data —
+                in Java, by marking fields <code>private</code> and exposing
+                controlled getter/setter methods.
               </p>
               <div className="example">
-                Real world: a medicine capsule hides the powder inside a
-                shell — you never touch it directly. Your bank balance is
-                never edited directly; you only go through defined operations
-                like deposit, withdraw, or check balance.
+                Real world: a medicine capsule hides the powder inside a shell —
+                you never touch it directly. Your bank balance is never edited
+                directly; you only go through defined operations like deposit,
+                withdraw, or check balance.
               </div>
 
-              <FlowDiagram nodes={["setCgpa(8.4)", "validation check", "private double cgpa", "getCgpa()"]} />
+              <FlowDiagram
+                nodes={[
+                  "setCgpa(8.4)",
+                  "validation check",
+                  "private double cgpa",
+                  "getCgpa()",
+                ]}
+              />
 
               <div className="tabs-wrapper">
                 <div className="approach-panel active" id="q4-ref">
-                  <div className="complexity">Private field + validated getter/setter</div>
+                  <div className="complexity">
+                    Private field + validated getter/setter
+                  </div>
                   <div className="code-col">
                     <div className="code-label java">Java</div>
                     <pre className="code-panel">
@@ -302,9 +354,9 @@ public class PlacementPortal {
               </div>
               <div className="twist">
                 <strong>Why it matters:</strong> Encapsulation is how Java
-                achieves data hiding and input validation in one place,
-                instead of trusting every part of a program to set valid
-                values directly.
+                achieves data hiding and input validation in one place, instead
+                of trusting every part of a program to set valid values
+                directly.
               </div>
             </section>
 
@@ -315,10 +367,10 @@ public class PlacementPortal {
                 <span className="level-badge basic">Basic</span>
               </div>
               <p className="prompt">
-                Abstraction means hiding complex internal implementation
-                details and showing only the essential features — achieved
-                in Java using abstract classes and interfaces (see{" "}
-                <a href="#q9">Section 9</a>).
+                Abstraction means hiding complex internal implementation details
+                and showing only the essential features — achieved in Java using
+                abstract classes and interfaces (see <a href="#q9">Section 9</a>
+                ).
               </p>
               <div className="example">
                 Real world: driving a car, you only use the steering wheel,
@@ -333,7 +385,9 @@ public class PlacementPortal {
 
               <div className="tabs-wrapper">
                 <div className="approach-panel active" id="q5-ref">
-                  <div className="complexity">Abstract method = what; concrete method = shared how</div>
+                  <div className="complexity">
+                    Abstract method = what; concrete method = shared how
+                  </div>
                   <div className="code-col">
                     <div className="code-label java">Java</div>
                     <pre className="code-panel">
@@ -364,16 +418,16 @@ class CampusDrive extends PlacementProcess {
                 <span className="level-badge medium">Medium</span>
               </div>
               <p className="prompt">
-                Inheritance lets a subclass acquire the fields and methods of
-                a superclass using <code>extends</code>, modelling an{" "}
-                <b>"is-a"</b> relationship. Java supports five conceptual
-                types; Multiple and Hybrid inheritance are achieved only via{" "}
-                <b>interfaces</b>, since a class can't <code>extends</code>{" "}
-                two classes.
+                Inheritance lets a subclass acquire the fields and methods of a
+                superclass using <code>extends</code>, modelling an{" "}
+                <b>"is-a"</b> relationship. Java supports five conceptual types;
+                Multiple and Hybrid inheritance are achieved only via{" "}
+                <b>interfaces</b>, since a class can't <code>extends</code> two
+                classes.
               </p>
               <div className="example">
-                Real world: a Smartphone "is a" Phone — it inherits calling
-                and SMS, then adds its own camera and apps.
+                Real world: a Smartphone "is a" Phone — it inherits calling and
+                SMS, then adds its own camera and apps.
               </div>
 
               <div className="tabs-wrapper">
@@ -398,8 +452,12 @@ class Student extends Person {
                 </div>
               </div>
 
-              <h3 style={{ marginTop: 18 }}>1. Single &amp; 2. Multilevel Inheritance</h3>
-              <FlowDiagram nodes={["Person", "Student", "PlacementCandidate"]} />
+              <h3 style={{ marginTop: 18 }}>
+                1. Single &amp; 2. Multilevel Inheritance
+              </h3>
+              <FlowDiagram
+                nodes={["Person", "Student", "PlacementCandidate"]}
+              />
               <div className="tabs-wrapper">
                 <div className="approach-panel active" id="q6-multilevel">
                   <div className="code-col">
@@ -413,15 +471,29 @@ class Student extends Person {
               </div>
 
               <h3 style={{ marginTop: 18 }}>3. Hierarchical Inheritance</h3>
-              <p className="prompt">Multiple child classes inherit from a single parent class.</p>
-              <OrgChart root="Person" children={[{ label: "Student" }, { label: "Faculty" }, { label: "Admin" }]} />
-
-              <h3 style={{ marginTop: 18 }}>4. Multiple Inheritance (via Interfaces)</h3>
               <p className="prompt">
-                A class implements more than one interface, inheriting
-                behaviour contracts from each.
+                Multiple child classes inherit from a single parent class.
               </p>
-              <MergeChart parents={["Trainable", "Placeable"]} child="Student" />
+              <OrgChart
+                root="Person"
+                children={[
+                  { label: "Student" },
+                  { label: "Faculty" },
+                  { label: "Admin" },
+                ]}
+              />
+
+              <h3 style={{ marginTop: 18 }}>
+                4. Multiple Inheritance (via Interfaces)
+              </h3>
+              <p className="prompt">
+                A class implements more than one interface, inheriting behaviour
+                contracts from each.
+              </p>
+              <MergeChart
+                parents={["Trainable", "Placeable"]}
+                child="Student"
+              />
               <div className="tabs-wrapper">
                 <div className="approach-panel active" id="q6-multiple">
                   <div className="code-col">
@@ -451,25 +523,30 @@ class Student implements Trainable, Placeable {
               </div>
               <div className="twist">
                 <strong>Diamond problem:</strong> if two parents had the same
-                method, which should the child use? Java sidesteps this by
-                not allowing multiple class inheritance — interfaces avoid
-                the clash because implementing classes must supply their own
-                method body.
+                method, which should the child use? Java sidesteps this by not
+                allowing multiple class inheritance — interfaces avoid the clash
+                because implementing classes must supply their own method body.
               </div>
 
-              <h3 style={{ marginTop: 18 }}>5. Hybrid Inheritance (via Interfaces)</h3>
+              <h3 style={{ marginTop: 18 }}>
+                5. Hybrid Inheritance (via Interfaces)
+              </h3>
               <p className="prompt">
                 A combination of the types above — e.g. Hierarchical +
                 Multilevel using classes, further combined with interfaces.
               </p>
               <OrgChart
                 root="Person"
-                children={[{ label: "Student", grandchildren: ["PlacementCandidate"] }, { label: "Faculty" }]}
+                children={[
+                  { label: "Student", grandchildren: ["PlacementCandidate"] },
+                  { label: "Faculty" },
+                ]}
               />
               <div className="twist">
                 Make <code>Student</code> also <code>implements Placeable</code>{" "}
                 from the diagram above, and you now have Hierarchical +
-                Multilevel + Multiple combined — that is <b>Hybrid Inheritance</b>.
+                Multilevel + Multiple combined — that is{" "}
+                <b>Hybrid Inheritance</b>.
               </div>
             </section>
 
@@ -531,8 +608,14 @@ public class Zoo {
                 headers={["Compile-Time Polymorphism", "Runtime Polymorphism"]}
                 rows={[
                   ["Static / early binding", "Dynamic / late binding"],
-                  ["Achieved via method overloading", "Achieved via method overriding"],
-                  ["Compiler decides the call", "JVM decides the call, based on the actual object"],
+                  [
+                    "Achieved via method overloading",
+                    "Achieved via method overriding",
+                  ],
+                  [
+                    "Compiler decides the call",
+                    "JVM decides the call, based on the actual object",
+                  ],
                 ]}
               />
               <div className="twist">
@@ -552,21 +635,23 @@ public class Zoo {
                 same name but a different parameter list (number, type, or
                 order) — changing only the return type doesn't count.{" "}
                 <b>Overriding</b> happens when a subclass provides its own
-                implementation of a method already defined in its parent,
-                with the exact same signature; it requires inheritance and is
+                implementation of a method already defined in its parent, with
+                the exact same signature; it requires inheritance and is
                 resolved at runtime.
               </p>
               <div className="example">
                 Real world: at a pizza counter, the action is always "Order
                 Pizza" — but you can order by size, or size + toppings
-                (overloading). Every Placement Trainer "conducts a session" —
-                a Technical Trainer runs coding practice while a Soft-Skills
+                (overloading). Every Placement Trainer "conducts a session" — a
+                Technical Trainer runs coding practice while a Soft-Skills
                 Trainer runs group discussions (overriding).
               </div>
 
               <div className="tabs-wrapper">
                 <div className="approach-panel active" id="q8-overload">
-                  <div className="complexity">Overloading — vary number, type, or order of parameters</div>
+                  <div className="complexity">
+                    Overloading — vary number, type, or order of parameters
+                  </div>
                   <div className="code-col">
                     <div className="code-label java">Java</div>
                     <pre className="code-panel">
@@ -591,14 +676,15 @@ double calcFee(double discount) {
               </div>
               <div className="twist">
                 <strong>No exact match?</strong> Java tries automatic type
-                promotion (<code>byte → int → long → float → double</code>)
-                to find a compatible overloaded method before a compile
-                error.
+                promotion (<code>byte → int → long → float → double</code>) to
+                find a compatible overloaded method before a compile error.
               </div>
 
               <div className="tabs-wrapper" style={{ marginTop: 16 }}>
                 <div className="approach-panel active" id="q8-override">
-                  <div className="complexity">Overriding — same signature, resolved at runtime via super</div>
+                  <div className="complexity">
+                    Overriding — same signature, resolved at runtime via super
+                  </div>
                   <div className="code-col">
                     <div className="code-label java">Java</div>
                     <pre className="code-panel">
@@ -630,19 +716,25 @@ class SoftSkillsTrainer extends PlacementTrainer {
               <CompareTable
                 headers={["Method Overloading", "Method Overriding"]}
                 rows={[
-                  ["Same name, different parameter list", "Same signature in parent and child"],
+                  [
+                    "Same name, different parameter list",
+                    "Same signature in parent and child",
+                  ],
                   ["Usually within the same class", "Requires inheritance"],
                   ["Compile-time (early binding)", "Runtime (late binding)"],
-                  ["Compiler selects via argument types", "JVM selects via actual object"],
+                  [
+                    "Compiler selects via argument types",
+                    "JVM selects via actual object",
+                  ],
                 ]}
               />
               <div className="twist">
-                <code>final</code> methods can't be overridden; <code>static</code>{" "}
-                methods are hidden, not overridden (reference type decides);{" "}
-                <code>private</code> methods aren't inherited at all. An
-                overriding method can't be more restrictive, may return a
-                covariant subtype, and can only throw the same, fewer, or
-                narrower checked exceptions.
+                <code>final</code> methods can't be overridden;{" "}
+                <code>static</code> methods are hidden, not overridden
+                (reference type decides); <code>private</code> methods aren't
+                inherited at all. An overriding method can't be more
+                restrictive, may return a covariant subtype, and can only throw
+                the same, fewer, or narrower checked exceptions.
               </div>
             </section>
 
@@ -654,23 +746,25 @@ class SoftSkillsTrainer extends PlacementTrainer {
               </div>
               <p className="prompt">
                 An <b>abstract class</b> mixes abstract methods (no body) with
-                concrete methods (fully implemented, shared by subclasses),
-                and can have constructors and fields. An <b>interface</b> is a
-                pure contract — all methods are implicitly public and
-                abstract (traditionally), and a class may implement multiple
-                interfaces.
+                concrete methods (fully implemented, shared by subclasses), and
+                can have constructors and fields. An <b>interface</b> is a pure
+                contract — all methods are implicitly public and abstract
+                (traditionally), and a class may implement multiple interfaces.
               </p>
               <div className="example">
-                Real world: an abstract class is a resume template with
-                common sections already filled in, leaving "Projects" and
-                "Skills" for you. An interface is a company's eligibility
-                criteria sheet — "must clear an aptitude test" — different
-                companies run those rounds differently.
+                Real world: an abstract class is a resume template with common
+                sections already filled in, leaving "Projects" and "Skills" for
+                you. An interface is a company's eligibility criteria sheet —
+                "must clear an aptitude test" — different companies run those
+                rounds differently.
               </div>
 
               <div className="tabs-wrapper">
                 <div className="approach-panel active" id="q9-ref">
-                  <div className="lang-wrapper code-split" style={{ gridTemplateColumns: "1fr 1fr" }}>
+                  <div
+                    className="lang-wrapper code-split"
+                    style={{ gridTemplateColumns: "1fr 1fr" }}
+                  >
                     <div className="code-col">
                       <div className="code-label java">Abstract class</div>
                       <pre className="code-panel">
@@ -710,10 +804,22 @@ class BootcampDrive extends PlacementProcess implements Certifiable {
               <CompareTable
                 headers={["Abstract Class", "Interface"]}
                 rows={[
-                  ["Represents an \"is-a\" base with partial implementation", "Represents a behaviour contract only"],
-                  ["Can have instance fields and constructors", "No instance state; only constants"],
-                  ["A class can extend only one abstract class", "A class can implement multiple interfaces"],
-                  ["Use when classes share common code", "Use when unrelated classes must follow the same behaviour"],
+                  [
+                    'Represents an "is-a" base with partial implementation',
+                    "Represents a behaviour contract only",
+                  ],
+                  [
+                    "Can have instance fields and constructors",
+                    "No instance state; only constants",
+                  ],
+                  [
+                    "A class can extend only one abstract class",
+                    "A class can implement multiple interfaces",
+                  ],
+                  [
+                    "Use when classes share common code",
+                    "Use when unrelated classes must follow the same behaviour",
+                  ],
                 ]}
               />
             </section>
@@ -726,16 +832,16 @@ class BootcampDrive extends PlacementProcess implements Certifiable {
               </div>
               <p className="prompt">
                 Access modifiers control the visibility of classes, fields and
-                methods — what makes encapsulation enforceable. Java has
-                four: <code>private</code>, default (no modifier),{" "}
+                methods — what makes encapsulation enforceable. Java has four:{" "}
+                <code>private</code>, default (no modifier),{" "}
                 <code>protected</code>, and <code>public</code>.
               </p>
               <div className="example">
-                Real world: <code>private</code> is your personal diary,
-                default is a classroom notice (own package only),{" "}
-                <code>protected</code> is family information (shared with
-                subclasses even outside the package), and <code>public</code>{" "}
-                is the main college noticeboard.
+                Real world: <code>private</code> is your personal diary, default
+                is a classroom notice (own package only), <code>protected</code>{" "}
+                is family information (shared with subclasses even outside the
+                package), and <code>public</code> is the main college
+                noticeboard.
               </div>
 
               <Rings
@@ -764,7 +870,13 @@ class BootcampDrive extends PlacementProcess implements Certifiable {
               </div>
 
               <CompareTable
-                headers={["Modifier", "Same Class", "Same Package", "Subclass (Diff Package)", "Other Class"]}
+                headers={[
+                  "Modifier",
+                  "Same Class",
+                  "Same Package",
+                  "Subclass (Diff Package)",
+                  "Other Class",
+                ]}
                 rows={[
                   ["public", "Yes", "Yes", "Yes", "Yes"],
                   ["protected", "Yes", "Yes", "Yes", "No"],
@@ -774,8 +886,8 @@ class BootcampDrive extends PlacementProcess implements Certifiable {
               />
               <div className="twist">
                 <strong>Memory trick:</strong> always start with the most
-                restrictive access (private) and open up only as much as
-                truly necessary.
+                restrictive access (private) and open up only as much as truly
+                necessary.
               </div>
             </section>
 
@@ -788,12 +900,12 @@ class BootcampDrive extends PlacementProcess implements Certifiable {
               <p className="prompt">
                 <code>this</code> references the current object (resolving
                 field/parameter name clashes, constructor chaining).{" "}
-                <code>super</code> references the immediate parent (calling
-                its constructor or an overridden method/field).{" "}
-                <code>static</code> marks a member as belonging to the class
-                itself, shared by all instances. <code>final</code> stops
-                further change — variables can't be reassigned, methods can't
-                be overridden, classes can't be inherited.
+                <code>super</code> references the immediate parent (calling its
+                constructor or an overridden method/field). <code>static</code>{" "}
+                marks a member as belonging to the class itself, shared by all
+                instances. <code>final</code> stops further change — variables
+                can't be reassigned, methods can't be overridden, classes can't
+                be inherited.
               </p>
 
               <div className="tabs-wrapper">
@@ -840,11 +952,10 @@ class EliteCandidate extends PlacementCandidate {
                 <span className="level-badge medium">Medium</span>
               </div>
               <p className="prompt">
-                A constructor runs automatically when an object is created
-                with <code>new</code>. Its name matches the class exactly,
-                and it has <b>no return type</b> — not even <code>void</code>.
-                A class can overload multiple constructors with different
-                parameter lists.
+                A constructor runs automatically when an object is created with{" "}
+                <code>new</code>. Its name matches the class exactly, and it has{" "}
+                <b>no return type</b> — not even <code>void</code>. A class can
+                overload multiple constructors with different parameter lists.
               </p>
               <div className="example">
                 Real world: submitting a college admission form (
@@ -854,12 +965,18 @@ class EliteCandidate extends PlacementCandidate {
               </div>
 
               <FlowDiagram
-                nodes={["Student()", "Student(name, batchYear)", "Student(name, batchYear, course)"]}
+                nodes={[
+                  "Student()",
+                  "Student(name, batchYear)",
+                  "Student(name, batchYear, course)",
+                ]}
               />
 
               <div className="tabs-wrapper">
                 <div className="approach-panel active" id="q12-ref">
-                  <div className="complexity">Constructor chaining with this(...)</div>
+                  <div className="complexity">
+                    Constructor chaining with this(...)
+                  </div>
                   <div className="code-col">
                     <div className="code-label java">Java</div>
                     <pre className="code-panel">

@@ -1,11 +1,17 @@
+import { useQuery } from "@tanstack/react-query";
+import {
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Lock,
+  PlayCircle,
+} from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import Navbar from "../components/Navbar";
+import { Button } from "../components/ui/button";
 import { api } from "../lib/api";
 import { useAuth } from "../store/auth";
-import { Button } from "../components/ui/button";
-import Navbar from "../components/Navbar";
-import { CheckCircle2, PlayCircle, Lock, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface QuizFromApi {
   id: string;
@@ -32,16 +38,19 @@ export default function QuizListPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState("all");
 
-  const { data: quizzes = [], isLoading: isLoadingQuizzes } = useQuery<QuizFromApi[]>({
+  const { data: quizzes = [], isLoading: isLoadingQuizzes } = useQuery<
+    QuizFromApi[]
+  >({
     queryKey: ["quizzes"],
     queryFn: () => api.get<QuizFromApi[]>("/quizzes"),
   });
 
-  const { data: mySubmissions = [], isLoading: isLoadingSubmissions } = useQuery<MySubmission[]>({
-    queryKey: ["quiz-submissions-me"],
-    queryFn: () => api.get<MySubmission[]>("/quizzes/submissions/me"),
-    enabled: !!user,
-  });
+  const { data: mySubmissions = [], isLoading: isLoadingSubmissions } =
+    useQuery<MySubmission[]>({
+      queryKey: ["quiz-submissions-me"],
+      queryFn: () => api.get<MySubmission[]>("/quizzes/submissions/me"),
+      enabled: !!user,
+    });
 
   const isLoading = isLoadingQuizzes || (!!user && isLoadingSubmissions);
   const submittedQuizIds = new Set(mySubmissions.map((s) => s.quiz_id));
@@ -56,7 +65,10 @@ export default function QuizListPage() {
   // Pagination calculation
   const totalPages = Math.ceil(filteredQuizzes.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedQuizzes = filteredQuizzes.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const paginatedQuizzes = filteredQuizzes.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE,
+  );
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -71,7 +83,9 @@ export default function QuizListPage() {
           </div>
           {user && (
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-muted-foreground">Filter:</span>
+              <span className="text-sm font-medium text-muted-foreground">
+                Filter:
+              </span>
               <select
                 className="bg-card border border-border text-foreground text-sm rounded-md focus:ring-primary focus:border-primary block p-2 outline-none"
                 value={filter}
@@ -113,7 +127,9 @@ export default function QuizListPage() {
           ) : (
             paginatedQuizzes.map((quiz) => {
               const isCompleted = submittedQuizIds.has(quiz.id);
-              const submission = mySubmissions.find((s) => s.quiz_id === quiz.id);
+              const submission = mySubmissions.find(
+                (s) => s.quiz_id === quiz.id,
+              );
 
               return (
                 <div
@@ -183,11 +199,19 @@ export default function QuizListPage() {
         {!isLoading && totalPages > 1 && (
           <div className="flex items-center justify-between mt-8 pt-4 border-t border-border">
             <div className="text-sm text-muted-foreground">
-              Showing <span className="font-semibold text-foreground">{startIndex + 1}</span> to{" "}
+              Showing{" "}
+              <span className="font-semibold text-foreground">
+                {startIndex + 1}
+              </span>{" "}
+              to{" "}
               <span className="font-semibold text-foreground">
                 {Math.min(startIndex + ITEMS_PER_PAGE, filteredQuizzes.length)}
               </span>{" "}
-              of <span className="font-semibold text-foreground">{filteredQuizzes.length}</span> quizzes
+              of{" "}
+              <span className="font-semibold text-foreground">
+                {filteredQuizzes.length}
+              </span>{" "}
+              quizzes
             </div>
             <div className="flex items-center gap-2">
               <Button
@@ -205,7 +229,9 @@ export default function QuizListPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(p + 1, totalPages))
+                }
                 disabled={currentPage === totalPages}
                 className="flex items-center gap-1"
               >

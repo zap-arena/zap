@@ -1,6 +1,4 @@
-import React from "react";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
-import Navbar from "../../components/Navbar";
+import type React from "react";
 import AlgoVisualizer from "../../components/guide/AlgoVisualizer";
 import {
   containsDuplicateApproaches,
@@ -12,6 +10,8 @@ import {
   twoSumApproaches,
   validAnagramApproaches,
 } from "../../components/guide/hashingVisualizations";
+import Navbar from "../../components/Navbar";
+import { useGuideLogic } from "../../hooks/useGuideLogic";
 
 export default function HashingDsaGuidePage() {
   useGuideLogic();

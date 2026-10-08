@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { Upload, Plus, Trash2 } from "lucide-react";
-import { Button } from "../../components/ui/button";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "../../lib/api";
-import { v4 as uuidv4 } from "uuid";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Plus, Trash2, Upload } from "lucide-react";
+import type React from "react";
+import { useState } from "react";
 import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
+import { Button } from "../../components/ui/button";
+import { api } from "../../lib/api";
 
 export default function AdminQuizzes() {
   const queryClient = useQueryClient();
@@ -78,7 +79,9 @@ export default function AdminQuizzes() {
               // skip invalid entries
             }
           });
-          toast.success(`${completed} quiz${completed !== 1 ? "es" : ""} queued for import`);
+          toast.success(
+            `${completed} quiz${completed !== 1 ? "es" : ""} queued for import`,
+          );
         } else {
           processQuiz(json);
           toast.success("Quiz queued for import");
