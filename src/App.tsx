@@ -2,12 +2,13 @@ import { lazy, Suspense } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import RouteTransitionLoader from "./components/RouteTransitionLoader";
 import { Toaster } from "./components/ui/sonner";
+import CodeWarPage from "./pages/CodeWarPage";
 import ContestEntryPage from "./pages/ContestEntryPage";
-import ContestsPage from "./pages/ContestsPage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import HomePage from "./pages/HomePage";
 import ContestLandingPage from "./pages/ContestLandingPage";
+import ContestsPage from "./pages/ContestsPage";
 import CurriculumDSAPage from "./pages/CurriculumDSAPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import AIBasicsGuidePage from "./pages/guide/AIBasicsGuidePage";
 import DP1DGuidePage from "./pages/guide/DP1DGuidePage";
 import DP2DGuidePage from "./pages/guide/DP2DGuidePage";
 import HashingDsaGuidePage from "./pages/guide/HashingDsaGuidePage";
@@ -21,13 +22,13 @@ import SlidingWindowDsaGuidePage from "./pages/guide/SlidingWindowDsaGuidePage";
 import SqlGuidePage from "./pages/guide/SqlGuidePage";
 import StackDsaGuidePage from "./pages/guide/StackDsaGuidePage";
 import TwoPointerDsaGuidePage from "./pages/guide/TwoPointerDsaGuidePage";
+import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
+import QuizListPage from "./pages/QuizListPage";
+import QuizTakingPage from "./pages/QuizTakingPage";
 import RegisterPage from "./pages/RegisterPage";
 import { useAuth } from "./store/auth";
 
-import QuizListPage from "./pages/QuizListPage";
-import QuizTakingPage from "./pages/QuizTakingPage";
-import CodeWarPage from "./pages/CodeWarPage";
 const AdminQuizzes = lazy(() => import("./pages/admin/AdminQuizzes"));
 
 // Admin screens and the Monaco-based workspace are large and rarely the entry point, so they
@@ -202,6 +203,14 @@ export default function App() {
             element={
               <RequireAuth>
                 <SdlcGuidePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/ai-basics"
+            element={
+              <RequireAuth>
+                <AIBasicsGuidePage />
               </RequireAuth>
             }
           />

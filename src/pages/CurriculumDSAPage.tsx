@@ -468,6 +468,35 @@ export default function CurriculumDSAPage() {
                 <span>→</span>
               </a>
             </div>
+
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">🤖</div>
+                  <span className="module-badge">3 Topics</span>
+                </div>
+                <h3 className="module-title">AI Basics</h3>
+                <p className="module-desc">
+                  A quick primer on Artificial Intelligence, Machine Learning, and Deep Learning, including an interactive interview quiz.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">What is AI?</li>
+                  <li className="topic-tag">AI vs ML vs DL</li>
+                  <li className="topic-tag">Interview Quiz</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/ai-basics" className="btn-open">
+                <span>Explore AI Basics</span>
+                <span>→</span>
+              </a>
+            </div>
           </div>
         </section>
 
