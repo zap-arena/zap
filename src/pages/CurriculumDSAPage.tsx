@@ -497,6 +497,36 @@ export default function CurriculumDSAPage() {
                 <span>→</span>
               </a>
             </div>
+            <div
+              className="module-card"
+              style={
+                {
+                  "--card-accent": "hsl(var(--primary))",
+                } as React.CSSProperties
+              }
+            >
+              <div>
+                <div className="card-header">
+                  <div className="module-icon">🔌</div>
+                  <span className="module-badge">8 Topics</span>
+                </div>
+                <h3 className="module-title">API Basics</h3>
+                <p className="module-desc">
+                  Understand what APIs are, how REST and GraphQL work, how to connect from the frontend, and how to securely handle API keys.
+                </p>
+                <ul className="topic-list">
+                  <li className="topic-tag">REST APIs</li>
+                  <li className="topic-tag">Frontend Fetching</li>
+                  <li className="topic-tag">API Security</li>
+                  <li className="topic-tag">Webhooks</li>
+                  <li className="topic-tag">GraphQL</li>
+                </ul>
+              </div>
+              <a href="/curriculum/dsa/api-basics" className="btn-open">
+                <span>Explore API Basics</span>
+                <span>→</span>
+              </a>
+            </div>
           </div>
         </section>
 
