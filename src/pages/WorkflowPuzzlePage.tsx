@@ -70,6 +70,8 @@ export default function WorkflowPuzzlePage() {
     success: boolean;
   } | null>(null);
   const [isRoundComplete, setIsRoundComplete] = useState(false);
+  const [attempts, setAttempts] = useState(0);
+  const [hintsRemaining, setHintsRemaining] = useState(5);
 
   // Interaction State
   const [draggedTile, setDraggedTile] = useState<number | null>(null);
@@ -88,11 +90,13 @@ export default function WorkflowPuzzlePage() {
     setFeedback(null);
     setIsRoundComplete(false);
     setSelectedTile(null);
+    setAttempts(0);
   };
 
   const startGame = () => {
     setCurrentIdx(0);
     setScore(0);
+    setHintsRemaining(5);
     initRound(0);
     setGameState("playing");
   };
@@ -175,6 +179,9 @@ export default function WorkflowPuzzlePage() {
       setFeedback({ text: "Fill all slots first!", success: false });
       return;
     }
+
+    setAttempts((a) => a + 1);
+
     const isCorrect = slots.every((val, i) => val === i);
     if (isCorrect) {
       setFeedback({ text: "Perfect! Sequence matched.", success: true });
@@ -186,8 +193,9 @@ export default function WorkflowPuzzlePage() {
   };
 
   const giveHint = () => {
-    if (isRoundComplete) return;
+    if (isRoundComplete || hintsRemaining <= 0) return;
     setHintsUsed(true);
+    setHintsRemaining((h) => h - 1);
     setSlots((prev) => {
       const newSlots = [...prev];
       for (let i = 0; i < newSlots.length; i++) {
@@ -214,13 +222,48 @@ export default function WorkflowPuzzlePage() {
           break; // One hint per click
         }
       }
+
+      // Auto-complete if the hint perfectly solved the puzzle
+      if (newSlots.every((val, idx) => val === idx)) {
+        setTimeout(() => {
+          setFeedback({ text: "Perfect! Sequence matched.", success: true });
+          setIsRoundComplete(true);
+        }, 100);
+      }
+
       return newSlots;
     });
   };
 
-  const renderTile = (stepIdx: number) => {
+  const renderTile = (stepIdx: number, inSlotIdx: number | null = null) => {
     const isSelected = selectedTile === stepIdx;
     const isDragging = draggedTile === stepIdx;
+
+    const handleTileClick = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (isRoundComplete) return;
+
+      if (inSlotIdx === null) {
+        // In Pool: tap to auto-fill the first available empty slot
+        const firstEmptySlot = slots.indexOf(null);
+        if (firstEmptySlot !== -1) {
+          moveTileToSlot(stepIdx, firstEmptySlot);
+          setSelectedTile(null);
+        } else {
+          setSelectedTile(isSelected ? null : stepIdx);
+        }
+      } else {
+        // In Slot: tap to send back to pool, or swap if something else is selected
+        if (selectedTile !== null && selectedTile !== stepIdx) {
+          moveTileToSlot(selectedTile, inSlotIdx);
+          setSelectedTile(null);
+        } else {
+          moveTileToPool(stepIdx);
+          setSelectedTile(null);
+        }
+      }
+    };
+
     return (
       <div
         key={stepIdx}
@@ -230,10 +273,7 @@ export default function WorkflowPuzzlePage() {
           e.dataTransfer.effectAllowed = "move";
         }}
         onDragEnd={() => setDraggedTile(null)}
-        onClick={(e) => {
-          e.stopPropagation();
-          setSelectedTile(isSelected ? null : stepIdx);
-        }}
+        onClick={handleTileClick}
         className={`puzzle-tile flex items-center gap-3 p-3 bg-card border-2 rounded-xl text-sm font-medium cursor-grab active:cursor-grabbing transition-all select-none
           ${isSelected ? "border-primary ring-2 ring-primary/20 shadow-md scale-[1.02]" : "border-border hover:border-primary/50"}
           ${isDragging ? "opacity-50 scale-95" : "opacity-100"}
@@ -384,7 +424,7 @@ export default function WorkflowPuzzlePage() {
                     }}
                     onClick={handlePoolClick}
                   >
-                    {pool.map((stepIdx) => renderTile(stepIdx))}
+                    {pool.map((stepIdx) => renderTile(stepIdx, null))}
                     {pool.length === 0 && (
                       <div className="w-full h-full flex items-center justify-center text-muted-foreground italic text-sm">
                         Pool is empty
@@ -419,7 +459,7 @@ export default function WorkflowPuzzlePage() {
                         </div>
                         <div className="flex-1 w-full">
                           {occupant !== null ? (
-                            renderTile(occupant)
+                            renderTile(occupant, idx)
                           ) : (
                             <div className="text-muted-foreground/50 text-sm italic pl-2">
                               Drop here...
@@ -445,9 +485,12 @@ export default function WorkflowPuzzlePage() {
                   <Button
                     variant="outline"
                     onClick={giveHint}
-                    disabled={isRoundComplete}
+                    disabled={
+                      isRoundComplete || attempts === 0 || hintsRemaining <= 0
+                    }
                   >
-                    <Lightbulb className="w-4 h-4 mr-2 text-warning" /> Hint
+                    <Lightbulb className="w-4 h-4 mr-2 text-warning" /> Hint (
+                    {hintsRemaining})
                   </Button>
                 </div>
 
