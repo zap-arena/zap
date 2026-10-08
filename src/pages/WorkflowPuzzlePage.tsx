@@ -1,6 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, CheckCircle2, PlayCircle, Shuffle, Lightbulb, Check, ChevronRight } from "lucide-react";
-import React, { useEffect, useState, useMemo } from "react";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  PlayCircle,
+  Shuffle,
+  Lightbulb,
+  Check,
+  ChevronRight,
+} from "lucide-react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
@@ -25,7 +33,8 @@ export default function WorkflowPuzzlePage() {
   // API State
   const { data: existingSubmission } = useQuery<Submission>({
     queryKey: ["quiz-submission", "workflow-puzzle"],
-    queryFn: () => api.get<Submission>(`/quizzes/workflow-puzzle/submissions/me`),
+    queryFn: () =>
+      api.get<Submission>(`/quizzes/workflow-puzzle/submissions/me`),
     enabled: !!user,
     retry: false,
   });
@@ -35,7 +44,9 @@ export default function WorkflowPuzzlePage() {
       api.post<Submission>(`/quizzes/workflow-puzzle/submit`, payload),
     onSuccess: () => {
       toast.success("Puzzle score saved!");
-      queryClient.invalidateQueries({ queryKey: ["quiz-submission", "workflow-puzzle"] });
+      queryClient.invalidateQueries({
+        queryKey: ["quiz-submission", "workflow-puzzle"],
+      });
       queryClient.invalidateQueries({ queryKey: ["quiz-submissions-me"] });
     },
     onError: (err: any) => {
@@ -46,13 +57,18 @@ export default function WorkflowPuzzlePage() {
   });
 
   // Game State
-  const [gameState, setGameState] = useState<"start" | "playing" | "score">("start");
+  const [gameState, setGameState] = useState<"start" | "playing" | "score">(
+    "start",
+  );
   const [currentIdx, setCurrentIdx] = useState(0);
   const [score, setScore] = useState(0);
   const [pool, setPool] = useState<number[]>([]);
   const [slots, setSlots] = useState<(number | null)[]>([]);
   const [hintsUsed, setHintsUsed] = useState(false);
-  const [feedback, setFeedback] = useState<{ text: string; success: boolean } | null>(null);
+  const [feedback, setFeedback] = useState<{
+    text: string;
+    success: boolean;
+  } | null>(null);
   const [isRoundComplete, setIsRoundComplete] = useState(false);
 
   // Interaction State
@@ -63,7 +79,9 @@ export default function WorkflowPuzzlePage() {
 
   const initRound = (idx: number) => {
     const workflow = workflows[idx];
-    const shuffled = [...Array(workflow.steps.length).keys()].sort(() => Math.random() - 0.5);
+    const shuffled = [...Array(workflow.steps.length).keys()].sort(
+      () => Math.random() - 0.5,
+    );
     setPool(shuffled);
     setSlots(Array(workflow.steps.length).fill(null));
     setHintsUsed(false);
@@ -177,7 +195,7 @@ export default function WorkflowPuzzlePage() {
           // Find where 'i' is
           const correctItem = i;
           const currentPosInSlots = newSlots.indexOf(correctItem);
-          
+
           if (currentPosInSlots !== -1) {
             // swap
             const temp = newSlots[i];
@@ -223,7 +241,9 @@ export default function WorkflowPuzzlePage() {
         `}
       >
         <span className="text-muted-foreground opacity-50 cursor-grab">⠿</span>
-        <span>{wf.icons[stepIdx]} {wf.steps[stepIdx]}</span>
+        <span>
+          {wf.icons[stepIdx]} {wf.steps[stepIdx]}
+        </span>
       </div>
     );
   };
@@ -245,29 +265,44 @@ export default function WorkflowPuzzlePage() {
             <div className="flex items-center gap-3">
               <CheckCircle2 className="w-8 h-8 text-primary" />
               <div>
-                <h2 className="text-xl font-bold text-primary">Puzzle Completed!</h2>
-                <p className="text-muted-foreground text-sm">You have already submitted your score for this puzzle.</p>
+                <h2 className="text-xl font-bold text-primary">
+                  Puzzle Completed!
+                </h2>
+                <p className="text-muted-foreground text-sm">
+                  You have already submitted your score for this puzzle.
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-4 bg-card p-4 rounded-lg border">
-              <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Your Score</span>
+              <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                Your Score
+              </span>
               <span className="text-3xl font-black text-primary">
-                {existingSubmission.score} <span className="text-xl text-muted-foreground">/ {existingSubmission.total_questions}</span>
+                {existingSubmission.score}{" "}
+                <span className="text-xl text-muted-foreground">
+                  / {existingSubmission.total_questions}
+                </span>
               </span>
             </div>
           </div>
         )}
 
         <div className="flex-1 w-full bg-card/50 border rounded-2xl overflow-hidden shadow-2xl relative p-6 md:p-10 flex flex-col">
-          
           {gameState === "start" && (
             <div className="flex-1 flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-300">
               <div className="text-6xl mb-6">🧩</div>
-              <h1 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">AI Workflow Puzzle</h1>
+              <h1 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">
+                AI Workflow Puzzle
+              </h1>
               <p className="text-xl text-muted-foreground max-w-2xl mb-10">
-                Test your architectural knowledge by rebuilding data pipelines, neural network flows, and system designs from scratch.
+                Test your architectural knowledge by rebuilding data pipelines,
+                neural network flows, and system designs from scratch.
               </p>
-              <Button size="lg" onClick={startGame} className="text-lg px-8 py-6 h-auto rounded-xl">
+              <Button
+                size="lg"
+                onClick={startGame}
+                className="text-lg px-8 py-6 h-auto rounded-xl"
+              >
                 <PlayCircle className="w-6 h-6 mr-2" />
                 {existingSubmission ? "Play Again" : "Start Puzzle"}
               </Button>
@@ -276,18 +311,33 @@ export default function WorkflowPuzzlePage() {
 
           {gameState === "score" && (
             <div className="flex-1 flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-500">
-              <div className="text-7xl mb-6">{score / workflows.length >= 0.8 ? "🏆" : "👍"}</div>
+              <div className="text-7xl mb-6">
+                {score / workflows.length >= 0.8 ? "🏆" : "👍"}
+              </div>
               <h2 className="text-4xl font-extrabold mb-2">
-                {score / workflows.length >= 0.8 ? "Architecture Master!" : "Great Effort!"}
+                {score / workflows.length >= 0.8
+                  ? "Architecture Master!"
+                  : "Great Effort!"}
               </h2>
               <p className="text-xl text-muted-foreground mb-10">
-                You rebuilt {score} out of {workflows.length} workflows without hints.
+                You rebuilt {score} out of {workflows.length} workflows without
+                hints.
               </p>
               <div className="flex gap-4">
-                <Button size="lg" onClick={startGame} variant="default" className="text-lg">
+                <Button
+                  size="lg"
+                  onClick={startGame}
+                  variant="default"
+                  className="text-lg"
+                >
                   Play Again
                 </Button>
-                <Button size="lg" onClick={() => navigate("/quizzes")} variant="outline" className="text-lg">
+                <Button
+                  size="lg"
+                  onClick={() => navigate("/quizzes")}
+                  variant="outline"
+                  className="text-lg"
+                >
                   Back to Hub
                 </Button>
               </div>
@@ -296,7 +346,6 @@ export default function WorkflowPuzzlePage() {
 
           {gameState === "playing" && (
             <div className="flex flex-col h-full animate-in fade-in duration-300">
-              
               <div className="flex justify-between items-center mb-6">
                 <div>
                   <span className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2">
@@ -309,9 +358,11 @@ export default function WorkflowPuzzlePage() {
                     Workflow {currentIdx + 1} / {workflows.length}
                   </div>
                   <div className="w-32 h-2 bg-secondary rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-primary transition-all duration-300" 
-                      style={{ width: `${(currentIdx / workflows.length) * 100}%` }}
+                    <div
+                      className="h-full bg-primary transition-all duration-300"
+                      style={{
+                        width: `${(currentIdx / workflows.length) * 100}%`,
+                      }}
                     />
                   </div>
                 </div>
@@ -323,7 +374,7 @@ export default function WorkflowPuzzlePage() {
                   <div className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4">
                     Jumbled Steps (Drag or Tap)
                   </div>
-                  <div 
+                  <div
                     className={`flex-1 min-h-[200px] border-2 border-dashed rounded-xl p-4 flex flex-wrap content-start gap-3 transition-colors
                       ${selectedTile !== null ? "border-primary/50 bg-primary/5" : "border-border bg-background/50"}`}
                     onDragOver={(e) => e.preventDefault()}
@@ -354,7 +405,8 @@ export default function WorkflowPuzzlePage() {
                         onDragOver={(e) => e.preventDefault()}
                         onDrop={(e) => {
                           e.preventDefault();
-                          if (draggedTile !== null) moveTileToSlot(draggedTile, idx);
+                          if (draggedTile !== null)
+                            moveTileToSlot(draggedTile, idx);
                         }}
                         onClick={() => handleSlotClick(idx)}
                         className={`flex items-center gap-3 min-h-[56px] border-2 border-dashed rounded-xl p-2 transition-colors cursor-pointer
@@ -366,8 +418,12 @@ export default function WorkflowPuzzlePage() {
                           {idx + 1}
                         </div>
                         <div className="flex-1 w-full">
-                          {occupant !== null ? renderTile(occupant) : (
-                            <div className="text-muted-foreground/50 text-sm italic pl-2">Drop here...</div>
+                          {occupant !== null ? (
+                            renderTile(occupant)
+                          ) : (
+                            <div className="text-muted-foreground/50 text-sm italic pl-2">
+                              Drop here...
+                            </div>
                           )}
                         </div>
                       </div>
@@ -379,33 +435,45 @@ export default function WorkflowPuzzlePage() {
               {/* Bottom Actions */}
               <div className="mt-8 pt-6 border-t flex flex-col md:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <Button variant="outline" onClick={() => initRound(currentIdx)} disabled={isRoundComplete}>
+                  <Button
+                    variant="outline"
+                    onClick={() => initRound(currentIdx)}
+                    disabled={isRoundComplete}
+                  >
                     <Shuffle className="w-4 h-4 mr-2" /> Reset
                   </Button>
-                  <Button variant="outline" onClick={giveHint} disabled={isRoundComplete}>
+                  <Button
+                    variant="outline"
+                    onClick={giveHint}
+                    disabled={isRoundComplete}
+                  >
                     <Lightbulb className="w-4 h-4 mr-2 text-warning" /> Hint
                   </Button>
                 </div>
 
                 <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
                   {feedback && (
-                    <span className={`font-semibold text-sm ${feedback.success ? "text-success" : "text-destructive"}`}>
+                    <span
+                      className={`font-semibold text-sm ${feedback.success ? "text-success" : "text-destructive"}`}
+                    >
                       {feedback.text}
                     </span>
                   )}
-                  
+
                   {!isRoundComplete ? (
                     <Button onClick={checkOrder} className="w-full md:w-auto">
                       <Check className="w-4 h-4 mr-2" /> Check Order
                     </Button>
                   ) : (
-                    <Button onClick={nextWorkflow} className="w-full md:w-auto bg-success hover:bg-success/90 text-success-foreground">
+                    <Button
+                      onClick={nextWorkflow}
+                      className="w-full md:w-auto bg-success hover:bg-success/90 text-success-foreground"
+                    >
                       Next Workflow <ChevronRight className="w-4 h-4 ml-2" />
                     </Button>
                   )}
                 </div>
               </div>
-
             </div>
           )}
         </div>
