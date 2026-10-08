@@ -530,6 +530,68 @@ export default function CurriculumDSAPage() {
                   <span>→</span>
                 </a>
               </div>
+
+              <div
+                className="module-card"
+                style={
+                  {
+                    "--card-accent": "hsl(var(--primary))",
+                  } as React.CSSProperties
+                }
+              >
+                <div>
+                  <div className="card-header">
+                    <div className="module-icon">🐍</div>
+                    <span className="module-badge">Template Flow</span>
+                  </div>
+                  <h3 className="module-title">Flask + JS API Integration</h3>
+                  <p className="module-desc">
+                    Learn the complete execution flow of how a frontend JavaScript
+                    application fetches data from a Python Flask backend.
+                  </p>
+                  <ul className="topic-list">
+                    <li className="topic-tag">Architecture</li>
+                    <li className="topic-tag">Execution Flow</li>
+                    <li className="topic-tag">Fetch()</li>
+                    <li className="topic-tag">JSON Responses</li>
+                  </ul>
+                </div>
+                <a href="/curriculum/dsa/flask-api-guide" className="btn-open">
+                  <span>Explore Flask API Guide</span>
+                  <span>→</span>
+                </a>
+              </div>
+
+              <div
+                className="module-card"
+                style={
+                  {
+                    "--card-accent": "hsl(var(--primary))",
+                  } as React.CSSProperties
+                }
+              >
+                <div>
+                  <div className="card-header">
+                    <div className="module-icon">🚀</div>
+                    <span className="module-badge">Full Stack Flow</span>
+                  </div>
+                  <h3 className="module-title">Django + React Integration</h3>
+                  <p className="module-desc">
+                    Learn the complete execution flow of how a modern React frontend
+                    fetches data from a robust Django backend (Django REST Framework).
+                  </p>
+                  <ul className="topic-list">
+                    <li className="topic-tag">Architecture</li>
+                    <li className="topic-tag">React Hooks</li>
+                    <li className="topic-tag">Django Views</li>
+                    <li className="topic-tag">JSON Responses</li>
+                  </ul>
+                </div>
+                <a href="/curriculum/dsa/django-react-guide" className="btn-open">
+                  <span>Explore Django + React Guide</span>
+                  <span>→</span>
+                </a>
+              </div>
             </div>
           )}
 

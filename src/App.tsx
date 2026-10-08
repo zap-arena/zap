@@ -10,6 +10,8 @@ import CurriculumDSAPage from "./pages/CurriculumDSAPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import AIBasicsGuidePage from "./pages/guide/AIBasicsGuidePage";
 import ApiBasicsGuidePage from "./pages/guide/ApiBasicsGuidePage";
+import DjangoReactGuidePage from "./pages/guide/DjangoReactGuidePage";
+import FlaskApiGuidePage from "./pages/guide/FlaskApiGuidePage";
 import DP1DGuidePage from "./pages/guide/DP1DGuidePage";
 import DP2DGuidePage from "./pages/guide/DP2DGuidePage";
 import HashingDsaGuidePage from "./pages/guide/HashingDsaGuidePage";
@@ -221,6 +223,22 @@ export default function App() {
             element={
               <RequireAuth>
                 <ApiBasicsGuidePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/django-react-guide"
+            element={
+              <RequireAuth>
+                <DjangoReactGuidePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/flask-api-guide"
+            element={
+              <RequireAuth>
+                <FlaskApiGuidePage />
               </RequireAuth>
             }
           />
