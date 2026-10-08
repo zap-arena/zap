@@ -28,6 +28,7 @@ import LoginPage from "./pages/LoginPage";
 import QuizListPage from "./pages/QuizListPage";
 import QuizTakingPage from "./pages/QuizTakingPage";
 import RegisterPage from "./pages/RegisterPage";
+import WorkflowPuzzlePage from "./pages/WorkflowPuzzlePage";
 import { useAuth } from "./store/auth";
 
 const AdminQuizzes = lazy(() => import("./pages/admin/AdminQuizzes"));
@@ -261,6 +262,14 @@ export default function App() {
             element={
               <RequireAuth>
                 <QuizListPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/quizzes/workflow-puzzle"
+            element={
+              <RequireAuth>
+                <WorkflowPuzzlePage />
               </RequireAuth>
             }
           />
