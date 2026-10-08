@@ -37,6 +37,7 @@ export default function QuizListPage() {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState("all");
+  const [activeTab, setActiveTab] = useState<"quizzes" | "puzzles">("quizzes");
 
   const { data: quizzes = [], isLoading: isLoadingQuizzes } = useQuery<
     QuizFromApi[]
@@ -74,35 +75,55 @@ export default function QuizListPage() {
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <Navbar />
       <div className="flex-1 max-w-5xl w-full mx-auto p-8">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
           <div>
-            <h1 className="text-4xl font-extrabold mb-2">Daily Quizzes</h1>
+            <h1 className="text-4xl font-extrabold mb-2">Assessments</h1>
             <p className="text-muted-foreground text-lg">
-              Test your knowledge with bite-sized daily assessments.
+              Test your knowledge with quizzes and interactive puzzles.
             </p>
           </div>
-          {user && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-muted-foreground">
-                Filter:
-              </span>
-              <select
-                className="bg-card border border-border text-foreground text-sm rounded-md focus:ring-primary focus:border-primary block p-2 outline-none"
-                value={filter}
-                onChange={(e) => {
-                  setFilter(e.target.value);
-                  setCurrentPage(1);
-                }}
+          
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full md:w-auto">
+            <div className="flex bg-card border border-border rounded-lg p-1 shrink-0">
+              <button
+                className={`px-5 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === 'quizzes' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                onClick={() => setActiveTab('quizzes')}
               >
-                <option value="all">All Quizzes</option>
-                <option value="completed">Completed</option>
-                <option value="pending">Not Completed</option>
-              </select>
+                Quizzes
+              </button>
+              <button
+                className={`px-5 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === 'puzzles' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                onClick={() => setActiveTab('puzzles')}
+              >
+                Puzzles
+              </button>
             </div>
-          )}
+
+            {user && activeTab === "quizzes" && (
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="text-sm font-medium text-muted-foreground">
+                  Filter:
+                </span>
+                <select
+                  className="bg-card border border-border text-foreground text-sm rounded-md focus:ring-primary focus:border-primary block p-2 outline-none"
+                  value={filter}
+                  onChange={(e) => {
+                    setFilter(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                >
+                  <option value="all">All Quizzes</option>
+                  <option value="completed">Completed</option>
+                  <option value="pending">Not Completed</option>
+                </select>
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="grid gap-6">
+        {activeTab === "quizzes" && (
+          <>
+            <div className="grid gap-6">
           {isLoading ? (
             // Skeleton Loader (5 cards matching 5 quizzes per page limit)
             Array.from({ length: ITEMS_PER_PAGE }).map((_, index) => (
@@ -238,6 +259,77 @@ export default function QuizListPage() {
                 Next <ChevronRight size={16} />
               </Button>
             </div>
+          </div>
+        )}
+          </>
+        )}
+
+        {activeTab === "puzzles" && (
+          <div className="grid gap-6">
+            {(() => {
+              const puzzleSubmission = mySubmissions.find((s) => s.quiz_id === "workflow-puzzle");
+              const isCompleted = !!puzzleSubmission;
+
+              return (
+                <div
+                  className={`p-6 rounded-xl border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-all ${
+                    isCompleted
+                      ? "bg-primary/5 border-primary/20"
+                      : "bg-card border-border hover:border-primary/50"
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="text-xl font-bold">AI Workflow Puzzle</h3>
+                      {isCompleted && (
+                        <span className="flex items-center gap-1 text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded-full uppercase tracking-wider">
+                          <CheckCircle2 size={14} /> Completed
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-muted-foreground mb-3">
+                      Rebuild AI workflows by dragging and dropping components.
+                    </p>
+                  </div>
+                  <div className="shrink-0 flex flex-col items-end gap-2">
+                    {isCompleted ? (
+                      <>
+                        <div className="text-2xl font-black text-primary">
+                          {puzzleSubmission.score}{" "}
+                          <span className="text-lg text-muted-foreground">
+                            / {puzzleSubmission.total_questions}
+                          </span>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => navigate(`/quizzes/workflow-puzzle`)}
+                        >
+                          Play Again
+                        </Button>
+                      </>
+                    ) : user ? (
+                      <Button
+                        size="sm"
+                        onClick={() => navigate(`/quizzes/workflow-puzzle`)}
+                        className="flex items-center gap-2"
+                      >
+                        <PlayCircle size={16} /> Start Puzzle
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => navigate("/login")}
+                        className="flex items-center gap-2"
+                      >
+                        <Lock size={16} /> Login to Play
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         )}
       </div>
