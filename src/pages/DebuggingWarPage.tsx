@@ -17,6 +17,7 @@ import {
   Sparkles,
   Unlock,
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -30,32 +31,82 @@ import {
   DEBUGGING_TOPICS,
   type DebuggingProblem,
 } from "../data/debugging-problems";
+import { api } from "../lib/api";
 import { EDITOR_THEME_OPTIONS, MONACO_THEMES } from "../lib/monaco-themes";
 
 export default function DebuggingWarPage() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // Pull debugging problems from the backend when entering Debugging War
+  const { data: backendProblems } = useQuery({
+    queryKey: ["codewar-debugging"],
+    queryFn: () => api.get<any[]>("/public/codewar/debugging"),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Merge any backend debugging problems with curated challenges
+  const allProblems = useMemo<DebuggingProblem[]>(() => {
+    if (!backendProblems || backendProblems.length === 0) {
+      return DEBUGGING_PROBLEMS;
+    }
+    const mappedBackend: DebuggingProblem[] = backendProblems.map((p) => ({
+      id: String(p.id),
+      slug: p.slug || String(p.id),
+      title: p.title,
+      topic: p.tags?.find((t: string) => t !== "debugging") || "General",
+      difficulty: (p.difficulty === "easy" ? "Medium" : p.difficulty === "hard" ? "Hard" : "Medium") as any,
+      points: p.maxScore || 100,
+      tags: p.tags || ["debugging"],
+      description: p.description || "",
+      inputFormat: p.inputFormat || "",
+      outputFormat: p.outputFormat || "",
+      constraints: p.constraints || "",
+      incidentReport: {
+        severity: "High",
+        reportedBy: "QA Automated Suite",
+        environment: "Production / Evaluation Cluster",
+        symptoms: p.description?.slice(0, 150) || "Logical defect detected in implementation.",
+        errorType: "Runtime / Logical Flaw",
+      },
+      hints: ["Inspect boundary conditions and edge cases in the implementation."],
+      languages: (p.languages?.length ? p.languages : ["python", "cpp", "java"]) as any,
+      buggyCode: p.boilerplates || {},
+      solutionCode: {},
+      testCases: (p.testCases || []).map((tc: any, i: number) => ({
+        id: tc.id || `tc-${i}`,
+        name: tc.name || `Case #${i + 1}`,
+        input: tc.input || "",
+        expectedOutput: tc.expectedOutput || "",
+        hidden: tc.hidden,
+      })),
+    }));
+
+    const existingSlugs = new Set(mappedBackend.map((b) => b.slug));
+    const remainingCurated = DEBUGGING_PROBLEMS.filter((c) => !existingSlugs.has(c.slug));
+    return [...mappedBackend, ...remainingCurated];
+  }, [backendProblems]);
+
   // Selected Topic
   const [selectedTopic, setSelectedTopic] = useState<string>("All Topics");
 
   // Filtered problems based on topic
   const filteredProblems = useMemo(() => {
-    if (selectedTopic === "All Topics") return DEBUGGING_PROBLEMS;
-    return DEBUGGING_PROBLEMS.filter((p) => p.topic === selectedTopic);
-  }, [selectedTopic]);
+    if (selectedTopic === "All Topics") return allProblems;
+    return allProblems.filter((p) => p.topic === selectedTopic);
+  }, [selectedTopic, allProblems]);
 
   // Selected Problem
   const problemSlugFromUrl = searchParams.get("problem");
   const selectedProblem = useMemo(() => {
     if (problemSlugFromUrl) {
-      const match = DEBUGGING_PROBLEMS.find(
+      const match = allProblems.find(
         (p) => p.slug === problemSlugFromUrl,
       );
       if (match) return match;
     }
-    return filteredProblems[0] || DEBUGGING_PROBLEMS[0];
-  }, [problemSlugFromUrl, filteredProblems]);
+    return filteredProblems[0] || allProblems[0];
+  }, [problemSlugFromUrl, filteredProblems, allProblems]);
 
   // Solved state tracked in localStorage
   const [solvedMap, setSolvedMap] = useState<Record<string, boolean>>(() => {
@@ -218,7 +269,7 @@ export default function DebuggingWarPage() {
 
   // Stats
   const totalSolved = Object.values(solvedMap).filter(Boolean).length;
-  const totalPoints = DEBUGGING_PROBLEMS.filter(
+  const totalPoints = allProblems.filter(
     (p) => solvedMap[p.id],
   ).reduce((sum, p) => sum + p.points, 0);
 
@@ -276,8 +327,8 @@ export default function DebuggingWarPage() {
               setSelectedTopic(topic);
               const firstInTopic =
                 topic === "All Topics"
-                  ? DEBUGGING_PROBLEMS[0]
-                  : DEBUGGING_PROBLEMS.find((p) => p.topic === topic);
+                  ? allProblems[0]
+                  : allProblems.find((p) => p.topic === topic);
               if (firstInTopic) selectProblem(firstInTopic);
             }}
             className="text-xs bg-muted/70 hover:bg-muted border border-border rounded-lg px-2.5 py-1 text-foreground focus:outline-none focus:ring-1 focus:ring-primary font-medium"
@@ -285,8 +336,8 @@ export default function DebuggingWarPage() {
             {DEBUGGING_TOPICS.map((topic) => {
               const count =
                 topic === "All Topics"
-                  ? DEBUGGING_PROBLEMS.length
-                  : DEBUGGING_PROBLEMS.filter((p) => p.topic === topic).length;
+                  ? allProblems.length
+                  : allProblems.filter((p) => p.topic === topic).length;
               return (
                 <option key={topic} value={topic}>
                   {topic} ({count})
@@ -300,7 +351,7 @@ export default function DebuggingWarPage() {
         <div className="flex items-center gap-2 shrink-0">
           <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[11px] text-emerald-500 font-semibold">
             <CheckCircle2 size={12} />
-            <span>{totalSolved}/{DEBUGGING_PROBLEMS.length} Solved</span>
+            <span>{totalSolved}/{allProblems.length} Solved</span>
           </div>
 
           <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-500 font-semibold hidden sm:flex">
@@ -353,7 +404,7 @@ export default function DebuggingWarPage() {
               <select
                 value={selectedProblem.slug}
                 onChange={(e) => {
-                  const found = DEBUGGING_PROBLEMS.find(
+                  const found = allProblems.find(
                     (p) => p.slug === e.target.value,
                   );
                   if (found) selectProblem(found);

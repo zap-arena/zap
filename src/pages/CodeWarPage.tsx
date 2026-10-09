@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { BookOpen, Bug, Layers, Shuffle } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { BookOpen, Bug, Layers, Loader2, Shuffle } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -13,19 +13,47 @@ export default function CodeWarPage() {
     "landing",
   );
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [isEnteringDebugging, setIsEnteringDebugging] = useState(false);
 
-  const { data: progressiveProblems, isLoading } = useQuery({
+  // Do not pull problems on initial load of codewar
+  const {
+    data: progressiveProblems,
+    isFetching: isProgressiveLoading,
+    refetch: fetchProgressive,
+  } = useQuery({
     queryKey: ["codewar-progressive"],
     queryFn: () => api.get<any[]>("/public/codewar/progressive"),
-    enabled: mode === "landing",
+    enabled: false,
   });
 
-  const startProgressive = () => {
-    if (!progressiveProblems || progressiveProblems.length === 0) {
+  const startProgressive = async () => {
+    let problems = progressiveProblems;
+    if (!problems) {
+      const res = await fetchProgressive();
+      problems = res.data;
+    }
+    if (!problems || problems.length === 0) {
       toast.error("No progressive problems available at the moment.");
       return;
     }
     setMode("progressive");
+  };
+
+  const handleEnterDebugging = async () => {
+    setIsEnteringDebugging(true);
+    try {
+      // Pull debugging problems when debugging war is clicked
+      await queryClient.prefetchQuery({
+        queryKey: ["codewar-debugging"],
+        queryFn: () => api.get<any[]>("/public/codewar/debugging"),
+      });
+    } catch (err) {
+      console.warn("Could not prefetch debugging problems", err);
+    } finally {
+      setIsEnteringDebugging(false);
+      navigate("/codewar/debugging");
+    }
   };
 
   if (mode === "random") {
@@ -116,11 +144,18 @@ export default function CodeWarPage() {
             <Button
               variant="secondary"
               onClick={startProgressive}
-              disabled={isLoading}
+              disabled={isProgressiveLoading}
               className="w-full gap-2"
             >
-              <Layers size={16} />{" "}
-              {isLoading ? "Loading..." : "Generate Problem Set"}
+              {isProgressiveLoading ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" /> Pulling Problem Set...
+                </>
+              ) : (
+                <>
+                  <Layers size={16} /> Generate Problem Set
+                </>
+              )}
             </Button>
           </div>
 
@@ -145,10 +180,19 @@ export default function CodeWarPage() {
               Diagnose the flaws, trace edge cases, and patch critical mistakes across various topics.
             </p>
             <Button
-              onClick={() => navigate("/codewar/debugging")}
+              onClick={handleEnterDebugging}
+              disabled={isEnteringDebugging}
               className="w-full gap-2 bg-red-600 hover:bg-red-700 text-white"
             >
-              <Bug size={16} /> Enter Debugging War
+              {isEnteringDebugging ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" /> Loading Debugging Arena...
+                </>
+              ) : (
+                <>
+                  <Bug size={16} /> Enter Debugging War
+                </>
+              )}
             </Button>
           </div>
         </div>
