@@ -294,6 +294,7 @@ class Quiz(Base):
     id: Mapped[str] = mapped_column(String(32), primary_key=True, default=gen_id)
     title: Mapped[str] = mapped_column(String(200))
     description: Mapped[str] = mapped_column(Text, default="")
+    category: Mapped[str] = mapped_column(String(100), default="Coding")
     status: Mapped[str] = mapped_column(String(20), default="active")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
     

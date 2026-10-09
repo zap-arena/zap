@@ -9,10 +9,11 @@ import { api } from "../../lib/api";
 
 export default function AdminQuizzes() {
   const queryClient = useQueryClient();
-  const { data: quizzes = [] } = useQuery({
+  const { data: quizzesResponse } = useQuery({
     queryKey: ["quizzes"],
-    queryFn: () => api.get<any[]>("/quizzes"),
+    queryFn: () => api.get<any>("/quizzes"),
   });
+  const quizzes = quizzesResponse?.data || [];
 
   const createQuiz = useMutation({
     mutationFn: (quiz: any) => api.post("/quizzes", quiz),
@@ -56,6 +57,7 @@ export default function AdminQuizzes() {
             id: uuidv4(),
             title: qData.title,
             description: qData.description || "",
+            category: qData.category || "Coding",
             status: "active" as const,
             createdAt: new Date().toISOString(),
             questions: qData.questions.map((q: any) => ({
