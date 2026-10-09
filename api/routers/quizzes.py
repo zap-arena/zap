@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 import uuid
 
 from typing import Optional
 import models
 from database import get_db
-from deps import get_current_user
+from deps import get_current_user, get_optional_user
 
 router = APIRouter(prefix="/api/quizzes", tags=["quizzes"])
 
@@ -45,8 +45,34 @@ def get_all_my_submissions(
 
 # ─── Quiz list ────────────────────────────────────────────────────────────────
 @router.get("")
-def list_quizzes(db: Session = Depends(get_db)):
-    quizzes = db.scalars(select(models.Quiz)).all()
+def list_quizzes(
+    skip: int = 0,
+    limit: int = 100,
+    filter: str = "all",
+    category: str = "all",
+    db: Session = Depends(get_db),
+    current_user: Optional[models.User] = Depends(get_optional_user),
+):
+    query = select(models.Quiz)
+
+    if current_user and filter != "all":
+        # Subquery to check if user has submitted the quiz
+        submitted_subquery = (
+            select(models.QuizSubmission.quiz_id)
+            .where(models.QuizSubmission.user_id == current_user.id)
+        )
+        
+        if filter == "completed":
+            query = query.where(models.Quiz.id.in_(submitted_subquery))
+        elif filter == "pending":
+            query = query.where(models.Quiz.id.not_in(submitted_subquery))
+            
+    if category and category != "all":
+        query = query.where(models.Quiz.category == category)
+
+    total = db.scalar(select(func.count()).select_from(query.subquery()))
+    quizzes = db.scalars(query.offset(skip).limit(limit)).all()
+    
     result = []
     for quiz in quizzes:
         questions = db.scalars(
@@ -56,6 +82,7 @@ def list_quizzes(db: Session = Depends(get_db)):
             "id": quiz.id,
             "title": quiz.title,
             "description": quiz.description,
+            "category": quiz.category,
             "status": quiz.status,
             "createdAt": quiz.created_at,
             "questions": [
@@ -69,7 +96,7 @@ def list_quizzes(db: Session = Depends(get_db)):
                 for q in questions
             ],
         })
-    return result
+    return {"data": result, "total": total}
 
 
 # ─── Create quiz (admin) ──────────────────────────────────────────────────────
@@ -86,6 +113,7 @@ def create_quiz(
         id=_clean_id(payload.get("id")),
         title=payload["title"],
         description=payload.get("description", ""),
+        category=payload.get("category", "General"),
         status=payload.get("status", "active"),
     )
     for i, q_data in enumerate(payload.get("questions", [])):
@@ -122,6 +150,7 @@ def get_quiz(quiz_id: str, db: Session = Depends(get_db)):
         "id": quiz.id,
         "title": quiz.title,
         "description": quiz.description,
+        "category": quiz.category,
         "status": quiz.status,
         "createdAt": quiz.created_at,
         "questions": [
