@@ -3,8 +3,10 @@ import {
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
+  Database,
   Lock,
   PlayCircle,
+  Sparkles,
 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -285,6 +287,94 @@ export default function QuizListPage() {
 
         {activeTab === "puzzles" && (
           <div className="grid gap-6">
+            {/* SQL Workflow & Concept Quest */}
+            {(() => {
+              const sqlSubmission = mySubmissions.find(
+                (s) => s.quiz_id === "sql-workflow-puzzle",
+              );
+              const isSqlCompleted = !!sqlSubmission;
+
+              return (
+                <div
+                  className={`p-6 rounded-xl border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-all ${
+                    isSqlCompleted
+                      ? "bg-primary/5 border-primary/20"
+                      : "bg-card border-border hover:border-emerald-500/50"
+                  }`}
+                >
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <div className="flex items-center gap-2 text-emerald-500">
+                        <Database size={22} />
+                        <h3 className="text-xl font-bold text-foreground">
+                          SQL Query Workflow & Concept Quest
+                        </h3>
+                      </div>
+                      <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                        New
+                      </span>
+                      {isSqlCompleted && (
+                        <span className="flex items-center gap-1 text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded-full uppercase tracking-wider">
+                          <CheckCircle2 size={14} /> Completed
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-muted-foreground text-sm max-w-2xl">
+                      Master database execution pipelines from simple to advanced queries via drag-and-drop sequencing, plus interactive Left-to-Right Concept Connector games!
+                    </p>
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted/60 px-2 py-0.5 rounded">
+                        <Sparkles size={12} className="text-amber-400" /> 7 Progressive Workflows
+                      </span>
+                      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted/60 px-2 py-0.5 rounded">
+                        🎮 Left-to-Right Matching Mini-Games
+                      </span>
+                      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted/60 px-2 py-0.5 rounded">
+                        ⚡ Simple to Advanced (ACID, Window, Joins)
+                      </span>
+                    </div>
+                  </div>
+                  <div className="shrink-0 flex flex-col items-end gap-2">
+                    {isSqlCompleted ? (
+                      <>
+                        <div className="text-2xl font-black text-primary">
+                          {sqlSubmission.score}{" "}
+                          <span className="text-lg text-muted-foreground">
+                            / {sqlSubmission.total_questions}
+                          </span>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => navigate(`/quizzes/sql-workflow`)}
+                        >
+                          Play Again
+                        </Button>
+                      </>
+                    ) : user ? (
+                      <Button
+                        size="sm"
+                        onClick={() => navigate(`/quizzes/sql-workflow`)}
+                        className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white"
+                      >
+                        <PlayCircle size={16} /> Start SQL Puzzle
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => navigate("/login")}
+                        className="flex items-center gap-2"
+                      >
+                        <Lock size={16} /> Login to Play
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* AI Workflow Puzzle */}
             {(() => {
               const puzzleSubmission = mySubmissions.find(
                 (s) => s.quiz_id === "workflow-puzzle",
@@ -308,7 +398,7 @@ export default function QuizListPage() {
                         </span>
                       )}
                     </div>
-                    <p className="text-muted-foreground mb-3">
+                    <p className="text-muted-foreground mb-3 text-sm">
                       Rebuild AI workflows by dragging and dropping components.
                     </p>
                   </div>

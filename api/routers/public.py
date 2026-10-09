@@ -37,3 +37,14 @@ def codewar_progressive(db: Session = Depends(get_db)):
     from routers.problems import serialize_problem
     problems = db.scalars(select(models.Problem).where(models.Problem.is_progressive == True, models.Problem.status == "active")).all()
     return [serialize_problem(p, include_hidden=False, reveal_stages=True, include_io=True) for p in problems]
+
+
+@router.get("/codewar/debugging")
+def codewar_debugging(db: Session = Depends(get_db)):
+    from routers.problems import serialize_problem
+    problems = db.scalars(select(models.Problem).where(models.Problem.status == "active")).all()
+    debugging_problems = [p for p in problems if "debugging" in (p.tags or []) or getattr(p, "is_debugging", False)]
+    return [serialize_problem(p, include_hidden=False, reveal_stages=True, include_io=True) for p in debugging_problems]
+
+
+

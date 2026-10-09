@@ -31,6 +31,7 @@ import QuizListPage from "./pages/QuizListPage";
 import QuizTakingPage from "./pages/QuizTakingPage";
 import RegisterPage from "./pages/RegisterPage";
 import WorkflowPuzzlePage from "./pages/WorkflowPuzzlePage";
+import SqlWorkflowPage from "./pages/SqlWorkflowPage";
 import { useAuth } from "./store/auth";
 
 const AdminQuizzes = lazy(() => import("./pages/admin/AdminQuizzes"));
@@ -54,6 +55,7 @@ const ProgressiveAnalyticsPage = lazy(
 );
 const ContestWorkspacePage = lazy(() => import("./pages/ContestWorkspacePage"));
 const ContestResultPage = lazy(() => import("./pages/ContestResultPage"));
+const DebuggingWarPage = lazy(() => import("./pages/DebuggingWarPage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 
 function PageFallback() {
@@ -292,6 +294,14 @@ export default function App() {
             }
           />
           <Route
+            path="/quizzes/sql-workflow"
+            element={
+              <RequireAuth>
+                <SqlWorkflowPage />
+              </RequireAuth>
+            }
+          />
+          <Route
             path="/quizzes/:id"
             element={
               <RequireAuth>
@@ -300,6 +310,7 @@ export default function App() {
             }
           />
           <Route path="/codewar" element={<CodeWarPage />} />
+          <Route path="/codewar/debugging" element={<DebuggingWarPage />} />
 
           {/* Admin */}
           <Route

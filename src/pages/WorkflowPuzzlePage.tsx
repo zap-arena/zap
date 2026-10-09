@@ -291,35 +291,36 @@ export default function WorkflowPuzzlePage() {
   return (
     <div className="min-h-screen bg-background flex flex-col text-foreground">
       <Navbar />
-      <div className="flex-1 max-w-5xl w-full mx-auto p-4 md:p-8 flex flex-col">
+      <div className="flex-1 max-w-5xl w-full mx-auto p-3 sm:p-4 md:p-8 flex flex-col">
         <Button
           variant="ghost"
-          className="mb-6 self-start"
+          size="sm"
+          className="mb-3 sm:mb-6 self-start text-xs sm:text-sm"
           onClick={() => navigate("/quizzes")}
         >
-          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Quizzes
+          <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Quizzes
         </Button>
 
         {existingSubmission && gameState === "start" && (
-          <div className="bg-primary/5 border border-primary/20 rounded-xl p-6 mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <CheckCircle2 className="w-8 h-8 text-primary" />
+              <CheckCircle2 className="w-8 h-8 text-primary shrink-0" />
               <div>
-                <h2 className="text-xl font-bold text-primary">
+                <h2 className="text-lg sm:text-xl font-bold text-primary">
                   Puzzle Completed!
                 </h2>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-muted-foreground text-xs sm:text-sm">
                   You have already submitted your score for this puzzle.
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-4 bg-card p-4 rounded-lg border">
-              <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            <div className="flex items-center gap-4 bg-card p-3 sm:p-4 rounded-lg border">
+              <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                 Your Score
               </span>
-              <span className="text-3xl font-black text-primary">
+              <span className="text-2xl sm:text-3xl font-black text-primary">
                 {existingSubmission.score}{" "}
-                <span className="text-xl text-muted-foreground">
+                <span className="text-lg sm:text-xl text-muted-foreground">
                   / {existingSubmission.total_questions}
                 </span>
               </span>
@@ -327,7 +328,7 @@ export default function WorkflowPuzzlePage() {
           </div>
         )}
 
-        <div className="flex-1 w-full bg-card/50 border rounded-2xl overflow-hidden shadow-2xl relative p-6 md:p-10 flex flex-col">
+        <div className="flex-1 w-full bg-card/50 border rounded-xl sm:rounded-2xl overflow-hidden shadow-xl sm:shadow-2xl relative p-4 sm:p-6 md:p-10 flex flex-col">
           {gameState === "start" && (
             <div className="flex-1 flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-300">
               <div className="text-6xl mb-6">🧩</div>
