@@ -19,6 +19,7 @@ import { Sheet, SheetClose, SheetContent, SheetTrigger } from "./ui/sheet";
 const NAV_LINKS = [
   { to: "/", label: "Home" },
   { to: "/curriculum/dsa", label: "Courses" },
+  { to: "/problems", label: "Problems" },
   { to: "/contests", label: "Contests" },
   { to: "/quizzes", label: "Quizzes" },
   { to: "/codewar", label: "CodeWar", badge: "NEW" },

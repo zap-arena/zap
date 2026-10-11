@@ -106,6 +106,14 @@ class JavaArrayList<T> {
     this.items = [];
   }
 
+  sort(comparator?: (a: T, b: T) => number): void {
+    if (comparator) {
+      this.items.sort(comparator);
+    } else {
+      this.items.sort();
+    }
+  }
+
   toArray(): T[] {
     return [...this.items];
   }
@@ -192,77 +200,19 @@ class JavaHashSet<T> {
 function transpileJavaToJs(sourceCode: string): string {
   let code = sourceCode;
 
-  // Remove package statements
+  // 1. Strip package and import statements
   code = code.replace(/package\s+[\w.]+;/g, "");
-
-  // Remove import statements
   code = code.replace(/import\s+[\w.*]+;/g, "");
 
-  // Convert 2D array declarations: int[][] grid = new int[r][c];
-  code = code.replace(
-    /(?:int|long|double|float|boolean|char|String)\s*\[\s*\]\s*\[\s*\]\s*(\w+)\s*=\s*new\s+(?:int|long|double|float|boolean|char|String)\s*\[([^\]]+)\]\s*\[([^\]]+)\]\s*;/g,
-    "let $1 = Array.from({ length: $2 }, () => new Array($3).fill(0));"
-  );
+  // 2. Convert Java lambdas: (a, b) -> expr ==> (a, b) => expr
+  code = code.replace(/(\([^)]*\)|\w+)\s*->\s*/g, "$1 => ");
 
-  // Convert 1D array declarations: int[] arr = new int[n];
-  code = code.replace(
-    /(?:int|long|double|float|boolean|char|String)\s*\[\s*\]\s*(\w+)\s*=\s*new\s+(?:int|long|double|float|boolean|char|String)\s*\[([^\]]+)\]\s*;/g,
-    "let $1 = new Array($2).fill(0);"
-  );
-
-  // Convert array literal initializers: int[] arr = {1, 2, 3};
-  code = code.replace(
-    /(?:int|long|double|float|boolean|char|String)\s*\[\s*\]\s*(\w+)\s*=\s*\{([^}]+)\}\s*;/g,
-    "let $1 = [$2];"
-  );
-
-  // Convert generic collections: ArrayList<Integer> list = new ArrayList<>();
-  code = code.replace(
-    /\b(?:ArrayList|List)<[^>]*>\s+(\w+)\s*=\s*new\s+ArrayList<[^>]*>\([^)]*\)\s*;/g,
-    "let $1 = new ArrayList();"
-  );
-  code = code.replace(
-    /\b(?:HashMap|Map)<[^>]*>\s+(\w+)\s*=\s*new\s+HashMap<[^>]*>\([^)]*\)\s*;/g,
-    "let $1 = new HashMap();"
-  );
-  code = code.replace(
-    /\b(?:HashSet|Set)<[^>]*>\s+(\w+)\s*=\s*new\s+HashSet<[^>]*>\([^)]*\)\s*;/g,
-    "let $1 = new HashSet();"
-  );
-
-  // Convert String.length() to .length
-  code = code.replace(/\.length\(\)/g, ".length");
-
-  // Convert typed variable declarations with assignments: int a = 5;
-  code = code.replace(
-    /\b(?:int|long|double|float|boolean|char|String|Scanner|var)\s+(\w+)\s*=/g,
-    "let $1 ="
-  );
-
-  // Convert typed variable declarations without assignments: int a, b;
-  code = code.replace(
-    /\b(?:int|long|double|float|boolean|char|String)\s+([a-zA-Z_]\w*(?:\s*,\s*[a-zA-Z_]\w*)*)\s*;/g,
-    "let $1;"
-  );
-
-  // Convert enhanced for loop: for (int x : arr) -> for (let x of arr)
-  code = code.replace(
-    /for\s*\(\s*(?:int|long|double|float|boolean|char|String|var)?\s*(\w+)\s*:\s*([^)]+)\)/g,
-    "for (let $1 of $2)"
-  );
-
-  // Convert standard for loop: for (int i = 0; -> for (let i = 0;
-  code = code.replace(
-    /for\s*\(\s*(?:int|long|double|float|char)\s+(\w+)\s*=/g,
-    "for (let $1 ="
-  );
-
-  // Convert static methods
+  // 3. Convert static method declarations first so 'static void foo()' becomes 'function foo()'
   code = code.replace(
     /(?:public|private|protected)?\s*static\s+(?:void|int|long|double|float|boolean|char|String|[\w\[\]<>]+)\s+(\w+)\s*\(([^)]*)\)\s*\{/g,
     (_, methodName, argsList) => {
       if (methodName === "main") {
-        return `function __main__() {`;
+        return "function __main__() {";
       }
       const cleanArgs = argsList
         .split(",")
@@ -273,7 +223,91 @@ function transpileJavaToJs(sourceCode: string): string {
     }
   );
 
-  // Strip class wrappers
+  // 4. Convert non-static method declarations: public void foo(...) {
+  code = code.replace(
+    /(?:public|private|protected)\s+(?:void|int|long|double|float|boolean|char|String|[\w\[\]<>]+)\s+(\w+)\s*\(([^)]*)\)\s*\{/g,
+    (_, methodName, argsList) => {
+      const cleanArgs = argsList
+        .split(",")
+        .map((a: string) => a.trim().split(/\s+/).pop())
+        .filter(Boolean)
+        .join(", ");
+      return `function ${methodName}(${cleanArgs}) {`;
+    }
+  );
+
+  // 5. Strip 'static' keyword from variable declarations: static int timer = 0; -> int timer = 0;
+  code = code.replace(/\bstatic\s+/g, "");
+
+  // 6. Convert new array initializers: new int[]{a, b} -> [a, b]
+  code = code.replace(
+    /new\s+(?:int|long|double|float|boolean|char|String)\s*\[\s*\]\s*\{([^}]+)\}/g,
+    "[$1]"
+  );
+
+  // 7. Convert 2D array allocations: new int[r][c] -> Array.from({length: r}, () => new Array(c).fill(0))
+  code = code.replace(
+    /new\s+(?:int|long|double|float)\s*\[([^\]]+)\]\s*\[([^\]]+)\]/g,
+    "Array.from({ length: $1 }, () => new Array($2).fill(0))"
+  );
+
+  // 8. Convert 1D array allocations: new int[n] -> new Array(n).fill(0)
+  code = code.replace(
+    /new\s+(?:int|long|double|float)\s*\[([^\]]+)\]/g,
+    "new Array($1).fill(0)"
+  );
+  code = code.replace(
+    /new\s+(?:boolean)\s*\[([^\]]+)\]/g,
+    "new Array($1).fill(false)"
+  );
+  code = code.replace(
+    /new\s+(?:char|String|Object|[\w<>]+)\s*\[([^\]]+)\]/g,
+    "new Array($1).fill(null)"
+  );
+
+  // 9. Convert generic collection constructors: new ArrayList<>() / new HashMap<>()
+  code = code.replace(/new\s+ArrayList(?:<[^>]*>)?\s*\(([^)]*)\)/g, "new ArrayList($1)");
+  code = code.replace(/new\s+HashMap(?:<[^>]*>)?\s*\(([^)]*)\)/g, "new HashMap($1)");
+  code = code.replace(/new\s+HashSet(?:<[^>]*>)?\s*\(([^)]*)\)/g, "new HashSet($1)");
+  code = code.replace(/new\s+LinkedList(?:<[^>]*>)?\s*\(([^)]*)\)/g, "new LinkedList($1)");
+  code = code.replace(/new\s+Stack(?:<[^>]*>)?\s*\(([^)]*)\)/g, "new Stack($1)");
+
+  // 10. Convert enhanced for loop: for (int[] b : bridges) -> for (let b of bridges)
+  code = code.replace(
+    /for\s*\(\s*(?:[\w\[\]<>]+\s+)?(\w+)\s*:\s*([^)]+)\)/g,
+    "for (let $1 of $2)"
+  );
+
+  // 11. Convert standard for loops: for (int i = 0; -> for (let i = 0;
+  code = code.replace(
+    /for\s*\(\s*(?:int|long|double|float|char|var)\s+(\w+)\s*=/g,
+    "for (let $1 ="
+  );
+
+  // 12. Generic variable declarations (including nested like List<List<Integer>> adj;)
+  code = code.replace(
+    /\b(?:List|ArrayList|Map|HashMap|Set|HashSet|Queue|Deque|Stack)\s*<[^;=]+?>\s*(\[\])*\s+(\w+)\s*=/g,
+    "let $2 ="
+  );
+  code = code.replace(
+    /\b(?:List|ArrayList|Map|HashMap|Set|HashSet|Queue|Deque|Stack)\s*<[^;=]+?>\s*(\[\])*\s+([a-zA-Z_]\w*(?:\s*,\s*[a-zA-Z_]\w*)*)\s*;/g,
+    "let $2;"
+  );
+
+  // 13. Primitive and standard variable declarations
+  code = code.replace(
+    /\b(?:int|long|double|float|boolean|char|String|Scanner|var)\s*(\[\])*\s+(\w+)\s*=/g,
+    "let $2 ="
+  );
+  code = code.replace(
+    /\b(?:int|long|double|float|boolean|char|String)\s*(\[\])*\s+([a-zA-Z_]\w*(?:\s*,\s*[a-zA-Z_]\w*)*)\s*;/g,
+    "let $2;"
+  );
+
+  // 14. String length: .length() -> .length
+  code = code.replace(/\.length\(\)/g, ".length");
+
+  // 15. Strip class wrappers
   code = code.replace(/(?:public\s+|private\s+)?class\s+\w+\s*\{/g, "/* class start */");
 
   // Balance class closing braces
@@ -344,9 +378,13 @@ self.onmessage = (event: MessageEvent) => {
     };
 
     const Arrays = {
-      sort: (arr: any[]) => {
+      sort: (arr: any[], comparator?: any) => {
         if (Array.isArray(arr)) {
-          arr.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+          if (comparator) {
+            arr.sort(comparator);
+          } else {
+            arr.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+          }
         }
       },
       fill: (arr: any[], val: any) => {
@@ -359,12 +397,9 @@ self.onmessage = (event: MessageEvent) => {
     };
 
     const Collections = {
-      sort: (list: any) => {
-        if (list && typeof list.toArray === "function") {
-          const arr = list.toArray();
-          arr.sort((a: any, b: any) => (a < b ? -1 : a > b ? 1 : 0));
-          list.clear();
-          arr.forEach((x: any) => list.add(x));
+      sort: (list: any, comparator?: any) => {
+        if (list && typeof list.sort === "function") {
+          list.sort(comparator);
         }
       },
       reverse: (list: any) => {
@@ -379,17 +414,31 @@ self.onmessage = (event: MessageEvent) => {
     };
 
     const Integer = {
-      parseInt: (s: string) => parseInt(s, 10),
+      parseInt: (s: string, radix: number = 10) => parseInt(s, radix),
       valueOf: (s: string) => parseInt(s, 10),
+      compare: (a: number, b: number) => (a < b ? -1 : a > b ? 1 : 0),
       max: (a: number, b: number) => Math.max(a, b),
       min: (a: number, b: number) => Math.min(a, b),
       MAX_VALUE: 2147483647,
       MIN_VALUE: -2147483648,
     };
 
+    const Long = {
+      parseLong: (s: string, radix: number = 10) => parseInt(s, radix),
+      valueOf: (s: string) => parseInt(s, 10),
+      compare: (a: number, b: number) => (a < b ? -1 : a > b ? 1 : 0),
+      max: (a: number, b: number) => Math.max(a, b),
+      min: (a: number, b: number) => Math.min(a, b),
+      MAX_VALUE: Number.MAX_SAFE_INTEGER,
+      MIN_VALUE: Number.MIN_SAFE_INTEGER,
+    };
+
     const Double = {
       parseDouble: (s: string) => parseFloat(s),
       valueOf: (s: string) => parseFloat(s),
+      compare: (a: number, b: number) => (a < b ? -1 : a > b ? 1 : 0),
+      max: (a: number, b: number) => Math.max(a, b),
+      min: (a: number, b: number) => Math.min(a, b),
       MAX_VALUE: Number.MAX_VALUE,
       MIN_VALUE: Number.MIN_VALUE,
     };
@@ -409,9 +458,13 @@ self.onmessage = (event: MessageEvent) => {
         "Arrays",
         "Collections",
         "ArrayList",
+        "List",
         "HashMap",
+        "Map",
         "HashSet",
+        "Set",
         "Integer",
+        "Long",
         "Double",
         "Math",
         executionScript
@@ -423,9 +476,13 @@ self.onmessage = (event: MessageEvent) => {
         Arrays,
         Collections,
         JavaArrayList,
+        JavaArrayList,
+        JavaHashMap,
         JavaHashMap,
         JavaHashSet,
+        JavaHashSet,
         Integer,
+        Long,
         Double,
         Math
       );

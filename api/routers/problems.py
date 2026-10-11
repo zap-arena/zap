@@ -21,8 +21,19 @@ def slugify(title: str) -> str:
     return f"{base}-{int(time.time() * 1000) % 100000}"
 
 
-# Problems are only reachable inside a contest, so there are no public problem routes.
-# Participants read them via /api/contests/{id}/problems once their attempt has started.
+# ---------- Public Problem Endpoints ----------
+@router.get("/api/public/problems")
+def public_list_problems(db: Session = Depends(get_db)):
+    problems = db.scalars(select(models.Problem).where(models.Problem.status == "active")).all()
+    return [serialize_problem(p, include_hidden=False, reveal_stages=False, include_io=False) for p in problems]
+
+
+@router.get("/api/public/problems/{slug}")
+def public_get_problem(slug: str, db: Session = Depends(get_db)):
+    problem = db.scalar(select(models.Problem).where(models.Problem.slug == slug))
+    if not problem:
+        raise HTTPException(status_code=404, detail="Problem not found")
+    return serialize_problem(problem, include_hidden=True, reveal_stages=True, include_io=True)
 
 
 # ---------- Admin CRUD ----------
