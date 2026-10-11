@@ -19,6 +19,7 @@ interface QuizFromApi {
   id: string;
   title: string;
   description: string;
+  category?: string;
   status: string;
   createdAt: string;
   questions: { id: string; text: string; options: string[] }[];
@@ -132,6 +133,7 @@ export default function QuizListPage() {
                   }}
                 >
                   <option value="all">All Categories</option>
+                  <option value="SQL">SQL</option>
                   <option value="Coding">Coding</option>
                   <option value="Frontend">Frontend</option>
                   <option value="Backend">Backend</option>
@@ -179,8 +181,19 @@ export default function QuizListPage() {
                       className={`p-6 rounded-xl border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-all ${isCompleted ? "bg-primary/5 border-primary/20" : "bg-card border-border hover:border-primary/50"}`}
                     >
                       <div>
-                        <div className="flex items-center gap-3 mb-2">
+                        <div className="flex items-center gap-2.5 mb-2 flex-wrap">
                           <h3 className="text-xl font-bold">{quiz.title}</h3>
+                          {quiz.category && (
+                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${
+                              quiz.category === "SQL"
+                                ? "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/20"
+                                : quiz.category === "AI"
+                                ? "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20"
+                                : "bg-muted text-muted-foreground border-border"
+                            }`}>
+                              {quiz.category}
+                            </span>
+                          )}
                           {isCompleted && (
                             <span className="flex items-center gap-1 text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded-full uppercase tracking-wider">
                               <CheckCircle2 size={14} /> Completed

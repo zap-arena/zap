@@ -22,6 +22,7 @@ const NAV_LINKS = [
   { to: "/contests", label: "Contests" },
   { to: "/quizzes", label: "Quizzes" },
   { to: "/codewar", label: "CodeWar", badge: "NEW" },
+  { to: "/wasm-playground", label: "IDE" },
 ];
 
 export default function Navbar() {

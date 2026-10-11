@@ -56,6 +56,7 @@ const ProgressiveAnalyticsPage = lazy(
 const ContestWorkspacePage = lazy(() => import("./pages/ContestWorkspacePage"));
 const ContestResultPage = lazy(() => import("./pages/ContestResultPage"));
 const DebuggingWarPage = lazy(() => import("./pages/DebuggingWarPage"));
+const WasmPlaygroundPage = lazy(() => import("./pages/WasmPlaygroundPage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 
 function PageFallback() {
@@ -311,6 +312,7 @@ export default function App() {
           />
           <Route path="/codewar" element={<CodeWarPage />} />
           <Route path="/codewar/debugging" element={<DebuggingWarPage />} />
+          <Route path="/wasm-playground" element={<WasmPlaygroundPage />} />
 
           {/* Admin */}
           <Route
