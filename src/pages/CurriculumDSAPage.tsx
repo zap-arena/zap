@@ -274,6 +274,78 @@ export default function CurriculumDSAPage() {
               >
                 <div>
                   <div className="card-header">
+                    <div className="module-icon">🌲</div>
+                    <span className="module-badge">8 Core Topics</span>
+                  </div>
+                  <h3 className="module-title">Trees</h3>
+                  <p className="module-desc">
+                    Start from the tree shapes themselves, then master
+                    depth-first and breadth-first walks over binary trees —
+                    explicit stacks, level-by-level queues, and bounds pushed
+                    down the edges.
+                  </p>
+                  <ul className="topic-list">
+                    <li className="topic-tag">Types of Trees</li>
+                    <li className="topic-tag">DFS</li>
+                    <li className="topic-tag">BFS</li>
+                    <li className="topic-tag">Inorder Traversal</li>
+                    <li className="topic-tag">Maximum Depth</li>
+                    <li className="topic-tag">Level Order Traversal</li>
+                    <li className="topic-tag">Validate BST</li>
+                    <li className="topic-tag">Lowest Common Ancestor</li>
+                  </ul>
+                </div>
+                <a href="/curriculum/dsa/trees" className="btn-open">
+                  <span>Explore Trees Guide</span>
+                  <span>→</span>
+                </a>
+              </div>
+
+              <div
+                className="module-card"
+                style={
+                  {
+                    "--card-accent": "hsl(var(--primary))",
+                  } as React.CSSProperties
+                }
+              >
+                <div>
+                  <div className="card-header">
+                    <div className="module-icon">🕸️</div>
+                    <span className="module-badge">7 Core Topics</span>
+                  </div>
+                  <h3 className="module-title">Graphs</h3>
+                  <p className="module-desc">
+                    Trees without the guarantees: cycles, one-way edges and
+                    unreachable corners. Learn the visited set, then build up to
+                    topological order and weighted shortest paths.
+                  </p>
+                  <ul className="topic-list">
+                    <li className="topic-tag">Types of Graphs</li>
+                    <li className="topic-tag">DFS</li>
+                    <li className="topic-tag">BFS</li>
+                    <li className="topic-tag">Cycle Detection</li>
+                    <li className="topic-tag">Topological Sort</li>
+                    <li className="topic-tag">Connected Components</li>
+                    <li className="topic-tag">Dijkstra</li>
+                  </ul>
+                </div>
+                <a href="/curriculum/dsa/graphs" className="btn-open">
+                  <span>Explore Graphs Guide</span>
+                  <span>→</span>
+                </a>
+              </div>
+
+              <div
+                className="module-card"
+                style={
+                  {
+                    "--card-accent": "hsl(var(--primary))",
+                  } as React.CSSProperties
+                }
+              >
+                <div>
+                  <div className="card-header">
                     <div className="module-icon">🔗</div>
                     <span className="module-badge">6 Core Problems</span>
                   </div>
@@ -444,19 +516,21 @@ export default function CurriculumDSAPage() {
                 <div>
                   <div className="card-header">
                     <div className="module-icon">🗄️</div>
-                    <span className="module-badge">15 Topics</span>
+                    <span className="module-badge">22 Topics</span>
                   </div>
                   <h3 className="module-title">SQL Blueprint</h3>
                   <p className="module-desc">
-                    Master data types, ACID, normalization, joins, keys, and
-                    query execution order — everything for SQL interviews.
+                    Data types, ACID, normalization and query execution order,
+                    plus a live SQL engine that runs joins, window functions and
+                    subqueries stage by stage.
                   </p>
                   <ul className="topic-list">
                     <li className="topic-tag">ACID Properties</li>
                     <li className="topic-tag">Normalization</li>
-                    <li className="topic-tag">SQL Joins</li>
-                    <li className="topic-tag">GROUP BY &amp; HAVING</li>
-                    <li className="topic-tag">CTEs</li>
+                    <li className="topic-tag">Types of Join</li>
+                    <li className="topic-tag">Window Functions</li>
+                    <li className="topic-tag">Subqueries</li>
+                    <li className="topic-tag">Query Lab</li>
                   </ul>
                 </div>
                 <a href="/curriculum/dsa/sql" className="btn-open">
