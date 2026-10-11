@@ -1,37 +1,26 @@
 import {
   AlertCircle,
   ArrowLeft,
-  Award,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
-  Clock,
   Code2,
-  Copy,
   Cpu,
-  Expand,
-  ExternalLink,
-  Flame,
-  HelpCircle,
   Lightbulb,
-  Maximize2,
-  Minimize2,
   PanelBottomClose,
   PanelBottomOpen,
   Play,
   RotateCcw,
   Send,
-  Sparkles,
   Terminal,
   XCircle,
   Zap,
 } from "lucide-react";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import ThemeColorPicker from "../components/ThemeColorPicker";
 import ThemeToggle from "../components/ThemeToggle";
-import { ThunderLogo } from "../components/ThunderLogo";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
@@ -44,13 +33,12 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import {
   getAllProblems,
-  getProblemBySlug,
   type ProblemItem,
 } from "../data/problems";
 import { CodeEditor } from "../features/wasm-playground/components/CodeEditor";
 import { LanguageSelector } from "../features/wasm-playground/components/LanguageSelector";
 import { useWasmRuntime } from "../features/wasm-playground/hooks/useWasmRuntime";
-import type { Language, TestCase, TestCaseResult } from "../features/wasm-playground/runtimes/types";
+import type { Language, TestCase } from "../features/wasm-playground/runtimes/types";
 import {
   getSavedCode,
   getSubmissionsForProblem,
@@ -114,7 +102,6 @@ export default function ProblemWorkspacePage() {
     executeCode,
     runTests,
     resetResults,
-    status: runtimeStatus,
   } = useWasmRuntime(language);
 
   // Load problem code and submissions on slug or language change
@@ -606,7 +593,7 @@ export default function ProblemWorkspacePage() {
                   </p>
                 </div>
               ) : (
-                submissions.map((sub, i) => (
+                submissions.map((sub) => (
                   <div
                     key={sub.id}
                     onClick={() => setSelectedSubmission(sub)}

@@ -47,13 +47,9 @@ import {
 import {
   PROBLEM_CATEGORIES,
   PROBLEMS_DATA,
-  type ProblemItem,
 } from "../data/problems";
 import {
   getAllSubmissions,
-  isProblemAttempted,
-  isProblemSolved,
-  type ProblemSubmission,
   useProblemProgress,
 } from "../lib/submissionStore";
 
@@ -553,20 +549,17 @@ export default function ProblemsPage() {
                       {/* Status Icon */}
                       <TableCell className="text-center">
                         {solved ? (
-                          <CheckCircle2
-                            className="w-5 h-5 text-emerald-500 mx-auto"
-                            title="Solved"
-                          />
+                          <span title="Solved">
+                            <CheckCircle2 className="w-5 h-5 text-emerald-500 mx-auto" />
+                          </span>
                         ) : attempted ? (
-                          <AlertCircle
-                            className="w-5 h-5 text-amber-500 mx-auto"
-                            title="Attempted"
-                          />
+                          <span title="Attempted">
+                            <AlertCircle className="w-5 h-5 text-amber-500 mx-auto" />
+                          </span>
                         ) : (
-                          <Circle
-                            className="w-4 h-4 text-muted-foreground/30 mx-auto"
-                            title="Unsolved"
-                          />
+                          <span title="Unsolved">
+                            <Circle className="w-4 h-4 text-muted-foreground/30 mx-auto" />
+                          </span>
                         )}
                       </TableCell>
 
