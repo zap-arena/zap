@@ -23,12 +23,23 @@ def slugify(title: str) -> str:
 
 # ---------- Public Problem Endpoints ----------
 @router.get("/api/public/problems")
-def public_list_problems(db: Session = Depends(get_db)):
-    problems = db.scalars(select(models.Problem).where(models.Problem.status == "active")).all()
-    return [serialize_problem(p, include_hidden=False, reveal_stages=False, include_io=False) for p in problems]
+@router.get("/api/problems")
+def public_list_problems(
+    isProgressive: Optional[bool] = None,
+    db: Session = Depends(get_db),
+):
+    stmt = select(models.Problem).where(models.Problem.status == "active")
+    if isProgressive is not None:
+        stmt = stmt.where(models.Problem.is_progressive == isProgressive)
+    problems = db.scalars(stmt).all()
+    return [
+        serialize_problem(p, include_hidden=False, reveal_stages=False, include_io=False)
+        for p in problems
+    ]
 
 
 @router.get("/api/public/problems/{slug}")
+@router.get("/api/problems/{slug}")
 def public_get_problem(slug: str, db: Session = Depends(get_db)):
     problem = db.scalar(select(models.Problem).where(models.Problem.slug == slug))
     if not problem:

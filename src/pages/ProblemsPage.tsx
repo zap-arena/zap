@@ -48,10 +48,13 @@ import {
   TableHeader,
   TableRow,
 } from "../components/ui/table";
+import { useQuery } from "@tanstack/react-query";
 import {
   PROBLEM_CATEGORIES,
-  PROBLEMS_DATA,
+  adaptApiProblem,
+  type ProblemItem,
 } from "../data/problems";
+import { api } from "../lib/api";
 import {
   getAllSubmissions,
   useProblemProgress,
@@ -68,8 +71,20 @@ export default function ProblemsPage() {
   const { isPremium } = usePremiumStatus();
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
 
+  // Fetch real application problems from API (excluding progressive problems)
+  const { data: rawProblems = [], isLoading } = useQuery({
+    queryKey: ["public-problems"],
+    queryFn: () => api.get<any[]>("/public/problems?isProgressive=false"),
+  });
+
+  const problemsData = useMemo<ProblemItem[]>(() => {
+    return rawProblems
+      .filter((p: any) => !p.isProgressive)
+      .map(adaptApiProblem);
+  }, [rawProblems]);
+
   // Reactive user progress from local storage
-  const stats = useProblemProgress(PROBLEMS_DATA);
+  const stats = useProblemProgress(problemsData);
   const allSubmissions = useMemo(
     () => getAllSubmissions(),
     [submissionsModalOpen, stats],
@@ -77,21 +92,21 @@ export default function ProblemsPage() {
 
   // Compute counts for difficulty categories
   const easyCount = useMemo(
-    () => PROBLEMS_DATA.filter((p) => p.difficulty === "Easy").length,
-    [],
+    () => problemsData.filter((p) => p.difficulty === "Easy").length,
+    [problemsData],
   );
   const mediumCount = useMemo(
-    () => PROBLEMS_DATA.filter((p) => p.difficulty === "Medium").length,
-    [],
+    () => problemsData.filter((p) => p.difficulty === "Medium").length,
+    [problemsData],
   );
   const hardCount = useMemo(
-    () => PROBLEMS_DATA.filter((p) => p.difficulty === "Hard").length,
-    [],
+    () => problemsData.filter((p) => p.difficulty === "Hard").length,
+    [problemsData],
   );
 
   // Filtered problems list
   const filteredProblems = useMemo(() => {
-    return PROBLEMS_DATA.filter((problem) => {
+    return problemsData.filter((problem) => {
       // Search query filter (title or tags)
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
@@ -128,14 +143,14 @@ export default function ProblemsPage() {
 
       return true;
     });
-  }, [searchQuery, selectedCategory, difficultyFilter, statusFilter, stats]);
+  }, [problemsData, searchQuery, selectedCategory, difficultyFilter, statusFilter, stats]);
 
   // Handle Pick Random Problem
   const handlePickRandom = () => {
-    const unsolved = PROBLEMS_DATA.filter(
+    const unsolved = problemsData.filter(
       (p) => !stats.solvedSlugs.includes(p.slug),
     );
-    const pool = unsolved.length > 0 ? unsolved : PROBLEMS_DATA;
+    const pool = unsolved.length > 0 ? unsolved : problemsData;
     const randomProblem = pool[Math.floor(Math.random() * pool.length)];
     if (randomProblem) {
       navigate(`/problems/${randomProblem.slug}`);
@@ -185,8 +200,8 @@ export default function ProblemsPage() {
   };
 
   const percentSolved =
-    PROBLEMS_DATA.length > 0
-      ? Math.round((stats.totalSolved / PROBLEMS_DATA.length) * 100)
+    problemsData.length > 0
+      ? Math.round((stats.totalSolved / problemsData.length) * 100)
       : 0;
 
   return (
@@ -321,7 +336,7 @@ export default function ProblemsPage() {
                     {stats.totalSolved}
                   </span>
                   <span className="text-xs text-muted-foreground">
-                    / {PROBLEMS_DATA.length} ({percentSolved}%)
+                    / {problemsData.length} ({percentSolved}%)
                   </span>
                 </div>
                 <Progress value={percentSolved} className="h-1.5 w-32 mt-2" />
@@ -514,7 +529,18 @@ export default function ProblemsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredProblems.length === 0 ? (
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-20">
+                    <div className="flex flex-col items-center justify-center gap-3">
+                      <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                      <span className="text-xs text-muted-foreground font-mono">
+                        Loading problem repository...
+                      </span>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : filteredProblems.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-16">
                     <div className="max-w-sm mx-auto space-y-3">

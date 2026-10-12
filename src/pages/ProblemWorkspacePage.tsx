@@ -38,7 +38,9 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs";
-import { getAllProblems, type ProblemItem } from "../data/problems";
+import { useQuery } from "@tanstack/react-query";
+import { adaptApiProblem, type ProblemItem } from "../data/problems";
+import { api } from "../lib/api";
 import { CodeEditor } from "../features/wasm-playground/components/CodeEditor";
 import { LanguageSelector } from "../features/wasm-playground/components/LanguageSelector";
 import { useWasmRuntime } from "../features/wasm-playground/hooks/useWasmRuntime";
@@ -63,17 +65,42 @@ export default function ProblemWorkspacePage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
 
-  const allProblems = useMemo(() => getAllProblems(), []);
+  // Fetch problem details from backend
+  const {
+    data: rawProblem,
+    isLoading: isProblemLoading,
+    isError: isProblemError,
+  } = useQuery({
+    queryKey: ["problem-detail", slug],
+    queryFn: () => api.get<any>(`/public/problems/${slug}`),
+    enabled: Boolean(slug),
+  });
+
+  // Fetch all non-progressive problems for next/prev problem navigation
+  const { data: rawProblems = [] } = useQuery({
+    queryKey: ["public-problems"],
+    queryFn: () => api.get<any[]>("/public/problems?isProgressive=false"),
+  });
+
+  const allProblems = useMemo<ProblemItem[]>(() => {
+    return rawProblems
+      .filter((p: any) => !p.isProgressive)
+      .map(adaptApiProblem);
+  }, [rawProblems]);
+
+  const problem: ProblemItem | undefined = useMemo(() => {
+    if (!rawProblem) return undefined;
+    return adaptApiProblem(rawProblem);
+  }, [rawProblem]);
+
   const problemIndex = useMemo(
     () => allProblems.findIndex((p) => p.slug === slug),
     [allProblems, slug],
   );
-  const problem: ProblemItem | undefined =
-    problemIndex !== -1 ? allProblems[problemIndex] : undefined;
 
   const prevProblem = problemIndex > 0 ? allProblems[problemIndex - 1] : null;
   const nextProblem =
-    problemIndex < allProblems.length - 1
+    problemIndex !== -1 && problemIndex < allProblems.length - 1
       ? allProblems[problemIndex + 1]
       : null;
 
@@ -360,6 +387,61 @@ export default function ProblemWorkspacePage() {
         );
     }
   };
+
+  if (isProblemLoading) {
+    return (
+      <div className="h-screen flex flex-col bg-background text-foreground">
+        <header className="h-14 border-b border-border bg-card/80 px-4 flex items-center justify-between">
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="h-8 px-2 text-xs gap-1.5 text-muted-foreground"
+          >
+            <Link to="/problems">
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Problems</span>
+            </Link>
+          </Button>
+        </header>
+        <div className="flex-1 flex flex-col items-center justify-center gap-3">
+          <div className="w-7 h-7 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          <span className="text-xs font-mono text-muted-foreground">
+            Loading problem workspace...
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (isProblemError || !problem) {
+    return (
+      <div className="h-screen flex flex-col bg-background text-foreground">
+        <header className="h-14 border-b border-border bg-card/80 px-4 flex items-center justify-between">
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="h-8 px-2 text-xs gap-1.5 text-muted-foreground"
+          >
+            <Link to="/problems">
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Problems</span>
+            </Link>
+          </Button>
+        </header>
+        <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center p-6">
+          <h2 className="text-xl font-bold">Problem Not Found</h2>
+          <p className="text-xs text-muted-foreground max-w-sm">
+            The problem "{slug}" could not be found in the active problem repository.
+          </p>
+          <Button onClick={() => navigate("/problems")} size="sm" className="mt-2">
+            Back to Problems
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex flex-col bg-background text-foreground overflow-hidden">
