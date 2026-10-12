@@ -23,7 +23,7 @@ import models  # noqa: E402,F401 - ensures models are registered with Base metad
 import piston_service  # noqa: E402
 import rate_limit as rate_limit_store  # noqa: E402
 import security  # noqa: E402
-from routers import admin, auth, contests, problems, profile, public, submissions, quizzes  # noqa: E402
+from routers import admin, auth, contests, payments, problems, profile, public, submissions, quizzes  # noqa: E402
 
 app = FastAPI(title="ZAP API")
 
@@ -107,6 +107,7 @@ app.include_router(admin.router)
 app.include_router(profile.router)
 app.include_router(public.router)
 app.include_router(quizzes.router)
+app.include_router(payments.router)
 
 
 @app.get("/api/health")

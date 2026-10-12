@@ -6,9 +6,11 @@ import {
   Circle,
   Code2,
   Cpu,
+  Crown,
   Flame,
   History,
   Layers,
+  Lock,
   RotateCcw,
   Search,
   Sparkles,
@@ -17,6 +19,8 @@ import {
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import UpgradeModal from "../components/UpgradeModal";
+import { usePremiumStatus } from "../lib/premiumStore";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
@@ -61,6 +65,8 @@ export default function ProblemsPage() {
   const [difficultyFilter, setDifficultyFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [submissionsModalOpen, setSubmissionsModalOpen] = useState(false);
+  const { isPremium } = usePremiumStatus();
+  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
 
   // Reactive user progress from local storage
   const stats = useProblemProgress(PROBLEMS_DATA);
@@ -566,12 +572,29 @@ export default function ProblemsPage() {
                       {/* Title & Tags */}
                       <TableCell>
                         <div className="space-y-1">
-                          <Link
-                            to={`/problems/${problem.slug}`}
-                            className="font-medium text-foreground hover:text-primary transition-colors flex items-center gap-2 group-hover:translate-x-0.5 transform duration-150"
-                          >
-                            <span>{problem.title}</span>
-                          </Link>
+                          <div className="flex items-center gap-2">
+                            {problem.isPremium && !isPremium ? (
+                              <button
+                                onClick={() => setUpgradeModalOpen(true)}
+                                className="font-medium text-foreground hover:text-amber-500 transition-colors flex items-center gap-1.5 text-left"
+                              >
+                                <span>{problem.title}</span>
+                              </button>
+                            ) : (
+                              <Link
+                                to={`/problems/${problem.slug}`}
+                                className="font-medium text-foreground hover:text-primary transition-colors flex items-center gap-2 group-hover:translate-x-0.5 transform duration-150"
+                              >
+                                <span>{problem.title}</span>
+                              </Link>
+                            )}
+                            {problem.isPremium && (
+                              <Badge className="bg-amber-500/15 text-amber-500 border border-amber-500/30 text-[10px] gap-1 px-1.5 py-0 font-bold uppercase">
+                                <Crown className="w-3 h-3 fill-amber-500" />
+                                PRO
+                              </Badge>
+                            )}
+                          </div>
                           <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
                             <span className="text-[11px] font-medium text-muted-foreground bg-secondary/80 px-2 py-0.5 rounded">
                               {problem.category}
@@ -615,21 +638,32 @@ export default function ProblemsPage() {
 
                       {/* Action Button */}
                       <TableCell className="text-right pr-6">
-                        <Button
-                          asChild
-                          size="sm"
-                          variant={solved ? "secondary" : "default"}
-                          className={`h-8 text-xs font-medium gap-1 ${
-                            solved
-                              ? "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                              : "bg-primary text-primary-foreground hover:bg-primary/90"
-                          }`}
-                        >
-                          <Link to={`/problems/${problem.slug}`}>
-                            {solved ? "Review" : "Solve"}
-                            <ChevronRight className="w-3.5 h-3.5" />
-                          </Link>
-                        </Button>
+                        {problem.isPremium && !isPremium ? (
+                          <Button
+                            size="sm"
+                            onClick={() => setUpgradeModalOpen(true)}
+                            className="h-8 text-xs font-bold gap-1.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 border-0 shadow-sm"
+                          >
+                            <Lock className="w-3.5 h-3.5" />
+                            <span>Unlock</span>
+                          </Button>
+                        ) : (
+                          <Button
+                            asChild
+                            size="sm"
+                            variant={solved ? "secondary" : "default"}
+                            className={`h-8 text-xs font-medium gap-1 ${
+                              solved
+                                ? "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                                : "bg-primary text-primary-foreground hover:bg-primary/90"
+                            }`}
+                          >
+                            <Link to={`/problems/${problem.slug}`}>
+                              {solved ? "Review" : "Solve"}
+                              <ChevronRight className="w-3.5 h-3.5" />
+                            </Link>
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   );
@@ -639,6 +673,12 @@ export default function ProblemsPage() {
           </Table>
         </div>
       </main>
+
+      <UpgradeModal
+        open={upgradeModalOpen}
+        onOpenChange={setUpgradeModalOpen}
+        sourceContext="problems"
+      />
     </div>
   );
 }

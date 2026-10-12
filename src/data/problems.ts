@@ -23,6 +23,7 @@ export interface ProblemItem {
   tags: string[];
   points: number;
   acceptanceRate: string;
+  isPremium?: boolean;
   description: string;
   inputFormat: string;
   outputFormat: string;
@@ -626,6 +627,7 @@ public class Main {
     tags: ["Array", "Two Pointers", "Greedy"],
     points: 140,
     acceptanceRate: "54.7%",
+    isPremium: true,
     description: `You are given an integer array \`height\` of length \`n\`. There are \`n\` vertical lines drawn such that the two endpoints of the \`i-th\` line are \`(i, 0)\` and \`(i, height[i])\`.
 
 Find two lines that together with the x-axis form a container, such that the container contains the most water.
@@ -853,6 +855,7 @@ public class Main {
     tags: ["Hash Table", "String", "Sliding Window"],
     points: 150,
     acceptanceRate: "34.5%",
+    isPremium: true,
     description: `Given a string \`s\`, find the length of the **longest substring** without duplicate characters.`,
     inputFormat: `A single line containing the string \`s\`.`,
     outputFormat: `Print the length of the longest substring without repeating characters.`,

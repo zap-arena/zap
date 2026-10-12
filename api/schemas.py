@@ -27,9 +27,45 @@ class UserOut(BaseModel):
     name: str
     email: str
     role: str
+    isPremium: bool = Field(default=False, validation_alias="is_premium")
+    premiumPlan: Optional[str] = Field(default=None, validation_alias="premium_plan")
+    premiumExpiresAt: Optional[datetime] = Field(default=None, validation_alias="premium_expires_at")
 
     class Config:
         from_attributes = True
+        populate_by_name = True
+
+
+class CreateOrderRequest(BaseModel):
+    planId: str = Field(min_length=1)
+    couponCode: Optional[str] = None
+
+
+class CreateOrderResponse(BaseModel):
+    orderId: str
+    amount: int
+    originalAmount: Optional[int] = None
+    discountAmount: Optional[int] = None
+    couponApplied: Optional[str] = None
+    currency: str
+    keyId: str
+    planId: str
+    planName: str
+    isLiveConfigured: bool = False
+
+
+class VerifyPaymentRequest(BaseModel):
+    planId: str
+    razorpayOrderId: str
+    razorpayPaymentId: str
+    razorpaySignature: str
+    couponCode: Optional[str] = None
+
+
+class VerifyPaymentResponse(BaseModel):
+    success: bool
+    message: str
+    user: UserOut
 
 
 class AuthResponse(BaseModel):

@@ -6,7 +6,9 @@ import {
   ChevronRight,
   Code2,
   Cpu,
+  Crown,
   Lightbulb,
+  Lock,
   PanelBottomClose,
   PanelBottomOpen,
   Play,
@@ -30,15 +32,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import {
-  getAllProblems,
-  type ProblemItem,
-} from "../data/problems";
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../components/ui/tabs";
+import { getAllProblems, type ProblemItem } from "../data/problems";
 import { CodeEditor } from "../features/wasm-playground/components/CodeEditor";
 import { LanguageSelector } from "../features/wasm-playground/components/LanguageSelector";
 import { useWasmRuntime } from "../features/wasm-playground/hooks/useWasmRuntime";
-import type { Language, TestCase } from "../features/wasm-playground/runtimes/types";
+import type {
+  Language,
+  TestCase,
+} from "../features/wasm-playground/runtimes/types";
 import {
   getSavedCode,
   getSubmissionsForProblem,
@@ -49,6 +56,8 @@ import {
   saveSubmission,
   type SubmissionVerdict,
 } from "../lib/submissionStore";
+import { usePremiumStatus } from "../lib/premiumStore";
+import UpgradeModal from "../components/UpgradeModal";
 
 export default function ProblemWorkspacePage() {
   const { slug } = useParams<{ slug: string }>();
@@ -57,7 +66,7 @@ export default function ProblemWorkspacePage() {
   const allProblems = useMemo(() => getAllProblems(), []);
   const problemIndex = useMemo(
     () => allProblems.findIndex((p) => p.slug === slug),
-    [allProblems, slug]
+    [allProblems, slug],
   );
   const problem: ProblemItem | undefined =
     problemIndex !== -1 ? allProblems[problemIndex] : undefined;
@@ -70,6 +79,8 @@ export default function ProblemWorkspacePage() {
 
   // Selected Language State
   const [language, setLanguage] = useState<Language>("python");
+  const { isPremium } = usePremiumStatus();
+  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
 
   // Code state synchronized with local draft storage
   const [code, setCode] = useState<string>("");
@@ -154,6 +165,11 @@ export default function ProblemWorkspacePage() {
   // Run Code against sample test cases or custom input
   const handleRunCode = async () => {
     if (!problem) return;
+    if (problem.isPremium && !isPremium) {
+      toast.error("This is a ZAP Pro problem. Upgrade to run code!");
+      setUpgradeModalOpen(true);
+      return;
+    }
     setDrawerOpen(true);
 
     if (useCustomStdin) {
@@ -179,7 +195,7 @@ export default function ProblemWorkspacePage() {
       toast.success(`Passed ${passedCount}/${results.length} sample cases! 🎉`);
     } else {
       toast.warning(
-        `Passed ${passedCount}/${results.length} sample cases. Check outputs below.`
+        `Passed ${passedCount}/${results.length} sample cases. Check outputs below.`,
       );
     }
   };
@@ -187,6 +203,11 @@ export default function ProblemWorkspacePage() {
   // Submit Code against ALL test cases (sample + hidden)
   const handleSubmitCode = async () => {
     if (!problem) return;
+    if (problem.isPremium && !isPremium) {
+      toast.error("This is a ZAP Pro problem. Upgrade to submit solutions!");
+      setUpgradeModalOpen(true);
+      return;
+    }
     setDrawerOpen(true);
     setDrawerTab("submission");
 
@@ -209,12 +230,12 @@ export default function ProblemWorkspacePage() {
     const passedCount = results.filter((r) => r.passed).length;
     const totalTimeMs = results.reduce(
       (acc, curr) => acc + curr.executionTimeMs,
-      0
+      0,
     );
 
     let verdict: SubmissionVerdict = "Accepted";
-    let errorMessage: string | undefined = undefined;
-    let failedTestCaseInfo: ProblemSubmission["failedTestCase"] = undefined;
+    let errorMessage: string | undefined;
+    let failedTestCaseInfo: ProblemSubmission["failedTestCase"];
 
     const firstFailedIndex = results.findIndex((r) => !r.passed);
     if (firstFailedIndex !== -1) {
@@ -264,7 +285,7 @@ export default function ProblemWorkspacePage() {
     } else {
       toast.error(
         `${verdict}: Passed ${passedCount}/${totalCount} test cases.`,
-        { duration: 5000 }
+        { duration: 5000 },
       );
     }
   };
@@ -367,11 +388,17 @@ export default function ProblemWorkspacePage() {
             <Badge
               variant="outline"
               className={`text-[11px] px-2 py-0 border ${getDifficultyColor(
-                problem.difficulty
+                problem.difficulty,
               )}`}
             >
               {problem.difficulty}
             </Badge>
+            {problem.isPremium && (
+              <Badge className="bg-amber-500/15 text-amber-500 border border-amber-500/30 text-[10px] gap-1 px-1.5 py-0 font-bold uppercase">
+                <Crown className="w-3 h-3 fill-amber-500" />
+                PRO
+              </Badge>
+            )}
             {isSolved && (
               <Badge className="bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[10px] gap-1 px-1.5 py-0">
                 <CheckCircle2 className="w-3 h-3" />
@@ -432,16 +459,27 @@ export default function ProblemWorkspacePage() {
             <span>Run</span>
           </Button>
 
-          {/* Submit Code Button */}
-          <Button
-            size="sm"
-            onClick={handleSubmitCode}
-            disabled={isRunning || isTesting}
-            className="h-8 px-3.5 text-xs font-bold gap-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-sm"
-          >
-            <Send className="w-3.5 h-3.5" />
-            <span>Submit</span>
-          </Button>
+          {/* Submit Code Button or Unlock Pro */}
+          {problem.isPremium && !isPremium ? (
+            <Button
+              size="sm"
+              onClick={() => setUpgradeModalOpen(true)}
+              className="h-8 px-3.5 text-xs font-bold gap-1.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 shadow-sm"
+            >
+              <Crown className="w-3.5 h-3.5 fill-slate-950" />
+              <span>Unlock Pro</span>
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              onClick={handleSubmitCode}
+              disabled={isRunning || isTesting}
+              className="h-8 px-3.5 text-xs font-bold gap-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-sm"
+            >
+              <Send className="w-3.5 h-3.5" />
+              <span>Submit</span>
+            </Button>
+          )}
 
           <div className="h-4 w-px bg-border hidden sm:block" />
 
@@ -456,7 +494,10 @@ export default function ProblemWorkspacePage() {
       <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
         {/* Left Panel: Problem Information, Submissions, Hints */}
         <div className="w-full md:w-[45%] lg:w-[42%] h-full border-r border-border flex flex-col bg-card/40">
-          <Tabs defaultValue="description" className="flex-1 flex flex-col overflow-hidden">
+          <Tabs
+            defaultValue="description"
+            className="flex-1 flex flex-col overflow-hidden"
+          >
             <div className="px-4 py-2 border-b border-border bg-card/60 flex items-center justify-between shrink-0">
               <TabsList className="bg-muted/60 h-8 p-0.5">
                 <TabsTrigger value="description" className="text-xs px-3 h-7">
@@ -562,15 +603,25 @@ export default function ProblemWorkspacePage() {
                 </h3>
                 <div className="space-y-2 text-xs">
                   <div className="p-3 rounded-lg border border-border/60 bg-muted/20 space-y-1">
-                    <span className="font-semibold text-foreground">Input Format:</span>
-                    <p className="text-muted-foreground font-mono">{problem.inputFormat}</p>
+                    <span className="font-semibold text-foreground">
+                      Input Format:
+                    </span>
+                    <p className="text-muted-foreground font-mono">
+                      {problem.inputFormat}
+                    </p>
                   </div>
                   <div className="p-3 rounded-lg border border-border/60 bg-muted/20 space-y-1">
-                    <span className="font-semibold text-foreground">Output Format:</span>
-                    <p className="text-muted-foreground font-mono">{problem.outputFormat}</p>
+                    <span className="font-semibold text-foreground">
+                      Output Format:
+                    </span>
+                    <p className="text-muted-foreground font-mono">
+                      {problem.outputFormat}
+                    </p>
                   </div>
                   <div className="p-3 rounded-lg border border-border/60 bg-muted/20 space-y-1">
-                    <span className="font-semibold text-foreground">Constraints:</span>
+                    <span className="font-semibold text-foreground">
+                      Constraints:
+                    </span>
                     <p className="text-muted-foreground font-mono whitespace-pre-line">
                       {problem.constraints}
                     </p>
@@ -589,7 +640,8 @@ export default function ProblemWorkspacePage() {
                   <Code2 className="w-10 h-10 mx-auto opacity-30" />
                   <p className="text-sm font-semibold">No submissions yet</p>
                   <p className="text-xs">
-                    Click "Submit" in the header to evaluate your solution and track your history.
+                    Click "Submit" in the header to evaluate your solution and
+                    track your history.
                   </p>
                 </div>
               ) : (
@@ -637,8 +689,8 @@ export default function ProblemWorkspacePage() {
                   Algorithmic Hints
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Stuck on this problem? Consider the optimal time and space complexity
-                  before attempting brute-force approaches.
+                  Stuck on this problem? Consider the optimal time and space
+                  complexity before attempting brute-force approaches.
                 </p>
               </div>
 
@@ -648,7 +700,11 @@ export default function ProblemWorkspacePage() {
                     Hint 1: Standard Input / Output
                   </span>
                   <p className="text-muted-foreground">
-                    Make sure your program reads from <code className="text-primary">stdin</code> and prints the result to <code className="text-primary">stdout</code> according to the specified format. Extra prompt messages like "Enter numbers:" will cause test case failures.
+                    Make sure your program reads from{" "}
+                    <code className="text-primary">stdin</code> and prints the
+                    result to <code className="text-primary">stdout</code>{" "}
+                    according to the specified format. Extra prompt messages
+                    like "Enter numbers:" will cause test case failures.
                   </p>
                 </div>
                 <div className="p-3.5 rounded-lg border border-border/60 bg-card space-y-1.5 text-xs">
@@ -656,7 +712,9 @@ export default function ProblemWorkspacePage() {
                     Hint 2: Edge Cases
                   </span>
                   <p className="text-muted-foreground">
-                    Always consider minimum input sizes (e.g. 1 or 2 elements), negative numbers, and boundary conditions specified in the Constraints.
+                    Always consider minimum input sizes (e.g. 1 or 2 elements),
+                    negative numbers, and boundary conditions specified in the
+                    Constraints.
                   </p>
                 </div>
               </div>
@@ -699,8 +757,30 @@ export default function ProblemWorkspacePage() {
               code={code}
               onChange={handleCodeChange}
               onReset={handleResetCode}
-              disabled={isRunning || isTesting}
+              disabled={isRunning || isTesting || (problem.isPremium && !isPremium)}
             />
+
+            {/* Pro Locked Overlay */}
+            {problem.isPremium && !isPremium && (
+              <div className="absolute inset-0 bg-background/85 backdrop-blur-sm z-10 flex flex-col items-center justify-center p-6 text-center">
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-500 flex items-center justify-center mb-3 shadow-sm">
+                  <Lock className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-black tracking-tight text-foreground">
+                  ZAP Pro Problem Locked
+                </h3>
+                <p className="text-xs text-muted-foreground max-w-sm mt-1 mb-4 leading-relaxed">
+                  This problem is reserved for ZAP Pro members. Upgrade via Razorpay to write code, test against in-browser WASM runtimes, and submit solutions.
+                </p>
+                <Button
+                  onClick={() => setUpgradeModalOpen(true)}
+                  className="h-10 px-6 font-bold text-xs bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 border-0 shadow-md gap-2 transition-transform hover:scale-105"
+                >
+                  <Crown className="w-4 h-4 fill-slate-950" />
+                  Unlock with Razorpay (₹499)
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Bottom Execution Drawer */}
@@ -829,7 +909,8 @@ export default function ProblemWorkspacePage() {
                           {testResults[activeCaseIndex]?.passed ? (
                             <span className="text-emerald-500 flex items-center gap-1">
                               <CheckCircle2 className="w-3.5 h-3.5" /> Passed (
-                              {testResults[activeCaseIndex]?.executionTimeMs} ms)
+                              {testResults[activeCaseIndex]?.executionTimeMs}{" "}
+                              ms)
                             </span>
                           ) : testResults[activeCaseIndex] ? (
                             <span className="text-rose-500 flex items-center gap-1">
@@ -892,7 +973,8 @@ export default function ProblemWorkspacePage() {
                               )}
                               {testResults[activeCaseIndex].errorMessage && (
                                 <div className="mt-2 text-rose-400 font-sans text-xs">
-                                  Error: {testResults[activeCaseIndex].errorMessage}
+                                  Error:{" "}
+                                  {testResults[activeCaseIndex].errorMessage}
                                 </div>
                               )}
                             </div>
@@ -909,7 +991,9 @@ export default function ProblemWorkspacePage() {
                       <div className="space-y-3">
                         <div className="flex items-center justify-between text-muted-foreground font-sans text-xs">
                           <span>Status: {lastResult.status}</span>
-                          <span>Execution Time: {lastResult.executionTimeMs} ms</span>
+                          <span>
+                            Execution Time: {lastResult.executionTimeMs} ms
+                          </span>
                         </div>
                         {lastResult.stdout && (
                           <div className="space-y-1">
@@ -935,7 +1019,10 @@ export default function ProblemWorkspacePage() {
                     ) : (
                       <div className="text-center py-10 text-muted-foreground font-sans">
                         <Terminal className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                        <p>No stdout or stderr output yet. Click "Run" or "Submit".</p>
+                        <p>
+                          No stdout or stderr output yet. Click "Run" or
+                          "Submit".
+                        </p>
                       </div>
                     )}
                   </div>
@@ -988,7 +1075,8 @@ export default function ProblemWorkspacePage() {
                         </span>
                         {latestSubmissionResult.failedTestCase.hidden ? (
                           <p className="text-muted-foreground">
-                            Hidden test cases evaluate boundary constraints and edge inputs.
+                            Hidden test cases evaluate boundary constraints and
+                            edge inputs.
                           </p>
                         ) : (
                           <div className="grid grid-cols-2 gap-2 font-mono text-[11px] pt-1">
@@ -1005,7 +1093,10 @@ export default function ProblemWorkspacePage() {
                                 Expected:
                               </span>
                               <div className="p-2 rounded bg-muted/50 border border-border/60">
-                                {latestSubmissionResult.failedTestCase.expectedOutput}
+                                {
+                                  latestSubmissionResult.failedTestCase
+                                    .expectedOutput
+                                }
                               </div>
                             </div>
                           </div>
@@ -1039,7 +1130,8 @@ export default function ProblemWorkspacePage() {
                   {getVerdictBadge(selectedSubmission.verdict)}
                 </div>
                 <span className="text-xs font-mono text-muted-foreground">
-                  {selectedSubmission.executionTimeMs} ms • {selectedSubmission.passedCount}/
+                  {selectedSubmission.executionTimeMs} ms •{" "}
+                  {selectedSubmission.passedCount}/
                   {selectedSubmission.totalCount} passed
                 </span>
               </DialogTitle>
@@ -1069,6 +1161,12 @@ export default function ProblemWorkspacePage() {
           </DialogContent>
         </Dialog>
       )}
+
+      <UpgradeModal
+        open={upgradeModalOpen}
+        onOpenChange={setUpgradeModalOpen}
+        sourceContext="problems"
+      />
     </div>
   );
 }
