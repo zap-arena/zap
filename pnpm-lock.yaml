@@ -101,6 +101,9 @@ importers:
       '@xyflow/react':
         specifier: ^12.12.0
         version: 12.12.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      JSCPP:
+        specifier: ^2.0.9
+        version: 2.0.9
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1681,6 +1684,9 @@ packages:
   '@xyflow/system@0.0.83':
     resolution: {integrity: sha512-a//eDjez3WZF47aaPTfVUDD0OINOq+WVwBZCRTqG+m0a5euX8EwlJ4jMY1Wxz0Ocj4xOeekJ70V22Pq0ll8RJw==}
 
+  JSCPP@2.0.9:
+    resolution: {integrity: sha512-ix62BbyR33JfuLS5JN3lrP5WrDFHJMe498TbyEN0vjRgK1pvOREs03YA0rMoj0U2h9EYLSoo9emZMW2rSlFVfQ==}
+
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
@@ -2401,6 +2407,14 @@ packages:
   path-parse@1.0.7:
     resolution: {integrity: sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==}
 
+  pegjs-util@1.4.21:
+    resolution: {integrity: sha512-0z15BXCjxwgeD+pO5QImUgOFsJ86jFt6oDqatveLggeARSS5wmrt9SxCONkUvOeSsob2faVBC9H4wpl4zudg9A==}
+
+  pegjs@0.10.0:
+    resolution: {integrity: sha512-qI5+oFNEGi3L5HAxDwN2LA4Gg7irF70Zs25edhjld9QemOgp0CbvMtbFcMvFtEo1OityPrcCzkQFB8JP/hxgow==}
+    engines: {node: '>=0.10'}
+    hasBin: true
+
   performance-now@2.1.0:
     resolution: {integrity: sha512-7EAHlyLHI56VEIdK57uwHdHKIaAGbnXPiw0yWbarQZOKaKpvUIgW0jWRVLiatnM+XXlSwsanIBH/hzGMJulMow==}
 
@@ -2463,6 +2477,10 @@ packages:
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
+
+  printf@0.6.1:
+    resolution: {integrity: sha512-is0ctgGdPJ5951KulgfzvHGwJtZ5ck8l042vRkV6jrkpBzTmb/lueTqguWHy2JfVA+RY6gFVlaZgUS0j7S/dsw==}
+    engines: {node: '>= 0.9.0'}
 
   prop-types@15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
@@ -4288,6 +4306,12 @@ snapshots:
       d3-selection: 3.0.0
       d3-zoom: 3.0.0
 
+  JSCPP@2.0.9:
+    dependencies:
+      lodash: 4.18.1
+      pegjs-util: 1.4.21
+      printf: 0.6.1
+
   acorn-jsx@5.3.2(acorn@8.18.0):
     dependencies:
       acorn: 8.18.0
@@ -4982,6 +5006,12 @@ snapshots:
 
   path-parse@1.0.7: {}
 
+  pegjs-util@1.4.21:
+    dependencies:
+      pegjs: 0.10.0
+
+  pegjs@0.10.0: {}
+
   performance-now@2.1.0:
     optional: true
 
@@ -5031,6 +5061,8 @@ snapshots:
       source-map-js: 1.2.2
 
   prelude-ls@1.2.1: {}
+
+  printf@0.6.1: {}
 
   prop-types@15.8.1:
     dependencies:

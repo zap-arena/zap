@@ -5,23 +5,35 @@ import {
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
+  Clock,
   Code2,
   Copy,
+  Cpu,
   Eye,
   FileCode2,
   Info,
+  Layers,
   Lightbulb,
   Lock,
+  Play,
   RotateCcw,
   ShieldAlert,
   Sparkles,
+  Terminal,
   Unlock,
+  X,
+  XCircle,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { FormattedText } from "../components/FormattedText";
+import { useWasmRuntime } from "../features/wasm-playground/hooks/useWasmRuntime";
+import type {
+  Language,
+  TestCaseResult,
+} from "../features/wasm-playground/runtimes/types";
 import ThemeColorPicker from "../components/ThemeColorPicker";
 import ThemeToggle from "../components/ThemeToggle";
 import { ThunderLogo } from "../components/ThunderLogo";
@@ -55,7 +67,11 @@ export default function DebuggingWarPage() {
       slug: p.slug || String(p.id),
       title: p.title,
       topic: p.tags?.find((t: string) => t !== "debugging") || "General",
-      difficulty: (p.difficulty === "easy" ? "Medium" : p.difficulty === "hard" ? "Hard" : "Medium") as any,
+      difficulty: (p.difficulty === "easy"
+        ? "Medium"
+        : p.difficulty === "hard"
+          ? "Hard"
+          : "Medium") as any,
       points: p.maxScore || 100,
       tags: p.tags || ["debugging"],
       description: p.description || "",
@@ -66,11 +82,17 @@ export default function DebuggingWarPage() {
         severity: "High",
         reportedBy: "QA Automated Suite",
         environment: "Production / Evaluation Cluster",
-        symptoms: p.description?.slice(0, 150) || "Logical defect detected in implementation.",
+        symptoms:
+          p.description?.slice(0, 150) ||
+          "Logical defect detected in implementation.",
         errorType: "Runtime / Logical Flaw",
       },
-      hints: ["Inspect boundary conditions and edge cases in the implementation."],
-      languages: (p.languages?.length ? p.languages : ["python", "cpp", "java"]) as any,
+      hints: [
+        "Inspect boundary conditions and edge cases in the implementation.",
+      ],
+      languages: (p.languages?.length
+        ? p.languages
+        : ["python", "cpp", "java"]) as any,
       buggyCode: p.boilerplates || {},
       solutionCode: {},
       testCases: (p.testCases || []).map((tc: any, i: number) => ({
@@ -83,7 +105,9 @@ export default function DebuggingWarPage() {
     }));
 
     const existingSlugs = new Set(mappedBackend.map((b) => b.slug));
-    const remainingCurated = DEBUGGING_PROBLEMS.filter((c) => !existingSlugs.has(c.slug));
+    const remainingCurated = DEBUGGING_PROBLEMS.filter(
+      (c) => !existingSlugs.has(c.slug),
+    );
     return [...mappedBackend, ...remainingCurated];
   }, [backendProblems]);
 
@@ -100,9 +124,7 @@ export default function DebuggingWarPage() {
   const problemSlugFromUrl = searchParams.get("problem");
   const selectedProblem = useMemo(() => {
     if (problemSlugFromUrl) {
-      const match = allProblems.find(
-        (p) => p.slug === problemSlugFromUrl,
-      );
+      const match = allProblems.find((p) => p.slug === problemSlugFromUrl);
       if (match) return match;
     }
     return filteredProblems[0] || allProblems[0];
@@ -143,17 +165,40 @@ export default function DebuggingWarPage() {
   // Selected Language
   const [language, setLanguage] = useState<string>("python");
 
+  // In-Browser WebAssembly / Client-Side Runtime
+  const {
+    isRunning,
+    isTesting,
+    lastResult,
+    testResults,
+    executeCode,
+    runTestCases,
+    resetResults,
+  } = useWasmRuntime((language as Language) || "python");
+
+  // Console & Test Drawer state
+  const [isConsoleOpen, setIsConsoleOpen] = useState(false);
+  const [consoleTab, setConsoleTab] = useState<"testcases" | "output">(
+    "testcases",
+  );
+  const [customStdin, setCustomStdin] = useState<string>("");
+
   // Current code in editor
   const [code, setCode] = useState<string>(() => {
     const saved = localStorage.getItem(
       `zap_debugging_code_${selectedProblem.id}_${language}`,
     );
     if (saved) return saved;
-    return selectedProblem.buggyCode[language] || selectedProblem.buggyCode.python || "";
+    return (
+      selectedProblem.buggyCode[language] ||
+      selectedProblem.buggyCode.python ||
+      ""
+    );
   });
 
-  // When problem or language changes, update code
+  // When problem or language changes, update code and reset execution results
   useEffect(() => {
+    resetResults();
     if (!selectedProblem.languages.includes(language as any)) {
       setLanguage(selectedProblem.languages[0] || "python");
       return;
@@ -170,15 +215,74 @@ export default function DebuggingWarPage() {
           "",
       );
     }
+    // Pre-populate custom stdin with first test case input if available
+    setCustomStdin(selectedProblem.testCases?.[0]?.input || "");
   }, [selectedProblem.id, language]);
 
   // Update URL param when problem changes
   const selectProblem = (prob: DebuggingProblem) => {
+    resetResults();
     setSearchParams({ problem: prob.slug });
   };
 
+  // Run single execution via in-browser worker
+  const handleRunCode = async () => {
+    setIsConsoleOpen(true);
+    setConsoleTab("output");
+    const sampleInput = selectedProblem.testCases?.[0]?.input || "";
+    const effectiveStdin = customStdin !== "" ? customStdin : sampleInput;
+    if (customStdin === "" && sampleInput) {
+      setCustomStdin(sampleInput);
+    }
+
+    const result = await executeCode(
+      code,
+      effectiveStdin,
+      6000,
+      language as Language,
+    );
+    if (result.status === "success") {
+      toast.success(`Executed locally via WASM in ${result.executionTimeMs}ms`);
+    } else if (result.status === "compile_error") {
+      toast.error("Compilation / Syntax Error in code");
+    } else if (result.status === "runtime_error") {
+      toast.error("Runtime Error in code");
+    } else if (result.status === "timeout") {
+      toast.error("Time Limit Exceeded (6,000ms)");
+    }
+  };
+
+  // Run all test cases via in-browser worker
+  const handleRunTests = async () => {
+    setIsConsoleOpen(true);
+    setConsoleTab("testcases");
+    const cases = (selectedProblem.testCases || []).map((tc) => ({
+      id: tc.id,
+      name: tc.name,
+      input: tc.input,
+      expectedOutput: tc.expectedOutput,
+      hidden: tc.hidden,
+    }));
+
+    const results = await runTestCases(code, cases, 6000, language as Language);
+    const passed = results.filter((r: TestCaseResult) => r.passed).length;
+    const total = results.length;
+    if (passed === total && total > 0) {
+      if (!isCurrentSolved) {
+        toggleSolved(selectedProblem.id);
+      }
+      toast.success("Bug Squashed! All test cases passed in-browser! 🏆");
+    } else {
+      toast.error(
+        `Defect Detected: ${total - passed} of ${total} test cases failed.`,
+      );
+    }
+  };
+
   // Active Tab on the Left panel
-  const [activeTab, setActiveTab] = useState<"statement" | "incident" | "solution">("statement");
+  const [activeTab, setActiveTab] = useState<
+    "statement" | "incident" | "solution"
+  >("statement");
 
   // Progressive Hints state
   const [revealedHints, setRevealedHints] = useState<number[]>([]);
@@ -227,6 +331,7 @@ export default function DebuggingWarPage() {
 
   // Reset to original buggy code
   const resetToBuggyCode = () => {
+    resetResults();
     const original =
       selectedProblem.buggyCode[language] ||
       selectedProblem.buggyCode.python ||
@@ -261,7 +366,8 @@ export default function DebuggingWarPage() {
   const currentIndex = filteredProblems.findIndex(
     (p) => p.id === selectedProblem.id,
   );
-  const prevProblem = currentIndex > 0 ? filteredProblems[currentIndex - 1] : null;
+  const prevProblem =
+    currentIndex > 0 ? filteredProblems[currentIndex - 1] : null;
   const nextProblem =
     currentIndex < filteredProblems.length - 1
       ? filteredProblems[currentIndex + 1]
@@ -269,9 +375,9 @@ export default function DebuggingWarPage() {
 
   // Stats
   const totalSolved = Object.values(solvedMap).filter(Boolean).length;
-  const totalPoints = allProblems.filter(
-    (p) => solvedMap[p.id],
-  ).reduce((sum, p) => sum + p.points, 0);
+  const totalPoints = allProblems
+    .filter((p) => solvedMap[p.id])
+    .reduce((sum, p) => sum + p.points, 0);
 
   return (
     <div className="h-screen w-screen bg-background flex flex-col overflow-hidden select-none">
@@ -351,7 +457,9 @@ export default function DebuggingWarPage() {
         <div className="flex items-center gap-2 shrink-0">
           <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[11px] text-emerald-500 font-semibold">
             <CheckCircle2 size={12} />
-            <span>{totalSolved}/{allProblems.length} Solved</span>
+            <span>
+              {totalSolved}/{allProblems.length} Solved
+            </span>
           </div>
 
           <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-500 font-semibold hidden sm:flex">
@@ -413,7 +521,8 @@ export default function DebuggingWarPage() {
               >
                 {filteredProblems.map((p, idx) => (
                   <option key={p.id} value={p.slug}>
-                    {solvedMap[p.id] ? "✓ " : ""}{idx + 1}. {p.title}
+                    {solvedMap[p.id] ? "✓ " : ""}
+                    {idx + 1}. {p.title}
                   </option>
                 ))}
               </select>
@@ -668,7 +777,8 @@ export default function DebuggingWarPage() {
                   <div className="flex items-center justify-between">
                     <h4 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                       <Lightbulb size={13} className="text-amber-500" />
-                      Diagnostic Hints ({revealedHints.length} / {selectedProblem.hints.length})
+                      Diagnostic Hints ({revealedHints.length} /{" "}
+                      {selectedProblem.hints.length})
                     </h4>
                     {revealedHints.length < selectedProblem.hints.length && (
                       <Button
@@ -685,7 +795,10 @@ export default function DebuggingWarPage() {
 
                   {revealedHints.length === 0 ? (
                     <div className="border border-dashed border-border rounded-lg p-3 text-center space-y-1 bg-muted/20">
-                      <Lightbulb size={20} className="text-muted-foreground mx-auto" />
+                      <Lightbulb
+                        size={20}
+                        className="text-muted-foreground mx-auto"
+                      />
                       <p className="text-xs text-muted-foreground">
                         No hints revealed yet. Click above if you'd like a clue!
                       </p>
@@ -711,7 +824,8 @@ export default function DebuggingWarPage() {
                   {allHintsTried && (
                     <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between mt-2">
                       <span className="text-xs text-emerald-400 font-medium flex items-center gap-1.5">
-                        <Unlock size={13} /> All diagnostic clues explored! Solution code is now unlocked.
+                        <Unlock size={13} /> All diagnostic clues explored!
+                        Solution code is now unlocked.
                       </span>
                       <Button
                         size="sm"
@@ -751,11 +865,14 @@ export default function DebuggingWarPage() {
                           <h4 className="text-xs font-bold text-foreground flex items-center gap-2">
                             Solution Code Locked
                             <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-mono">
-                              {revealedHints.length} / {selectedProblem.hints.length} Hints Tried
+                              {revealedHints.length} /{" "}
+                              {selectedProblem.hints.length} Hints Tried
                             </span>
                           </h4>
                           <p className="text-xs text-muted-foreground leading-relaxed">
-                            Direct reveal is disallowed. You must try out all diagnostic hint options first to unlock the verified reference code.
+                            Direct reveal is disallowed. You must try out all
+                            diagnostic hint options first to unlock the verified
+                            reference code.
                           </p>
                         </div>
                       </div>
@@ -765,7 +882,12 @@ export default function DebuggingWarPage() {
                         <div className="flex items-center justify-between text-[11px] text-muted-foreground">
                           <span>Hint Exploration Progress</span>
                           <span className="font-mono font-medium">
-                            {Math.round((revealedHints.length / selectedProblem.hints.length) * 100)}%
+                            {Math.round(
+                              (revealedHints.length /
+                                selectedProblem.hints.length) *
+                                100,
+                            )}
+                            %
                           </span>
                         </div>
                         <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
@@ -788,7 +910,8 @@ export default function DebuggingWarPage() {
                           <Sparkles size={13} />
                           Try Out Hint #{revealedHints.length + 1}
                         </Button>
-                        {selectedProblem.hints.length - revealedHints.length > 1 && (
+                        {selectedProblem.hints.length - revealedHints.length >
+                          1 && (
                           <Button
                             size="sm"
                             variant="outline"
@@ -816,7 +939,9 @@ export default function DebuggingWarPage() {
                                 <div className="text-[10px] font-bold text-amber-500">
                                   Hint #{idx + 1}
                                 </div>
-                                <p className="leading-relaxed">{selectedProblem.hints[idx]}</p>
+                                <p className="leading-relaxed">
+                                  {selectedProblem.hints[idx]}
+                                </p>
                               </div>
                             ))}
                           </div>
@@ -831,7 +956,8 @@ export default function DebuggingWarPage() {
                           size="sm"
                           className="w-full gap-2 text-xs font-semibold h-8 opacity-50 cursor-not-allowed"
                         >
-                          <Lock size={13} /> Direct Reveal Disabled (Try hint options above)
+                          <Lock size={13} /> Direct Reveal Disabled (Try hint
+                          options above)
                         </Button>
                       </div>
                     </div>
@@ -842,7 +968,8 @@ export default function DebuggingWarPage() {
                         <div className="flex items-center gap-2">
                           <Unlock size={15} className="text-emerald-500" />
                           <span className="text-xs font-semibold text-emerald-500">
-                            All {selectedProblem.hints.length} Diagnostic Hints Explored!
+                            All {selectedProblem.hints.length} Diagnostic Hints
+                            Explored!
                           </span>
                         </div>
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">
@@ -858,14 +985,16 @@ export default function DebuggingWarPage() {
                             onClick={() => setSolutionRevealed(true)}
                             className="w-full gap-2 text-xs font-semibold h-9 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20"
                           >
-                            <Eye size={14} /> Reveal Solution Code ({language.toUpperCase()})
+                            <Eye size={14} /> Reveal Solution Code (
+                            {language.toUpperCase()})
                           </Button>
                         </div>
                       ) : (
                         <div className="space-y-2 pt-1 animate-fade-in">
                           <div className="flex items-center justify-between">
                             <span className="text-xs font-semibold text-emerald-500 flex items-center gap-1">
-                              <CheckCircle2 size={12} /> Verified Implementation ({language.toUpperCase()})
+                              <CheckCircle2 size={12} /> Verified Implementation
+                              ({language.toUpperCase()})
                             </span>
                             <Button
                               size="sm"
@@ -947,8 +1076,55 @@ export default function DebuggingWarPage() {
               </div>
             </div>
 
-            {/* Actions & Autograder Status */}
-            <div className="flex items-center gap-1.5">
+            {/* Actions: Run, Test, Reset, Copy & Console */}
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {/* Local WASM Run Button */}
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={isRunning || isTesting}
+                onClick={handleRunCode}
+                className="h-7 px-2.5 text-xs font-semibold gap-1.5 border-border hover:bg-muted text-foreground"
+                title="Execute code with standard input in browser WASM worker"
+              >
+                <Play size={11} className="text-emerald-500 fill-emerald-500" />
+                <span>{isRunning ? "Running..." : "Run"}</span>
+              </Button>
+
+              {/* Local WASM Run Tests Button */}
+              <Button
+                size="sm"
+                disabled={isRunning || isTesting}
+                onClick={handleRunTests}
+                className="h-7 px-3 text-xs font-semibold gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs"
+                title="Run all test cases against your bug patch locally"
+              >
+                {isTesting ? (
+                  <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <CheckCircle2 size={12} />
+                )}
+                <span>{isTesting ? "Testing..." : "Run Tests"}</span>
+              </Button>
+
+              {/* Toggle Console Drawer */}
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setIsConsoleOpen((v) => !v)}
+                className={`h-7 px-2 text-xs gap-1 ${
+                  isConsoleOpen
+                    ? "text-primary bg-primary/10"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+                title="Toggle test cases & console output drawer"
+              >
+                <Terminal size={12} />
+                <span className="hidden sm:inline">Console</span>
+              </Button>
+
+              <div className="h-4 w-px bg-border mx-0.5" />
+
               <Button
                 size="sm"
                 variant="ghost"
@@ -956,28 +1132,31 @@ export default function DebuggingWarPage() {
                 className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground gap-1"
                 title="Copy code"
               >
-                <Copy size={11} /> Copy
+                <Copy size={11} />
+                <span className="hidden md:inline">Copy</span>
               </Button>
 
               <Button
                 size="sm"
                 variant="outline"
                 onClick={resetToBuggyCode}
-                className="h-7 px-2.5 text-xs text-muted-foreground hover:text-foreground gap-1 border-border"
+                className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground gap-1 border-border"
                 title="Reset to original buggy code"
               >
-                <RotateCcw size={11} /> Reset Code
+                <RotateCcw size={11} />
+                <span className="hidden md:inline">Reset</span>
               </Button>
 
-              {/* CodeWar indicator */}
-              <div className="hidden sm:flex items-center gap-1 px-2 py-1 rounded bg-muted/50 border border-border text-[11px] font-mono text-muted-foreground">
-                <span>Autograder Off</span>
-              </div>
+              {/* WASM Zero-Backend Indicator */}
+              {/* <div className="hidden xl:flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono text-emerald-500">
+                <Cpu size={10} />
+                <span>WASM In-Browser</span>
+              </div> */}
             </div>
           </div>
 
           {/* Monaco Editor Container: 100% Height & Scrollable */}
-          <div className="flex-1 min-h-0 relative overflow-hidden bg-background">
+          <div className="flex-1 min-h-[240px] relative overflow-hidden bg-background">
             <Editor
               height="100%"
               width="100%"
@@ -993,14 +1172,17 @@ export default function DebuggingWarPage() {
               onChange={(v) => handleCodeChange(v ?? "")}
               onMount={(editor, monaco) => {
                 editorRef.current = editor;
-                Object.entries(MONACO_THEMES).forEach(([themeName, themeData]) => {
-                  monaco.editor.defineTheme(themeName, themeData as any);
-                });
+                Object.entries(MONACO_THEMES).forEach(
+                  ([themeName, themeData]) => {
+                    monaco.editor.defineTheme(themeName, themeData as any);
+                  },
+                );
                 monaco.editor.setTheme(editorTheme);
               }}
               options={{
                 fontSize: 13,
-                fontFamily: "JetBrains Mono, Menlo, Monaco, 'Courier New', monospace",
+                fontFamily:
+                  "JetBrains Mono, Menlo, Monaco, 'Courier New', monospace",
                 minimap: { enabled: false },
                 scrollBeyondLastLine: false,
                 lineNumbers: "on",
@@ -1022,6 +1204,379 @@ export default function DebuggingWarPage() {
               }}
             />
           </div>
+
+          {/* Collapsible Execution & Test Results Drawer */}
+          {isConsoleOpen && (
+            <div className="h-64 sm:h-72 border-t border-border bg-card flex flex-col shrink-0 overflow-hidden animate-in slide-in-from-bottom-2 duration-150">
+              {/* Drawer Toolbar */}
+              <div className="h-9 px-3 border-b border-border bg-muted/40 flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setConsoleTab("testcases")}
+                    className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-md transition-colors ${
+                      consoleTab === "testcases"
+                        ? "bg-background text-foreground shadow-xs border border-border"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Layers size={13} />
+                    <span>Test Cases</span>
+                    {testResults && (
+                      <span
+                        className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
+                          testResults.every((r) => r.passed)
+                            ? "bg-emerald-500/10 text-emerald-500"
+                            : "bg-destructive/10 text-destructive"
+                        }`}
+                      >
+                        {testResults.filter((r) => r.passed).length}/
+                        {testResults.length}
+                      </span>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setConsoleTab("output")}
+                    className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-md transition-colors ${
+                      consoleTab === "output"
+                        ? "bg-background text-foreground shadow-xs border border-border"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Terminal size={13} />
+                    <span>Console & Output</span>
+                    {lastResult && (
+                      <span
+                        className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
+                          lastResult.status === "success"
+                            ? "bg-emerald-500/10 text-emerald-500"
+                            : "bg-destructive/10 text-destructive"
+                        }`}
+                      >
+                        {lastResult.status === "success"
+                          ? `${lastResult.executionTimeMs}ms`
+                          : "Error"}
+                      </span>
+                    )}
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-mono text-muted-foreground">
+                    <Cpu size={11} className="text-emerald-500" />
+                    <span>Local Worker</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIsConsoleOpen(false)}
+                    className="p-1 text-muted-foreground hover:text-foreground hover:bg-muted/60 rounded"
+                    title="Close console"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Drawer Content */}
+              <div className="flex-1 min-h-0 overflow-y-auto p-3 text-xs font-mono scrollbar-thin">
+                {consoleTab === "testcases" && (
+                  <div className="space-y-3">
+                    {isTesting ? (
+                      <div className="flex flex-col items-center justify-center py-8 text-center">
+                        <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mb-2" />
+                        <span className="text-xs font-medium text-foreground">
+                          Evaluating Bug Fix in Browser...
+                        </span>
+                        <span className="text-[11px] text-muted-foreground mt-0.5 font-sans">
+                          Running test cases sequentially inside client-side Web
+                          Worker.
+                        </span>
+                      </div>
+                    ) : testResults ? (
+                      <div className="space-y-3">
+                        {/* Summary Banner */}
+                        {testResults.every((r) => r.passed) ? (
+                          <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 font-bold flex items-center justify-between">
+                            <span className="flex items-center gap-1.5 font-sans">
+                              <CheckCircle2 size={15} /> All{" "}
+                              {testResults.length} Test Cases Passed! Bug
+                              Squashed 🏆
+                            </span>
+                            <span className="text-[11px] font-mono font-normal">
+                              {testResults.reduce(
+                                (acc, r) => acc + r.executionTimeMs,
+                                0,
+                              )}
+                              ms total
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="p-2.5 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive font-bold flex items-center justify-between">
+                            <span className="flex items-center gap-1.5 font-sans">
+                              <XCircle size={15} />{" "}
+                              {testResults.filter((r) => !r.passed).length} of{" "}
+                              {testResults.length} Test Cases Failed
+                            </span>
+                            <span className="text-[11px] font-sans font-normal text-muted-foreground">
+                              Inspect mismatch below
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Test Case Cards */}
+                        <div className="space-y-2">
+                          {testResults.map((tr, idx) => (
+                            <div
+                              key={tr.testCase.id || idx}
+                              className={`p-2.5 rounded-lg border ${
+                                tr.passed
+                                  ? "bg-emerald-500/5 border-emerald-500/20"
+                                  : "bg-destructive/5 border-destructive/25"
+                              }`}
+                            >
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="font-bold flex items-center gap-1.5">
+                                  {tr.passed ? (
+                                    <CheckCircle2
+                                      size={13}
+                                      className="text-emerald-500"
+                                    />
+                                  ) : (
+                                    <XCircle
+                                      size={13}
+                                      className="text-destructive"
+                                    />
+                                  )}
+                                  <span>
+                                    {tr.testCase.name || `Case #${idx + 1}`}
+                                  </span>
+                                  {tr.testCase.hidden && (
+                                    <span className="text-[10px] px-1 rounded bg-muted text-muted-foreground font-sans">
+                                      Hidden
+                                    </span>
+                                  )}
+                                </span>
+                                <span className="text-[11px] text-muted-foreground flex items-center gap-1">
+                                  <Clock size={11} /> {tr.executionTimeMs}ms
+                                </span>
+                              </div>
+
+                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px]">
+                                <div>
+                                  <span className="text-[10px] text-muted-foreground uppercase font-sans block mb-0.5">
+                                    Input:
+                                  </span>
+                                  <pre className="p-1.5 bg-muted/60 rounded overflow-x-auto max-h-16">
+                                    {tr.testCase.input || "(empty)"}
+                                  </pre>
+                                </div>
+                                <div>
+                                  <span className="text-[10px] text-muted-foreground uppercase font-sans block mb-0.5">
+                                    Expected:
+                                  </span>
+                                  <pre className="p-1.5 bg-muted/60 rounded overflow-x-auto max-h-16">
+                                    {tr.testCase.expectedOutput || "(empty)"}
+                                  </pre>
+                                </div>
+                                <div>
+                                  <span
+                                    className={`text-[10px] uppercase font-sans block mb-0.5 ${
+                                      tr.passed
+                                        ? "text-emerald-500"
+                                        : "text-destructive font-bold"
+                                    }`}
+                                  >
+                                    Actual:
+                                  </span>
+                                  <pre
+                                    className={`p-1.5 rounded overflow-x-auto max-h-16 ${
+                                      tr.passed
+                                        ? "bg-muted/60 text-foreground"
+                                        : "bg-destructive/10 text-destructive font-semibold"
+                                    }`}
+                                  >
+                                    {tr.actualOutput || "(no output)"}
+                                  </pre>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      /* Not yet run */
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between pb-1">
+                          <span className="text-xs text-muted-foreground font-sans">
+                            {selectedProblem.testCases.length} Test Cases
+                            configured for this problem.
+                          </span>
+                          <Button
+                            size="sm"
+                            disabled={isTesting || isRunning}
+                            onClick={handleRunTests}
+                            className="h-7 text-xs gap-1.5 bg-primary text-primary-foreground font-sans font-semibold"
+                          >
+                            <Play size={11} /> Run All Test Cases
+                          </Button>
+                        </div>
+
+                        <div className="space-y-2">
+                          {selectedProblem.testCases.map((tc, idx) => (
+                            <div
+                              key={tc.id || idx}
+                              className="p-2.5 rounded-lg border border-border bg-muted/20 space-y-1.5"
+                            >
+                              <div className="text-xs font-semibold text-foreground flex items-center justify-between font-sans">
+                                <span>{tc.name || `Case #${idx + 1}`}</span>
+                                {tc.hidden && (
+                                  <span className="text-[10px] text-muted-foreground">
+                                    Hidden Test
+                                  </span>
+                                )}
+                              </div>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                                <div>
+                                  <span className="text-[10px] text-muted-foreground uppercase font-sans block mb-0.5">
+                                    Input:
+                                  </span>
+                                  <pre className="p-1.5 bg-muted/60 rounded overflow-x-auto">
+                                    {tc.input}
+                                  </pre>
+                                </div>
+                                <div>
+                                  <span className="text-[10px] text-muted-foreground uppercase font-sans block mb-0.5">
+                                    Expected Output:
+                                  </span>
+                                  <pre className="p-1.5 bg-muted/60 rounded overflow-x-auto">
+                                    {tc.expectedOutput}
+                                  </pre>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {consoleTab === "output" && (
+                  <div className="space-y-3">
+                    {/* Stdin Box */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between text-[11px] text-muted-foreground font-sans">
+                        <span className="font-semibold uppercase tracking-wider">
+                          Standard Input (stdin)
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setCustomStdin(
+                                selectedProblem.testCases?.[0]?.input || "",
+                              )
+                            }
+                            className="text-[11px] text-primary hover:underline"
+                          >
+                            Use Sample Input
+                          </button>
+                          <span>•</span>
+                          <button
+                            type="button"
+                            onClick={() => setCustomStdin("")}
+                            className="text-[11px] text-muted-foreground hover:text-foreground"
+                          >
+                            Clear
+                          </button>
+                        </div>
+                      </div>
+                      <textarea
+                        value={customStdin}
+                        onChange={(e) => setCustomStdin(e.target.value)}
+                        placeholder="Enter standard input..."
+                        rows={2}
+                        className="w-full text-xs font-mono bg-muted/40 border border-border rounded p-2 text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                      />
+                    </div>
+
+                    {/* Execution Status & Output */}
+                    {isRunning ? (
+                      <div className="flex flex-col items-center justify-center py-6 text-center">
+                        <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin mb-2" />
+                        <span className="text-xs font-medium text-foreground font-sans">
+                          Executing inside Web Worker...
+                        </span>
+                      </div>
+                    ) : lastResult ? (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-[11px] text-muted-foreground font-sans">
+                          <span className="flex items-center gap-1.5">
+                            <span
+                              className={`w-2 h-2 rounded-full ${
+                                lastResult.status === "success"
+                                  ? "bg-emerald-500"
+                                  : "bg-destructive"
+                              }`}
+                            />
+                            <span className="font-semibold text-foreground capitalize">
+                              {lastResult.status.replace("_", " ")}
+                            </span>
+                            <span>•</span>
+                            <span className="font-mono">
+                              {lastResult.executionTimeMs}ms
+                            </span>
+                            <span>•</span>
+                            <span className="font-mono">
+                              Exit Code: {lastResult.exitCode}
+                            </span>
+                          </span>
+                        </div>
+
+                        {lastResult.stdout && (
+                          <div className="space-y-1">
+                            <span className="text-[10px] text-muted-foreground uppercase font-sans block">
+                              Standard Output (stdout):
+                            </span>
+                            <pre className="p-2.5 bg-muted/60 border border-border rounded text-xs whitespace-pre-wrap overflow-x-auto text-foreground">
+                              {lastResult.stdout}
+                            </pre>
+                          </div>
+                        )}
+
+                        {lastResult.stderr && (
+                          <div className="space-y-1">
+                            <span className="text-[10px] text-destructive uppercase font-sans font-bold block">
+                              Errors & Diagnostics (stderr):
+                            </span>
+                            <pre className="p-2.5 bg-destructive/10 text-destructive border border-destructive/20 rounded text-xs whitespace-pre-wrap overflow-x-auto">
+                              {lastResult.stderr}
+                            </pre>
+                          </div>
+                        )}
+
+                        {!lastResult.stdout && !lastResult.stderr && (
+                          <p className="text-xs text-muted-foreground italic font-sans">
+                            Program completed without printing any output.
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="p-4 border border-dashed border-border rounded text-center text-xs text-muted-foreground font-sans">
+                        Click{" "}
+                        <span className="font-semibold text-foreground">
+                          "Run"
+                        </span>{" "}
+                        above to execute your code with the stdin provided.
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Bottom Status Footer (h-7) */}
           <footer className="h-7 px-3 border-t border-border bg-card/40 flex items-center justify-between text-[11px] text-muted-foreground shrink-0">

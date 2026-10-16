@@ -26,6 +26,9 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(200), unique=True, index=True)
     password_hash: Mapped[str] = mapped_column(String(255))
     role: Mapped[str] = mapped_column(String(20), default="user")  # admin | user
+    is_premium: Mapped[bool] = mapped_column(Boolean, default=False)
+    premium_plan: Mapped[str] = mapped_column(String(50), nullable=True)
+    premium_expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
 
 
@@ -328,4 +331,22 @@ class QuizSubmission(Base):
     submitted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
 
     quiz: Mapped["Quiz"] = relationship(back_populates="submissions")
+    user: Mapped["User"] = relationship()
+
+
+class Payment(Base):
+    __tablename__ = "payments"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=gen_id)
+    user_id: Mapped[str] = mapped_column(String(32), ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    razorpay_order_id: Mapped[str] = mapped_column(String(100), unique=True, index=True)
+    razorpay_payment_id: Mapped[str] = mapped_column(String(100), nullable=True)
+    razorpay_signature: Mapped[str] = mapped_column(String(255), nullable=True)
+    amount: Mapped[int] = mapped_column(Integer)  # in paise
+    currency: Mapped[str] = mapped_column(String(10), default="INR")
+    status: Mapped[str] = mapped_column(String(20), default="created")  # created | paid | failed
+    plan_id: Mapped[str] = mapped_column(String(50))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc, onupdate=now_utc)
+
     user: Mapped["User"] = relationship()

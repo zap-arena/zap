@@ -103,12 +103,14 @@ Modules use **flat imports** (`from database import ...`, `import models`). `ind
 |---|---|
 | [api/routers/__init__.py](api/routers/__init__.py) | Empty; marks the directory as a package. |
 | [api/routers/auth.py](api/routers/auth.py) | `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me`. Registration always assigns the `user` role — admins are created only via the startup bootstrap or a direct DB change. |
-| [api/routers/problems.py](api/routers/problems.py) | Public problem listing/detail, admin CRUD, server-side **problem search** (`GET /api/admin/problems/search`, with LIKE wildcards escaped), and the **bulk ZIP import** endpoint (`POST /api/admin/problems/import-zip`) supporting a `dry_run` preview. Delete is a soft delete (`status = archived`). |
-| [api/routers/contests.py](api/routers/contests.py) | The largest router. Public contest list/detail; participant lifecycle (`start`, `session`, `finish`); contest problems; code-draft save/load; personal submissions; leaderboard; and admin CRUD, publish, participants and results. `compute_status()` derives `scheduled`/`active`/`completed` from the clock, and `start` returns 403 outside the contest window. Delete is a soft delete (`status = cancelled`). |
-| [api/routers/submissions.py](api/routers/submissions.py) | `POST /api/code/run` (unscored execution) and `POST /api/submissions` (full judge run). Enforces language support, contest participation, per-problem submit cooldown, and marks submissions landing after `contest.end_time` as `is_late` — those are stored but scored 0 and never update the participant's leaderboard totals. |
-| [api/routers/profile.py](api/routers/profile.py) | `GET /api/me/profile`. Aggregates the signed-in user's contests, per-contest score/solved counts, per-problem breakdown, and leaderboard rank, excluding late submissions. |
-| [api/routers/admin.py](api/routers/admin.py) | Admin reporting: platform statistics, filterable submission list, execution logs, user directory, and contest results **export to CSV/XLSX**. All routes require `require_admin`, so the export must be fetched with the auth header (not a plain link). |
-| [api/routers/public.py](api/routers/public.py) | `GET /api/public/home` — one unauthenticated call returning the landing-page snapshot (upcoming/live contests, sample problems, headline counts). |
+| [api/routers/problems.py](api/routers/problems.py) | Public problem listing/detail (`/api/public/problems` with `isProgressive=false` filter for standard problems), admin CRUD, server-side **problem search** (`GET /api/admin/problems/search`), and **bulk ZIP import** endpoint (`POST /api/admin/problems/import-zip`). |
+| [api/routers/contests.py](api/routers/contests.py) | The largest router. Public contest list/detail; participant lifecycle (`start`, `session`, `finish`); contest problems; code-draft save/load; personal submissions; leaderboard; and admin CRUD, publish, participants and results. |
+| [api/routers/submissions.py](api/routers/submissions.py) | `POST /api/code/run` (unscored execution) and `POST /api/submissions` (full judge run). Enforces language support, contest participation, per-problem submit cooldown, and marks submissions landing after `contest.end_time` as `is_late`. |
+| [api/routers/profile.py](api/routers/profile.py) | `GET /api/me/profile`. Aggregates the signed-in user's contests, per-contest score/solved counts, per-problem breakdown, leaderboard rank, active coupons, and premium subscription validity. |
+| [api/routers/payments.py](api/routers/payments.py) | Razorpay checkout integration: `/api/payments/razorpay/create-order`, `/api/payments/razorpay/verify`, coupon code verification (`/api/payments/verify-coupon`), and premium tier entitlement. |
+| [api/routers/quizzes.py](api/routers/quizzes.py) | Technical multiple-choice assessment listing, question retrieval, and score grading. |
+| [api/routers/admin.py](api/routers/admin.py) | Admin reporting: platform statistics, filterable submission list, execution logs, user directory, and contest results **export to CSV/XLSX**. |
+| [api/routers/public.py](api/routers/public.py) | `GET /api/public/home` — unauthenticated call returning the landing-page snapshot (upcoming/live contests, sample problems, headline counts). |
 
 ---
 
@@ -117,16 +119,17 @@ Modules use **flat imports** (`from database import ...`, `import models`). `ind
 | File | Purpose |
 |---|---|
 | [src/main.tsx](src/main.tsx) | React entry point. Mounts `<App/>` inside `StrictMode` and the TanStack Query provider. |
-| [src/App.tsx](src/App.tsx) | Router. Uses `HashRouter` (so deep links work on static hosting without rewrites) and defines the `RequireAuth` / `RequireAdmin` route guards. |
-| [src/index.css](src/index.css) | The design system: light/dark CSS custom properties, fonts (Plus Jakarta Sans, JetBrains Mono), and utility classes used throughout (`card-glow`, `verdict-*`, `diff-*`, `sidebar-item`). |
-| [src/App.css](src/App.css) | Effectively empty; all styling lives in `index.css`. |
-| [src/lib/api.ts](src/lib/api.ts) | The single HTTP client. Attaches the bearer token, unwraps errors into `ApiError`, clears the token on 401, and provides `get/post/put/delete`, `upload` (multipart), and `download` (authenticated blob download). Base URL is `VITE_API_BASE_URL` or `/api`. |
+| [src/App.tsx](src/App.tsx) | Router. Uses `HashRouter` and defines the `RequireAuth` / `RequireAdmin` route guards. |
+| [src/index.css](src/index.css) | The design system: light/dark CSS custom properties, fonts (Plus Jakarta Sans, JetBrains Mono), and utility classes (`card-glow`, `verdict-*`, `diff-*`, `sidebar-item`). |
+| [src/App.css](src/App.css) | Styling resets; core styles live in `index.css`. |
+| [src/lib/api.ts](src/lib/api.ts) | HTTP client. Attaches the bearer token, unwraps errors into `ApiError`, clears token on 401, provides REST helpers and authenticated downloads. |
 | [src/lib/utils.ts](src/lib/utils.ts) | `cn()` — merges Tailwind classes via `clsx` + `tailwind-merge`. |
-| [src/types/index.ts](src/types/index.ts) | Shared TypeScript interfaces mirroring the API payloads (`Problem`, `TestCase`, `Contest`, `ContestProblem`, `ContestModerator`, `Submission`, `LeaderboardEntry`, …). |
-| [src/store/auth.ts](src/store/auth.ts) | Minimal pub/sub auth store (no state library). Persists the JWT in `localStorage`, restores the session via `/auth/me`, and exposes `useAuth()` with `login`/`register`/`logout`. |
-| [src/store/theme.ts](src/store/theme.ts) | Pub/sub dark-mode store. Persists to `localStorage` under `zap-theme` and toggles the `dark` class on `<html>`. |
-| [src/hooks/use-mobile.tsx](src/hooks/use-mobile.tsx) | `useIsMobile()` — media-query hook for the ≤767px breakpoint, used by the sidebar. |
-| `src/assets/` | Empty. The template SVGs it held were unused and have been removed. |
+| [src/types/index.ts](src/types/index.ts) | Shared TypeScript interfaces mirroring API payloads. |
+| [src/data/problems.ts](src/data/problems.ts) | API problem adapter (`adaptApiProblem`), category mapping, tags normalization, and boilerplates. |
+| [src/store/auth.ts](src/store/auth.ts) | Pub/sub auth store with JWT in `localStorage`, `/auth/me` session restore, and premium state. |
+| [src/store/theme.ts](src/store/theme.ts) | Pub/sub dark-mode store (`zap-theme` in `localStorage`). |
+| [src/store/submissions.ts](src/store/submissions.ts) | Client-side store tracking user submission history and local execution results. |
+| [src/hooks/use-mobile.tsx](src/hooks/use-mobile.tsx) | `useIsMobile()` — media-query hook for responsive breakpoints. |
 | [public/vite.svg](public/vite.svg) | Favicon referenced by `index.html`. |
 
 ---
@@ -135,14 +138,26 @@ Modules use **flat imports** (`from database import ...`, `import models`). `ind
 
 | File | Purpose |
 |---|---|
-| [src/pages/HomePage.tsx](src/pages/HomePage.tsx) | Public landing page: hero, platform stats, live/upcoming contests and featured problems, driven by `/api/public/home`. |
-| [src/pages/LoginPage.tsx](src/pages/LoginPage.tsx) | Split-layout sign-in form with password visibility toggle and redirect-back-to-referrer. |
-| [src/pages/RegisterPage.tsx](src/pages/RegisterPage.tsx) | Self-service registration (min 8-character password). New accounts always get the `user` role. |
-| [src/pages/ContestEntryPage.tsx](src/pages/ContestEntryPage.tsx) | Pre-contest briefing: description, problem summary, admin-authored **instructions**, and the Start Contest button that begins the participant's timer. |
-| [src/pages/ContestWorkspacePage.tsx](src/pages/ContestWorkspacePage.tsx) | The contest IDE. Monaco editor with per-language boilerplate, resizable panels for statement/submissions/leaderboard, custom stdin, Run and Submit, countdown timer, fullscreen mode, and periodic refetching of submissions and leaderboard. |
-| [src/pages/ContestResultPage.tsx](src/pages/ContestResultPage.tsx) | Post-contest summary: final score, rank, problems solved, and a per-problem results table. |
-| [src/pages/ProfilePage.tsx](src/pages/ProfilePage.tsx) | Candidate profile at `/profile`. Shows lifetime stats (contests, problems solved, total score, acceptance rate) and, per contest, the rank, score, and which problems were solved/attempted. |
-| [src/pages/NotFound.tsx](src/pages/NotFound.tsx) | 404 card with a link home. |
+| [src/pages/HomePage.tsx](src/pages/HomePage.tsx) | Public landing page: hero, platform stats, live/upcoming contests and featured problems. |
+| [src/pages/LoginPage.tsx](src/pages/LoginPage.tsx) | Sign-in form with password visibility toggle and redirect back. |
+| [src/pages/RegisterPage.tsx](src/pages/RegisterPage.tsx) | Self-service registration (min 8-character password). |
+| [src/pages/ForgotPasswordPage.tsx](src/pages/ForgotPasswordPage.tsx) | Password reset flow. |
+| [src/pages/ProblemsPage.tsx](src/pages/ProblemsPage.tsx) | Problems directory fetching live database problems from `/api/public/problems?isProgressive=false` (excluding progressive chains), category chips, difficulty filters, and random problem picker. |
+| [src/pages/ProblemWorkspacePage.tsx](src/pages/ProblemWorkspacePage.tsx) | Standalone practice IDE fetching `/api/public/problems/:slug`. Powered by client-side WebAssembly execution (Python, C++, Java, C), testcase diff viewer, custom stdin, and next/previous problem navigation. |
+| [src/pages/ContestsPage.tsx](src/pages/ContestsPage.tsx) | Contest directory showing live, upcoming, and archived competitions. |
+| [src/pages/ContestEntryPage.tsx](src/pages/ContestEntryPage.tsx) | Pre-contest briefing: description, rules, admin instructions, and timer start. |
+| [src/pages/ContestWorkspacePage.tsx](src/pages/ContestWorkspacePage.tsx) | Contest IDE with Monaco editor, live countdown timer, fullscreen lockdown, submission tab, and live leaderboard. |
+| [src/pages/ContestResultPage.tsx](src/pages/ContestResultPage.tsx) | Post-contest summary: score, rank, breakdown per problem. |
+| [src/pages/CodeWarPage.tsx](src/pages/CodeWarPage.tsx) | Multi-stage coding arena running progressive chain problems (`is_progressive: true`). |
+| [src/pages/DebuggingWarPage.tsx](src/pages/DebuggingWarPage.tsx) | Real-time code bug finding and fixing battleground. |
+| [src/pages/CurriculumDSAPage.tsx](src/pages/CurriculumDSAPage.tsx) | DSA curriculum tracks and interactive module visualizers (gated by Razorpay premium). |
+| [src/pages/WasmPlaygroundPage.tsx](src/pages/WasmPlaygroundPage.tsx) | Zero-latency browser playground executing C, C++, Python, and Java via WASM. |
+| [src/pages/SqlWorkflowPage.tsx](src/pages/SqlWorkflowPage.tsx) | Interactive SQL challenge and query execution workbench. |
+| [src/pages/WorkflowPuzzlePage.tsx](src/pages/WorkflowPuzzlePage.tsx) | Logic and pipeline workflow problem solving page. |
+| [src/pages/QuizListPage.tsx](src/pages/QuizListPage.tsx) | Multiple-choice quiz catalog. |
+| [src/pages/QuizTakingPage.tsx](src/pages/QuizTakingPage.tsx) | Quiz taking screen with countdown timer and instant evaluation. |
+| [src/pages/ProfilePage.tsx](src/pages/ProfilePage.tsx) | Innovative minimalist profile page: tracks subscription validity, available coupons with copy-to-clipboard, lifetime stats, and contest performance. |
+| [src/pages/NotFound.tsx](src/pages/NotFound.tsx) | 404 card with link to home. |
 
 ## `src/pages/admin/` — admin pages
 
@@ -208,8 +223,8 @@ What remains questionable:
 
 | Path | Status |
 |---|---|
-| [README.md](README.md) | Still the stock Vite template \u2014 no project content. Worth replacing with real setup instructions. |
-| [context.md](context.md) | Design notes that have drifted from reality (references mock fixtures that no longer exist; claims Monaco is unavailable although it is a dependency). |
+| [README.md](README.md) | Still the stock Vite template — no project content. |
+| [context.md](context.md) | **Active & up-to-date.** System context, architecture, API endpoints, WASM runner, payments, and progressive problem handling. |
 | [bun.lock](bun.lock) + [package-lock.json](package-lock.json) | Two package managers' lockfiles coexist. The project is driven with npm; keeping both risks dependency drift. |
 | [bundle-artifact.sh](bundle-artifact.sh) | The only consumer of `render/`, which no longer exists. Unused by Vercel and invokes `pnpm`. |
 
@@ -243,4 +258,3 @@ Excluded from git and from Vercel uploads; recreate them locally as needed.
 
 - **Moderators are cosmetic.** `ContestModerator` rows are stored and displayed, but every admin route still checks `require_admin`, so being a moderator grants no additional access.
 - **Cold-start DDL.** `create_all` plus the admin bootstrap run on every cold start, adding latency on serverless.
-- **`README.md` and `context.md` are out of date** relative to this document.

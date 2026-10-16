@@ -1,7 +1,9 @@
-import { LayoutDashboard, LogOut, Menu, User } from "lucide-react";
+import { Crown, LayoutDashboard, LogOut, Menu, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../store/auth";
+import { usePremiumStatus } from "../lib/premiumStore";
+import UpgradeModal from "./UpgradeModal";
 import ThemeColorPicker from "./ThemeColorPicker";
 import ThemeToggle from "./ThemeToggle";
 import { ThunderLogo } from "./ThunderLogo";
@@ -19,16 +21,20 @@ import { Sheet, SheetClose, SheetContent, SheetTrigger } from "./ui/sheet";
 const NAV_LINKS = [
   { to: "/", label: "Home" },
   { to: "/curriculum/dsa", label: "Courses" },
+  { to: "/problems", label: "Problems" },
   { to: "/contests", label: "Contests" },
   { to: "/quizzes", label: "Quizzes" },
   { to: "/codewar", label: "CodeWar", badge: "NEW" },
+  { to: "/wasm-playground", label: "IDE" },
 ];
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const { isPremium } = usePremiumStatus();
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -80,6 +86,22 @@ export default function Navbar() {
       <div className="hidden md:block flex-1" />
 
       <div className="hidden md:flex items-center gap-3">
+        {isPremium ? (
+          <span className="flex items-center gap-1.5 text-xs font-black px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-500/20 to-amber-600/10 text-amber-500 border border-amber-500/30 shadow-sm">
+            <Crown className="w-3.5 h-3.5 fill-amber-500" />
+            PRO
+          </span>
+        ) : (
+          <Button
+            size="sm"
+            onClick={() => setUpgradeOpen(true)}
+            className="rounded-full h-8 px-3 text-xs font-bold bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 border-0 shadow-sm gap-1.5 transition-transform hover:scale-105"
+          >
+            <Crown className="w-3.5 h-3.5 fill-slate-950" />
+            Get Pro
+          </Button>
+        )}
+
         <ThemeColorPicker />
         <ThemeToggle />
 
@@ -255,6 +277,8 @@ export default function Navbar() {
           </SheetContent>
         </Sheet>
       </div>
+
+      <UpgradeModal open={upgradeOpen} onOpenChange={setUpgradeOpen} />
     </nav>
   );
 }

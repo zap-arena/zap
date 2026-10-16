@@ -6,6 +6,9 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
+  isPremium?: boolean;
+  premiumPlan?: string;
+  premiumExpiresAt?: string;
 }
 
 export type Difficulty = "Easy" | "Medium" | "Hard";

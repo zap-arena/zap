@@ -1,9 +1,27 @@
 import type React from "react";
 import { useState } from "react";
+import { Crown, Lock } from "lucide-react";
 import Navbar from "../components/Navbar";
+import { Button } from "../components/ui/button";
+import { usePremiumStatus } from "../lib/premiumStore";
+import UpgradeModal from "../components/UpgradeModal";
 
 export default function CurriculumDSAPage() {
   const [activeTab, setActiveTab] = useState("dsa");
+  const { isPremium } = usePremiumStatus();
+  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
+
+  const handleModuleContainerClick = (e: React.MouseEvent) => {
+    if (!isPremium) {
+      const target = e.target as HTMLElement;
+      const anchor = target.closest("a.btn-open");
+      if (anchor) {
+        e.preventDefault();
+        e.stopPropagation();
+        setUpgradeModalOpen(true);
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -11,13 +29,57 @@ export default function CurriculumDSAPage() {
 
       <div className="container">
         <section className="hero">
-          <span className="hero-tag">Complete Course Companion</span>
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-2">
+            <span className="hero-tag">Complete Course Companion</span>
+            {isPremium ? (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-bold">
+                <Crown className="w-3.5 h-3.5 fill-emerald-400" />
+                ZAP PRO ACTIVE — All Guides Unlocked
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 text-xs font-bold">
+                <Crown className="w-3.5 h-3.5 fill-amber-400" />
+                ZAP Pro Course Track
+              </span>
+            )}
+          </div>
+
           <h1 className="hero-title">Master Data Structures & Algorithms</h1>
           <p className="hero-subtitle">
             Interactive problem banks, deep-dive pattern guides, step-by-step
             code walkthroughs in Java & Python, and curated homework problem
             sets.
           </p>
+
+          {!isPremium && (
+            <div className="mt-6 mb-8 p-4 sm:p-5 rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-500/15 via-amber-500/5 to-card flex flex-col sm:flex-row sm:items-center justify-between gap-4 max-w-3xl mx-auto shadow-sm text-left">
+              <div className="flex items-start sm:items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0">
+                  <Lock className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-sm text-foreground">
+                      Full Course Access Requires ZAP Pro
+                    </span>
+                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-amber-500 text-slate-950">
+                      PRO PASS
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Unlock all 13 core DSA guides, walkthroughs, visual animations, and homework sets via Razorpay.
+                  </p>
+                </div>
+              </div>
+              <Button
+                onClick={() => setUpgradeModalOpen(true)}
+                className="h-9 px-4 font-bold text-xs bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 border-0 shadow-sm shrink-0 gap-1.5"
+              >
+                <Crown className="w-4 h-4 fill-slate-950" />
+                Unlock with Razorpay
+              </Button>
+            </div>
+          )}
 
           <div className="stats-grid">
             <div className="stat-card">
@@ -39,7 +101,7 @@ export default function CurriculumDSAPage() {
           </div>
         </section>
 
-        <section id="modules">
+        <section id="modules" onClickCapture={handleModuleContainerClick}>
           <div className="section-header">
             <h2 className="section-title">📚 Course Modules & Topic Guides</h2>
             <p className="section-desc">
@@ -1793,6 +1855,12 @@ export default function CurriculumDSAPage() {
           </div>
         </section> */}
       </div>
+
+      <UpgradeModal
+        open={upgradeModalOpen}
+        onOpenChange={setUpgradeModalOpen}
+        sourceContext="courses"
+      />
     </div>
   );
 }

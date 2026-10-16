@@ -6,8 +6,8 @@
   "scripts": {
     "setup": "powershell -ExecutionPolicy Bypass -File ./setup.ps1",
     "dev": "vite",
-    "api": "api/.venv/Scripts/python.exe -m uvicorn index:app --app-dir api --reload --reload-dir api --port 8000",
-    "seed": "api/.venv/Scripts/python.exe api/seed.py",
+    "api": "api/.venv/bin/uvicorn index:app --app-dir api --reload --reload-dir api --port 8000 || api/.venv/Scripts/python.exe -m uvicorn index:app --app-dir api --reload --reload-dir api --port 8000 || uvicorn index:app --app-dir api --reload --reload-dir api --port 8000",
+    "seed": "api/.venv/bin/python api/seed.py || api/.venv/Scripts/python.exe api/seed.py || python3 api/seed.py",
     "build": "tsc -b && vite build",
     "typecheck": "tsc --noEmit",
     "lint": "biome lint .",
@@ -53,6 +53,7 @@
     "date-fns": "^4.4.0",
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.5.0",
+    "JSCPP": "^2.0.9",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.8",
     "leaflet": "^1.9.4",

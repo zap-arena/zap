@@ -99,7 +99,15 @@ def my_profile(db: Session = Depends(get_db), user: models.User = Depends(get_cu
     contests_out.sort(key=lambda c: c["startTime"], reverse=True)
 
     return {
-        "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role},
+        "user": {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "role": user.role,
+            "isPremium": bool(user.is_premium),
+            "premiumPlan": user.premium_plan,
+            "premiumExpiresAt": user.premium_expires_at.isoformat() if user.premium_expires_at else None,
+        },
         "stats": {
             "contestsRegistered": len(contests_out),
             "contestsCompleted": sum(1 for c in contests_out if c["participantStatus"] in ("completed", "auto_completed")),
