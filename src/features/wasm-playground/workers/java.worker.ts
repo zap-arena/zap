@@ -51,13 +51,28 @@ class JavaScanner {
     return val;
   }
 
-  nextFloat(): number {
-    return this.nextDouble();
+  hasNextLine(): boolean {
+    return this.hasNext();
+  }
+
+  nextBoolean(): boolean {
+    const s = this.next().toLowerCase();
+    if (s === "true") return true;
+    if (s === "false") return false;
+    throw new Error("InputMismatchException: Expected boolean input.");
   }
 
   nextLine(): string {
     if (!this.hasNext()) return "";
     return this.tokens.slice(this.index++).join(" ");
+  }
+
+  close(): void {
+    // Standard Java Scanner close method
+  }
+
+  reset(): this {
+    return this;
   }
 }
 
@@ -203,6 +218,12 @@ function transpileJavaToJs(sourceCode: string): string {
   // 1. Strip package and import statements
   code = code.replace(/package\s+[\w.]+;/g, "");
   code = code.replace(/import\s+[\w.*]+;/g, "");
+
+  // 1b. Support try-with-resources: try (Scanner sc = new Scanner(...)) { -> let sc = new Scanner(System.in); try {
+  code = code.replace(
+    /try\s*\(\s*(?:Scanner\s+)?(\w+)\s*=\s*new\s+Scanner\([^)]*\)\s*\)\s*\{/g,
+    "let $1 = new Scanner(System.in); try {"
+  );
 
   // 2. Convert Java lambdas: (a, b) -> expr ==> (a, b) => expr
   code = code.replace(/(\([^)]*\)|\w+)\s*->\s*/g, "$1 => ");

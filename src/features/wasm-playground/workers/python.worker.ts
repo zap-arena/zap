@@ -33,11 +33,38 @@ async function getPyodide(): Promise<PyodideInterface> {
       indexURL: "https://cdn.jsdelivr.net/pyodide/v0.27.2/full/",
     });
 
-    // Initialize core standard library helpers
+    // Initialize core standard library helpers and register counter module/builtins
     await py.runPythonAsync(`
 import sys
 import io
 import traceback
+import collections
+import types
+import builtins
+
+# Alias counter on collections so 'from collections import counter' works
+collections.counter = collections.Counter
+
+# Virtual module 'counter' so 'import counter', 'from counter import ...' works
+class _CounterModule(types.ModuleType):
+    def __call__(self, *args, **kwargs):
+        return collections.Counter(*args, **kwargs)
+
+_counter_mod = _CounterModule("counter")
+_counter_mod.Counter = collections.Counter
+_counter_mod.counter = collections.Counter
+for _attr in dir(collections):
+    if not hasattr(_counter_mod, _attr):
+        try:
+            setattr(_counter_mod, _attr, getattr(collections, _attr))
+        except Exception:
+            pass
+
+sys.modules["counter"] = _counter_mod
+sys.modules["Counter"] = _counter_mod
+
+builtins.Counter = collections.Counter
+builtins.counter = collections.Counter
 `);
 
     pyodideInstance = py;
@@ -78,6 +105,8 @@ self.onmessage = async (event: MessageEvent) => {
 import sys
 import io
 import traceback
+import collections
+import builtins
 
 sys.stdin = io.StringIO(__raw_stdin__)
 _out_stream = io.StringIO()
@@ -93,6 +122,8 @@ try:
         "__name__": "__main__",
         "__doc__": None,
         "__package__": None,
+        "Counter": builtins.Counter,
+        "counter": builtins.counter,
     }
     exec(compile(__raw_code__, "<user_code>", "exec"), _user_globals)
 except SystemExit as se:
