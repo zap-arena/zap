@@ -11,9 +11,8 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "lint": "biome lint .",
-    "format": "biome format --write .",
-    "check": "biome check --write ."
+    "lint": "eslint .",
+    "format": "eslint . --fix"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
@@ -75,7 +74,6 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.12",
     "@eslint/js": "^9.39.5",
     "@types/leaflet": "^1.9.22",
     "@types/node": "^24.19.0",

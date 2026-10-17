@@ -88,7 +88,7 @@ pnpm tsc --noEmit
 pnpm build
 
 # Start frontend dev server
-pnpm run dev --port 5173
+pnpm run dev --port 5115
 
 # Start backend dev server
 cd api && .venv/bin/uvicorn index:app --reload --port 8000
