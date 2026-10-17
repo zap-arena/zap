@@ -243,4 +243,4 @@ Excluded from git and from Vercel uploads; recreate them locally as needed.
 
 - **Moderators are cosmetic.** `ContestModerator` rows are stored and displayed, but every admin route still checks `require_admin`, so being a moderator grants no additional access.
 - **Cold-start DDL.** `create_all` plus the admin bootstrap run on every cold start, adding latency on serverless.
-- **`README.md` and `context.md` are out of date** relative to this document.
+- **Feature Flags.** Experimental features like `conceptStory.showDeck` and specific reel action buttons are gated via `src/config/features.ts`.
