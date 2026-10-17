@@ -16,6 +16,7 @@ import {
   validPalindromeApproaches,
 } from "../../components/guide/twoPointerVisualizations";
 import Navbar from "../../components/Navbar";
+import ConceptStoryDeck from "../../components/guide/ConceptStoryDeck";
 import { useGuideLogic } from "../../hooks/useGuideLogic";
 
 export default function TwoPointerDsaGuidePage() {
@@ -29,6 +30,9 @@ export default function TwoPointerDsaGuidePage() {
           <div className="sidebar-title">Two Pointers</div>
           <div className="side-group">
             <div className="side-group-label">Reference</div>
+            <a className="side-link" href="#concept-story">
+              ✨ Concept Story (4-Beat)
+            </a>
             <a className="side-link" href="#toolkit">
               How two pointers work
             </a>
@@ -125,6 +129,18 @@ export default function TwoPointerDsaGuidePage() {
           </div>
 
           <div className="content">
+            <section className="question" id="concept-story">
+              <ConceptStoryDeck
+                storyId="two-pointer"
+                onJumpToVisualizer={() => {
+                  const targetBtn = document.querySelector<HTMLAnchorElement>(
+                    '.side-link[href="#toolkit"]',
+                  );
+                  targetBtn?.click();
+                }}
+              />
+            </section>
+
             <div className="intro">
               <h1>Two pointers, basic to medium</h1>
               <p>

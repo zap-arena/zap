@@ -1,6 +1,7 @@
 import type React from "react";
 import { useState } from "react";
 import Navbar from "../components/Navbar";
+import AlgoReelsTray from "../components/reels/AlgoReelsTray";
 
 export default function CurriculumDSAPage() {
   const [activeTab, setActiveTab] = useState("dsa");
@@ -38,6 +39,8 @@ export default function CurriculumDSAPage() {
             </div>
           </div>
         </section>
+
+        <AlgoReelsTray />
 
         <section id="modules">
           <div className="section-header">
