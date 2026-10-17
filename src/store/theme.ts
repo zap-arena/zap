@@ -13,6 +13,7 @@ const getInitial = (): Theme => {
 };
 
 const applyTheme = (theme: Theme) => {
+  if (typeof document === 'undefined') return;
   const root = document.documentElement;
   if (theme === "dark") {
     root.classList.add("dark");
@@ -21,7 +22,7 @@ const applyTheme = (theme: Theme) => {
     root.classList.remove("dark");
     root.classList.add("light");
   }
-  localStorage.setItem(STORAGE_KEY, theme);
+  if (typeof localStorage !== 'undefined') localStorage.setItem(STORAGE_KEY, theme);
 };
 
 // Apply immediately on load (avoids flash)
@@ -221,6 +222,7 @@ export const accentHex = (a: Accent): string =>
   hslToHex(a.dot.h, a.dot.s, a.dot.l);
 
 const applyAccent = (a: Accent) => {
+  if (typeof document === 'undefined') return;
   const root = document.documentElement;
   const shade = _theme === "dark" ? a.dark : a.light;
   const { h, s, l } = parseHsl(shade.primary);
@@ -240,7 +242,7 @@ const applyAccent = (a: Accent) => {
     "--shadow-glow",
     `0 0 30px hsl(${h} ${s}% ${l}% / 0.2)`,
   );
-  localStorage.setItem(ACCENT_KEY, a.id);
+  if (typeof localStorage !== 'undefined') localStorage.setItem(ACCENT_KEY, a.id);
 };
 
 const getInitialAccent = (): Accent => {

@@ -28,7 +28,7 @@ async function loadCurrentUser() {
     notify();
   }
 }
-void loadCurrentUser();
+if (typeof window !== 'undefined') void loadCurrentUser();
 
 export const authStore = {
   getUser: () => _user,
