@@ -1,64 +1,64 @@
-# ZAP — Context
+# ZAP — Context & Architecture
+
+## Overview
+ZAP (**[codezap.in](https://codezap.in)**) is an active, tinker-first online coding and DSA mastery platform built to overcome traditional tutorial fatigue and passive AI chatbot spoonfeeding. It combines interactive algorithmic visualizers, TikTok-style DSA micro-learning reels, 4-beat concept narrative decks, a real-time contest arena, and an administrative contest management system.
+
+## Domain & Deployment
+- Production Site: `https://codezap.in`
+- API Proxy: Vercel serverless function rewrite `/api/*` to FastAPI backend; in local dev, Vite proxies `/api` to `localhost:8000`.
 
 ## Design System
-- Dark IDE aesthetic: near-black (#0d1117 GitHub-style) + electric teal primary
+- Dark IDE aesthetic: near-black (`#0d1117` GitHub-style) + electric teal primary
+- Light/Dark mode support: via `src/store/theme.ts` pub-sub store + localStorage (`zap-theme`) on `<html class="dark">`
 - Fonts: Plus Jakarta Sans (UI) + JetBrains Mono (code/mono)
-- Custom CSS tokens in index.css: verdict-*, diff-*, surface-*, card-glow, sidebar-item
-- Tailwind extended with success/warning/info colors
+- Custom CSS tokens in `src/index.css`: `verdict-*`, `diff-*`, `surface-*`, `card-glow`, `sidebar-item`, glassmorphism utilities
+- Tailwind CSS extended with status colors and responsive breakpoints
 
-## Pages & Routes (HashRouter)
-- `/` → HomePage (landing, contest list, problems list)
-- `/login` → LoginPage (split layout)
-- `/register` → RegisterPage
-- `/contest/:slug` → ContestEntryPage (pre-start, instructions)
-- `/contest/:contestId/workspace` → ContestWorkspacePage (full IDE)
-- `/contest/:contestId/result` → ContestResultPage
-- `/admin` → AdminDashboard
-- `/admin/problems` → AdminProblems (CRUD + import dialog)
-- `/admin/contests` → AdminContests (list + create dialog)
-- `/admin/contests/:id` → AdminContestDetail (results + export CSV/XLSX)
-- `/admin/participants` → AdminParticipants (with detail dialog)
-- `/admin/submissions` → AdminSubmissions (with source code view)
-- `/admin/logs` → AdminLogs (execution audit trail)
-- `/admin/users` → AdminUsers
+## Feature Flag Management (`src/config/features.ts`)
+Centralized, typed feature toggles controllable via environment variables (`VITE_*`) with safe default fallbacks:
+- `FEATURES.reels.showLikeButton` (`VITE_FEATURE_REELS_LIKE`, default: `false`)
+- `FEATURES.reels.showSolveButton` (`VITE_FEATURE_REELS_SOLVE`, default: `false`)
+- `FEATURES.reels.showGuideButton` (`VITE_FEATURE_REELS_GUIDE`, default: `false`)
+- `FEATURES.conceptStory.showDeck` (`VITE_FEATURE_CONCEPT_STORY`, default: `false`)
+Always gate unreleased or unstable interactive UI experiments through this config.
 
-## Components
-- `Navbar` — top nav for public pages
-- `AdminLayout` — sidebar layout for all admin pages
-- `ContestTimer` — countdown with urgent animation
-- `VerdictBadge` — color-coded verdict chips
-- `DifficultyBadge` — Easy/Medium/Hard chips
-- `CodeEditor` — textarea-based editor with line numbers, tab support
+## Core Features & Subsystems
 
-## Auth Store (src/store/auth.ts)
-- Lightweight pub/sub store, no zustand
-- Demo: admin@codearena.io → admin role; any email → user role
-- `useAuth()` hook
+### 1. Interactive DSA Guides (`src/pages/guide/`)
+Curated deep-dive guides for core algorithmic patterns:
+- `/guide/sliding-window` — Sliding Window guide with live visualizer
+- `/guide/two-pointer` — Two Pointers guide with interactive pointer controls
+- Other guides: `/guide/graphs`, `/guide/trees`, `/guide/hashing`, `/guide/sdlc`, `/guide/queues`
+- **Focus Mode Engine (`src/hooks/useGuideLogic.ts`)**: Single-problem focus mode with keyboard navigation (`←`/`→`), auto-sidebar synchronization, and question progress counters.
 
-## Mock Data (src/data/mock.ts)
-- 5 problems, 3 contests, 5 participants, 7 submissions, 4 exec logs, leaderboard
+### 2. AlgoReels Micro-Learning (`src/components/reels/`)
+Instagram/TikTok-style swipeable algorithmic micro-bites designed for modern attention spans:
+- `src/components/reels/AlgoReelsPlayer.tsx`: Vertical swipe & scroll container, keyboard navigation (`ArrowUp`/`ArrowDown`), progress bars, trivia card interactions. Rendered via React `createPortal` to `document.body` for glitch-free fullscreen on mobile viewports.
+- `src/components/reels/AlgoReelsTray.tsx`: Horizontal reel preview tray on the home page.
+- `src/data/algoReels.ts`: 9 curated topics (Two Pointers, Sliding Window, HashMaps, Binary Search, Trees, Dynamic Programming, Graphs, Bit Manipulation, Sorting/Greedy).
+- `src/lib/soundEffects.ts`: Synthesized Web Audio API 8-bit sound effects (zero audio assets, 100% code-driven: pop, success, error, swipe, fanfare).
 
-## Key Decisions
-- No Monaco npm package (not pre-installed) → custom textarea editor with line numbers
-- All contest workspace state is local (mock); backend integration stub-ready
-- All admin routes protected by RequireAdmin guard
+### 3. 4-Beat Concept Stories (`src/components/guide/ConceptStoryDeck.tsx`)
+Narrative-driven 4-card mental model decks:
+1. **Disaster**: Real-world catastrophe or engineering constraint
+2. **The Trap**: The naive $O(N^2)$ failure
+3. **The Epiphany**: Visual spatial trick
+4. **The Blueprint**: Reusable boilerplate code formula
+- Data: `src/data/conceptStories.ts`
+- Gated via `FEATURES.conceptStory.showDeck`
 
-## Theme
-- Light/dark mode via `src/store/theme.ts` pub-sub store + localStorage
-- Toggle persists as `zap-theme` in localStorage, applied on `<html>` class
-- `ThemeToggle` component in Navbar, AdminLayout sidebar, Workspace topbar
-- Light mode is `:root` default; dark mode is `.dark` class override
+### 4. Contest Arena & CodeWar (`src/pages/`)
+- `/contest/:slug` → Contest entry & instructions
+- `/contest/:contestId/workspace` → Fullscreen competitive coding IDE (Monaco Editor, multi-language support: Python, C++, Java, C, live testcase runner)
+- `/codewar` → Live real-time debugging battleground
+- `/contest/:contestId/result` → Detailed submission verdicts and leaderboard
 
-## Recent Changes
-- Fixed: Navbar.tsx was missing `import ThemeToggle` (caused ReferenceError crash)
-- TestCase type now has `marks: number` (0 for samples, editable for hidden)
-- Mock data updated with marks on all test cases
-- AdminProblems: expand/collapse all test cases; marks input per hidden TC; auto-reset marks to 0 on toggle to public
-- ContestWorkspacePage: Reset button in editor toolbar resets code to boilerplate with toast
-- ContestWorkspacePage: Auto-enters fullscreen on contest start; fullscreen toggle button in topbar (Maximize/Minimize)
-- All 4 languages (C, C++, Java, Python) supported in workspace + boilerplates in mock
+### 5. Admin Suite (`src/pages/admin/`)
+- Dashboard, Problem Bank CRUD + JSON/Markdown importer, Contest scheduling, Submissions viewer, Execution audit logs, and Analytics.
 
-## TODOs
-- Wire to real FastAPI backend
-- Add Monaco npm package when available
-- Implement real autosave debounce endpoint calls
+## Tech Stack
+- **Frontend**: React 19, TypeScript, Vite, Tailwind CSS, Monaco Editor (`@monaco-editor/react`), Lucide React, Sonner toasts.
+- **Backend**: FastAPI (`api/index.py`), SQLAlchemy, PostgreSQL, Python 3.11+.
+- **Execution Judge**: Outbound HTTP integration with self-hosted Piston sandbox.
+- **Verification**: `pnpm tsc --noEmit` and `pnpm build` must always pass with 0 errors.
+
