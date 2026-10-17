@@ -13,7 +13,9 @@ import {
   minWindowSubstringApproaches,
 } from "../../components/guide/slidingWindowVisualizations";
 import Navbar from "../../components/Navbar";
+import ConceptStoryDeck from "../../components/guide/ConceptStoryDeck";
 import { useGuideLogic } from "../../hooks/useGuideLogic";
+import { FEATURES } from "../../config/features";
 
 export default function SlidingWindowDsaGuidePage() {
   useGuideLogic();
@@ -26,6 +28,12 @@ export default function SlidingWindowDsaGuidePage() {
           <div className="sidebar-title">Sliding Window</div>
           <div className="side-group">
             <div className="side-group-label">Reference</div>
+            {/* 4-Beat Concept Story link gated by features flag */}
+            {FEATURES.conceptStory.showDeck && (
+              <a className="side-link" href="#concept-story">
+                ✨ Concept Story (4-Beat)
+              </a>
+            )}
             <a className="side-link" href="#toolkit">
               How sliding window works
             </a>
@@ -113,6 +121,21 @@ export default function SlidingWindowDsaGuidePage() {
           </div>
 
           <div className="content">
+            {/* 4-Beat Concept Story Deck - disabled by default via FEATURES.conceptStory.showDeck */}
+            {FEATURES.conceptStory.showDeck && (
+              <section className="question" id="concept-story">
+                <ConceptStoryDeck
+                  storyId="sliding-window"
+                  onJumpToVisualizer={() => {
+                    const targetBtn = document.querySelector<HTMLAnchorElement>(
+                      '.side-link[href="#toolkit"]',
+                    );
+                    targetBtn?.click();
+                  }}
+                />
+              </section>
+            )}
+
             <div className="intro">
               <h1>Sliding window, basic to medium</h1>
               <p>
