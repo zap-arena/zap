@@ -18,6 +18,10 @@ export interface FeatureFlags {
     /** Show full curriculum guide deep-link button on reels (default: false) */
     showGuideButton: boolean;
   };
+  conceptStory: {
+    /** Show 4-beat concept story deck on guide pages (default: false) */
+    showDeck: boolean;
+  };
 }
 
 /**
@@ -29,6 +33,9 @@ export const FEATURES: FeatureFlags = {
     showLikeButton: parseEnvBool(import.meta.env.VITE_FEATURE_REELS_LIKE, false),
     showSolveButton: parseEnvBool(import.meta.env.VITE_FEATURE_REELS_SOLVE, false),
     showGuideButton: parseEnvBool(import.meta.env.VITE_FEATURE_REELS_GUIDE, false),
+  },
+  conceptStory: {
+    showDeck: parseEnvBool(import.meta.env.VITE_FEATURE_CONCEPT_STORY, false),
   },
 };
 
