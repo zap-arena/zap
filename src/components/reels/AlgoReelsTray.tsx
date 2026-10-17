@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useMemo } from "react";
 import { Play, Flame } from "lucide-react";
 import { ALGO_REELS, REEL_CATEGORIES } from "../../data/algoReels";

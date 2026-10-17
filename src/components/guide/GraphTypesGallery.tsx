@@ -1,3 +1,5 @@
+"use client"
+
 interface MiniNode {
   id: string;
   x: number;

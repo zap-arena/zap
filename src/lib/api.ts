@@ -1,4 +1,6 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
+"use client"
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "/api";
 const TOKEN_KEY = "codearena_token";
 
 export function getToken(): string | null {

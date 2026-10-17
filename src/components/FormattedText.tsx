@@ -1,3 +1,5 @@
+"use client"
+
 interface FormattedTextProps {
   text: string;
   className?: string;

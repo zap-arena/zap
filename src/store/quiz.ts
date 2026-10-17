@@ -1,3 +1,4 @@
+"use client"
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Quiz, QuizSubmission } from "../types/quiz";

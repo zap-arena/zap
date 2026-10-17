@@ -1,3 +1,5 @@
+"use client"
+
 import type { Verdict } from "../types";
 
 const config: Record<Verdict, { label: string; className: string }> = {

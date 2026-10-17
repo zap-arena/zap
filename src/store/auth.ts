@@ -1,3 +1,5 @@
+"use client"
+
 import { useEffect, useState } from "react";
 import { ApiError, api, getToken, setToken } from "../lib/api";
 import type { User } from "../types";

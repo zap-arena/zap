@@ -1,3 +1,5 @@
+"use client"
+
 import { useId, useMemo } from "react";
 import { runQuery } from "./sqlEngine";
 import { SAMPLE_DB } from "./sqlExamples";

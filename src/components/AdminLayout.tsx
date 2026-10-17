@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Activity,
   BarChart3,
@@ -14,7 +16,8 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAuth } from "../store/auth";
 import { Logo } from "./Logo";
@@ -40,19 +43,19 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const pathname = usePathname();
+  const router = useRouter();
   const { user, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
     toast.info("Logged out");
-    navigate("/login");
+    router.push("/login");
   };
 
   const isActive = (path: string, exact?: boolean) =>
-    exact ? location.pathname === path : location.pathname.startsWith(path);
+    exact ? pathname === path : pathname.startsWith(path);
 
   return (
     <div className="h-screen flex bg-background overflow-hidden">
@@ -80,7 +83,7 @@ export default function AdminLayout({
           {NAV_ITEMS.map(({ path, label, icon: Icon, exact }) => (
             <Link
               key={path}
-              to={path}
+              href={path}
               onClick={() => setMobileOpen(false)}
               className={`sidebar-item ${isActive(path, exact) ? "active" : ""}`}
             >

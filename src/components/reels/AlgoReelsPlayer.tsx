@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -18,7 +20,7 @@ import {
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { ALGO_REELS, type AlgoReel } from "../../data/algoReels";
 import { soundEffects } from "../../lib/soundEffects";
 import { FEATURES } from "../../config/features";
@@ -34,7 +36,7 @@ export default function AlgoReelsPlayer({
   isOpen,
   onClose,
 }: AlgoReelsPlayerProps) {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // Find initial index
   const initialIndex = Math.max(
@@ -638,7 +640,7 @@ export default function AlgoReelsPlayer({
               type="button"
               onClick={() => {
                 onClose();
-                navigate(currentReel.guideLink);
+                router.push(currentReel.guideLink);
               }}
               className="flex flex-col items-center gap-1 group"
               title="Open Interactive Guide"
@@ -656,7 +658,7 @@ export default function AlgoReelsPlayer({
               type="button"
               onClick={() => {
                 onClose();
-                navigate(`${currentReel.guideLink}#toolkit`);
+                router.push(`${currentReel.guideLink}#toolkit`);
               }}
               className="flex flex-col items-center gap-1 group"
               title="Launch Visualizer"

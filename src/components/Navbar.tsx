@@ -1,6 +1,9 @@
+"use client"
+
 import { LayoutDashboard, LogOut, Menu, User } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "../store/auth";
 import ThemeColorPicker from "./ThemeColorPicker";
 import ThemeToggle from "./ThemeToggle";
@@ -26,7 +29,7 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -39,7 +42,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    router.push("/login");
   };
 
   return (
@@ -51,7 +54,7 @@ export default function Navbar() {
       }`}
     >
       <Link
-        to="/"
+        href="/"
         className="flex items-center gap-1 font-black text-xl sm:text-2xl tracking-tight shrink-0"
         style={{ fontFamily: "'Playfair Display', serif" }}
       >
@@ -64,7 +67,7 @@ export default function Navbar() {
         {NAV_LINKS.map((link) => (
           <Link
             key={link.to}
-            to={link.to}
+            href={link.to}
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
           >
             {link.label}
@@ -110,14 +113,14 @@ export default function Navbar() {
             >
               {user.role === "admin" && (
                 <DropdownMenuItem
-                  onClick={() => navigate("/admin")}
+                  onClick={() => router.push("/admin")}
                   className="gap-2 cursor-pointer"
                 >
                   <LayoutDashboard size={14} /> Admin Dashboard
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem
-                onClick={() => navigate("/profile")}
+                onClick={() => router.push("/profile")}
                 className="gap-2 cursor-pointer"
               >
                 <User size={14} /> Profile
@@ -137,14 +140,14 @@ export default function Navbar() {
               variant="ghost"
               size="sm"
               className="text-muted-foreground hover:text-foreground"
-              onClick={() => navigate("/login")}
+              onClick={() => router.push("/login")}
             >
               Login
             </Button>
             <Button
               size="sm"
               className="rounded-full px-6 font-bold bg-gradient-to-r from-emerald-400 to-sky-400 text-slate-950 border-0 hover:opacity-90"
-              onClick={() => navigate("/register")}
+              onClick={() => router.push("/register")}
             >
               Sign Up
             </Button>
@@ -178,7 +181,7 @@ export default function Navbar() {
               {NAV_LINKS.map((link) => (
                 <SheetClose asChild key={link.to}>
                   <Link
-                    to={link.to}
+                    href={link.to}
                     className="flex items-center gap-2 px-3 py-3 rounded-lg text-sm font-medium text-foreground hover:bg-secondary transition-colors"
                   >
                     {link.label}
@@ -205,7 +208,7 @@ export default function Navbar() {
                       <Button
                         variant="outline"
                         className="justify-start gap-2"
-                        onClick={() => navigate("/admin")}
+                        onClick={() => router.push("/admin")}
                       >
                         <LayoutDashboard size={14} /> Admin Dashboard
                       </Button>
@@ -215,7 +218,7 @@ export default function Navbar() {
                     <Button
                       variant="outline"
                       className="justify-start gap-2"
-                      onClick={() => navigate("/profile")}
+                      onClick={() => router.push("/profile")}
                     >
                       <User size={14} /> Profile
                     </Button>
@@ -236,7 +239,7 @@ export default function Navbar() {
                     <Button
                       variant="ghost"
                       className="justify-start text-muted-foreground"
-                      onClick={() => navigate("/login")}
+                      onClick={() => router.push("/login")}
                     >
                       Login
                     </Button>
@@ -244,7 +247,7 @@ export default function Navbar() {
                   <SheetClose asChild>
                     <Button
                       className="justify-start rounded-full font-bold bg-gradient-to-r from-emerald-400 to-sky-400 text-slate-950 border-0 hover:opacity-90"
-                      onClick={() => navigate("/register")}
+                      onClick={() => router.push("/register")}
                     >
                       Sign Up
                     </Button>

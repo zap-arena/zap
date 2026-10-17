@@ -1,3 +1,5 @@
+"use client"
+
 const stats = [
   { icon: "🎓", value: "2000+", label: "Students Trained" },
   { icon: "🏛️", value: "3", label: "Partner Colleges" },

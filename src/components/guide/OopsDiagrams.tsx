@@ -1,3 +1,5 @@
+"use client"
+
 import type React from "react";
 
 /** Lightweight inline-styled diagram primitives for the Java OOPs guide, matching the dark visualizer theme. */

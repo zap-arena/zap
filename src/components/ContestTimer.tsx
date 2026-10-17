@@ -1,3 +1,5 @@
+"use client"
+
 import { Clock } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 

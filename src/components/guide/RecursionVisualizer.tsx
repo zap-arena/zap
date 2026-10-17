@@ -1,3 +1,5 @@
+"use client"
+
 import { useEffect, useMemo, useState } from "react";
 
 export const ROW_HEIGHT = 80;

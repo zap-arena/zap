@@ -1,3 +1,4 @@
+"use client"
 // Lightweight zero-dependency Web Audio API sound effects synthesizer
 // Provides subtle auditory feedback ("game juice") without external audio files
 

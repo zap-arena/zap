@@ -1,3 +1,5 @@
+"use client"
+
 import { Check, Palette } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAccent } from "../store/theme";

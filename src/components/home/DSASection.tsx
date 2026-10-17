@@ -1,3 +1,5 @@
+"use client"
+
 const topics = [
   { name: "Arrays & Strings", problems: 45, icon: "📊", level: "Beginner" },
   { name: "Linked Lists", problems: 30, icon: "🔗", level: "Beginner" },

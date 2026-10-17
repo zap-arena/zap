@@ -1,3 +1,5 @@
+"use client"
+
 import { useEffect, useState } from "react";
 import { ThunderLogo } from "./ThunderLogo";
 import "../styles/zap-home.css";

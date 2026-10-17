@@ -1,6 +1,6 @@
 /**
  * Global Feature Flag Management System
- * Centralized feature toggles controllable via environment variables (VITE_*)
+ * Centralized feature toggles controllable via environment variables (NEXT_PUBLIC_*)
  * with fallback defaults for local/production environments.
  */
 
@@ -30,12 +30,12 @@ export interface FeatureFlags {
  */
 export const FEATURES: FeatureFlags = {
   reels: {
-    showLikeButton: parseEnvBool(import.meta.env.VITE_FEATURE_REELS_LIKE, false),
-    showSolveButton: parseEnvBool(import.meta.env.VITE_FEATURE_REELS_SOLVE, false),
-    showGuideButton: parseEnvBool(import.meta.env.VITE_FEATURE_REELS_GUIDE, false),
+    showLikeButton: parseEnvBool(process.env.NEXT_PUBLIC_FEATURE_REELS_LIKE, false),
+    showSolveButton: parseEnvBool(process.env.NEXT_PUBLIC_FEATURE_REELS_SOLVE, false),
+    showGuideButton: parseEnvBool(process.env.NEXT_PUBLIC_FEATURE_REELS_GUIDE, false),
   },
   conceptStory: {
-    showDeck: parseEnvBool(import.meta.env.VITE_FEATURE_CONCEPT_STORY, false),
+    showDeck: parseEnvBool(process.env.NEXT_PUBLIC_FEATURE_CONCEPT_STORY, false),
   },
 };
 
