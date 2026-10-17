@@ -20,6 +20,7 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import AdminLayout from "../../components/AdminLayout";
 import DifficultyBadge from "../../components/DifficultyBadge";
+import ZapLoader from "../../components/ZapLoader";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -264,7 +265,7 @@ function BulkImportDialog({
         {/* PARSING */}
         {state === "parsing" && (
           <div className="py-16 text-center space-y-4">
-            <Loader2 size={36} className="text-primary animate-spin mx-auto" />
+            <ZapLoader size="md" />
             <p className="font-medium">
               Parsing <span className="text-primary font-mono">{fileName}</span>
               …
@@ -402,7 +403,7 @@ function BulkImportDialog({
         {/* IMPORTING */}
         {state === "importing" && (
           <div className="py-16 text-center space-y-4">
-            <Loader2 size={36} className="text-primary animate-spin mx-auto" />
+            <ZapLoader size="md" />
             <p className="font-medium">Importing {selected.size} problem(s)…</p>
             <p className="text-sm text-muted-foreground">
               Saving to database, linking test cases and boilerplates

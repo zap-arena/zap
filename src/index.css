@@ -529,7 +529,7 @@ body {
 .stat-val {
   font-size: 1.8rem;
   font-weight: 700;
-  color: hsl(38 92% 50%);
+  color: hsl(var(--primary));
 }
 .stat-lbl {
   font-size: 0.85rem;
@@ -942,7 +942,7 @@ a {
 }
 .side-link.active {
   color: hsl(var(--foreground));
-  border-left-color: hsl(38 92% 50%);
+  border-left-color: hsl(var(--primary));
   background: hsl(var(--secondary));
 }
 
@@ -1429,7 +1429,7 @@ a {
 }
 .side-link.active {
   color: hsl(var(--foreground));
-  border-left-color: hsl(38 92% 50%);
+  border-left-color: hsl(var(--primary));
   background: hsl(var(--secondary));
 }
 
@@ -1899,7 +1899,7 @@ a {
 }
 .side-link.active {
   color: hsl(var(--foreground));
-  border-left-color: hsl(38 92% 50%);
+  border-left-color: hsl(var(--primary));
   background: hsl(var(--secondary));
 }
 

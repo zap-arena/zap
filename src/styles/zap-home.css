@@ -206,129 +206,188 @@
 /* ── Loading screen ──────────────────────────────────────────── */
 @keyframes zap-lightning-flicker {
   0%,
-  60%,
+  55%,
   100% {
-    filter: drop-shadow(0 0 6px hsl(45 95% 60% / 0.5));
-    opacity: 0.9;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 12px #f59e0b) drop-shadow(0 0 24px rgba(245, 158, 11, 0.4));
+    opacity: 0.95;
+    transform: scale(1);
   }
-  8% {
-    filter: drop-shadow(0 0 34px hsl(0 0% 100% / 1)) brightness(2.2);
+  6% {
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 30px #ffffff) drop-shadow(0 0 60px #fbbf24) drop-shadow(0 0 90px #00f0ff) brightness(2.8);
     opacity: 1;
+    transform: scale(1.1);
   }
-  14% {
-    filter: drop-shadow(0 0 6px hsl(45 95% 60% / 0.4));
+  12% {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 14px #f59e0b) drop-shadow(0 0 28px rgba(245, 158, 11, 0.5));
     opacity: 0.85;
+    transform: scale(0.98);
   }
-  20% {
-    filter: drop-shadow(0 0 38px hsl(45 95% 70% / 1)) brightness(2.4);
+  18% {
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 40px #ffffff) drop-shadow(0 0 80px #fbbf24) drop-shadow(0 0 120px #00f0ff) brightness(3.2);
     opacity: 1;
+    transform: scale(1.16);
   }
-  28% {
-    filter: drop-shadow(0 0 6px hsl(45 95% 60% / 0.5));
+  26% {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 18px #f59e0b) drop-shadow(0 0 32px rgba(245, 158, 11, 0.5));
     opacity: 0.9;
+    transform: scale(1);
   }
 }
-.zap-loading-logo-wrap .zap-lightning-bolt {
-  animation: zap-lightning-flicker 0.7s ease-in-out infinite;
+
+@keyframes zap-text-electrify {
+  0%,
+  55%,
+  100% {
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6));
+  }
+  6% {
+    filter: drop-shadow(0 0 20px #00f0ff) drop-shadow(0 0 40px #38bdf8) brightness(1.8);
+  }
+  12% {
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 8px rgba(0, 240, 255, 0.4));
+  }
+  18% {
+    filter: drop-shadow(0 0 28px #00f0ff) drop-shadow(0 0 55px #38bdf8) brightness(2.2);
+  }
+  26% {
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 10px rgba(0, 240, 255, 0.5));
+  }
 }
+
+.zap-loading-logo-wrap .zap-lightning-bolt {
+  animation: zap-lightning-flicker 0.75s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.zap-loading-logo-wrap .zap-letter-z,
+.zap-loading-logo-wrap .zap-letter-p {
+  animation: zap-text-electrify 0.75s ease-in-out infinite;
+  transition: all 0.1s ease;
+}
+
 @keyframes zap-lightning-burst {
   0%,
-  60%,
+  55%,
   100% {
     opacity: 0;
-    transform: scale(0.8);
+    transform: scale(0.6);
   }
-  8% {
-    opacity: 0.9;
-    transform: scale(1.5);
+  6% {
+    opacity: 0.95;
+    transform: scale(1.4);
   }
-  14% {
-    opacity: 0;
-    transform: scale(0.9);
+  12% {
+    opacity: 0.2;
+    transform: scale(1.1);
   }
-  20% {
+  18% {
     opacity: 1;
-    transform: scale(1.8);
+    transform: scale(2.2);
   }
   28% {
     opacity: 0;
-    transform: scale(0.8);
+    transform: scale(2.6);
   }
 }
+
 .zap-loading-strike-burst {
   position: absolute;
-  inset: -30px;
+  inset: -60px;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    hsl(0 0% 100% / 0.85) 0%,
-    hsl(45 95% 55% / 0.35) 40%,
-    transparent 70%
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(251, 191, 36, 0.7) 25%,
+    rgba(0, 240, 255, 0.4) 50%,
+    transparent 75%
   );
+  filter: blur(8px);
   pointer-events: none;
-  animation: zap-lightning-burst 0.7s ease-in-out infinite;
+  animation: zap-lightning-burst 0.75s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
+
 @keyframes zap-sky-flash {
   0%,
-  60%,
+  55%,
   100% {
     opacity: 0;
   }
-  8% {
-    opacity: 0.35;
+  6% {
+    opacity: 0.4;
   }
-  14% {
-    opacity: 0;
+  12% {
+    opacity: 0.08;
   }
-  20% {
-    opacity: 0.5;
+  18% {
+    opacity: 0.65;
   }
-  28% {
+  26% {
     opacity: 0;
   }
 }
+
 .zap-loading-sky-flash {
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    ellipse at 50% 40%,
-    hsl(0 0% 100% / 0.9) 0%,
-    hsl(200 100% 70% / 0.25) 45%,
-    transparent 75%
+    ellipse at 50% 45%,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(251, 191, 36, 0.4) 30%,
+    rgba(0, 240, 255, 0.25) 55%,
+    transparent 80%
   );
   pointer-events: none;
-  animation: zap-sky-flash 0.7s ease-in-out infinite;
+  animation: zap-sky-flash 0.75s ease-out infinite;
 }
+
 @keyframes zap-bolt-strike {
   0%,
-  60%,
+  55%,
   100% {
     opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
   }
-  8% {
+  6% {
     opacity: 1;
+    transform: translate(-50%, -50%) scale(1.05);
   }
-  12% {
-    opacity: 0;
+  10% {
+    opacity: 0.2;
+    transform: translate(-50%, -50%) scale(0.95);
   }
-  20% {
+  18% {
     opacity: 1;
+    transform: translate(-50%, -50%) scale(1.15);
   }
   24% {
     opacity: 0;
+    transform: translate(-50%, -50%) scale(1.2);
   }
 }
+
 .zap-loading-bolt-strike {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 54px;
-  height: 108px;
+  width: 90px;
+  height: 180px;
   transform: translate(-50%, -50%);
   opacity: 0;
-  filter: drop-shadow(0 0 14px hsl(50 100% 75% / 0.9));
-  animation: zap-bolt-strike 0.7s ease-in-out infinite;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 16px #ffffff) drop-shadow(0 0 32px #fbbf24) drop-shadow(0 0 60px #00f0ff);
+  animation: zap-bolt-strike 0.75s ease-in-out infinite;
   pointer-events: none;
+  z-index: 5;
+}
+
+.zap-loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #060913 !important;
+  overflow: hidden;
 }
 @keyframes zap-shimmer-slide {
   0% {

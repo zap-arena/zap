@@ -60,10 +60,12 @@ const ContestResultPage = lazy(() => import("./pages/ContestResultPage"));
 const DebuggingWarPage = lazy(() => import("./pages/DebuggingWarPage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 
+import ZapLoader from "./components/ZapLoader";
+
 function PageFallback() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <ZapLoader size="lg" text="Loading ZAP..." />
     </div>
   );
 }
@@ -72,8 +74,8 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, isInitialized } = useAuth();
   if (!isInitialized)
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <ZapLoader size="lg" text="Authenticating..." />
       </div>
     );
   if (!user) return <Navigate to="/login" replace />;
@@ -84,8 +86,8 @@ function RequireAdmin({ children }: { children: React.ReactNode }) {
   const { user, isInitialized } = useAuth();
   if (!isInitialized)
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <ZapLoader size="lg" text="Verifying admin access..." />
       </div>
     );
   if (!user) return <Navigate to="/login" replace />;

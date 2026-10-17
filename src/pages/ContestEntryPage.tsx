@@ -13,6 +13,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import Navbar from "../components/Navbar";
 import { Button } from "../components/ui/button";
+import ZapLoader from "../components/ZapLoader";
 import { ApiError, api } from "../lib/api";
 import { useAuth } from "../store/auth";
 import type { Contest } from "../types";
@@ -49,7 +50,7 @@ export default function ContestEntryPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="animate-spin text-primary" size={28} />
+        <ZapLoader size="lg" text="Loading contest..." />
       </div>
     );
   }
@@ -115,12 +116,6 @@ export default function ContestEntryPage() {
     }
   };
 
-  const statusColor =
-    contest.status === "active"
-      ? "text-success"
-      : contest.status === "completed"
-        ? "text-muted-foreground"
-        : "text-warning";
   const statusLabel = {
     active: "Live",
     scheduled: "Upcoming",
@@ -130,100 +125,125 @@ export default function ContestEntryPage() {
   }[contest.status];
 
   return (
-    <div
-      className="min-h-screen bg-background flex flex-col"
-      style={{ background: "var(--gradient-glow), hsl(var(--background))" }}
-    >
+    <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
-      <div className="max-w-3xl mx-auto w-full px-6 py-12 flex-1 animate-fade-in">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <span
-              className={`flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider ${statusColor}`}
-            >
+      <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 py-12 flex-1 animate-fade-in">
+        {/* Header Hero Banner */}
+        <div className="relative mb-8 rounded-3xl overflow-hidden border border-border/80 bg-gradient-to-r from-card/90 via-card/60 to-primary/5 backdrop-blur-xl p-6 sm:p-10 shadow-sm">
+          <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-4">
               <span
-                className={`w-2 h-2 rounded-full ${contest.status === "active" ? "bg-success animate-pulse" : "bg-muted-foreground"}`}
-              />
-              {statusLabel}
-            </span>
+                className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
+                  contest.status === "active"
+                    ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
+                    : contest.status === "completed"
+                      ? "bg-muted text-muted-foreground border border-border/60"
+                      : "bg-amber-500/10 text-amber-500 border border-amber-500/20"
+                }`}
+              >
+                <span
+                  className={`w-2 h-2 rounded-full ${contest.status === "active" ? "bg-emerald-500 animate-pulse" : "bg-muted-foreground"}`}
+                />
+                {statusLabel}
+              </span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground mb-3">
+              {contest.name}
+            </h1>
+            <p className="text-muted-foreground leading-relaxed text-sm sm:text-base max-w-2xl">
+              {contest.description}
+            </p>
           </div>
-          <h1 className="text-3xl font-bold mb-3">{contest.name}</h1>
-          <p className="text-muted-foreground leading-relaxed">
-            {contest.description}
-          </p>
         </div>
 
         {/* Stats row */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           {[
-            { icon: Clock, label: "Duration", value: durationStr },
+            {
+              icon: Clock,
+              label: "Duration",
+              value: durationStr,
+              color: "text-blue-500 bg-blue-500/10 border-blue-500/20",
+            },
             {
               icon: BookOpen,
               label: "Problems",
               value: String(contest.problemCount),
+              color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
             },
             {
               icon: Trophy,
               label: "Max Score",
               value: String(contest.maxScore),
+              color: "text-amber-500 bg-amber-500/10 border-amber-500/20",
             },
-          ].map(({ icon: Icon, label, value }) => (
-            <div key={label} className="card-glow rounded-xl p-5 text-center">
-              <Icon size={20} className="text-primary mx-auto mb-2" />
-              <div className="text-2xl font-bold mb-0.5">{value}</div>
-              <div className="text-xs text-muted-foreground">{label}</div>
+          ].map(({ icon: Icon, label, value, color }) => (
+            <div
+              key={label}
+              className="bg-card/90 dark:bg-card/60 backdrop-blur-md border border-border/80 hover:border-primary/40 rounded-2xl p-5 text-center transition-all duration-300 shadow-sm"
+            >
+              <div
+                className={`w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3 border ${color}`}
+              >
+                <Icon size={20} />
+              </div>
+              <div className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground mb-1">
+                {value}
+              </div>
+              <div className="text-xs uppercase tracking-wider font-semibold text-muted-foreground">
+                {label}
+              </div>
             </div>
           ))}
         </div>
 
         {/* Already-completed notice */}
         {finished && (
-          <div className="card-glow rounded-xl p-6 mb-6 border-warning/40">
-            <h3 className="font-semibold mb-2 flex items-center gap-2">
-              <Lock size={16} className="text-warning" /> You have already
-              completed this contest
+          <div className="bg-amber-500/5 border border-amber-500/30 rounded-2xl p-6 mb-8 shadow-sm">
+            <h3 className="font-bold text-foreground mb-2 flex items-center gap-2">
+              <Lock size={18} className="text-amber-500" /> You have already completed this contest
             </h3>
-            <p className="text-sm text-muted-foreground mb-3">
-              Only one attempt is allowed. Your submitted attempt has been
-              recorded.
+            <p className="text-sm text-muted-foreground mb-4">
+              Only one attempt is allowed. Your submitted attempt has been recorded.
             </p>
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-6 pt-3 border-t border-amber-500/20">
               <div>
-                <div className="text-2xl font-bold text-primary">
+                <div className="text-2xl font-black text-amber-500">
                   {session?.score ?? 0}
                 </div>
-                <div className="text-xs text-muted-foreground">Final score</div>
+                <div className="text-xs text-muted-foreground font-medium">Final score</div>
               </div>
               <div>
-                <div className="text-2xl font-bold">
+                <div className="text-2xl font-black text-foreground">
                   {session?.problemsSolved ?? 0}
                 </div>
-                <div className="text-xs text-muted-foreground">
+                <div className="text-xs text-muted-foreground font-medium">
                   Problems solved
                 </div>
               </div>
               <div>
-                <div className="text-2xl font-bold">
+                <div className="text-2xl font-black text-foreground">
                   {session?.totalSubmissions ?? 0}
                 </div>
-                <div className="text-xs text-muted-foreground">Submissions</div>
+                <div className="text-xs text-muted-foreground font-medium">Submissions</div>
               </div>
             </div>
           </div>
         )}
 
         {/* Instructions */}
-        <div className="card-glow rounded-xl p-6 mb-8">
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
-            <AlertCircle size={16} className="text-primary" /> Instructions
+        <div className="bg-card/90 dark:bg-card/60 backdrop-blur-md border border-border/80 rounded-2xl p-6 sm:p-8 mb-8 shadow-sm">
+          <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+            <AlertCircle size={18} className="text-primary" /> Contest Guidelines & Rules
           </h3>
           {contest.instructions?.trim() && (
-            <p className="text-sm text-foreground whitespace-pre-line mb-4 pb-4 border-b border-border">
+            <p className="text-sm text-foreground whitespace-pre-line mb-4 pb-4 border-b border-border/60">
               {contest.instructions}
             </p>
           )}
-          <ul className="space-y-2">
+          <ul className="space-y-3">
             {[
               "The problem set is revealed only after you start the contest.",
               "You get one attempt: once you finish, the contest cannot be re-entered.",
@@ -238,11 +258,11 @@ export default function ContestEntryPage() {
             ].map((inst) => (
               <li
                 key={inst}
-                className="flex items-start gap-2 text-sm text-muted-foreground"
+                className="flex items-start gap-2.5 text-sm text-muted-foreground leading-relaxed"
               >
                 <CheckCircle
-                  size={14}
-                  className="text-primary shrink-0 mt-0.5"
+                  size={15}
+                  className="text-emerald-500 shrink-0 mt-0.5"
                 />
                 <span>{inst}</span>
               </li>
@@ -255,7 +275,7 @@ export default function ContestEntryPage() {
           <Button
             onClick={handleStart}
             disabled={starting || finished || contest.status === "completed"}
-            className="btn-primary h-12 px-12 text-base font-semibold gap-2"
+            className="h-12 px-12 text-base font-semibold gap-2 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30"
           >
             {starting ? (
               <>
@@ -277,7 +297,7 @@ export default function ContestEntryPage() {
           </Button>
           {!user && (
             <p className="text-sm text-muted-foreground">
-              You'll be asked to <span className="text-primary">sign in</span>{" "}
+              You'll be asked to <span className="text-primary font-semibold">sign in</span>{" "}
               before starting.
             </p>
           )}

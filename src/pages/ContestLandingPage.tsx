@@ -178,51 +178,31 @@ export default function ContestLandingPage() {
             ].map((f, i) => (
               <div
                 key={i}
-                className="p-6 rounded-xl border border-border bg-card hover:shadow-md transition-shadow"
+                className="group p-7 rounded-2xl border border-border/80 bg-card/90 dark:bg-card/60 backdrop-blur-md hover:border-primary/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 shadow-sm"
               >
-                <f.icon size={28} className="mb-4 text-primary" />
-                <h3 className="font-semibold text-lg mb-2">{f.title}</h3>
-                <p className="text-sm text-muted-foreground">{f.desc}</p>
+                <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-5 text-primary group-hover:scale-110 transition-transform duration-300">
+                  <f.icon size={24} />
+                </div>
+                <h3 className="font-bold text-lg mb-2 text-foreground group-hover:text-primary transition-colors">
+                  {f.title}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed font-normal">
+                  {f.desc}
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Trusted By Section (Mock Partners & Universities) */}
-      {/* <section className="py-20 px-6 bg-background">
-        <div className="max-w-5xl mx-auto text-center">
-          <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-10">
-            Trusted by leading engineering colleges
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center opacity-70 grayscale hover:grayscale-0 transition-all duration-500">
-            <div className="flex items-center justify-center gap-2 font-serif font-semibold text-lg">
-              <GraduationCap size={28} /> PSG Tech
-            </div>
-            <div className="flex items-center justify-center gap-2 font-serif font-semibold text-lg">
-              <Building size={28} /> NIT
-            </div>
-            <div className="flex items-center justify-center gap-2 font-serif font-semibold text-lg">
-              <GraduationCap size={28} /> Karunya
-            </div>
-            <div className="flex items-center justify-center gap-2 font-serif font-semibold text-lg">
-              <GraduationCap size={28} /> Karpagam
-            </div>
-            <div className="flex items-center justify-center gap-2 font-serif font-semibold text-lg">
-              <Building size={28} /> VIT
-            </div>
-          </div>
-        </div>
-      </section> */}
-
       {/* Features Showcase */}
-      <section className="py-24 px-6 bg-muted/20 border-t border-border">
+      <section className="py-24 px-6 bg-muted/20 border-t border-border/60">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground mb-4">
               Built for students and educators
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Everything you need to learn DSA, host bootcamps, and compete in
               professional programming contests.
             </p>
@@ -263,24 +243,26 @@ export default function ContestLandingPage() {
             ].map(({ icon: Icon, title, desc, features }) => (
               <div
                 key={title}
-                className="card-glow bg-card rounded-2xl p-8 border border-border shadow-sm hover:shadow-md transition-all"
+                className="group relative bg-card/90 dark:bg-card/60 backdrop-blur-md rounded-2xl p-8 border border-border/80 hover:border-primary/50 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
               >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-6">
-                  <Icon size={24} className="text-primary" />
+                <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform duration-300">
+                  <Icon size={24} />
                 </div>
-                <h3 className="text-xl font-bold mb-3">{title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+                <h3 className="text-xl font-bold mb-3 text-foreground group-hover:text-primary transition-colors">
+                  {title}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-6 font-normal">
                   {desc}
                 </p>
-                <ul className="space-y-2">
+                <ul className="space-y-2.5 pt-4 border-t border-border/50">
                   {features.map((feature, i) => (
                     <li
                       key={i}
-                      className="flex items-start gap-2 text-sm font-medium text-foreground"
+                      className="flex items-start gap-2.5 text-sm font-medium text-foreground"
                     >
                       <CheckCircle2
                         size={16}
-                        className="text-primary shrink-0 mt-0.5"
+                        className="text-emerald-500 shrink-0 mt-0.5"
                       />
                       {feature}
                     </li>
@@ -324,10 +306,10 @@ export default function ContestLandingPage() {
               },
             ].map((s, i) => (
               <div key={i} className="relative text-center group">
-                <div className="relative z-10 w-14 h-14 mx-auto rounded-full bg-card border-2 border-primary/20 text-primary font-bold text-lg flex items-center justify-center mb-5 shadow-sm group-hover:border-primary/50 group-hover:shadow-md transition-all">
+                <div className="relative z-10 w-14 h-14 mx-auto rounded-2xl bg-card border-2 border-primary/20 text-primary font-black text-lg flex items-center justify-center mb-5 shadow-sm group-hover:border-primary/50 group-hover:shadow-md transition-all">
                   {s.step}
                 </div>
-                <h3 className="font-semibold text-lg mb-2">{s.title}</h3>
+                <h3 className="font-bold text-lg mb-2 text-foreground">{s.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
                   {s.desc}
                 </p>
@@ -368,10 +350,10 @@ export default function ContestLandingPage() {
             ].map((f, i) => (
               <div
                 key={i}
-                className="p-6 rounded-xl border border-border bg-card"
+                className="p-6 rounded-2xl border border-border/80 bg-card/90 dark:bg-card/60 backdrop-blur-md shadow-sm"
               >
-                <h3 className="font-semibold text-base mb-2">{f.q}</h3>
-                <p className="text-sm text-muted-foreground">{f.a}</p>
+                <h3 className="font-bold text-base mb-2 text-foreground">{f.q}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{f.a}</p>
               </div>
             ))}
           </div>
