@@ -12,7 +12,8 @@ const EXCLUDED_ROUTE = /^\/contest\/[^/]+\/workspace/;
 /** Shows the brand loading screen on first load, on every route change, and while
  *  that route's data is still being fetched. */
 export default function RouteTransitionLoader() {
-  const pathname = usePathname();
+  const rawPathname = usePathname();
+  const pathname = rawPathname ?? '';
   const isFetching = useIsFetching();
   const [loading, setLoading] = useState(true);
   const isFirstRender = useRef(true);
