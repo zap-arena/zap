@@ -48,10 +48,13 @@
     "*.ts",
     "*.js",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+    "dist/types/**/*.ts",
+    "dist/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
-    ".next"
+    ".next",
+    "dist/dev",
+    ".next/dev"
   ]
 }

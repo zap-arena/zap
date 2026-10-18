@@ -1,4 +1,4 @@
-import type { NextConfig } from "next"
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   async rewrites() {
@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
         source: "/api/:path*",
         destination: "http://127.0.0.1:8000/api/:path*",
       },
-    ]
+    ];
   },
   images: {
     formats: ["image/avif", "image/webp"],
@@ -16,11 +16,12 @@ const nextConfig: NextConfig = {
   },
   // Monaco Editor and other heavy client-only libs
   webpack: (config: Record<string, unknown>) => {
-    const cfg = config as { resolve: { fallback: Record<string, boolean> } }
-    cfg.resolve.fallback = { fs: false, path: false }
-    return config
+    const cfg = config as { resolve: { fallback: Record<string, boolean> } };
+    cfg.resolve.fallback = { fs: false, path: false };
+    return config;
   },
   turbopack: {},
-}
+  distDir: "dist",
+};
 
-export default nextConfig
+export default nextConfig;
