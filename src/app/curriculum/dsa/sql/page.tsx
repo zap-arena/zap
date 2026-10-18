@@ -6,6 +6,9 @@ import { JsonLd } from "@/components/JsonLd"
 import { AuthGuard } from "@/components/AuthGuard"
 import SqlGuidePage from "@/views/guide/SqlGuidePage"
 
+// Revalidate every hour (ISR) - guides rarely change
+export const revalidate = 3600
+
 export const metadata: Metadata = getGuideMetadata(
   "SQL Fundamentals",
   "sql",
@@ -28,4 +31,5 @@ export default function Page() {
     </>
   )
 }
+
 
