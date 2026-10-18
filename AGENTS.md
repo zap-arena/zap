@@ -20,7 +20,7 @@ Welcome, AI Agent! This file is your operational manual when working on the **ZA
    - Maintain mobile responsiveness: test at small viewports (e.g. 390px / Pixel / iPhone) as well as desktop.
 
 3. **Strict TypeScript & Build Standards**:
-   - `tsconfig.app.json` has `noUnusedLocals` and `noUnusedParameters` enabled.
+   - `tsconfig.json` has `noUnusedLocals` and `noUnusedParameters` enabled under `"plugins": [{ "name": "next" }]`.
    - Never leave unused imports, variables, or unhandled types.
    - Always run `pnpm tsc --noEmit` and `pnpm build` to verify every change before finishing.
 
@@ -43,7 +43,7 @@ export interface FeatureFlags {
 }
 ```
 
-- When adding a new feature, declare it in `FeatureFlags` with a `VITE_*` environment variable parser and a default value (default to `false` if not yet fully live).
+- When adding a new feature, declare it in `FeatureFlags` with a `NEXT_PUBLIC_*` environment variable parser (`process.env.NEXT_PUBLIC_*`) and a default value (default to `false` if not yet fully live).
 - When disabling a feature, gate both the navigation triggers (sidebar links, buttons) and the rendered DOM sections using `FEATURES.<category>.<flag> && (...)`.
 
 ---
@@ -52,24 +52,39 @@ export interface FeatureFlags {
 
 | Directory / File | Description |
 |---|---|
-| `src/config/features.ts` | Centralized feature flag manager. |
+| `next.config.ts` | Next.js configuration with `/api/:path*` rewrites to FastAPI (`http://127.0.0.1:8000`) and client webpack fallbacks. |
+| `src/app/` | Next.js 15 App Router routes (`layout.tsx`, `page.tsx`, `/curriculum/dsa/*`, `/contest/*`, `/codewar/*`, `/admin/*`, `/quizzes/*`). |
+| `src/views/` | Page view components (formerly `src/pages/`, renamed to prevent shadowing Next.js Pages router). |
+| `src/views/guide/` | DSA interactive curriculum guide views. |
+| `src/views/admin/` | Admin management views. |
+| `src/components/` | Shared UI components, `AuthGuard.tsx`, `AdminGuard.tsx`, `Providers.tsx`. |
+| `src/config/features.ts` | Centralized feature flag manager (`NEXT_PUBLIC_*`). |
 | `src/components/reels/` | `AlgoReelsPlayer.tsx` & `AlgoReelsTray.tsx` — mobile-friendly reels with vertical gestures and audio feedback. |
 | `src/components/guide/` | `ConceptStoryDeck.tsx`, algorithm visualizers (Sliding Window, Two Pointer, Trees, Graphs). |
 | `src/data/algoReels.ts` | 9 curated reels with trivia questions, time/space complexities, and pattern advice. |
 | `src/data/conceptStories.ts` | Curated 4-beat story decks for foundational algorithms. |
 | `src/hooks/useGuideLogic.ts` | Focus-mode navigation engine for guide pages. |
 | `src/lib/soundEffects.ts` | Code-only 8-bit sound effects synthesizer using the Web Audio API (zero audio files needed). |
-| `src/pages/guide/` | DSA interactive curriculum guide pages. |
-| `src/pages/` | `HomePage.tsx`, `ContestWorkspacePage.tsx`, `CodeWarPage.tsx`, etc. |
+| `src/types/next-stubs.d.ts` | Type stubs for Next.js routing, navigation, and external modules. |
 | `docs/INTERACTIVE_PEDAGOGY.md`| The design theory, micro-interaction pillars, and educational roadmap. |
 | `docs/dev-to-blog.md` | Public announcement article in Dev.to markdown format. |
 
 ---
 
-## 4. UI & Interaction Guidelines
+## 4. UI & Next.js App Router Guidelines
 
+- **Client Components (`"use client"`)**:
+  - All interactive UI views, visualizers, reels, forms, and pages that use React hooks or browser APIs must have `"use client"` as their very first line.
+- **SSR Safety**:
+  - Never access browser globals (`window`, `document`, `localStorage`, `sessionStorage`) at top-level module scope or during initial render.
+  - Guard browser globals with `typeof window !== "undefined"` or run inside `useEffect()` / behind a `mounted` state check.
+- **Dynamic Imports for Heavy/Client-Only Libs**:
+  - For browser-only libraries such as Monaco Editor or Leaflet, use Next.js dynamic import: `dynamic(() => import(...), { ssr: false })`.
+- **Navigation**:
+  - Use `next/link` (`<Link href="...">`) and `next/navigation` (`useRouter`, `usePathname`, `useSearchParams`, `useParams`).
+  - Do NOT import from `react-router` or `react-router-dom`.
 - **Mobile Viewports**:
-  - Fullscreen overlays (like `AlgoReelsPlayer`) must use `createPortal(..., document.body)` to escape any parent CSS `contain`, `transform`, or `overflow: hidden` restrictions.
+  - Fullscreen overlays (like `AlgoReelsPlayer`) must use `createPortal(..., document.body)` inside a client-mounted guard to escape parent CSS restrictions.
   - Implement touch events (`onTouchStart`, `onTouchMove`, `onTouchEnd`) for swipe gestures.
 - **Audio Feedback**:
   - Always check user gesture context before playing audio. Use `soundEffects.play(...)` from `src/lib/soundEffects.ts`.
@@ -88,8 +103,9 @@ pnpm tsc --noEmit
 pnpm build
 
 # Start frontend dev server
-pnpm run dev --port 5115
+pnpm run dev --port 5173
 
 # Start backend dev server
 cd api && .venv/bin/uvicorn index:app --reload --port 8000
 ```
+

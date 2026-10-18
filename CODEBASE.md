@@ -1,8 +1,8 @@
 # ZAP — Codebase Reference
 
-A competitive-programming contest platform. **React 19 + Vite + TypeScript** frontend, **FastAPI + SQLAlchemy + PostgreSQL** backend, with code execution delegated to a self-hosted **Piston** judge. Deployed as a single Vercel project: the frontend as static assets, the backend as one Python serverless function.
+A competitive-programming contest platform. **Next.js 15 App Router + React 19 + TypeScript** frontend, **FastAPI + SQLAlchemy + PostgreSQL** backend, with code execution delegated to a self-hosted **Piston** judge. Deployed as a single Vercel project: the frontend as Next.js serverless/edge routes, the backend as one Python serverless function.
 
-> This document describes every tracked file and folder. Generated/vendored directories (`node_modules`, `dist`, `.venv`, `.postgres`) are described as a group at the end.
+> This document describes every tracked file and folder. Generated/vendored directories (`node_modules`, `.next`, `.venv`, `.postgres`) are described as a group at the end.
 
 ---
 
@@ -14,8 +14,9 @@ A competitive-programming contest platform. **React 19 + Vite + TypeScript** fro
 - [`api/` — FastAPI backend](#api--fastapi-backend)
 - [`api/routers/` — HTTP route modules](#apirouters--http-route-modules)
 - [`src/` — frontend entry & shared code](#src--frontend-entry--shared-code)
-- [`src/pages/` — participant-facing pages](#srcpages--participant-facing-pages)
-- [`src/pages/admin/` — admin pages](#srcpagesadmin--admin-pages)
+- [`src/app/` — Next.js App Router routes](#srcapp--nextjs-app-router-routes)
+- [`src/views/` — participant-facing & guide views](#srcviews--participant-facing--guide-views)
+- [`src/views/admin/` — admin pages](#srcviewsadmin--admin-pages)
 - [`src/components/` — shared components](#srccomponents--shared-components)
 - [`problems/` — importable problem bank](#problems--importable-problem-bank)
 - [Stale files](#stale-files)
@@ -27,13 +28,13 @@ A competitive-programming contest platform. **React 19 + Vite + TypeScript** fro
 
 ```mermaid
 flowchart LR
-    B[Browser<br/>React SPA] -->|"/api/*"| P[Vite dev proxy<br/>or Vercel rewrite]
+    B[Browser<br/>Next.js 15 App] -->|"/api/*"| P[Next.js dev rewrite<br/>or Vercel rewrite]
     P --> F[FastAPI<br/>api/index.py]
     F --> D[(PostgreSQL)]
     F -->|"POST /execute"| J[Piston judge]
 ```
 
-- The frontend always calls relative paths under `/api`. In development, [vite.config.ts](vite.config.ts) proxies these to `127.0.0.1:8000`; in production, the `rewrites` rule in [vercel.json](vercel.json) routes them to the Python function.
+- The frontend always calls relative paths under `/api`. In development, [next.config.ts](next.config.ts) rewrites `/api/:path*` to `http://127.0.0.1:8000/api/:path*`; in production, the `rewrites` rule in [vercel.json](vercel.json) routes them to the Python serverless function.
 - FastAPI routes are declared with their **full** `/api/...` path (there is no router prefix stripping), so the same URL works in both environments.
 - All code execution is outbound HTTP to Piston. The backend never runs untrusted code itself.
 
@@ -43,18 +44,16 @@ flowchart LR
 
 | File | Purpose |
 |---|---|
-| [index.html](index.html) | Vite HTML entry point. Loads `src/main.tsx` as a module; sets the page title "ZAP — Online Coding Platform". |
-| [package.json](package.json) | Frontend manifest. Scripts: `dev` (Vite server), `build` (`tsc -b && vite build`), `typecheck` (`tsc --noEmit`), `lint`, `preview`. Key deps: React 19, React Router, TanStack Query, `@monaco-editor/react`, Radix UI primitives, Tailwind, Lucide icons, Sonner toasts. |
-| [vite.config.ts](vite.config.ts) | Vite config: React plugin, `@` → `src` alias, **dev proxy `/api` → `http://127.0.0.1:8000`**, and `vite-plugin-singlefile` which inlines all JS/CSS into one `dist/index.html`. |
-| [tsconfig.json](tsconfig.json) | Root TS config; project references to the app and node configs, plus the `@/*` path alias. |
-| [tsconfig.app.json](tsconfig.app.json) | TS config for `src/` — ES2022, React JSX, `strict`, `noUnusedLocals`/`noUnusedParameters`. |
-| [tsconfig.node.json](tsconfig.node.json) | TS config for build-time files (`vite.config.ts`). |
-| [tailwind.config.js](tailwind.config.js) | Tailwind setup: class-based dark mode, content globs over `src/`, theme colours wired to the CSS variables defined in `src/index.css`. |
+| [next.config.ts](next.config.ts) | Next.js configuration. Rewrites `/api/:path*` to `http://127.0.0.1:8000/api/:path*` and provides webpack fallback shims (`fs: false`, `path: false`) for heavy client libraries. |
+| [package.json](package.json) | Frontend manifest. Scripts: `dev` (`next dev --port 5173`), `build` (`next build`), `start` (`next start`), `typecheck` (`tsc --noEmit`), `lint` (`eslint .`), `format` (`eslint . --fix`). Key deps: Next.js 15, React 19, TanStack Query, `@monaco-editor/react`, Radix UI primitives, Tailwind, Lucide icons, Sonner toasts. |
+| [tsconfig.json](tsconfig.json) | Unified TypeScript config with Next.js plugin (`"name": "next"`), strict typechecks (`noUnusedLocals`, `noUnusedParameters`), path aliases (`@/*` → `./src/*`), and stubs integration. |
+| [next-env.d.ts](next-env.d.ts) | Next.js TypeScript declarations file for App Router support. |
+| [tailwind.config.js](tailwind.config.js) | Tailwind setup: class-based dark mode, content globs over `src/`, theme colours wired to the CSS variables defined in `src/app/globals.css`. |
 | [postcss.config.js](postcss.config.js) | Runs Tailwind + Autoprefixer. |
-| [eslint.config.js](eslint.config.js) | ESLint flat config (JS, TypeScript, React Hooks, React Refresh). Ignores `dist` and `src/components/ui`. |
+| [eslint.config.js](eslint.config.js) | ESLint flat config (JS, TypeScript, React Hooks, Next.js). |
 | [components.json](components.json) | shadcn/ui CLI config (new-york style, TSX, Lucide icons, path aliases). Used when generating new `ui/` components. |
-| [bundle-artifact.sh](bundle-artifact.sh) | Standalone helper that builds the app and copies the single-file `dist/index.html` into `render/`. **Not part of the Vercel build** — it is a separate artifact workflow and calls `pnpm`, unlike the rest of the repo. |
-| [package-lock.json](package-lock.json) / [bun.lock](bun.lock) | Two lockfiles from two package managers. `npm` is what the project is currently driven with; `bun.lock` is a leftover. Keeping both risks dependency drift — pick one. |
+| [package-lock.json](package-lock.json) / [pnpm-lock.yaml](pnpm-lock.yaml) | Package lockfiles. `pnpm` is the standard package manager for development and builds. |
+
 
 ---
 
@@ -116,48 +115,79 @@ Modules use **flat imports** (`from database import ...`, `import models`). `ind
 
 | File | Purpose |
 |---|---|
-| [src/main.tsx](src/main.tsx) | React entry point. Mounts `<App/>` inside `StrictMode` and the TanStack Query provider. |
-| [src/App.tsx](src/App.tsx) | Router. Uses `HashRouter` (so deep links work on static hosting without rewrites) and defines the `RequireAuth` / `RequireAdmin` route guards. |
-| [src/index.css](src/index.css) | The design system: light/dark CSS custom properties, fonts (Plus Jakarta Sans, JetBrains Mono), and utility classes used throughout (`card-glow`, `verdict-*`, `diff-*`, `sidebar-item`). |
-| [src/App.css](src/App.css) | Effectively empty; all styling lives in `index.css`. |
-| [src/lib/api.ts](src/lib/api.ts) | The single HTTP client. Attaches the bearer token, unwraps errors into `ApiError`, clears the token on 401, and provides `get/post/put/delete`, `upload` (multipart), and `download` (authenticated blob download). Base URL is `VITE_API_BASE_URL` or `/api`. |
+| [src/app/layout.tsx](src/app/layout.tsx) | Next.js root layout. Provides the `<html>` and `<body>` shell, global metadata, font configurations, and wraps all pages in `Providers`. |
+| [src/app/globals.css](src/app/globals.css) | The design system: light/dark CSS custom properties, typography, and utility classes (`card-glow`, `verdict-*`, `diff-*`, `sidebar-item`). |
+| [src/components/Providers.tsx](src/components/Providers.tsx) | Client-side root provider mounting `QueryClientProvider`, `RouteTransitionLoader`, and `Toaster`. |
+| [src/components/AuthGuard.tsx](src/components/AuthGuard.tsx) | Client-side route protection. Redirects unauthenticated users to `/login`. |
+| [src/components/AdminGuard.tsx](src/components/AdminGuard.tsx) | Client-side route protection for administrative routes (`/admin/*`). Requires `user.role === 'admin'`. |
+| [src/lib/api.ts](src/lib/api.ts) | The single HTTP client. Attaches the bearer token, unwraps errors into `ApiError`, clears the token on 401, and provides `get/post/put/delete`, `upload` (multipart), and `download` (authenticated blob download). Base URL defaults to `/api`. Guarded for SSR. |
 | [src/lib/utils.ts](src/lib/utils.ts) | `cn()` — merges Tailwind classes via `clsx` + `tailwind-merge`. |
 | [src/types/index.ts](src/types/index.ts) | Shared TypeScript interfaces mirroring the API payloads (`Problem`, `TestCase`, `Contest`, `ContestProblem`, `ContestModerator`, `Submission`, `LeaderboardEntry`, …). |
-| [src/store/auth.ts](src/store/auth.ts) | Minimal pub/sub auth store (no state library). Persists the JWT in `localStorage`, restores the session via `/auth/me`, and exposes `useAuth()` with `login`/`register`/`logout`. |
-| [src/store/theme.ts](src/store/theme.ts) | Pub/sub dark-mode store. Persists to `localStorage` under `zap-theme` and toggles the `dark` class on `<html>`. |
+| [src/types/next-stubs.d.ts](src/types/next-stubs.d.ts) | Type stubs for Next.js navigation, dynamic import, metadata, and vendor types. |
+| [src/store/auth.ts](src/store/auth.ts) | Minimal pub/sub auth store. Persists the JWT in `localStorage` (guarded for SSR), restores the session via `/auth/me`, and exposes `useAuth()` with `login`/`register`/`logout`. |
+| [src/store/theme.ts](src/store/theme.ts) | Pub/sub dark-mode store. Persists to `localStorage` under `zap-theme` (guarded for SSR) and toggles the `dark` class on `<html>`. |
 | [src/hooks/use-mobile.tsx](src/hooks/use-mobile.tsx) | `useIsMobile()` — media-query hook for the ≤767px breakpoint, used by the sidebar. |
-| `src/assets/` | Empty. The template SVGs it held were unused and have been removed. |
-| [public/vite.svg](public/vite.svg) | Favicon referenced by `index.html`. |
 
 ---
 
-## `src/pages/` — participant-facing pages
+## `src/app/` — Next.js App Router routes
+
+File-based route endpoints mapping cleanly to views:
+
+| Route Directory | URL Path | View Mounted |
+|---|---|---|
+| `src/app/page.tsx` | `/` | `src/views/HomePage.tsx` |
+| `src/app/login/page.tsx` | `/login` | `src/views/LoginPage.tsx` |
+| `src/app/register/page.tsx` | `/register` | `src/views/RegisterPage.tsx` |
+| `src/app/forgot-password/page.tsx` | `/forgot-password` | `src/views/ForgotPasswordPage.tsx` |
+| `src/app/profile/page.tsx` | `/profile` | `src/views/ProfilePage.tsx` (wrapped in `AuthGuard`) |
+| `src/app/contests/page.tsx` | `/contests` | `src/views/ContestsPage.tsx` |
+| `src/app/contest/[slug]/page.tsx` | `/contest/:slug` | `src/views/ContestEntryPage.tsx` |
+| `src/app/contest/[slug]/workspace/page.tsx` | `/contest/:slug/workspace` | `src/views/ContestWorkspacePage.tsx` (wrapped in `AuthGuard`) |
+| `src/app/contest/[slug]/result/page.tsx` | `/contest/:slug/result` | `src/views/ContestResultPage.tsx` |
+| `src/app/codewar/page.tsx` | `/codewar` | `src/views/CodeWarPage.tsx` |
+| `src/app/codewar/debugging/page.tsx` | `/codewar/debugging` | `src/views/DebuggingWarPage.tsx` |
+| `src/app/curriculum/dsa/page.tsx` | `/curriculum/dsa` | `src/views/CurriculumDSAPage.tsx` |
+| `src/app/curriculum/dsa/[topic]/page.tsx` | `/curriculum/dsa/:topic` | `src/views/guide/*GuidePage.tsx` |
+| `src/app/admin/layout.tsx` | `/admin/*` | `src/components/AdminLayout.tsx` (wrapped in `AdminGuard`) |
+| `src/app/admin/page.tsx` | `/admin` | `src/views/admin/AdminDashboard.tsx` |
+| `src/app/admin/contests/page.tsx` | `/admin/contests` | `src/views/admin/AdminContests.tsx` |
+| `src/app/admin/problems/page.tsx` | `/admin/problems` | `src/views/admin/AdminProblems.tsx` |
+| `src/app/not-found.tsx` | 404 handler | `src/views/NotFound.tsx` |
+
+---
+
+## `src/views/` — participant-facing & guide views
+
+All interactive views reside in `src/views/` (marked with `"use client"`):
 
 | File | Purpose |
 |---|---|
-| [src/pages/HomePage.tsx](src/pages/HomePage.tsx) | Public landing page: hero, platform stats, live/upcoming contests and featured problems, driven by `/api/public/home`. |
-| [src/pages/LoginPage.tsx](src/pages/LoginPage.tsx) | Split-layout sign-in form with password visibility toggle and redirect-back-to-referrer. |
-| [src/pages/RegisterPage.tsx](src/pages/RegisterPage.tsx) | Self-service registration (min 8-character password). New accounts always get the `user` role. |
-| [src/pages/ContestEntryPage.tsx](src/pages/ContestEntryPage.tsx) | Pre-contest briefing: description, problem summary, admin-authored **instructions**, and the Start Contest button that begins the participant's timer. |
-| [src/pages/ContestWorkspacePage.tsx](src/pages/ContestWorkspacePage.tsx) | The contest IDE. Monaco editor with per-language boilerplate, resizable panels for statement/submissions/leaderboard, custom stdin, Run and Submit, countdown timer, fullscreen mode, and periodic refetching of submissions and leaderboard. |
-| [src/pages/ContestResultPage.tsx](src/pages/ContestResultPage.tsx) | Post-contest summary: final score, rank, problems solved, and a per-problem results table. |
-| [src/pages/ProfilePage.tsx](src/pages/ProfilePage.tsx) | Candidate profile at `/profile`. Shows lifetime stats (contests, problems solved, total score, acceptance rate) and, per contest, the rank, score, and which problems were solved/attempted. |
-| [src/pages/NotFound.tsx](src/pages/NotFound.tsx) | 404 card with a link home. |
+| [src/views/HomePage.tsx](src/views/HomePage.tsx) | Public landing page: hero, platform stats, live/upcoming contests and featured problems, driven by `/api/public/home`. |
+| [src/views/LoginPage.tsx](src/views/LoginPage.tsx) | Split-layout sign-in form with password visibility toggle and redirect-back-to-referrer. |
+| [src/views/RegisterPage.tsx](src/views/RegisterPage.tsx) | Self-service registration (min 8-character password). New accounts always get the `user` role. |
+| [src/views/ContestEntryPage.tsx](src/views/ContestEntryPage.tsx) | Pre-contest briefing: description, problem summary, admin-authored **instructions**, and the Start Contest button that begins the participant's timer. |
+| [src/views/ContestWorkspacePage.tsx](src/views/ContestWorkspacePage.tsx) | The contest IDE. Monaco editor (loaded with `dynamic(..., { ssr: false })`) with per-language boilerplate, resizable panels, custom stdin, Run and Submit, countdown timer, fullscreen mode. |
+| [src/views/ContestResultPage.tsx](src/views/ContestResultPage.tsx) | Post-contest summary: final score, rank, problems solved, and a per-problem results table. |
+| [src/views/ProfilePage.tsx](src/views/ProfilePage.tsx) | Candidate profile at `/profile`. Shows lifetime stats and contest breakdown. |
+| [src/views/NotFound.tsx](src/views/NotFound.tsx) | 404 card with a link home. |
+| [src/views/guide/](src/views/guide/) | Interactive curriculum guide pages (`SlidingWindowDsaGuidePage.tsx`, `TwoPointerDsaGuidePage.tsx`, `GraphDsaGuidePage.tsx`, etc.). |
 
-## `src/pages/admin/` — admin pages
+## `src/views/admin/` — admin pages
 
-All are wrapped in `AdminLayout` and guarded by `RequireAdmin`.
+Mounted under `/admin` and guarded by `AdminGuard`.
 
 | File | Purpose |
 |---|---|
-| [src/pages/admin/AdminDashboard.tsx](src/pages/admin/AdminDashboard.tsx) | Overview: headline counts plus recent submissions, contests and execution logs. |
-| [src/pages/admin/AdminProblems.tsx](src/pages/admin/AdminProblems.tsx) | Problem bank management. Table with filters; create/edit dialog covering details, test cases (public/hidden + marks) and per-language boilerplate; archive with confirmation; and the **bulk ZIP import** dialog with a validated dry-run preview. |
-| [src/pages/admin/AdminContests.tsx](src/pages/admin/AdminContests.tsx) | Contest management. Shared create/edit form with title, description, instructions, start/end datetime pickers, attempt duration, scoring mode, moderator selection, a debounced server-backed **problem picker**, and reorderable attached problems with per-problem scores. Publish, copy URL, and delete (with confirmation). |
-| [src/pages/admin/AdminContestDetail.tsx](src/pages/admin/AdminContestDetail.tsx) | Single-contest report: participation summary, leaderboard, submissions, and authenticated CSV/XLSX export. |
-| [src/pages/admin/AdminParticipants.tsx](src/pages/admin/AdminParticipants.tsx) | Participants across contests, with a per-participant detail dialog showing their submissions. |
-| [src/pages/admin/AdminSubmissions.tsx](src/pages/admin/AdminSubmissions.tsx) | Global submission browser with filters and a source-code viewer. |
-| [src/pages/admin/AdminLogs.tsx](src/pages/admin/AdminLogs.tsx) | Execution audit trail with status/language filters and aggregate timings. |
-| [src/pages/admin/AdminUsers.tsx](src/pages/admin/AdminUsers.tsx) | Read-only user directory (name, email, role, joined date). |
+| [src/views/admin/AdminDashboard.tsx](src/views/admin/AdminDashboard.tsx) | Overview: headline counts plus recent submissions, contests and execution logs. |
+| [src/views/admin/AdminProblems.tsx](src/views/admin/AdminProblems.tsx) | Problem bank management. Table with filters; create/edit dialog covering details, test cases (public/hidden + marks) and per-language boilerplate; archive with confirmation; and the **bulk ZIP import** dialog with a validated dry-run preview. |
+| [src/views/admin/AdminContests.tsx](src/views/admin/AdminContests.tsx) | Contest management. Shared create/edit form with title, description, instructions, start/end datetime pickers, attempt duration, scoring mode, moderator selection, a debounced server-backed **problem picker**, and reorderable attached problems with per-problem scores. Publish, copy URL, and delete (with confirmation). |
+| [src/views/admin/AdminContestDetail.tsx](src/views/admin/AdminContestDetail.tsx) | Single-contest report: participation summary, leaderboard, submissions, and authenticated CSV/XLSX export. |
+| [src/views/admin/AdminParticipants.tsx](src/views/admin/AdminParticipants.tsx) | Participants across contests, with a per-participant detail dialog showing their submissions. |
+| [src/views/admin/AdminSubmissions.tsx](src/views/admin/AdminSubmissions.tsx) | Global submission browser with filters and a source-code viewer. |
+| [src/views/admin/AdminLogs.tsx](src/views/admin/AdminLogs.tsx) | Execution audit trail with status/language filters and aggregate timings. |
+| [src/views/admin/AdminUsers.tsx](src/views/admin/AdminUsers.tsx) | Read-only user directory (name, email, role, joined date). |
+
 
 ---
 
@@ -221,11 +251,12 @@ Excluded from git and from Vercel uploads; recreate them locally as needed.
 
 | Path | What it is |
 |---|---|
-| `node_modules/` | npm dependencies (~314 MB). `npm install`. |
-| `dist/` | Vite production build \u2014 a single inlined `index.html`. `npm run build`. |
+| `node_modules/` | npm/pnpm dependencies. `pnpm install`. |
+| `.next/` | Next.js build cache and server/client bundle output. `pnpm build`. |
 | `api/.venv/` | Backend virtualenv (~117 MB). `python -m venv api/.venv` + `pip install -r api/requirements.txt`. |
 | `.postgres/` | Local PostgreSQL 18 server binaries and the `data/` cluster (~220 MB), extracted from the `postgresql-binaries` wheel so Postgres can run without admin rights or Docker. |
 | `.playwright-mcp/` | Scratch output from browser tooling. |
+
 
 ---
 

@@ -2,9 +2,10 @@
 
 ## 1. Request Flow & Routing
 - The frontend calls relative paths under `/api/*`.
-- In local development, `vite.config.ts` proxies `/api` to `127.0.0.1:8000`.
+- In local development, `next.config.ts` rewrites `/api/:path*` to `http://127.0.0.1:8000/api/:path*`.
 - In production, `vercel.json` rewrites `/api/(.*)` to the Python serverless function `api/index.py`.
-- **Always declare FastAPI routes with their full `/api/...` prefix** (e.g. `@router.post("/api/submissions")`).
+- **Always declare FastAPI routes with their full `/api/...` prefix** (e.g. `@router.post("/api/submissions")`), matching both Next.js dev rewrites and Vercel production rewrites verbatim.
+
 
 ## 2. Security & Code Execution
 - **Never execute untrusted user code in the backend process.** All execution must be sent as outbound HTTP calls to the isolated Piston sandbox via `api/piston_service.py`.
