@@ -1,16 +1,3 @@
-export const metadata: Metadata = {
-  title: "Quizzes | ZAP - CodeZap.in",
-  description:
-    "Take quizzes on ZAP to test your knowledge. From basic to advanced DSA concepts. Track your progress and improve.",
-  openGraph: {
-    title: "Quizzes | ZAP",
-    description: "Test your DSA knowledge with interactive quizzes.",
-    type: "website",
-    url: "https://codezap.in/quizzes",
-  },
-}
-export const revalidate = 300
-
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import {

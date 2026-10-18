@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react";
-import AlgoVisualizer from "../../components/guide/AlgoVisualizer";
+import AlgoVisualizer from "@/components/guide/AlgoVisualizer";
 import {
   dailyTemperaturesApproaches,
   evalRPNApproaches,
@@ -9,9 +9,9 @@ import {
   minStackApproaches,
   nextGreaterElementApproaches,
   validParenthesesApproaches,
-} from "../../components/guide/stackVisualizations";
-import Navbar from "../../components/Navbar";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
+} from "@/components/guide/stackVisualizations";
+import Navbar from "@/components/Navbar";
+import { useGuideLogic } from "@/hooks/useGuideLogic";
 
 export default function StackDsaGuidePage() {
   useGuideLogic();

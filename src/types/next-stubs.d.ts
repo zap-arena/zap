@@ -158,6 +158,54 @@ declare module "next" {
     viewport?: string | Record<string, unknown>;
     [key: string]: unknown;
   }
+
+  export interface Viewport {
+    width?: string | number;
+    height?: string | number;
+    initialScale?: number;
+    minimumScale?: number;
+    maximumScale?: number;
+    userScalable?: boolean;
+    viewportFit?: "auto" | "cover" | "contain";
+    interactiveWidget?: "resizes-visual" | "resizes-content" | "overlays-content";
+    themeColor?: string | Array<{ media?: string; color: string }>;
+    colorScheme?: "normal" | "light" | "dark" | "light dark" | "dark light" | "only light";
+    [key: string]: unknown;
+  }
+
+  export namespace MetadataRoute {
+    export type Robots = {
+      rules:
+        | {
+            userAgent?: string | string[];
+            allow?: string | string[];
+            disallow?: string | string[];
+            crawlDelay?: number;
+          }
+        | Array<{
+            userAgent?: string | string[];
+            allow?: string | string[];
+            disallow?: string | string[];
+            crawlDelay?: number;
+          }>;
+      sitemap?: string | string[];
+      host?: string;
+    };
+    export type Sitemap = Array<{
+      url: string;
+      lastModified?: string | Date;
+      changeFrequency?:
+        | "always"
+        | "hourly"
+        | "daily"
+        | "weekly"
+        | "monthly"
+        | "yearly"
+        | "never";
+      priority?: number;
+      [key: string]: unknown;
+    }>;
+  }
 }
 
 declare module "next/dist/lib/metadata/types/metadata-interface.js" {

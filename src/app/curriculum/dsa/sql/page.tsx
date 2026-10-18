@@ -1,34 +1,7 @@
-export const revalidate = 3600
-
-export const metadata: Metadata = getGuideMetadata(
-  "SQL Fundamentals",
-  "sql",
-  "Master SQL queries, joins, and database optimization. Learn to write efficient queries and design schemas."
-)
-
-  return (
-    <>
-      <JsonLd
-        data={getCourseSchema(
-          "SQL Fundamentals",
-          "Master SQL queries, joins, and database optimization.",
-          5
-        )}
-      />
-      <AuthGuard>
-        <SqlGuidePage />
-      </AuthGuard>
-    </>
-  )
-}
-
-
-
-
 "use client"
 
 import type React from "react";
-import JoinTypesGallery from "../../components/guide/JoinTypesGallery";
+import JoinTypesGallery from "@/components/guide/JoinTypesGallery";
 import {
   CompareTable,
   GroupingDiagram,
@@ -37,8 +10,8 @@ import {
   MergeChart,
   VennPair,
   VerticalSteps,
-} from "../../components/guide/OopsDiagrams";
-import SqlVisualizer from "../../components/guide/SqlVisualizer";
+} from "@/components/guide/OopsDiagrams";
+import SqlVisualizer from "@/components/guide/SqlVisualizer";
 import {
   aggregateExamples,
   basicQueryExamples,
@@ -46,9 +19,9 @@ import {
   labExamples,
   subqueryExamples,
   windowExamples,
-} from "../../components/guide/sqlExamples";
-import Navbar from "../../components/Navbar";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
+} from "@/components/guide/sqlExamples";
+import Navbar from "@/components/Navbar";
+import { useGuideLogic } from "@/hooks/useGuideLogic";
 
 export default function SqlGuidePage() {
   useGuideLogic();

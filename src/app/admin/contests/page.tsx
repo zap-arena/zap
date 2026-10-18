@@ -17,7 +17,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import AdminLayout from "../../components/AdminLayout";
+import AdminLayout from "@/components/AdminLayout";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,28 +27,28 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "../../components/ui/alert-dialog";
-import { Button } from "../../components/ui/button";
-import { Checkbox } from "../../components/ui/checkbox";
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../../components/ui/dialog";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../components/ui/select";
-import { Textarea } from "../../components/ui/textarea";
-import { ApiError, api } from "../../lib/api";
-import type { Contest } from "../../types";
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { ApiError, api } from "@/lib/api";
+import type { Contest } from "@/types";
 
 const STATUS_STYLES: Record<string, string> = {
   active: "bg-success/15 text-success",

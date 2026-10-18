@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react";
-import AlgoVisualizer from "../../components/guide/AlgoVisualizer";
+import AlgoVisualizer from "@/components/guide/AlgoVisualizer";
 import {
   linkedListCycleApproaches,
   mergeTwoSortedListsApproaches,
@@ -9,9 +9,9 @@ import {
   palindromeLinkedListApproaches,
   removeNthFromEndApproaches,
   reverseLinkedListApproaches,
-} from "../../components/guide/linkedListVisualizations";
-import Navbar from "../../components/Navbar";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
+} from "@/components/guide/linkedListVisualizations";
+import Navbar from "@/components/Navbar";
+import { useGuideLogic } from "@/hooks/useGuideLogic";
 
 export default function LinkedListDsaGuidePage() {
   useGuideLogic();

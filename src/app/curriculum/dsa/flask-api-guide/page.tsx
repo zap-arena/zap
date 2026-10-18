@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ArrowLeft, Server, Code, FileCode, PlayCircle, Info, ImageIcon } from "lucide-react";
 import { useEffect } from "react";
 import Link from "next/link";
-import Navbar from "../../components/Navbar";
+import Navbar from "@/components/Navbar";
 import "@/styles/guide_styles.css";
 
 export default function FlaskApiGuidePage() {

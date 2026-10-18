@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react";
-import AlgoVisualizer from "../../components/guide/AlgoVisualizer";
+import AlgoVisualizer from "@/components/guide/AlgoVisualizer";
 import {
   containsDuplicateApproaches,
   firstUniqueCharApproaches,
@@ -11,9 +11,9 @@ import {
   topKFrequentApproaches,
   twoSumApproaches,
   validAnagramApproaches,
-} from "../../components/guide/hashingVisualizations";
-import Navbar from "../../components/Navbar";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
+} from "@/components/guide/hashingVisualizations";
+import Navbar from "@/components/Navbar";
+import { useGuideLogic } from "@/hooks/useGuideLogic";
 
 export default function HashingDsaGuidePage() {
   useGuideLogic();

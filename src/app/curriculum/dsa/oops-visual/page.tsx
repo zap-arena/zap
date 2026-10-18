@@ -7,9 +7,9 @@ import {
   Layers,
   MergeChart,
   OrgChart,
-} from "../../components/guide/OopsDiagrams";
-import Navbar from "../../components/Navbar";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
+} from "@/components/guide/OopsDiagrams";
+import Navbar from "@/components/Navbar";
+import { useGuideLogic } from "@/hooks/useGuideLogic";
 
 export default function OopsVisualGuidePage() {
   useGuideLogic();

@@ -3,9 +3,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { Brain, ChevronRight, Trophy, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
-import AdminLayout from "../../components/AdminLayout";
-import { api } from "../../lib/api";
-import type { Contest } from "../../types";
+import AdminLayout from "@/components/AdminLayout";
+import { api } from "@/lib/api";
+import type { Contest } from "@/types";
 
 interface AdminParticipantRow {
   userId: string;

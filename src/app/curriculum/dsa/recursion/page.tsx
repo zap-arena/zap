@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react";
-import RecursionVisualizer from "../../components/guide/RecursionVisualizer";
+import RecursionVisualizer from "@/components/guide/RecursionVisualizer";
 import {
   climbingStairsApproaches,
   factorialApproaches,
@@ -11,9 +11,9 @@ import {
   reverseStringRecursiveApproaches,
   subsetsApproaches,
   sumOfDigitsApproaches,
-} from "../../components/guide/recursionVisualizations";
-import Navbar from "../../components/Navbar";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
+} from "@/components/guide/recursionVisualizations";
+import Navbar from "@/components/Navbar";
+import { useGuideLogic } from "@/hooks/useGuideLogic";
 
 export default function RecursionDsaGuidePage() {
   useGuideLogic();

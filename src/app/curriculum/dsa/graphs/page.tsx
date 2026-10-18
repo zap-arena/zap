@@ -1,8 +1,8 @@
 "use client"
 
 import type React from "react";
-import GraphTypesGallery from "../../components/guide/GraphTypesGallery";
-import GraphVisualizer from "../../components/guide/GraphVisualizer";
+import GraphTypesGallery from "@/components/guide/GraphTypesGallery";
+import GraphVisualizer from "@/components/guide/GraphVisualizer";
 import {
   connectedComponentsApproaches,
   cycleDetectionApproaches,
@@ -14,9 +14,9 @@ import {
   graphBfsApproaches,
   graphDfsApproaches,
   topoSortApproaches,
-} from "../../components/guide/graphVisualizations";
-import Navbar from "../../components/Navbar";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
+} from "@/components/guide/graphVisualizations";
+import Navbar from "@/components/Navbar";
+import { useGuideLogic } from "@/hooks/useGuideLogic";
 
 export default function GraphDsaGuidePage() {
   useGuideLogic();

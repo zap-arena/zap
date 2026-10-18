@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react";
-import AlgoVisualizer from "../../components/guide/AlgoVisualizer";
+import AlgoVisualizer from "@/components/guide/AlgoVisualizer";
 import {
   containsDuplicateIIApproaches,
   findAllAnagramsApproaches,
@@ -13,11 +13,11 @@ import {
   maxSumSubarrayApproaches,
   minSizeSubarraySumApproaches,
   minWindowSubstringApproaches,
-} from "../../components/guide/slidingWindowVisualizations";
-import Navbar from "../../components/Navbar";
-import ConceptStoryDeck from "../../components/guide/ConceptStoryDeck";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
-import { FEATURES } from "../../config/features";
+} from "@/components/guide/slidingWindowVisualizations";
+import Navbar from "@/components/Navbar";
+import ConceptStoryDeck from "@/components/guide/ConceptStoryDeck";
+import { useGuideLogic } from "@/hooks/useGuideLogic";
+import { FEATURES } from "@/config/features";
 
 export default function SlidingWindowDsaGuidePage() {
   useGuideLogic();
