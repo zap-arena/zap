@@ -19,7 +19,7 @@ import {
   Unlock,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
 
@@ -38,7 +38,7 @@ import {
 import { api } from "@/lib/api";
 import { EDITOR_THEME_OPTIONS, MONACO_THEMES } from "@/lib/monaco-themes";
 
-export default function DebuggingWarPage() {
+function DebuggingWarContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -1043,5 +1043,19 @@ export default function DebuggingWarPage() {
         </section>
       </main>
     </div>
+  );
+}
+
+export default function DebuggingWarPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      }
+    >
+      <DebuggingWarContent />
+    </Suspense>
   );
 }
