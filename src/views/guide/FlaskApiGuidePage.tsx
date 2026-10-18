@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image";
 import { ArrowLeft, Server, Code, FileCode, PlayCircle, Info, ImageIcon } from "lucide-react";
 import { useEffect } from "react";
 import Link from "next/link";
@@ -47,7 +48,14 @@ export default function FlaskApiGuidePage() {
               <ImageIcon className="w-6 h-6 text-primary" /> Architecture Diagram
             </h2>
             <div className="rounded-xl overflow-hidden border border-border shadow-md">
-              <img src="/flask-architecture.png" alt="Flask Architecture Flowchart" className="w-full object-contain" />
+              <Image
+                src="/flask-architecture.png"
+                alt="Flask Architecture Flowchart"
+                width={800}
+                height={450}
+                className="w-full object-contain"
+                priority
+              />
             </div>
             <p className="text-muted-foreground text-sm mt-4 text-center italic">
               Visual representation of the Request/Response cycle between the Browser, Flask backend, and Database.

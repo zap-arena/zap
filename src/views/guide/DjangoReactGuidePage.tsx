@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image";
 import {
   ArrowLeft,
   Server,
@@ -57,7 +58,15 @@ export default function DjangoReactGuidePage() {
               <ImageIcon className="w-6 h-6 text-primary" /> Architecture Diagram
             </h2>
             <div className="rounded-xl overflow-hidden border border-border shadow-md">
-              <img src="/django-architecture.png" alt="Django Architecture Flowchart" className="w-full object-contain" />
+              <Image
+                src="/django-architecture.png"
+                alt="Django Architecture Flowchart"
+                width={800}
+                height={450}
+                className="w-full object-contain"
+                priority
+              />
+            </div>
             </div>
             <p className="text-muted-foreground text-sm mt-4 text-center italic">
               Visual representation of the Request/Response cycle between the Browser, Django backend, and Database.
