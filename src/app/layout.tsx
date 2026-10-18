@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next"
 import "./globals.css"
 import { Providers } from "@/components/Providers"
+import { JsonLd } from "@/components/JsonLd"
+import { organizationSchema } from "@/lib/metadata"
 
 export const metadata: Metadata = {
   title: "ZAP - Interactive DSA Learning Platform",
@@ -70,6 +72,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
         <meta name="color-scheme" content="light dark" />
         <meta name="referrer" content="strict-origin-when-cross-origin" />
+        <JsonLd data={organizationSchema} />
       </head>
       <body suppressHydrationWarning>
         <Providers>
