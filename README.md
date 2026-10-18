@@ -5,7 +5,7 @@
 
 [![React 19](https://img.shields.io/badge/React-19-blue.svg)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-7.3-646CFF.svg)](https://vitejs.dev/)
+[![Next.js 15](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688.svg)](https://fastapi.tiangolo.com/)
 [![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.4-38B2AC.svg)](https://tailwindcss.com/)
 
@@ -28,12 +28,12 @@ ZAP replaces passive reading with **tinker-first active simulation**:
 
 ```mermaid
 flowchart TD
-    Client["Browser SPA (React 19 + TypeScript + Vite)"]
+    Client["Next.js 15 App Router (React 19 + TypeScript)"]
     Features["Feature Flags (src/config/features.ts)"]
     AudioSynth["Web Audio Synthesizer (Zero Audio Assets)"]
-    Monaco["Monaco Code Editor"]
+    Monaco["Monaco Code Editor (Dynamic Client-Only)"]
     
-    APIProxy["Vite Dev Proxy / Vercel Rewrites (/api/*)"]
+    APIProxy["Next.js Dev Proxy (next.config.ts) / Vercel Rewrites (/api/*)"]
     Backend["FastAPI Backend (api/index.py)"]
     DB[("PostgreSQL Database")]
     Piston["Piston Sandbox Judge Engine"]
@@ -47,8 +47,8 @@ flowchart TD
     Backend -->|POST /execute| Piston
 ```
 
-- **Frontend**: React 19, TypeScript, Vite, Tailwind CSS, Lucide React, Sonner toasts, Monaco Editor.
-- **Micro-Interactions**: Zero-dependency Web Audio API sound synthesizer (`src/lib/soundEffects.ts`), Portal rendering (`createPortal`) for full-bleed mobile reels.
+- **Frontend**: Next.js 15 App Router, React 19, TypeScript, Tailwind CSS, Lucide React, Sonner toasts, Monaco Editor (dynamic client-side).
+- **Micro-Interactions**: Zero-dependency Web Audio API sound synthesizer (`src/lib/soundEffects.ts`), Portal rendering (`createPortal` with client-mounted check) for full-bleed mobile reels.
 - **Backend**: FastAPI, SQLAlchemy, PostgreSQL, Python 3.11+.
 - **Execution Engine**: Sandboxed remote code runner powered by Piston.
 
@@ -65,7 +65,7 @@ flowchart TD
 # Install dependencies
 pnpm install
 
-# Start Vite dev server on port 5173
+# Start Next.js dev server on port 5173
 pnpm run dev --port 5173
 ```
 
@@ -84,14 +84,14 @@ uvicorn index:app --reload --port 8000
 
 ## 🎛️ Feature Flags
 
-ZAP features are controlled via [`src/config/features.ts`](src/config/features.ts) and can be toggled per-environment using `VITE_*` variables:
+ZAP features are controlled via [`src/config/features.ts`](src/config/features.ts) and can be toggled per-environment using `NEXT_PUBLIC_*` variables:
 
 | Flag | Env Variable | Default | Description |
 |---|---|---|---|
-| `reels.showLikeButton` | `VITE_FEATURE_REELS_LIKE` | `false` | Like counter & heart reaction on reels |
-| `reels.showSolveButton` | `VITE_FEATURE_REELS_SOLVE` | `false` | Deep-link button to open problem solver |
-| `reels.showGuideButton` | `VITE_FEATURE_REELS_GUIDE` | `false` | Deep-link button to open full curriculum guide |
-| `conceptStory.showDeck` | `VITE_FEATURE_CONCEPT_STORY` | `false` | 4-Beat Concept Story Deck on guide pages |
+| `reels.showLikeButton` | `NEXT_PUBLIC_FEATURE_REELS_LIKE` | `false` | Like counter & heart reaction on reels |
+| `reels.showSolveButton` | `NEXT_PUBLIC_FEATURE_REELS_SOLVE` | `false` | Deep-link button to open problem solver |
+| `reels.showGuideButton` | `NEXT_PUBLIC_FEATURE_REELS_GUIDE` | `false` | Deep-link button to open full curriculum guide |
+| `conceptStory.showDeck` | `NEXT_PUBLIC_FEATURE_CONCEPT_STORY` | `false` | 4-Beat Concept Story Deck on guide pages |
 
 ---
 
@@ -105,12 +105,15 @@ zap/
 ├── docs/                  # Architectural & pedagogical documentation
 │   ├── INTERACTIVE_PEDAGOGY.md # Pedagogy & 4-card story methodology
 │   └── dev-to-blog.md     # Official release article (Dev.to format)
+├── next.config.ts         # Next.js configuration & /api proxy rewrites
 ├── src/
+│   ├── app/               # Next.js 15 App Router routes & layouts
+│   ├── views/             # Page view components (contests, guides, admin)
 │   ├── components/
 │   │   ├── guide/         # ConceptStoryDeck, algorithm visualizers
 │   │   └── reels/         # AlgoReelsPlayer, AlgoReelsTray
 │   ├── config/
-│   │   └── features.ts    # Centralized feature flag manager
+│   │   └── features.ts    # Centralized feature flag manager (NEXT_PUBLIC_*)
 │   ├── data/
 │   │   ├── algoReels.ts   # Curated DSA micro-reels content & trivia
 │   │   └── conceptStories.ts # 4-beat narrative cards
@@ -118,7 +121,7 @@ zap/
 │   │   └── useGuideLogic.ts # Guide focus mode & keyboard shortcuts
 │   ├── lib/
 │   │   └── soundEffects.ts # 8-bit Web Audio synthesizer
-│   └── pages/             # Contests, CodeWar, Admin, DSA Guides
+│   └── types/             # Type definitions & next-stubs.d.ts
 ```
 
 ---
@@ -133,3 +136,4 @@ pnpm tsc --noEmit
 # Production build test
 pnpm build
 ```
+

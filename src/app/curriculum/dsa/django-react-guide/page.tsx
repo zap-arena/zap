@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useEffect } from "react";
 import Link from "next/link";
-import Navbar from "../../components/Navbar";
+import Navbar from "@/components/Navbar";
 import "@/styles/guide_styles.css";
 
 export default function DjangoReactGuidePage() {
@@ -66,7 +66,6 @@ export default function DjangoReactGuidePage() {
                 className="w-full object-contain"
                 priority
               />
-            </div>
             </div>
             <p className="text-muted-foreground text-sm mt-4 text-center italic">
               Visual representation of the Request/Response cycle between the Browser, Django backend, and Database.

@@ -1,16 +1,3 @@
-export const metadata: Metadata = {
-  title: "CodeWar | ZAP - CodeZap.in",
-  description:
-    "Practice with CodeWar on ZAP. Solve algorithm problems, battle with friends, and improve your coding skills.",
-  openGraph: {
-    title: "CodeWar - Practice Problems | ZAP",
-    description: "Battle and solve algorithmic problems with CodeWar mode.",
-    type: "website",
-    url: "https://codezap.in/codewar",
-  },
-}
-export const revalidate = 600
-
 "use client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { BookOpen, Bug, Layers, Loader2, Shuffle } from "lucide-react";
@@ -20,7 +7,7 @@ import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
-import ContestWorkspacePage from "./ContestWorkspacePage";
+import ContestWorkspacePage from "@/app/contest/[slug]/workspace/page";
 
 export default function CodeWarPage() {
   const [mode, setMode] = useState<"landing" | "random" | "progressive">(

@@ -2,10 +2,10 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Code2, Send, TrendingUp, Trophy, Users } from "lucide-react";
-import AdminLayout from "../../components/AdminLayout";
-import VerdictBadge from "../../components/VerdictBadge";
-import { api } from "../../lib/api";
-import type { Verdict } from "../../types";
+import AdminLayout from "@/components/AdminLayout";
+import VerdictBadge from "@/components/VerdictBadge";
+import { api } from "@/lib/api";
+import type { Verdict } from "@/types";
 
 interface AdminStats {
   totalUsers: number;

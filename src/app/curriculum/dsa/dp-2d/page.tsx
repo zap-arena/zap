@@ -1,16 +1,16 @@
 "use client"
 
 import type React from "react";
-import DPGridVisualizer from "../../components/guide/DPGridVisualizer";
+import DPGridVisualizer from "@/components/guide/DPGridVisualizer";
 import {
   editDistanceApproaches,
   knapsackApproaches,
   longestCommonSubsequenceApproaches,
   minimumPathSumApproaches,
   uniquePathsApproaches,
-} from "../../components/guide/dp2DVisualizations";
-import Navbar from "../../components/Navbar";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
+} from "@/components/guide/dp2DVisualizations";
+import Navbar from "@/components/Navbar";
+import { useGuideLogic } from "@/hooks/useGuideLogic";
 
 export default function DP2DGuidePage() {
   useGuideLogic();

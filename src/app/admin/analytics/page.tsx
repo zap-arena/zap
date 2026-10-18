@@ -24,17 +24,17 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import AdminLayout from "../../components/AdminLayout";
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
+import AdminLayout from "@/components/AdminLayout";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "../../components/ui/tabs";
-import { api } from "../../lib/api";
-import type { Contest } from "../../types";
+} from "@/components/ui/tabs";
+import { api } from "@/lib/api";
+import type { Contest } from "@/types";
 
 interface UserAnalytics {
   user: { id: string; name: string; email: string; collegeId?: string };

@@ -14,5 +14,6 @@
 
 ## 3. UI, Mobile Responsiveness & Themes
 - **Mobile Viewports**: Test components on small screens (~390px width / Pixel / iPhone).
-- **Portal Rendering**: Overlays and fullscreen players (like `AlgoReelsPlayer`) must render via `createPortal(..., document.body)` with `100dvh` to escape parent CSS `overflow`, `contain`, or `transform` clipping.
+- **Portal Rendering**: Overlays and fullscreen players (like `AlgoReelsPlayer`) must render via `createPortal(..., document.body)` with `100dvh` to escape parent CSS `overflow`, `contain`, or `transform` clipping. In Next.js App Router, always ensure portal rendering is guarded by a `mounted` state check (`if (!mounted) return null;`) or runs only on the client (`typeof window !== "undefined"`).
 - **Theme Contrast**: Always use semantic Tailwind classes (`bg-background text-foreground border-border`) or custom tokens. Avoid hardcoded hex colors that fail in light mode.
+

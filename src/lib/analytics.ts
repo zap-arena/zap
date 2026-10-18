@@ -7,33 +7,33 @@ export function initWebVitals() {
   // Dynamic import to avoid loading in SSR
   if (typeof window === "undefined") return;
 
-  import("web-vitals").then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
+  import("web-vitals").then(({ onCLS, onFCP, onINP, onLCP, onTTFB }) => {
     // Cumulative Layout Shift (CLS)
-    getCLS((metric) => {
+    onCLS?.((metric: { value: number }) => {
       console.log("CLS:", metric.value);
       trackWebVital("cls", metric.value);
     });
 
-    // First Input Delay (FID)
-    getFID((metric) => {
-      console.log("FID:", metric.value);
-      trackWebVital("fid", metric.value);
+    // Interaction to Next Paint (INP)
+    onINP?.((metric: { value: number }) => {
+      console.log("INP:", metric.value);
+      trackWebVital("inp", metric.value);
     });
 
     // First Contentful Paint (FCP)
-    getFCP((metric) => {
+    onFCP?.((metric: { value: number }) => {
       console.log("FCP:", metric.value);
       trackWebVital("fcp", metric.value);
     });
 
     // Largest Contentful Paint (LCP)
-    getLCP((metric) => {
+    onLCP?.((metric: { value: number }) => {
       console.log("LCP:", metric.value);
       trackWebVital("lcp", metric.value);
     });
 
     // Time to First Byte (TTFB)
-    getTTFB((metric) => {
+    onTTFB?.((metric: { value: number }) => {
       console.log("TTFB:", metric.value);
       trackWebVital("ttfb", metric.value);
     });

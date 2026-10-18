@@ -13,16 +13,16 @@ import {
 } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
-import AdminLayout from "../../components/AdminLayout";
-import { Button } from "../../components/ui/button";
-import VerdictBadge from "../../components/VerdictBadge";
-import { api } from "../../lib/api";
+import AdminLayout from "@/components/AdminLayout";
+import { Button } from "@/components/ui/button";
+import VerdictBadge from "@/components/VerdictBadge";
+import { api } from "@/lib/api";
 import type {
   Contest,
   LeaderboardEntry,
   ParticipantStatus,
   Submission,
-} from "../../types";
+} from "@/types";
 
 interface AdminParticipant {
   id: string;

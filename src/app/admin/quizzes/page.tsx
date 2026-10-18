@@ -6,8 +6,8 @@ import type React from "react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
-import { Button } from "../../components/ui/button";
-import { api } from "../../lib/api";
+import { Button } from "@/components/ui/button";
+import { api } from "@/lib/api";
 
 export default function AdminQuizzes() {
   const queryClient = useQueryClient();

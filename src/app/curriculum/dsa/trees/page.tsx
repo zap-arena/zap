@@ -1,8 +1,8 @@
 "use client"
 
 import type React from "react";
-import TreeTypesGallery from "../../components/guide/TreeTypesGallery";
-import TreeVisualizer from "../../components/guide/TreeVisualizer";
+import TreeTypesGallery from "@/components/guide/TreeTypesGallery";
+import TreeVisualizer from "@/components/guide/TreeVisualizer";
 import {
   dfsOrderApproaches,
   inorderTraversalApproaches,
@@ -11,9 +11,9 @@ import {
   maxDepthApproaches,
   minDepthApproaches,
   validateBstApproaches,
-} from "../../components/guide/treeVisualizations";
-import Navbar from "../../components/Navbar";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
+} from "@/components/guide/treeVisualizations";
+import Navbar from "@/components/Navbar";
+import { useGuideLogic } from "@/hooks/useGuideLogic";
 
 export default function TreeDsaGuidePage() {
   useGuideLogic();

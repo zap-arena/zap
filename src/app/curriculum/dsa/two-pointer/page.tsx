@@ -1,8 +1,8 @@
 "use client"
 
 import type React from "react";
-import AlgoVisualizer from "../../components/guide/AlgoVisualizer";
-import { minWindowSubstringApproaches } from "../../components/guide/slidingWindowVisualizations";
+import AlgoVisualizer from "@/components/guide/AlgoVisualizer";
+import { minWindowSubstringApproaches } from "@/components/guide/slidingWindowVisualizations";
 import {
   boatsToSavePeopleApproaches,
   containerWithMostWaterApproaches,
@@ -16,11 +16,11 @@ import {
   trappingRainWaterApproaches,
   twoSumSortedApproaches,
   validPalindromeApproaches,
-} from "../../components/guide/twoPointerVisualizations";
-import Navbar from "../../components/Navbar";
-import ConceptStoryDeck from "../../components/guide/ConceptStoryDeck";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
-import { FEATURES } from "../../config/features";
+} from "@/components/guide/twoPointerVisualizations";
+import Navbar from "@/components/Navbar";
+import ConceptStoryDeck from "@/components/guide/ConceptStoryDeck";
+import { useGuideLogic } from "@/hooks/useGuideLogic";
+import { FEATURES } from "@/config/features";
 
 export default function TwoPointerDsaGuidePage() {
   useGuideLogic();

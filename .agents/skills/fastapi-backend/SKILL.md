@@ -26,7 +26,7 @@ Use this skill when writing Python backend code in `api/`.
    @router.get("/api/contests", response_model=List[ContestSummary])
    def list_contests(...):
    ```
-   Do not rely on router prefix stripping, as Vercel rewrites and Vite proxies expect `/api/...` verbatim.
+   Do not rely on router prefix stripping, as Vercel production rewrites and Next.js dev rewrites (`next.config.ts`) expect `/api/...` verbatim.
 
 2. **Naming Convention Boundary**:
    - Python & Postgres: `snake_case` (e.g. `start_time`, `contest_id`).

@@ -4,14 +4,14 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Brain, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import AdminLayout from "../../components/AdminLayout";
-import { Button } from "../../components/ui/button";
-import { api } from "../../lib/api";
+import AdminLayout from "@/components/AdminLayout";
+import { Button } from "@/components/ui/button";
+import { api } from "@/lib/api";
 import type {
   BehaviorPattern,
   Contest,
   ParticipantAnalytics,
-} from "../../types";
+} from "@/types";
 
 const PATTERN_LABEL: Record<BehaviorPattern, string> = {
   optimal_from_start: "Optimal from the start",

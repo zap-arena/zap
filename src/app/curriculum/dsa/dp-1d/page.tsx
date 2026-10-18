@@ -1,16 +1,16 @@
 "use client"
 
 import type React from "react";
-import AlgoVisualizer from "../../components/guide/AlgoVisualizer";
+import AlgoVisualizer from "@/components/guide/AlgoVisualizer";
 import {
   coinChangeApproaches,
   decodeWaysApproaches,
   houseRobberApproaches,
   longestIncreasingSubsequenceApproaches,
   maximumSubarrayApproaches,
-} from "../../components/guide/dp1DVisualizations";
-import Navbar from "../../components/Navbar";
-import { useGuideLogic } from "../../hooks/useGuideLogic";
+} from "@/components/guide/dp1DVisualizations";
+import Navbar from "@/components/Navbar";
+import { useGuideLogic } from "@/hooks/useGuideLogic";
 
 export default function DP1DGuidePage() {
   useGuideLogic();
