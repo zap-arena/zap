@@ -1,5 +1,7 @@
-import type React from "react";
+import { useState } from "react";
 import AlgoVisualizer from "../../components/guide/AlgoVisualizer";
+import CodeTutorVisualizer from "../../components/guide/CodeTutorVisualizer";
+import ScrimbaInteractiveEngine from "../../components/guide/ScrimbaInteractiveEngine";
 import {
   containsDuplicateApproaches,
   firstUniqueCharApproaches,
@@ -15,6 +17,7 @@ import { useGuideLogic } from "../../hooks/useGuideLogic";
 
 export default function HashingDsaGuidePage() {
   useGuideLogic();
+  const [q2VizMode, setQ2VizMode] = useState<"scrimba" | "tutor" | "array">("scrimba");
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
@@ -410,13 +413,65 @@ export default function HashingDsaGuidePage() {
                 Input: nums = [2, 7, 11, 15], target = 9 Output: [0, 1]
               </div>
 
-              <AlgoVisualizer
-                title="Two Sum"
-                approaches={twoSumApproaches}
-                defaultInput={[2, 7, 11, 15]}
-                needsTarget
-                defaultTarget={9}
-              />
+              {/* Interactive Visualization Mode Selector */}
+              <div className="flex items-center justify-between flex-wrap gap-2 mb-2 mt-4 p-2 bg-muted/40 rounded-2xl border border-border">
+                <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider pl-2 flex items-center gap-1.5">
+                  <span>Interactive Engine:</span>
+                </div>
+                <div className="flex bg-card p-1 rounded-xl border border-border gap-1 flex-wrap">
+                  <button
+                    type="button"
+                    onClick={() => setQ2VizMode("scrimba")}
+                    className={`text-xs px-3.5 py-1.5 rounded-lg font-bold transition-all ${
+                      q2VizMode === "scrimba"
+                        ? "bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    🎬 Scrimba Interactive Screencast ✨
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setQ2VizMode("tutor")}
+                    className={`text-xs px-3.5 py-1.5 rounded-lg font-bold transition-all ${
+                      q2VizMode === "tutor"
+                        ? "bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    🐍 Python Tutor &amp; Keynote Mode
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setQ2VizMode("array")}
+                    className={`text-xs px-3.5 py-1.5 rounded-lg font-bold transition-all ${
+                      q2VizMode === "array"
+                        ? "bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    📊 Classical Array Mode
+                  </button>
+                </div>
+              </div>
+
+              {q2VizMode === "scrimba" ? (
+                <ScrimbaInteractiveEngine />
+              ) : q2VizMode === "tutor" ? (
+                <CodeTutorVisualizer
+                  title="Two Sum (Optimal One-Pass Hash Map)"
+                  initialNums={[2, 7, 11, 15]}
+                  initialTarget={9}
+                />
+              ) : (
+                <AlgoVisualizer
+                  title="Two Sum"
+                  approaches={twoSumApproaches}
+                  defaultInput={[2, 7, 11, 15]}
+                  needsTarget
+                  defaultTarget={9}
+                />
+              )}
 
               <div className="tabs-wrapper">
                 <div className="approach-tabs" data-tabgroup="q2-approach">

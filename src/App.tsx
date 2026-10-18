@@ -27,6 +27,7 @@ import SqlGuidePage from "./pages/guide/SqlGuidePage";
 import StackDsaGuidePage from "./pages/guide/StackDsaGuidePage";
 import TreeDsaGuidePage from "./pages/guide/TreeDsaGuidePage";
 import TwoPointerDsaGuidePage from "./pages/guide/TwoPointerDsaGuidePage";
+import PatternRecognitionGuidePage from "./pages/guide/PatternRecognitionGuidePage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import QuizListPage from "./pages/QuizListPage";
@@ -117,6 +118,22 @@ export default function App() {
             element={
               <RequireAuth>
                 <CurriculumDSAPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/pattern-recognition"
+            element={
+              <RequireAuth>
+                <PatternRecognitionGuidePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/curriculum/dsa/finding-patterns"
+            element={
+              <RequireAuth>
+                <PatternRecognitionGuidePage />
               </RequireAuth>
             }
           />
