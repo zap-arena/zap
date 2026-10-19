@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/react";
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import RouteTransitionLoader from "./components/RouteTransitionLoader";
@@ -11,9 +12,9 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import AIBasicsGuidePage from "./pages/guide/AIBasicsGuidePage";
 import ApiBasicsGuidePage from "./pages/guide/ApiBasicsGuidePage";
 import DjangoReactGuidePage from "./pages/guide/DjangoReactGuidePage";
-import FlaskApiGuidePage from "./pages/guide/FlaskApiGuidePage";
 import DP1DGuidePage from "./pages/guide/DP1DGuidePage";
 import DP2DGuidePage from "./pages/guide/DP2DGuidePage";
+import FlaskApiGuidePage from "./pages/guide/FlaskApiGuidePage";
 import GraphDsaGuidePage from "./pages/guide/GraphDsaGuidePage";
 import HashingDsaGuidePage from "./pages/guide/HashingDsaGuidePage";
 import LinkedListDsaGuidePage from "./pages/guide/LinkedListDsaGuidePage";
@@ -32,8 +33,8 @@ import LoginPage from "./pages/LoginPage";
 import QuizListPage from "./pages/QuizListPage";
 import QuizTakingPage from "./pages/QuizTakingPage";
 import RegisterPage from "./pages/RegisterPage";
-import WorkflowPuzzlePage from "./pages/WorkflowPuzzlePage";
 import SqlWorkflowPage from "./pages/SqlWorkflowPage";
+import WorkflowPuzzlePage from "./pages/WorkflowPuzzlePage";
 import { useAuth } from "./store/auth";
 
 const AdminQuizzes = lazy(() => import("./pages/admin/AdminQuizzes"));
@@ -98,6 +99,7 @@ export default function App() {
     <BrowserRouter>
       <RouteTransitionLoader />
       <Toaster position="top-right" closeButton duration={4000} />
+      <Analytics />
       <Suspense fallback={<PageFallback />}>
         <Routes>
           {/* Public */}
