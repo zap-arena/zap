@@ -2,7 +2,7 @@ import os
 import sys
 from dotenv import load_dotenv
 
-api_dir = os.path.dirname(os.path.abspath(__file__))
+api_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 root_dir = os.path.dirname(api_dir)
 load_dotenv(os.path.join(root_dir, ".env"))
 

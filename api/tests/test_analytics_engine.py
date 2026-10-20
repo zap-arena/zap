@@ -2,6 +2,11 @@
 
     cd api && .venv/bin/python test_analytics_engine.py
 """
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from analytics_engine import (
     StageMetric,
     classify_pattern,

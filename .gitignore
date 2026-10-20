@@ -36,6 +36,8 @@ api/venv/
 # User defined folders
 render/
 problems/
+problem_bank/
+api/problem_bank/
 solutions/
 dsa-graph/
 course-materials/
