@@ -5,7 +5,10 @@ Requires a reachable judge (see api/local_piston.py).
     cd api && export $(grep -v '^#' ../.env | xargs) && .venv/bin/python test_run_samples.py
 """
 import os
+import sys
 import uuid
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from fastapi.testclient import TestClient
 
